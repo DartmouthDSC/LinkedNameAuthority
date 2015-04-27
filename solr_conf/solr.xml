@@ -31,6 +31,6 @@
 -->
 <solr>
 
-  <sharedLib>lib</sharedLib>
+    <sharedLib>lib</sharedLib>
   
 </solr>

@@ -24,6 +24,8 @@ core.properties file of the default core.
 Made the default solr configuration in hydra its own configset(default-hydra),
 both the development and testing core will use this configuration.
 
+###lib
+
 ###Helpful Apache Solr Wiki Pages:
 
 Example of Solr Home 
