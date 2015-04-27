@@ -390,7 +390,6 @@ DEPENDENCIES
   devise-guests (~> 0.3)
   hydra (= 9.1.0.rc1)
   jbuilder (~> 2.0)
-  jettywrapper
   jquery-rails
   rails (= 4.2.0)
   rsolr (~> 1.0.6)
