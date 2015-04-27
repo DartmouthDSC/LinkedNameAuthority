@@ -17,19 +17,20 @@
 -->
 
 <!--
- All (relative) paths are relative to the installation path
-  
-  persistent: Save changes made via the API to this file
-  sharedLib: path to a lib directory that will be shared across all cores
--->
-<solr persistent="false" sharedLib="lib">
+  All (relative) paths are relative to the installation path
 
-  <!--
-  adminPath: RequestHandler path to manage cores.  
-    If 'null' (or absent), cores will not be manageable via REST
-  -->
-  <cores adminPath="/admin/cores" defaultCoreName="development">
-    <core name="development" instanceDir="development-core" />
-    <core name="test" instanceDir="test-core" />
-  </cores>
+  solr.xml updated for Solr 5.0.0
+  
+  persistent: Save changes made via the API to this file. (Not supported in Solr 5.0.0)
+  sharedLib: path to a lib directory that will be shared across all cores
+
+  cores: Defined by directories in SOLR_HOME with core.properties file.
+  defaultCore: Defined by the loadOnStartup property in core.properties
+  adminPath: Not supported in solr 5.0.0
+
+-->
+<solr>
+
+  <sharedLib>lib</sharedLib>
+  
 </solr>
