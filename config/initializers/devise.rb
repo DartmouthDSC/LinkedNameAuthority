@@ -233,13 +233,13 @@ Devise.setup do |config|
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
   config.omniauth :cas,
-                  :url => "https://login.dartmouth.edu",
+                  :ssl => true,
                   :login_url => "/cas/login",
                   :service_validate_url => "/cas/serviceValidate",
                   :uid_key => "user",
-                  :host => "login.dartmouth.edu",
-                  :ssl => true
-
+                  :host => "login-bmr.dartmouth.edu",
+                  :client_options => {:ssl => {:ca_path => "/etc/httpd/conf.d/ssl.crt"}}
+  
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
   # change the failure app, you can configure them inside the config.warden block.
