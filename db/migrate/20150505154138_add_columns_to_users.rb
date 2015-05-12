@@ -6,11 +6,8 @@ class AddColumnsToUsers < ActiveRecord::Migration
     add_column :users, :netid, :string
     add_column :users, :realm, :string
     add_column :users, :affil, :string
-    add_column :users, :username, :string
-    add_column :users, :email, :string
 
     add_index :users, :netid,     unique: true
-    add_index :users, :username,  unique: true
     add_index :users, :uid,       unique: true
   end
 end

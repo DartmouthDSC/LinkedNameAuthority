@@ -49,12 +49,9 @@ ActiveRecord::Schema.define(version: 20150505154138) do
     t.string   "netid"
     t.string   "realm"
     t.string   "affil"
-    t.string   "username"
-    t.string   "email"
   end
 
   add_index "users", ["netid"], name: "index_users_on_netid", unique: true
   add_index "users", ["uid"], name: "index_users_on_uid", unique: true
-  add_index "users", ["username"], name: "index_users_on_username", unique: true
 
 end

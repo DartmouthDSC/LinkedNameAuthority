@@ -29,7 +29,7 @@ Devise.setup do |config|
   # session. If you need permissions, you should implement that in a before filter.
   # You can also supply a hash where the value is a boolean determining whether
   # or not authentication should be aborted when the value is not present.
-  # config.authentication_keys = [ :email ]
+  config.authentication_keys = [ :uid ]
 
   # Configure parameters from the request object used for authentication. Each entry
   # given should be a request method and it will automatically be passed to the
@@ -236,7 +236,6 @@ Devise.setup do |config|
                   :ssl => true,
                   :login_url => "/cas/login",
                   :service_validate_url => "/cas/serviceValidate",
-                  :uid_key => "user",
                   :host => "login-bmr.dartmouth.edu",
                   :client_options => {:ssl => {:ca_path => "/etc/httpd/conf.d/ssl.crt"}}
   
