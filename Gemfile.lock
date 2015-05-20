@@ -116,6 +116,7 @@ GEM
       activesupport (>= 4.1.0)
     haml (4.0.6)
       tilt
+    hashie (3.4.1)
     htmlentities (4.3.3)
     http_logger (0.5.1)
     hydra (9.1.0.rc1)
@@ -216,6 +217,13 @@ GEM
       activesupport
       nokogiri (>= 1.4.2)
       solrizer (~> 3.3)
+    omniauth (1.2.2)
+      hashie (>= 1.2, < 4)
+      rack (~> 1.0)
+    omniauth-cas (1.1.0)
+      addressable (~> 2.3)
+      nokogiri (~> 1.5)
+      omniauth (~> 1.2.0)
     orm_adapter (0.5.0)
     rack (1.6.0)
     rack-test (0.6.3)
@@ -391,6 +399,7 @@ DEPENDENCIES
   hydra (= 9.1.0.rc1)
   jbuilder (~> 2.0)
   jquery-rails
+  omniauth-cas
   rails (= 4.2.0)
   rsolr (~> 1.0.6)
   rspec-rails
