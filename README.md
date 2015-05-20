@@ -1,25 +1,7 @@
-== README
+#hydra-base
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This is a starting point when building our hydra heads. This hydra head contains key components of our implementation that for the most part we should be able to share across hydra heads.
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
+###Key Changes
+- solr_config was moved out into [dac-conf](https://github.com/DartmouthDSC/dac-conf).
+- Dartmouth web authentication added.
