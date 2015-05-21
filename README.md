@@ -4,3 +4,4 @@ This is a starting point when building our hydra heads. This hydra head contains
 
 ###Key Changes
 - solr_config was moved out into [dac-conf](https://github.com/DartmouthDSC/dac-conf).
+- Dartmouth web authentication added.
