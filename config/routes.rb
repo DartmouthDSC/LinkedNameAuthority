@@ -1,7 +1,14 @@
 Rails.application.routes.draw do
   root to: "catalog#index"
   blacklight_for :catalog
-  devise_for :users
+
+  devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
+
+  devise_scope :user do
+    get 'sign_in', :to => 'users/sessions#new', as: :new_user_session
+    get 'sign_out', :to => 'users/sessions#destroy', as: :destroy_user_session
+  end
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
