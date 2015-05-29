@@ -9,7 +9,7 @@ class LnaPerson < ActiveFedora::Base
   property :foaf_name, predicate: ::RDF::FOAF.name, multiple: false
   property :foaf_given_name, predicate: ::RDF::FOAF.givenName, multiple: false
   property :foaf_family_name, predicate: ::RDF::FOAF.familyName, multiple: true
-  property :foaf_title, predicate: ::RDF::FOAF.title, multiple: true
+  property :foaf_title, predicate: ::RDF::FOAF.title, multiple: false
   property :foaf_image, predicate: ::RDF::FOAF.img, multiple: false
   property :foaf_mbox, predicate: ::RDF::FOAF.mbox, multiple: false
   property :foaf_mbox_sha1sum, predicate: ::RDF::FOAF.mbox_sha1sum, multiple: false
