@@ -23,12 +23,11 @@ class User < ActiveRecord::Base
     # If user is already in database update fields, otherwise initialize a new
     # record with the given information.
     user = User.find_or_initialize_by(provider: auth.provider, netid: auth.extra.netid)
-    user.realm = auth.uid.split(/@/)[1].downcase
+    user.realm = auth.extra.user.split(/@/)[1].downcase
     user.name = auth.info.name
     user.affil = auth.extra.affil
     user.uid = "#{user.netid}@#{user.realm}"
     user.save
-    
     user
   end
 
