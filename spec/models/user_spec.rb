@@ -22,7 +22,7 @@ RSpec.describe User, type: :model do
     expect{ FactoryGirl.create(:user, name: '') }.to raise_error ActiveRecord::RecordInvalid
   end
 
-  describe 'validate unique attributes' do
+  describe 'validates unique attributes' do
     before :each do
       FactoryGirl.create(:user)
     end
@@ -41,7 +41,7 @@ RSpec.describe User, type: :model do
       @jane = User.from_omniauth(FactoryGirl.create(:omniauth_hash))
     end
     
-    it 'create user record' do
+    it 'creates user record' do
       expect(@jane).to be_instance_of(User)
     end
 
@@ -62,19 +62,19 @@ RSpec.describe User, type: :model do
                               name: 'Jane A. Doe-Smith', ))
       end
       
-      it 'realm is updated' do
+      it 'updates realm' do
         expect(@jane.realm).to eql('thayer.dartmouth.edu')
       end
 
-      it 'name is updated' do
+      it 'updates name' do
         expect(@jane.affil).to eql('THAY')
       end
 
-      it 'affiliation is updated' do
+      it 'updates affiliation' do
         expect(@jane.name).to eql('Jane A. Doe-Smith')
       end
 
-      it 'uid is updated' do
+      it 'updates uid' do
         expect(@jane.uid).to eql('f12345f@thayer.dartmouth.edu')
       end
     end
