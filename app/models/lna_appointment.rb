@@ -1,6 +1,6 @@
 class LnaAppointment < ActiveFedora::Base
   belongs_to :lna_person,
-             predicate: ActiveFedora::RDF::Fcrepo::RelsExt.isPartOf
+             predicate: ActiveFedora::RDF::Fcrepo::RelsExt.isDependentOf
 
   owltime = ::RDF::Vocabulary.new('http://www.w3.org/2006/time/')
   

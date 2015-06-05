@@ -2,8 +2,10 @@ class LnaPerson < ActiveFedora::Base
 
   include Hydra::AccessControls::Permissions
   
-  has_many :LnaAppointments, dependent: :destroy
-  has_many :LnaAccounts, dependent: :destroy
+  has_many :lna_appointments, dependent: :destroy,
+           predicate: ActiveFedora::RDF::Fcrepo::RelsExt.hasDependent
+  has_many :lna_accounts, dependent: :destroy,
+           predicate: ActiveFedora::RDF::Fcrepo::RelsExt.hasDependent
 
   property :dc_netid, predicate: ::RDF::DC.identifier, multiple: false
   property :foaf_name, predicate: ::RDF::FOAF.name, multiple: false
