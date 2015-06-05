@@ -7,4 +7,7 @@ class LnaAccount < ActiveFedora::Base
   property :foaf_account_name, predicate: ::RDF::FOAF.accountName, multiple: false
   property :foaf_account_service_homepage, predicate: ::RDF::FOAF.accountServiceHomepage, multiple: false
 
+  validates_presence_of :dc_title, :foaf_online_account, :foaf_account_name,
+                        :foaf_account_service_homepage
+  
 end

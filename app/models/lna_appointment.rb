@@ -17,4 +17,7 @@ class LnaAppointment < ActiveFedora::Base
   
   property :time_has_beginning, predicate: owltime.hasBeginning, multiple: false
   property :time_has_end, predicate: owltime.hasEnd, multiple: false
+
+  validates_presence_of :vcard_title, :vcard_org, :time_has_beginning
+
 end

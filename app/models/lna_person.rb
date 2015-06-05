@@ -20,4 +20,7 @@ class LnaPerson < ActiveFedora::Base
   property :foaf_workplace_homepage, predicate: ::RDF::FOAF.workplaceHomepage,
            multiple: false
   
+  validates_presence_of :foaf_name, :foaf_given_name, :foaf_title, :foaf_mbox,
+                        :foaf_mbox_sha1sum
+  
 end
