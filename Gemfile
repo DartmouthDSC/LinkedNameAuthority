@@ -48,8 +48,10 @@ end
 
 gem 'rsolr', '~> 1.0.6'
 gem 'devise'
+gem 'omniauth-cas'
 gem 'devise-guests', '~> 0.3'
 group :development, :test do
   gem 'rspec-rails'
+  gem 'factory_girl_rails'
 # gem 'jettywrapper' # Remove because we aren't using hydra-jetty
 end
