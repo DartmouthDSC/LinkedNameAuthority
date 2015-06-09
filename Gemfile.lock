@@ -98,8 +98,6 @@ GEM
       responders
       thread_safe (~> 0.1)
       warden (~> 1.2.3)
-    devise-guests (0.3.3)
-      devise
     diff-lcs (1.2.5)
     ebnf (0.3.7)
       haml (~> 4.0)
@@ -400,7 +398,6 @@ DEPENDENCIES
   byebug
   coffee-rails (~> 4.1.0)
   devise
-  devise-guests (~> 0.3)
   factory_girl_rails
   hydra (= 9.1.0.rc1)
   jbuilder (~> 2.0)
