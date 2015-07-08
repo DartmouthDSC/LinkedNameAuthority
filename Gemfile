@@ -3,6 +3,10 @@ source 'https://rubygems.org'
 # Main hydra gem.
 gem 'hydra', '9.1.0.rc1'
 
+# Use my version of rdf-vocab (includes org and bibo ontology)
+gem 'rdf-vocab', git: 'git@github.com:DartmouthDSC/rdf-vocab.git',
+    branch: 'new-vocabs'
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.0'
 # Use sqlite3 as the database for Active Record
