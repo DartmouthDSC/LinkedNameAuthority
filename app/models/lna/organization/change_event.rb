@@ -1,8 +1,10 @@
 class Lna::Organization::ChangeEvent < ActiveFedora::Base
   has_many :resulting_organizations, class_name: 'Lna::Organization',
-           predicate: ::RDF::Vocab::ORG.resultingOrganization
+           predicate: ::RDF::Vocab::ORG.resultingOrganization,
+           as: 'result_from'
   has_many :original_organizations, class_name: 'Lna::Organization',
-           predicate: ::RDF::Vocab::ORG.originalOrganization
+           predicate: ::RDF::Vocab::ORG.originalOrganization,
+           as: 'changed_by'
 
   validate :max_one_original_org
   
@@ -11,7 +13,7 @@ class Lna::Organization::ChangeEvent < ActiveFedora::Base
 
 
   def max_one_original_org
-    if original_organizations.count > 1
+    if original_organizations.size > 1
       errors.add(:original_organizations, 'can\'t have more than 1 organization.')
     end
   end 

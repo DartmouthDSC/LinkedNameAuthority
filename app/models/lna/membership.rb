@@ -1,11 +1,10 @@
 class Lna::Membership < ActiveFedora::Base
-  has_many :people, class_name: 'Lna::Person',
-           predicate: ::RDF::Vocab::ORG.hasMember
-
+  belongs_to :person, class_name: 'Lna::Person',
+             predicate: ::RDF::Vocab::ORG.hasMember
   belongs_to :organization, class_name: 'Lna::Organization',
              predicate: ::RDF::Vocab::ORG.Organization
   
-  validates_presence_of :people, :organization, :title, :member_during
+  validates_presence_of :person, :organization, :title, :member_during
   
   property :title, predicate: ::RDF::VCARD.title, multiple: false do |index|
     index.as :stored_searchable
