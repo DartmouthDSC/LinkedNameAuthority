@@ -1,6 +1,7 @@
 class PPlan::Step < ActiveFedora::Base
 
-  has_many :next, class_name: 'PPlan::Step', inverse_of: :previous, as: :previous
+  has_many :next, class_name: 'PPlan::Step', inverse_of: :previous,
+           as: :previous
   
   belongs_to :previous, class_name: 'PPlan::Step',
              predicate: ::RDF::Vocab::PPLAN.isPrecededBy
@@ -8,6 +9,7 @@ class PPlan::Step < ActiveFedora::Base
   # belongs_to :user # Needs a predicate.
 
   validate :has_one_next, :previous_is_not_used
+  validates_presence_of :plan
   
   property :description, predicate: ::RDF::DC.description, multiple: false
   property :title, predicate: ::RDF::DC.title, multiple: false
