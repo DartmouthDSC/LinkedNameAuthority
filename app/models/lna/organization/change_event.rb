@@ -1,12 +1,14 @@
 class Lna::Organization::ChangeEvent < ActiveFedora::Base
   has_many :resulting_organizations, class_name: 'Lna::Organization',
            predicate: ::RDF::Vocab::ORG.resultingOrganization,
-           as: 'result_from'
+           as: 'resulted_from'
   has_many :original_organizations, class_name: 'Lna::Organization',
            predicate: ::RDF::Vocab::ORG.originalOrganization,
            as: 'changed_by'
 
   validate :max_one_original_org
+
+  validates_presence_of :resulting_organizations, :original_organizations
   
   property :at_time, predicate: ::RDF::PROV.atTime, multiple: false
   property :description, predicate: ::RDF::DC.description, multiple: false
