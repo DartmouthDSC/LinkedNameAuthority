@@ -9,7 +9,7 @@ class PPlan::Step < ActiveFedora::Base
   # belongs_to :user # Needs a predicate.
 
   validate :has_one_next, :previous_is_not_used
-  validates_presence_of :plan
+  validates_presence_of :plan, :description, :title
   
   property :description, predicate: ::RDF::DC.description, multiple: false
   property :title, predicate: ::RDF::DC.title, multiple: false
