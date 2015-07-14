@@ -15,9 +15,9 @@ class Lna::Organization < ActiveFedora::Base
   belongs_to :changed_by, class_name: 'Lna::Organization::ChangeEvent',
              predicate: ::RDF::Vocab::ORG.changedBy
   
-  validates_presence_of :pref_label
+  validates_presence_of :label
   
-  property :pref_label, predicate: ::RDF::SKOS.prefLabel, multiple: false
+  property :label, predicate: ::RDF::SKOS.prefLabel, multiple: false
   property :alt_label, predicate: ::RDF::SKOS.altLabel
   
 end

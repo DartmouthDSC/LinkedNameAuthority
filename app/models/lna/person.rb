@@ -14,22 +14,23 @@ class Lna::Person < ActiveFedora::Base
   belongs_to :primary_org, class_name: 'Lna::Organization',
              predicate: ::RDF::Vocab::ORG.reportsTo
              
-  validates_presence_of :full_name, :given_name, :title, :mbox, :mbox_sha1sum
+  validates_presence_of :primary_org, :full_name, :given_name, :family_name
+                        :homepage
   
   property :full_name, predicate: ::RDF::FOAF.name, multiple: false do |index|
-    index.as :stored_searchable
+    index.as :displayable
   end
 
   property :given_name, predicate: ::RDF::FOAF.givenName, multiple: false do |index|
     index.as :stored_searchable
   end
   
-  property :family_name, predicate: ::RDF::FOAF.familyName do |index|
+  property :family_name, predicate: ::RDF::FOAF.familyName, multiple: false do |index|
     index.as :stored_searchable
   end
   
   property :title, predicate: ::RDF::FOAF.title, multiple: false do |index|
-    index.as :stored_searchable
+    index.as :displayable
   end
   
   property :image, predicate: ::RDF::FOAF.img, multiple: false do |index|
@@ -40,10 +41,12 @@ class Lna::Person < ActiveFedora::Base
     index.as :displayable
   end
   
-  property :mbox_sha1sum, predicate: ::RDF::FOAF.mbox_sha1sum, multiple: false
+  property :mbox_sha1sum, predicate: ::RDF::FOAF.mbox_sha1sum, multiple: false do |index|
+    index.as :stored_searchable
+  end
   
-  property :homepage, predicate: ::RDF::FOAF.homepage, multiple: false do |index|
-    index.as :displayable
+  property :homepage, predicate: ::RDF::FOAF.homepage do |index|
+    index.as :stored_searchable
   end
   
 end

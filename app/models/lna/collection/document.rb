@@ -5,6 +5,8 @@ class Lna::Collection::Document < ActiveFedora::Base
   belongs_to :collection, class_name: 'Lna::Collection',
              predicate: ::RDF::DC.isPartOf
 
+  validates_presence_of :collection
+  
   property :author_list, predicate: ::RDF::Vocab::BIBO.authorList
   property :publisher, predicate: ::RDF::DC.publisher
   property :date, predicate: ::RDF::DC.date, multiple: false

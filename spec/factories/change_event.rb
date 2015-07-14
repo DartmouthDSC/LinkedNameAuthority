@@ -6,8 +6,8 @@ FactoryGirl.define do
     # Required to have one original_organization and at least one
     # resulting organization.
     after(:build) do |change_event|
-      change_event.original_organizations << FactoryGirl.build(:thayer, changed_by: change_event)
-      change_event.resulting_organizations << FactoryGirl.build(:thayer, pref_label: 'thayer', resulted_from: change_event)
+      change_event.original_organizations << FactoryGirl.create(:thayer, changed_by: change_event)
+      change_event.resulting_organizations << FactoryGirl.create(:thayer, pref_label: 'thayer', resulted_from: change_event)
     end
   end
 end
