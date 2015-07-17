@@ -5,19 +5,19 @@ class Lna::Collection::Document < ActiveFedora::Base
   belongs_to :collection, class_name: 'Lna::Collection',
              predicate: ::RDF::DC.isPartOf
 
-  validates_presence_of :collection
+  validates_presence_of :collection, :author_list, :title
   
-  property :author_list, predicate: ::RDF::Vocab::BIBO.authorList
-  property :publisher, predicate: ::RDF::DC.publisher
+  property :author_list, predicate: ::RDF::Vocab::BIBO.authorList, multiple: false
+  property :publisher, predicate: ::RDF::DC.publisher, multiple: false
   property :date, predicate: ::RDF::DC.date, multiple: false
-  property :title, predicate: ::RDF::DC.title
+  property :title, predicate: ::RDF::DC.title, multiple: false
   property :page_start, predicate: ::RDF::Vocab::BIBO.pageStart, multiple: false
   property :page_end, predicate: ::RDF::Vocab::BIBO.pageEnd, multiple: false
-  property :pages, predicate: ::RDF::Vocab::BIBO.pages
-  property :volume, predicate: ::RDF::Vocab::BIBO.volume
-  property :issue, predicate: ::RDF::Vocab::BIBO.issue
-  property :number, predicate: ::RDF::Vocab::BIBO.number
+  property :pages, predicate: ::RDF::Vocab::BIBO.pages, multiple: false
+  property :volume, predicate: ::RDF::Vocab::BIBO.volume, multiple: false
+  property :issue, predicate: ::RDF::Vocab::BIBO.issue, multiple: false
+  property :number, predicate: ::RDF::Vocab::BIBO.number, multiple: false
   property :uri_identifier, predicate: ::RDF::Vocab::BIBO.uri
-  property :doi, predicate: ::RDF::Vocab::BIBO.doi
+  property :doi, predicate: ::RDF::Vocab::BIBO.doi, multiple: false
   
 end

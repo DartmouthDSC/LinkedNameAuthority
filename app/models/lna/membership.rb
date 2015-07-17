@@ -11,7 +11,7 @@ class Lna::Membership < ActiveFedora::Base
   end
   
   property :email, predicate: ::RDF::VCARD.email, multiple: false do |index|
-    index.as :stored_searchable
+    index.as :displayable
   end
   
   property :street_address, predicate: ::RDF::VCARD['street-address'],
@@ -36,6 +36,8 @@ class Lna::Membership < ActiveFedora::Base
     index.as :displayable
   end
 
-  property :member_during, predicate: ::RDF::Vocab::ORG.memberDuring
+  property :member_during, predicate: ::RDF::Vocab::ORG.memberDuring, multiple: false do |index|
+    index.as :displayable
+  end
 
 end

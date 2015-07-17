@@ -12,6 +12,10 @@ RSpec.describe Lna::Organization, type: :model do
     before :all do
       @thayer = FactoryGirl.create(:thayer)
     end
+
+    after :context do
+      @thayer.destroy
+    end
     
     it 'is a Lna::Organization' do
       expect(@thayer).to be_instance_of Lna::Organization
@@ -21,14 +25,13 @@ RSpec.describe Lna::Organization, type: :model do
       expect(@thayer).to be_kind_of ActiveFedora::Base
     end
     
-    it 'has a pref_label' do
-      expect(@thayer.pref_label).to eql 'Thayer School of Engineering'
+    it 'has a label' do
+      expect(@thayer.label).to eql 'Thayer School of Engineering'
     end
 
-    after :all do
-      @thayer.destroy
+    it 'has alternative labels' do
+      expect(@thayer.alt_label).to match_array(['Engineering School', 'Thayer'])
     end
-    
   end
 
   context 'when validating'

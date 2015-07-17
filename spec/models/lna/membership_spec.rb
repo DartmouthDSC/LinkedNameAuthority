@@ -1,25 +1,21 @@
 require 'rails_helper'
 
-RSpec.describe Lna::Membership, :type => :model do
-  
+RSpec.describe Lna::Membership, type: :model do
   it 'has a valid factory' do
     prof = FactoryGirl.create(:thayer_prof)
     expect(prof).to be_truthy
     prof.destroy
   end
 
-  context 'when Lna::Membership created' do
-    before :all do
+  describe '.create' do
+    before :context do
       @prof = FactoryGirl.create(:thayer_prof)
     end
 
-    it 'is a LnaAppointment' do
-      expect(@prof).to be_instance_of Lna::Membership
-    end
-
-    it 'is an ActiveFedora record' do
-      expect(@prof).to be_kind_of ActiveFedora::Base
-    end
+    subject { @prof }
+    
+    it { is_expected.to be_instance_of Lna::Membership }
+    it { is_expected.to be_kind_of ActiveFedora::Base }
     
     it 'has title' do
       expect(@prof.title).to eql 'Professor of Engineering'
@@ -28,9 +24,6 @@ RSpec.describe Lna::Membership, :type => :model do
     it 'has email' do
       expect(@prof.email).to eql 'mailto:jane.a.doe@dartmouth.edu'
     end
-    
-    it 'has organization'
-
     
     it 'has street address' do
       expect(@prof.street_address).to eql '14 Engineering Dr.'
@@ -56,21 +49,50 @@ RSpec.describe Lna::Membership, :type => :model do
       @prof.destroy
     end
   end
+
+  describe 'associations' do
+    before (:context) { @prof = FactoryGirl.create(:thayer_prof) }
+    after  (:context) { @prof.destroy }
+
+    subject { @prof }
+
+    it 'has a organization' do
+      expect(subject.organization).to be_a Lna::Organization
+    end
+
+    # check that the organization has a pointer to this membership?
+    # check that the person is pointing to this as one of its membership?
+
+    it 'has a person' do
+      expect(subject.person).to be_a Lna::Person
+    end
+  end  
   
-  
-  context 'when validating' do
-    before :all do
+  describe 'validations' do
+    before :example do
       @prof = FactoryGirl.build(:thayer_prof)
     end
+
+    subject { @prof }
     
     it 'assures title is set' do
-      @prof.title = nil
-      expect(@prof.save).to be false
+      subject.title = nil
+      expect(subject.save).to be false
+    end
+
+    it 'assures member during is set' do
+      subject.member_during = nil
+      expect(subject.save).to be false
     end
 
     it 'assures organization is set' do
-      @prof.organization = nil
-      expect(@prof.save).to be false
+      subject.organization = nil
+      expect(subject.save).to be false
+    end
+
+    it 'assures person is set' do
+      subject.organization = nil
+      expect(subject.save).to be false
     end
   end
 

@@ -5,6 +5,12 @@ FactoryGirl.define do
     account_name             '0000-000-0000'
     account_service_homepage 'http://orcid.org'
 
-    person                   { FactoryGirl.create(:jane) }
+    factory :orcid_for_person do
+      association :account_holder, factory: :jane
+    end
+
+    factory :orcid_for_org do
+      association :account_holder, factory: :thayer
+    end
   end
 end

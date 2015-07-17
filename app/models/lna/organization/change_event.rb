@@ -8,7 +8,8 @@ class Lna::Organization::ChangeEvent < ActiveFedora::Base
 
   validate :max_one_original_org
 
-  validates_presence_of :resulting_organizations, :original_organizations
+  validates_presence_of :resulting_organizations, :original_organizations,
+                        :at_time, :description
   
   property :at_time, predicate: ::RDF::PROV.atTime, multiple: false
   property :description, predicate: ::RDF::DC.description, multiple: false

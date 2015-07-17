@@ -7,9 +7,8 @@ FactoryGirl.define do
     locality       'Hanover, NH'
     postal_code    '03755'
     country_name   'United States'
-    member_during  ''
-    person         { FactoryGirl.create(:jane) } 
-    organization   { FactoryGirl.create(:thayer) }
-    
+    member_during  'July 1, 2015-'
+    association    :person, factory: :jane
+    association    :organization, factory: :thayer
   end
 end

@@ -3,7 +3,7 @@ class Lna::Person < ActiveFedora::Base
   has_many :memberships, class_name: 'Lna::Membership', dependent: :destroy,
            predicate: ::RDF::Vocab::ORG.member
   has_many :accounts, class_name: 'Lna::Account', dependent: :destroy,
-           predicate: ::RDF::FOAF.account
+           as: :account_holder, inverse_of: :account_holder
   has_many :collections, class_name: 'Lna::Collection', dependent: :destroy,
            predicate: ::RDF::FOAF.publications
   
@@ -47,6 +47,5 @@ class Lna::Person < ActiveFedora::Base
   
   property :homepage, predicate: ::RDF::FOAF.homepage do |index|
     index.as :stored_searchable
-  end
-  
+  end  
 end
