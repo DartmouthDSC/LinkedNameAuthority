@@ -93,6 +93,16 @@ RSpec.describe PPlan::Step, type: :model do
     end
 
     subject { @step }
+
+    it 'assures there is a title' do
+      subject.title = nil
+      expect(subject.save).to be false
+    end
+    
+    it 'assures there is a description' do
+      subject.description = nil
+      expect(subject.save).to be false
+    end
     
     it 'assures there is a plan' do
       subject.plan = nil
