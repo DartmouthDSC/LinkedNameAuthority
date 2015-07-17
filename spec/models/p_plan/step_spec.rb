@@ -2,91 +2,97 @@ require 'rails_helper'
 
 RSpec.describe PPlan::Step, type: :model do
 
-  before :context do
-    @step = FactoryGirl.create(:step_with_plan)
-  end
-  
-  after :context do
-    PPlan::Plan.find(@step.plan_id).destroy
-  end
-  
-  subject { @step }
-  
   it 'has a valid factory' do
-    expect(subject).to be_truthy
-  end
-  
-  it { is_expected.to be_instance_of PPlan::Step }
-  it { is_expected.to be_kind_of ActiveFedora::Base }
-    
-  it 'has a title' do
-    expect(subject.title).to eql 'Check citation'
-  end
-    
-  it 'has a description' do
-    expect(subject.description).to eql 'Ensure citation is correct.'
+    step = FactoryGirl.create(:step_with_plan)
+    expect(step).to be_truthy
+    step.plan.destroy
   end
 
-  it 'has a plan' do
-    expect(subject.plan).to be_instance_of PPlan::Plan
-  end
-  
-  context 'when adding next step' do
+  describe '.create' do 
     before :context do
-      @next_step = FactoryGirl.create(:step, plan: @step.plan,
-                                      title: 'Next Step')
-      @step.next << @next_step
-      @step.save
+      @step = FactoryGirl.create(:step_with_plan)
     end
-
+  
     after :context do
-      @step.next.destroy
+      PPlan::Plan.find(@step.plan_id).destroy
+    end
+  
+    subject { @step }
+  
+    it { is_expected.to be_instance_of PPlan::Step }
+    it { is_expected.to be_kind_of ActiveFedora::Base }
+    
+    it 'has a title' do
+      expect(subject.title).to eql 'Check citation'
     end
     
-    it 'sets next step' do
-      expect(@step.next.size).to eql 1
-      expect(@step.next.first).to eq @next_step
+    it 'has a description' do
+      expect(subject.description).to eql 'Ensure citation is correct.'
     end
 
-    it 'sets previous step in new step' do
-      expect(@next_step.previous).to eq @step
+    it 'has a plan' do
+      expect(subject.plan).to be_instance_of PPlan::Plan
     end
-
   end
 
-  context 'when adding previous step' do
-    before :context do
-      @previous_step = FactoryGirl.create(:step, plan: @step.plan,
-                                          title: 'Previous Step')
-      @step.previous = @previous_step
-      @step.save
+  describe 'associations' do 
+    context 'when adding next step' do
+      before :context do
+        @step = FactoryGirl.create(:step_with_plan)
+        @next_step = FactoryGirl.create(:step, plan: @step.plan,
+                                        title: 'Next Step')
+        @step.next << @next_step
+        @step.save
+      end
+
+      after :context do
+        PPlan::Plan.find(@step.plan_id).destroy
+      end
+    
+      it 'sets next step' do
+        expect(@step.next.size).to eql 1
+        expect(@step.next.first).to eq @next_step
+      end
+
+      it 'sets previous step in new step' do
+        expect(@next_step.previous).to eq @step
+      end
     end
 
-    after :context do
-      @step.previous = nil
-      @previous_step.destroy
-    end
-    
-    it 'sets previous' do
-      expect(@step.previous).to eq @previous_step
-    end
+    context 'when adding previous step' do
+      before :context do
+        @step = FactoryGirl.create(:step_with_plan)
+        @previous_step = FactoryGirl.create(:step, plan: @step.plan,
+                                            title: 'Previous Step')
+        @step.previous = @previous_step
+        @step.save
+      end
+
+      after :context do
+        PPlan::Plan.find(@step.plan_id).destroy
+      end
       
-    it 'sets next in new step' do
-      expect(@previous_step.next.first).to eq @step
+      it 'sets previous' do
+        expect(@step.previous).to eq @previous_step
+      end
+      
+      it 'sets next in new step' do
+        expect(@previous_step.next.first).to eq @step
+      end
     end
   end
 
-  context 'when validating' do
+  describe 'validations' do
     before :example do
-      @val_step = FactoryGirl.create(:step_with_plan)
-      @val_plan_id = @val_step.plan_id
+      @step = FactoryGirl.create(:step_with_plan)
+      @plan_id = @step.plan_id
     end
     
     after :example do
-      PPlan::Plan.find(@val_plan_id).destroy
+      PPlan::Plan.find(@plan_id).destroy
     end
 
-    subject { @val_step }
+    subject { @step }
     
     it 'assures there is a plan' do
       subject.plan = nil

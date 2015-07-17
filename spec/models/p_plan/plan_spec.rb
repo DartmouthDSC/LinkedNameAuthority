@@ -8,11 +8,15 @@ RSpec.describe PPlan::Plan, type: :model do
     plan.destroy
   end
 
-  context 'when creating' do 
+  describe '.create' do 
     before :context do
       @plan = FactoryGirl.create(:plan_with_step)
     end
 
+    after :context do
+      @plan.destroy
+    end
+    
     subject { @plan }
 
     it { is_expected.to be_instance_of PPlan::Plan }
@@ -29,25 +33,32 @@ RSpec.describe PPlan::Plan, type: :model do
     it 'has a step' do
       expect(subject.steps.size).to eql 1
     end
+  end
+
+  describe 'associations' do
+    before (:context) { @plan = FactoryGirl.create(:plan_with_step) }
+    after  (:context) { @plan.destroy }
+
+    subject { @plan }
 
     it 'can have more than one step' do
       step_two = FactoryGirl.create(:step, title: 'Step 2', plan: subject)
       subject.steps << step_two
       expect(subject.steps.size).to eql 2
       expect(subject.steps).to include step_two
-    end
-    
-    after :context do
-      @plan.destroy
-    end
+    end    
   end
   
-  context 'when validating' do
+  describe 'validations' do
     before :example do
-      @val_plan = FactoryGirl.create(:plan_with_step)
+      @plan = FactoryGirl.create(:plan_with_step)
     end
 
-    subject { @val_plan }
+    after :example do
+      @plan.destroy
+    end
+
+    subject { @plan }
 
     it 'assures there is a title' do
       subject.title = nil
@@ -62,10 +73,6 @@ RSpec.describe PPlan::Plan, type: :model do
     it 'assures there is at least one step' do
       subject.steps.destroy_all
       expect(subject.save).to be false
-    end
-
-    after :example do
-      @val_plan.destroy
     end
   end
 end
