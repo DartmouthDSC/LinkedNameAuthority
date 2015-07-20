@@ -35,7 +35,7 @@ RSpec.describe PPlan::Plan, type: :model do
     end
   end
 
-  describe 'associations' do
+  describe '#steps' do
     before (:context) { @plan = FactoryGirl.create(:plan_with_step) }
     after  (:context) { @plan.destroy }
 
@@ -60,17 +60,17 @@ RSpec.describe PPlan::Plan, type: :model do
 
     subject { @plan }
 
-    it 'assures there is a title' do
+    it 'assure there is a title' do
       subject.title = nil
       expect(subject.save).to be false
     end
     
-    it 'assures there is a description' do
+    it 'assure there is a description' do
       subject.description = nil
       expect(subject.save).to be false
     end
     
-    it 'assures there is at least one step' do
+    it 'assure there is at least one step' do
       subject.steps.destroy_all
       expect(subject.save).to be false
     end

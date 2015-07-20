@@ -35,8 +35,8 @@ RSpec.describe PPlan::Step, type: :model do
     end
   end
 
-  describe 'associations' do 
-    context 'when adding next step' do
+  describe 'associations' do
+    describe '#next' do
       before :context do
         @step = FactoryGirl.create(:step_with_plan)
         @next_step = FactoryGirl.create(:step, plan: @step.plan,
@@ -59,7 +59,7 @@ RSpec.describe PPlan::Step, type: :model do
       end
     end
 
-    context 'when adding previous step' do
+    describe '#previous' do
       before :context do
         @step = FactoryGirl.create(:step_with_plan)
         @previous_step = FactoryGirl.create(:step, plan: @step.plan,
@@ -94,22 +94,22 @@ RSpec.describe PPlan::Step, type: :model do
 
     subject { @step }
 
-    it 'assures there is a title' do
+    it 'assure there is a title' do
       subject.title = nil
       expect(subject.save).to be false
     end
     
-    it 'assures there is a description' do
+    it 'assure there is a description' do
       subject.description = nil
       expect(subject.save).to be false
     end
     
-    it 'assures there is a plan' do
+    it 'assure there is a plan' do
       subject.plan = nil
       expect(subject.save).to be false
     end
 
-    it 'assures there is 0 or 1 next step' do
+    it 'assure there is 0 or 1 next step' do
       @step_two = FactoryGirl.create(:step, plan: subject.plan,
                                      title: 'Step Two')
       @step_three = FactoryGirl.create(:step, plan: subject.plan,
@@ -121,7 +121,7 @@ RSpec.describe PPlan::Step, type: :model do
     end
 
     # A step can't be set to the previous of two different steps.
-    it 'assures previous isn\'t set as previous step for different step' do
+    it 'assure previous isn\'t set as previous step for different step' do
       @step_one = FactoryGirl.create(:step, plan: subject.plan,
                                      title: 'Step One')
       @step_two = FactoryGirl.create(:step, plan: subject.plan,
