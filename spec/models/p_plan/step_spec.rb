@@ -22,15 +22,15 @@ RSpec.describe PPlan::Step, type: :model do
     it { is_expected.to be_instance_of PPlan::Step }
     it { is_expected.to be_kind_of ActiveFedora::Base }
     
-    it 'has a title' do
+    it 'sets title' do
       expect(subject.title).to eql 'Check citation'
     end
     
-    it 'has a description' do
+    it 'sets description' do
       expect(subject.description).to eql 'Ensure citation is correct.'
     end
 
-    it 'has a plan' do
+    it 'sets plan' do
       expect(subject.plan).to be_instance_of PPlan::Plan
     end
   end

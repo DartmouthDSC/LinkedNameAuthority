@@ -5,7 +5,7 @@ class Lna::Organization < ActiveFedora::Base
   has_many :memberships, class_name: 'Lna::Membership',
            predicate: ::RDF::Vocab::ORG.organization
   has_many :accounts, class_name: 'Lna::Account', as: :account_holder,
-           inverse_of: :account_holder
+           inverse_of: :account_holder, dependent: :destroy
   
   has_many :sub_organizations, class_name: 'Lna::Organization',
            predicate: ::RDF::Vocab::ORG.hasSubOrganization,

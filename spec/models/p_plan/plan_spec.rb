@@ -22,15 +22,15 @@ RSpec.describe PPlan::Plan, type: :model do
     it { is_expected.to be_instance_of PPlan::Plan }
     it { is_expected.to be_an ActiveFedora::Base }
     
-    it 'has title' do
+    it 'sets title' do
       expect(subject.title).to eql 'Document workflow'
     end
 
-    it 'has description' do
+    it 'sets description' do
       expect(subject.description).to eql 'Assuring a citation is correct.'
     end
 
-    it 'has a step' do
+    it 'sets step' do
       expect(subject.steps.size).to eql 1
     end
   end
