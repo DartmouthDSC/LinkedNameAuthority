@@ -1,9 +1,8 @@
 class Lna::Organization < ActiveFedora::Base
 
-  has_many :people, class_name: 'Lna::Person',
-            predicate: ::RDF::Vocab::ORG.hasMember
-  has_many :memberships, class_name: 'Lna::Membership',
-           predicate: ::RDF::Vocab::ORG.organization
+  has_many :people, class_name: 'Lna::Person', as: :primary_org
+  has_many :memberships, class_name: 'Lna::Membership', dependent: :destroy
+           #predicate: ::RDF::Vocab::ORG.organization
   has_many :accounts, class_name: 'Lna::Account', as: :account_holder,
            inverse_of: :account_holder, dependent: :destroy
   

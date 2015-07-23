@@ -51,6 +51,7 @@ RSpec.describe Lna::Account, type: :model do
     it 'can be Lna::Organization' do
       orcid = FactoryGirl.create(:orcid_for_org)
       expect(orcid.account_holder).to be_a Lna::Organization
+      expect(orcid.account_holder.accounts).to include orcid # its own test?
       orcid.account_holder.destroy
     end
   end

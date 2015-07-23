@@ -8,7 +8,13 @@ FactoryGirl.define do
     postal_code    '03755'
     country_name   'United States'
     member_during  'July 1, 2015-'
-    association    :person, factory: :jane
+
     association    :organization, factory: :thayer
+
+    # To create less objects, the primary_org of the person is the same
+    # as the organization of the membership.
+    after(:build) do |prof|
+      prof.person = FactoryGirl.create(:jane, primary_org: prof.organization)
+    end
   end
 end
