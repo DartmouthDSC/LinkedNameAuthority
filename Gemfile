@@ -3,6 +3,9 @@ source 'https://rubygems.org'
 # Main hydra gem.
 gem 'hydra', '9.1.0.rc1'
 
+# Oracle gem.
+gem 'activerecord-oracle_enhanced-adapter', '~> 1.6.0'
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.0'
 # Use sqlite3 as the database for Active Record
