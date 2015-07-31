@@ -19,6 +19,8 @@ class Lna::Organization < ActiveFedora::Base
              predicate: ::RDF::Vocab::ORG.changedBy
   
   validates_presence_of :label
+
+  type ::RDF::Vocab::ORG.Organization
   
   property :label, predicate: ::RDF::SKOS.prefLabel, multiple: false
   property :alt_label, predicate: ::RDF::SKOS.altLabel

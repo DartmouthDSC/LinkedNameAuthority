@@ -15,6 +15,8 @@ class Lna::Person < ActiveFedora::Base
              predicate: ::RDF::Vocab::ORG.reportsTo
              
   validates_presence_of :primary_org, :full_name, :given_name, :family_name
+
+  type ::RDF::FOAF.Person
   
   property :full_name, predicate: ::RDF::FOAF.name, multiple: false do |index|
     index.as :displayable
