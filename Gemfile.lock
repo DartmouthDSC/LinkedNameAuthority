@@ -80,6 +80,7 @@ GEM
     bootstrap-sass (3.3.5.1)
       autoprefixer-rails (>= 5.0.0.1)
       sass (>= 3.3.0)
+    bootstrap_form (2.3.0)
     builder (3.2.2)
     byebug (5.0.0)
       columnize (= 0.9.0)
@@ -156,6 +157,10 @@ GEM
       hydra-access-controls (= 9.1.4)
       hydra-core (= 9.1.4)
       rails (>= 3.2.6)
+    hydra-role-management (0.2.1)
+      blacklight
+      bootstrap_form
+      cancancan
     i18n (0.7.0)
     jbuilder (2.3.1)
       activesupport (>= 3.0.0, < 5)
@@ -403,6 +408,7 @@ DEPENDENCIES
   devise
   factory_girl_rails
   hydra (= 9.1.0.rc1)
+  hydra-role-management
   jbuilder (~> 2.0)
   jquery-rails
   omniauth-cas

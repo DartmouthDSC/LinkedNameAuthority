@@ -3,6 +3,12 @@ class Ability
   
   # Define any customized permissions here.
   def custom_permissions
+
+    # Permissions needed for hydra-role-management
+    if current_user.admin?
+      can [:edit, :create, :show, :add_user, :remove_user, :index], Role
+    end
+    
     # Limits deleting objects to a the admin user
     #
     # if current_user.admin?

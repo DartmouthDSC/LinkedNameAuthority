@@ -3,6 +3,9 @@ source 'https://rubygems.org'
 # Main hydra gem.
 gem 'hydra', '9.1.0.rc1'
 
+# Hydra Role Mangement gem.
+gem 'hydra-role-management'
+
 # Use my version of rdf-vocab (includes org and bibo ontology)
 gem 'rdf-vocab', git: 'git@github.com:DartmouthDSC/rdf-vocab.git',
     branch: 'new-vocabs'
