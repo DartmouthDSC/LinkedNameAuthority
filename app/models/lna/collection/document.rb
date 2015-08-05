@@ -6,6 +6,8 @@ class Lna::Collection::Document < ActiveFedora::Base
              predicate: ::RDF::DC.isPartOf
 
   validates_presence_of :collection, :author_list, :title
+
+  type ::RDF::Vocab::BIBO.Document
   
   property :author_list, predicate: ::RDF::Vocab::BIBO.authorList, multiple: false
   property :publisher, predicate: ::RDF::DC.publisher, multiple: false

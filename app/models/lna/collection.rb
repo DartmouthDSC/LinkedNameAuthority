@@ -7,4 +7,7 @@ class Lna::Collection < ActiveFedora::Base
              predicate: ::RDF::FOAF.publications 
 
   validates_presence_of :person
+
+  type ::RDF::Vocab::BIBO.Collection
+
 end
