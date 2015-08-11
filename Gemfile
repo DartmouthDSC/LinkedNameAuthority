@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 gem 'hydra', '9.1.0.rc1'
 
 # Oracle gem.
+gem 'ruby-oci8'
 gem 'activerecord-oracle_enhanced-adapter', '~> 1.6.0'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
