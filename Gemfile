@@ -3,9 +3,9 @@ source 'https://rubygems.org'
 # Main hydra gem.
 gem 'hydra', '9.1.0.rc1'
 
-# Use my version of rdf-vocab (includes org and bibo ontology)
-gem 'rdf-vocab', git: 'git@github.com:DartmouthDSC/rdf-vocab.git',
-    branch: 'new-vocabs'
+# Use develop version of rdf-vocab until a new release it cut (develop
+# branch includes org, p-plan, and bibo ontologies).
+gem 'rdf-vocab', github: 'ruby-rdf/rdf-vocab', branch: 'develop'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.0'
