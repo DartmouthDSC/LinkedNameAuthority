@@ -23,8 +23,11 @@ module Oracle
 ####  DEPARTMENT_CODE    VARCHAR2(4000 CHAR)
 ####  PRIMARYGROUPDESCRIPTOR     VARCHAR2(4000 CHAR)
       nameParts = []
+      if ((firsts = self.firstname.split(' ')) && firsts.count > 1)
+        puts(firsts.join('-'))
+      end
       nameParts.push(self.firstname) if (self.firstname)
-      if (self.initials[1..-1])
+      if (self.initials[1..-1] != '')
         nameParts.push(self.initials[1..-1].split(//).join('.') + '.')
       end
       nameParts.push(self.lastname)
