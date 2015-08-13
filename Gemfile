@@ -7,6 +7,9 @@ gem 'hydra', '9.1.0.rc1'
 gem 'ruby-oci8'
 gem 'activerecord-oracle_enhanced-adapter', '~> 1.6.0'
 
+# Use my version of rdf-vocab (includes org and bibo ontology)
+gem 'rdf-vocab', github: 'ruby-rdf/rdf-vocab', branch: 'develop'
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.0'
 # Use sqlite3 as the database for Active Record
@@ -53,7 +56,7 @@ end
 gem 'rsolr', '~> 1.0.6'
 gem 'devise'
 gem 'omniauth-cas'
-gem 'devise-guests', '~> 0.3'
+
 group :development, :test do
   gem 'rspec-rails'
   gem 'factory_girl_rails'

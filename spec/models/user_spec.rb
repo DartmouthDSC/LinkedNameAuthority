@@ -28,11 +28,11 @@ RSpec.describe User, type: :model do
     end
     
     it 'requires unique uid' do
-      expect{ FactoryGirl.create(:user, netid: 'd12345d') }.to raise_error
+       expect{ FactoryGirl.create(:user, netid: 'd12345d') }.to raise_error ActiveRecord::RecordInvalid
     end
 
     it 'requires unique netid' do
-      expect{ FactoryGirl.create(:user, uid: 'd12345d@dartmouth.edu') }.to raise_error
+      expect{ FactoryGirl.create(:user, uid: 'd12345d@dartmouth.edu') }.to raise_error ActiveRecord::RecordInvalid
     end
   end
 
