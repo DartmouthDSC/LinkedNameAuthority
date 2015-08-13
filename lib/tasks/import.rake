@@ -1,9 +1,10 @@
 namespace :import do
 
-  desc "Import people (employees) from Oracle."
-  task oracle_employee: :environment do
-    Oracle::Employee.each do |person|
-      Lna::Person.create_or_update(person.to_hash)
+  desc "Import faculty from Oracle."
+  task oracle_faculty: :environment do
+    Oracle::Faculty.find_each do |person|
+      puts("#{person.to_hash}")
+####      Lna::Person.create_or_update(person.to_hash)
     end
   end
 
