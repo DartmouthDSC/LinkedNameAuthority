@@ -123,8 +123,8 @@ RSpec.describe Lna::Person, type: :model do
     end
 
     after :context do
-      @prof.organization.destroy
       @prof.person.destroy
+      @prof.organization.destroy
     end
     
     it 'is a Lna::Membership' do

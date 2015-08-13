@@ -14,7 +14,9 @@ FactoryGirl.define do
     # To create less objects, the primary_org of the person is the same
     # as the organization of the membership.
     after(:build) do |prof|
-      prof.person = FactoryGirl.create(:jane, primary_org: prof.organization)
+      unless prof.person
+        prof.person = FactoryGirl.create(:jane, primary_org: prof.organization)
+      end
     end
   end
 end

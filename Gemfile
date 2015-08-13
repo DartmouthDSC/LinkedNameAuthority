@@ -7,7 +7,8 @@ gem 'hydra', '9.1.0.rc1'
 gem 'ruby-oci8'
 gem 'activerecord-oracle_enhanced-adapter', '~> 1.6.0'
 
-# Use my version of rdf-vocab (includes org and bibo ontology)
+# Use develop version of rdf-vocab until a new release it cut (develop
+# branch includes org, p-plan, and bibo ontologies).
 gem 'rdf-vocab', github: 'ruby-rdf/rdf-vocab', branch: 'develop'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
