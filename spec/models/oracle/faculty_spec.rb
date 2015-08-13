@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Oracle::Employee, type: :model do
+RSpec.describe Oracle::Faculty, type: :model do
 
 # Scott Drysdale
   let(:testNetidAS)    { 'd19125j'.upcase }
@@ -11,25 +11,25 @@ RSpec.describe Oracle::Employee, type: :model do
   let(:testSurnameGSM) { 'Trimarco' }
 
   it 'does not throw an error' do
-    expect { Oracle::Employee.count(:distinct => true) }.not_to raise_error
+    expect { Oracle::Faculty.count(:distinct => true) }.not_to raise_error
   end
 
   it 'has one or more rows' do
-    expect(Oracle::Employee.count(:distinct => true)).to be > 0
+    rowCount = Oracle::Faculty.count(:distinct => true)
+    puts("Oracle::Faculty has #{rowCount} rows.")
+    expect(rowCount).to be > 0
   end
 
   it 'has an A+S row we know about' do
-####    puts("Oracle::Employee has the following methods:\n\t",
-####         Oracle::Employee.methods.sort.join("\n\t").to_s)
-    puts(Oracle::Employee.find_by(username: testNetidAS).email)
-    expect(Oracle::Employee.find_by(username: testNetidAS).lastname).to eql(testSurnameAS)
-####    puts("employee has the following methods:\n\t",
-####         employee.methods.sort.join("\n\t").to_s)
+####    puts("Oracle::Faculty has the following methods:\n\t",
+####         Oracle::Faculty.methods.sort.join("\n\t").to_s)
+    puts(Oracle::Faculty.find_by(username: testNetidAS).email)
+    expect(Oracle::Faculty.find_by(username: testNetidAS).lastname).to eql(testSurnameAS)
   end
 
   it 'has a GSM row we know about' do
-    puts(Oracle::Employee.find_by(username: testNetidGSM).email)
-    expect(Oracle::Employee.find_by(username: testNetidGSM).lastname).to eql(testSurnameGSM)
+    puts(Oracle::Faculty.find_by(username: testNetidGSM).email)
+    expect(Oracle::Faculty.find_by(username: testNetidGSM).lastname).to eql(testSurnameGSM)
   end
 
 end
