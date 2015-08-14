@@ -9,6 +9,8 @@ module Oracle
 
 #   Return a hash with a connonical form for Lna::Person to import.
     def to_hash
+
+#     Here are the columns in this view:
 ####  USERNAME    VARCHAR2(150)
 ####  EMAIL    VARCHAR2(256 CHAR)
 ####  PROPRIETARY_ID     VARCHAR2(150)
@@ -22,20 +24,38 @@ module Oracle
 ####  DEPARTMENT    VARCHAR2(4000 CHAR)
 ####  DEPARTMENT_CODE    VARCHAR2(4000 CHAR)
 ####  PRIMARYGROUPDESCRIPTOR     VARCHAR2(4000 CHAR)
+
+#     Generate a person's full name.
       nameParts = []
-      if ((firsts = self.firstname.split(' ')) && firsts.count > 1)
-        puts(firsts.join('-'))
+#     See if we have a first name to work with.
+      if ((firstname = self.firstname))
+#	If there are multiple parts to the first name, work through them.
+        if ((firsts = firstname.split(' ')) && firsts.count > 1)
+          firsts.each do |part|
+#	    If true the person has an initial as part of their first
+#	    name, so we want to append a period to it.
+            if (part.length == 1 && part.upcase == part)
+              part.concat('.')
+            end
+          end
+#	  Put their first name back together.
+          firstname = firsts.join(' ')
+        end
       end
-      nameParts.push(self.firstname) if (self.firstname)
+      nameParts.push(firstname) if (firstname)
+#     The initials field includes the initial of the first name, so we
+#     skip it in constructing the full name.
       if (self.initials[1..-1] != '')
         nameParts.push(self.initials[1..-1].split(//).join('.') + '.')
       end
       nameParts.push(self.lastname)
       nameParts.push(self.suffix) if (self.suffix)
-      return { :netid         => self.username,
+
+#     Our full hash.
+      hash = { :netid         => self.username,
                :mbox          => self.email,
                :prop_id       => self.proprietary_id,
-               :given_name    => self.firstname,
+               :given_name    => firstname,
                :initials      => self.initials,
                :family_name   => self.lastname,
                :full_name     => nameParts.join(' '),
@@ -46,6 +66,24 @@ module Oracle
                :dept_code     => self.department_code,
                :primary_group => self.primarygroupdescriptor,
       }
+
+#     Until we build out the Lna::Person ingest, we ditch fields that
+#     model doesn't know about.
+      [ :netid,
+        :prop_id,
+        :initials,
+        :known_as,
+        :rank,
+        :dept_code,
+        :primary_group,
+        :title,
+        :department ].each do |key|
+        hash.delete(key)
+      end
+
+#     Return our (reduced) hash.
+      return hash
+      
     end
 
   end
