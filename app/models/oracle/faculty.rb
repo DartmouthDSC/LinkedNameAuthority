@@ -7,23 +7,27 @@ module Oracle
     self.table_name = 'DARTHR.DC_HR_ERIS_FACULTY_V'
     self.primary_key = 'username'
 
-#   Return a hash with a connonical form for Lna::Person to import.
+#   Here are the columns in this view:
+##  USERNAME    VARCHAR2(150)
+##  EMAIL    VARCHAR2(256 CHAR)
+##  PROPRIETARY_ID     VARCHAR2(150)
+##  FIRSTNAME    VARCHAR2(150)
+##  LASTNAME   NOT NULL VARCHAR2(150)
+##  INITIALS    VARCHAR2(6)
+##  SUFFIX     VARCHAR2(30)
+##  KNOWNAS    VARCHAR2(150)
+##  POSITION    VARCHAR2(240)
+##  RANK    VARCHAR2(150)
+##  DEPARTMENT    VARCHAR2(4000 CHAR)
+##  DEPARTMENT_CODE    VARCHAR2(4000 CHAR)
+##  PRIMARYGROUPDESCRIPTOR     VARCHAR2(4000 CHAR)
+
+#   Return a hash in a connonical form for the LNA ImportController.
     def to_hash
 
-#     Here are the columns in this view:
-####  USERNAME    VARCHAR2(150)
-####  EMAIL    VARCHAR2(256 CHAR)
-####  PROPRIETARY_ID     VARCHAR2(150)
-####  FIRSTNAME    VARCHAR2(150)
-####  LASTNAME   NOT NULL VARCHAR2(150)
-####  INITIALS    VARCHAR2(6)
-####  SUFFIX     VARCHAR2(30)
-####  KNOWNAS    VARCHAR2(150)
-####  POSITION    VARCHAR2(240)
-####  RANK    VARCHAR2(150)
-####  DEPARTMENT    VARCHAR2(4000 CHAR)
-####  DEPARTMENT_CODE    VARCHAR2(4000 CHAR)
-####  PRIMARYGROUPDESCRIPTOR     VARCHAR2(4000 CHAR)
+      if (!self.netid)
+        raise ArgumentError.new("#{self.lastname}: No NetID (#{self})")
+      end
 
 #     Generate a person's full name.
       nameParts = []
@@ -67,8 +71,8 @@ module Oracle
                :primary_group => self.primarygroupdescriptor,
       }
 
-#     Until we build out the Lna::Person ingest, we ditch fields that
-#     model doesn't know about.
+#     Until we build out the LNA ImportController, we ditch fields
+#     that model doesn't know about.
       [ :netid,
         :prop_id,
         :initials,
@@ -80,6 +84,8 @@ module Oracle
         :department ].each do |key|
         hash.delete(key)
       end
+
+      puts("Faculty: #{hash}")
 
 #     Return our (reduced) hash.
       return hash

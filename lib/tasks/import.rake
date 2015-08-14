@@ -3,10 +3,11 @@ namespace :import do
   desc "Import faculty from Oracle."
   task oracle_faculty: :environment do
     Oracle::Faculty.find_each do |person|
-      hash = person.to_hash
-      puts("Filtered: #{hash}")
-      ####      Lna::Person.create_or_update(hash)####person.to_hash)
-      Lna::Person.create(hash)####person.to_hash)
+      begin
+        ImportController.into_lna(person.to_hash)
+      rescue Exception => fault
+        puts("Oracle/Faculty error: #{fault.message}")
+      end
     end
   end
 
