@@ -25,5 +25,6 @@ module Lna
     
     property :label, predicate: ::RDF::SKOS.prefLabel, multiple: false
     property :alt_label, predicate: ::RDF::SKOS.altLabel
+    property :code, predicate: ::RDF::Vocab::ORG.identifier, multiple: false
   end
 end

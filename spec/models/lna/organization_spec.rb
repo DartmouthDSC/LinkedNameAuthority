@@ -32,6 +32,10 @@ RSpec.describe Lna::Organization, type: :model do
     it 'has alternative labels' do
       expect(@thayer.alt_label).to match_array(['Engineering School', 'Thayer'])
     end
+
+    it 'has code' do
+      expect(@thayer.code).to eql 'THAY'
+    end
   end
 
   context 'when validating'
