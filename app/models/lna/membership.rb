@@ -5,7 +5,8 @@ module Lna
     belongs_to :organization, class_name: 'Lna::Organization',
                predicate: ::RDF::Vocab::ORG.Organization
     
-    validates_presence_of :person, :organization, :title, :member_during
+    #validates_presence_of :person, :organization, :title, :member_during
+    validates_presence_of :person, :organization, :title
     
     property :title, predicate: ::RDF::VCARD.title, multiple: false do |index|
       index.as :stored_searchable

@@ -63,5 +63,5 @@ group :development, :test do
   gem 'factory_girl_rails'
   gem 'dotenv-rails'
 # gem 'jettywrapper' # Remove because we aren't using hydra-jetty
-  gem 'pry-nav'
+# gem 'pry-nav'      # Carla had a bundle conflict. 
 end
