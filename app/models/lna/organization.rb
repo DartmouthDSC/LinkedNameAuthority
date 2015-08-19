@@ -1,11 +1,12 @@
 module Lna
   class Organization < ActiveFedora::Base
 
-    has_many :people, class_name: 'Lna::Person', as: :primary_org
+    has_many :people, class_name: 'Lna::Person', dependent: :restrict,
+             as: :primary_org
     has_many :memberships, class_name: 'Lna::Membership', dependent: :destroy
              #predicate: ::RDF::Vocab::ORG.organization
-    has_many :accounts, class_name: 'Lna::Account', as: :account_holder,
-             inverse_of: :account_holder, dependent: :destroy
+    has_many :accounts, class_name: 'Lna::Account', dependent: :destroy,
+             as: :account_holder, inverse_of: :account_holder
     
     has_many :sub_organizations, class_name: 'Lna::Organization',
              predicate: ::RDF::Vocab::ORG.hasSubOrganization,
@@ -23,8 +24,16 @@ module Lna
 
     type ::RDF::Vocab::ORG.Organization
     
-    property :label, predicate: ::RDF::SKOS.prefLabel, multiple: false
-    property :alt_label, predicate: ::RDF::SKOS.altLabel
-    property :code, predicate: ::RDF::Vocab::ORG.identifier, multiple: false
+    property :label, predicate: ::RDF::SKOS.prefLabel, multiple: false do |index|
+      index.as :stored_searchable
+    end
+
+    property :alt_label, predicate: ::RDF::SKOS.altLabel do |index|
+      index.as :stored_searchable
+    end
+
+    property :code, predicate: ::RDF::Vocab::ORG.identifier, multiple: false do |index|
+      index.as :stored_searchable
+    end
   end
 end

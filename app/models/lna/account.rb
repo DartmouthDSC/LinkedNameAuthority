@@ -15,15 +15,15 @@ module Lna
     end
   
     property :online_account, predicate: ::RDF::FOAF.OnlineAccount, multiple: false do |index|
-      index.as :displayable
+      index.as :stored_searchable # Should not be added to the search query!
     end
  
     property :account_name, predicate: ::RDF::FOAF.accountName, multiple: false do |index|
-      index.as :displayable
+      index.as :stored_searchable # Should not be added to the search query!
     end
 
     property :account_service_homepage, predicate: ::RDF::FOAF.accountServiceHomepage, multiple: false do |index|
-      index.as :displayable
+      index.as :stored_searchable # Should not be added to the search query!
     end
 
     # Validation to assure account_holder is a Lna::Person or

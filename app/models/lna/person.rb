@@ -15,8 +15,8 @@ module Lna
     belongs_to :primary_org, class_name: 'Lna::Organization',
                predicate: ::RDF::Vocab::ORG.reportsTo
              
-    validates_presence_of :full_name, :given_name, :family_name
-    # :primary_org
+    validates_presence_of :primary_org, :full_name, :given_name, :family_name
+
     type ::RDF::FOAF.Person
   
     property :full_name, predicate: ::RDF::FOAF.name, multiple: false do |index|
@@ -25,7 +25,7 @@ module Lna
 
     property :given_name, predicate: ::RDF::FOAF.givenName, multiple: false do |index|
       index.as :stored_searchable
-  end
+    end
     
     property :family_name, predicate: ::RDF::FOAF.familyName, multiple: false do |index|
       index.as :stored_searchable
