@@ -5,8 +5,9 @@ RSpec.describe Lna::Person, type: :model do
   it 'has valid factory' do
     jane = FactoryGirl.create(:jane)
     expect(jane).to be_truthy
-    jane.primary_org.destroy
+    id = jane.primary_org.id
     jane.destroy
+    Lna::Organization.find(id).destroy
   end
 
   describe '.create' do
@@ -15,8 +16,9 @@ RSpec.describe Lna::Person, type: :model do
     end
     
     after :context do
-      @jane.primary_org.destroy
+      id = @jane.primary_org.id
       @jane.destroy
+      Lna::Organization.find(id).destroy
     end
 
     subject { @jane }
@@ -67,8 +69,9 @@ RSpec.describe Lna::Person, type: :model do
     end
 
     after :context do
-      @jane.primary_org.destroy
+      id = @jane.primary_org.id
       @jane.destroy
+      Lna::Organization.find(id).destroy
     end
 
     subject { @jane }
@@ -91,8 +94,9 @@ RSpec.describe Lna::Person, type: :model do
     end
     
     after :context do
-      @jane.primary_org.destroy
+      id = @jane.primary_org.id
       @jane.destroy
+      Lna::Organization.find(id).destroy
     end
 
     subject { @jane }
@@ -145,8 +149,9 @@ RSpec.describe Lna::Person, type: :model do
     end
 
     after :example do
-      @jane.primary_org.destroy if @jane.primary_org
+      id = @jane.primary_org.id if @jane.primary_org
       @jane.destroy
+      Lna::Organization.find(id).destroy if id
     end
 
     subject { @jane }

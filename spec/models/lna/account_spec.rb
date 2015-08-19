@@ -4,8 +4,9 @@ RSpec.describe Lna::Account, type: :model do
   it 'has a valid factory' do
     orcid = FactoryGirl.create(:orcid_for_person)
     expect(orcid).to be_truthy
-    orcid.account_holder.primary_org.destroy
+    id = orcid.account_holder.primary_org.id
     orcid.account_holder.destroy
+    Lna::Organization.find(id).destroy
   end
 
   describe  '.create' do
@@ -14,8 +15,9 @@ RSpec.describe Lna::Account, type: :model do
     end
 
     after :context do
-      @orcid.account_holder.primary_org.destroy
+      id = @orcid.account_holder.primary_org.id
       @orcid.account_holder.destroy
+      Lna::Organization.find(id).destroy
     end
 
     subject { @orcid }
@@ -44,8 +46,9 @@ RSpec.describe Lna::Account, type: :model do
     it 'can be Lna::Person' do
       orcid = FactoryGirl.create(:orcid_for_person)
       expect(orcid.account_holder).to be_a Lna::Person
-      orcid.account_holder.primary_org.destroy
+      id = orcid.account_holder.primary_org.id
       orcid.account_holder.destroy
+      Lna::Organization.find(id).destroy
     end
 
     it 'can be Lna::Organization' do
@@ -63,23 +66,26 @@ RSpec.describe Lna::Account, type: :model do
 
     after :example do
       if @orcid.account_holder.is_a? Lna::Person
-        @orcid.account_holder.primary_org.destroy
+        id = @orcid.account_holder.primary_org.id
         @orcid.account_holder.destroy
+        Lna::Organization.find(id).destroy
       end
     end
     
     subject { @orcid }
     
     it 'assure account_holder is set' do
-      subject.account_holder.primary_org.destroy
+      id = subject.account_holder.primary_org.id
       subject.account_holder.destroy
+      Lna::Organization.find(id).destroy
       subject.account_holder = nil
       expect(subject.save).to be false
     end
 
     it 'assure account_holder is a person or organization' do
-      subject.account_holder.primary_org.destroy
+      id = subject.account_holder.primary_org.id
       subject.account_holder.destroy
+      Lna::Organization.find(id).destroy
       subject.account_holder = FactoryGirl.create(:orcid_for_org)
       expect(subject.save).to be false
       subject.account_holder.account_holder.destroy
