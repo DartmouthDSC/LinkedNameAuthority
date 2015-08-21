@@ -18,9 +18,9 @@ module Import
   #
   # @param hash [Hash] hash containing person, account and membership info
   # @return [Lna::Person] person that was created or updated
-  def self.to_lna(hash = {})
+  def self.into_lna(hash = {})
     if hash.key?(:netid) && hash[:netid]
-      to_lna_by_netid(hash[:netid], hash)
+      into_lna_by_netid(hash[:netid], hash)
     else
       raise NotImplementedError, 'Can only import if netid is present.'
     end
@@ -33,7 +33,7 @@ module Import
   # @param netid [String] Dartmouth identifier
   # @param hash [Hash] hash containing  person, account and membership info
   # @return [Lna::Person] person that was created or updated
-  def self.to_lna_by_netid(netid, hash = {})
+  def self.into_lna_by_netid(netid, hash = {})
     # Argument checking.
     if !hash[:person] && !hash[:membership]
       raise ArgumentError, 'Must have a :person or :membership key in hash.'
@@ -125,7 +125,7 @@ module Import
     #puts "Create person record for #{netid}."
     person  
   end
-  private_class_method :to_lna_by_netid
+  private_class_method :into_lna_by_netid
   
   #TODO: Move method to Lna::Organization
   #TODO: When comparing make sure that its case insensitive. Might already be based on how .where
