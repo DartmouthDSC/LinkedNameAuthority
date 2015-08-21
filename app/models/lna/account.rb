@@ -1,6 +1,11 @@
 module Lna
   class Account < ActiveFedora::Base
 
+    # Hash with properties for a Dartmouth Account.
+    DART_PROPERTIES = { title: 'Dartmouth',
+                     online_account: 'www.dartmouth.edu',
+                     account_service_homepage: 'dartdm.dartmouth.edu' }
+    
     # An Account can belong to a Person or an Organization
     belongs_to :account_holder, class_name: 'ActiveFedora::Base',
                predicate: ::RDF::FOAF.account
