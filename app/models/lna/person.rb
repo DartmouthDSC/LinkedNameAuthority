@@ -2,15 +2,13 @@ module Lna
   class Person < ActiveFedora::Base
   
     has_many :memberships, class_name: 'Lna::Membership', dependent: :destroy
-    #           inverse_of: :person, as: :person
     has_many :accounts, class_name: 'Lna::Account', dependent: :destroy,
              as: :account_holder, inverse_of: :account_holder
     has_many :collections, class_name: 'Lna::Collection', dependent: :destroy,
              predicate: ::RDF::FOAF.publications
   
     #Not Working.
-    #has_many :organizations, through: :memberships,
-    #         class_name: 'Lna::Organization'
+    #has_many :organizations, through: :memberships, class_name: 'Lna::Organization'
   
     belongs_to :primary_org, class_name: 'Lna::Organization',
                predicate: ::RDF::Vocab::ORG.reportsTo

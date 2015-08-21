@@ -6,9 +6,10 @@ FactoryGirl.define do
                         family_name: 'Doe',
                         mbox: 'Jane.Doe@dartmouth.edu' } }
     
-    membership      { { title: 'Professor' } }
-    organization    { { label: 'Thayer School of Engineering',
-                        dept_code: 'THAY' } }
+    membership      { { primary: true,
+                        title:  'Professor',
+                        org:    { label: 'Thayer School of Engineering',
+                                  code: 'THAY' }   } }
     
     initialize_with { attributes }
     to_create       {}
