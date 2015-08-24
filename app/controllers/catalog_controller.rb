@@ -25,7 +25,7 @@ class CatalogController < ApplicationController
     }
 
     # solr field configuration for search results/index views
-    config.index.title_field = ['full_name_ssm', 'title_tesim']
+    config.index.title_field = ['full_name_ssm', 'title_tesim', 'label_tesim']
     config.index.display_type_field = 'active_fedora_model_ssi'
 
 
@@ -57,7 +57,7 @@ class CatalogController < ApplicationController
     config.add_facet_field solr_name('language', :facetable), :label => 'Language', :limit => true
     config.add_facet_field solr_name('lc1_letter', :facetable), :label => 'Call Number'
     config.add_facet_field solr_name('subject_geo', :facetable), :label => 'Region'
-    config.add_facet_field solr_name('subject_era', :facetable), :label => 'Era'
+    config.add_facet_field solr_name('code', :stored_searchable), label: 'Dept Code'
 
     # Have BL send all facet field names to Solr, which has been the default
     # previously. Simply remove these lines if you'd rather use Solr request
@@ -74,9 +74,11 @@ class CatalogController < ApplicationController
     # Lna::Account
     config.add_index_field solr_name('title', :stored_searchable), label: 'Title'
     config.add_index_field solr_name('account_name', :stored_searchable), label: 'Account Name'
-    # Lna::Appointment
-    config.add_index_field solr_name('org', :stored_searchable), label: 'Org'
-
+    # Lna::Membership
+    config.add_index_field solr_name('organization', :stored_searchable), label: 'Organization'
+    # Lna::Organization
+    config.add_index_field solr_name('label', :stored_searchable), label: 'Name'
+    
     # solr fields to be displayed in the show (single result) view
     # The ordering of the field names is the order of the display
     # Lna::Person
@@ -97,10 +99,14 @@ class CatalogController < ApplicationController
     config.add_show_field solr_name('country_name', :displayable), label: 'Country'
     config.add_show_field solr_name('member_during', :displayable), label: 'Begins'
     # Lna::Account
-    config.add_show_field solr_name('online_account', :displayable), label: 'Online Account'
-    config.add_show_field solr_name('account_name', :displayable), label: 'Account Name'
-    config.add_show_field solr_name('account_service_homepage', :displayable), label: 'Account Service Homepage'
-
+    config.add_show_field solr_name('online_account', :stored_searchable), label: 'Online Account'
+    config.add_show_field solr_name('account_name', :stored_searchable), label: 'Account Name'
+    config.add_show_field solr_name('account_service_homepage', :stored_searchable), label: 'Account Service Homepage'
+    # Lna::Organization
+    config.add_show_field solr_name('label', :stored_searchable), label: 'Name'
+    config.add_show_field solr_name('alt_label', :stored_searchable), label: 'Alt. Names'
+    config.add_show_field solr_name('code', :stored_searchable), label: 'Code'
+    
     config.add_show_field 'isDependentOf_ssim', label: 'Belongs to'
     
     # "fielded" search configuration. Used by pulldown among other places.
