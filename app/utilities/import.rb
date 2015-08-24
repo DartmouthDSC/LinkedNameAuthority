@@ -4,16 +4,22 @@ module Import
   #
   # @example Example of hash 
   #   lna_hash = { netid: 'd00000k',
-  #                person: { full_name:   'Carla Galarza',
+  #                person: {
+  #                          full_name:   'Carla Galarza',
   #                          given_name:  'Carla',
   #                          family_name: 'Galarza',
-  #                          mbox:        'Carla.M.Galarza@dartmouth.edu',
-  #                          homepage:    ['www.dartmouth.edu/d00000k'] },
-  #                membership: { primary: true
+  #                          mbox:        'Carla.Galarza@dartmouth.edu',
+  #                          homepage:    ['www.dartmouth.edu/d00000k']
+  #                        },
+  #                membership: {
+  #                              primary: true
   #                              title: 'Programmer/Analyst',
-  #                              org: { label: 'Library',
+  #                              org: {
+  #                                     label: 'Library',
   #                                     alt_label: ['DLC']
-  #                                     code:  'LIB' } }
+  #                                     code:  'LIB'
+  #                                    }
+  #                            },
   #               }
   #
   # @param hash [Hash] hash containing person, account and membership info

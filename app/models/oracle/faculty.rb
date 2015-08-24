@@ -24,8 +24,8 @@ module Oracle
 
 #   Return a hash in a connonical form for the LNA ImportController.
     def to_hash
-
-      if (!self.netid)
+      
+      unless (self.username)
         raise ArgumentError.new("#{self.lastname}: No NetID (#{self})")
       end
 
@@ -57,31 +57,35 @@ module Oracle
 
 #     Our full hash.
       hash = { :netid         => self.username,
-               :mbox          => self.email,
+               :person        => {
+                                   :given_name  => firstname,
+                                   :family_name => self.lastname,
+                                   :full_name   => nameParts.join(' '),
+                                   :mbox        => self.email,
+                                 },
+               :membership    => {
+                                   :primary => true,
+                                   :title   => self.position,
+                                   :org     => {
+                                                 :label => self.department,
+                                                 :code  => self.department_code,
+                                               }
+                                 },
                :prop_id       => self.proprietary_id,
-               :given_name    => firstname,
                :initials      => self.initials,
-               :family_name   => self.lastname,
-               :full_name     => nameParts.join(' '),
                :known_as      => self.knownas,
                :rank          => self.rank,
-               :title         => self.position,
-               :department    => self.department,
-               :dept_code     => self.department_code,
                :primary_group => self.primarygroupdescriptor,
       }
 
 #     Until we build out the LNA ImportController, we ditch fields
 #     that model doesn't know about.
-      [ :netid,
-        :prop_id,
+      [ :prop_id,
         :initials,
         :known_as,
         :rank,
-        :dept_code,
-        :primary_group,
-        :title,
-        :department ].each do |key|
+        :primary_group
+      ].each do |key|
         hash.delete(key)
       end
 
