@@ -48,5 +48,28 @@ module Lna
     property :homepage, predicate: ::RDF::FOAF.homepage do |index|
       index.as :stored_searchable
     end  
+
+    # Find memberships for this person that match based on the given hash.
+    # Only two fields are used as matching points. Any other fields are
+    # ignored.
+    #
+    # @example Usage
+    #   m = { title: 'Programmer/Analyst',
+    #         org: { code: 'Lib' }
+    #       }
+    #   person.matching_membership(m)
+    #
+    # @param hash [Hash] membership information
+    # @raise [Exception] if more than one membership matched
+    # @return [Lna::Membership] if a matching membership was found
+    # @return [false] if a matching membership was not found
+    def matching_membership(hash)
+      matching = self.memberships.to_a.select do |m|
+        m.title.casecmp(hash[:title]).zero? &&
+          m.organization.code.casecmp(hash[:org][:code]).zero?
+      end
+      raise 'More than one membership was a match for the given hash.' if matching.count > 1
+      return matching.count == 1 ? matching.first : false
+    end
   end
 end

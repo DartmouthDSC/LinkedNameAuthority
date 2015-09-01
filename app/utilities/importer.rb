@@ -92,7 +92,7 @@ class Importer
     # Argument checking.
     if !hash[:person] && !hash[:membership]
       raise ArgumentError, 'Must have a :person or :membership key in hash.'
-    elsif hash.key?(:membership) && !hash[:membership].key?(:org)
+    elsif hash[:membership] && !hash[:membership][:org]
       raise ArgumentError, 'Membership must have an organization.'
     end
     
@@ -119,21 +119,19 @@ class Importer
       # Create or update memberships.
       mem_hash = clean_mem_hash(hash[:membership])
 
-      if mem = matching_membership(person, hash[:membership])
+      if mem = person.matching_membership(hash[:membership])
         mem.update(mem_hash)
       else
-        mem = Lna::Membership.create(mem_hash) do |m|
+        mem = Lna::Membership.create!(mem_hash) do |m|
           m.person = person
           m.organization = find_or_create_org(hash[:membership][:org])
         end
         person.save!
-        raise "#{mem.class} could not be saved because of the following error(s): " +
-              "#{mem.errors.full_messages.join(", ")}" unless mem.persisted?
         add_to_info(NEW_MEM, netid)
       end
     else   # Create new person.
       # Checking arguments.
-      if !hash.key?(:membership) || !hash[:membership][:primary]
+      if !hash[:membership] || !hash[:membership][:primary]
         raise ArgumentError, 'Primary membership required to create new person.'
       elsif !hash[:person]
         raise ArgumentError, 'Person hash required to create new person.'
@@ -143,44 +141,54 @@ class Importer
       org = find_or_create_org(hash[:membership][:org])
 
       # Make person and set primary org.
-      person = Lna::Person.create(hash[:person]) do |p|
+      person = Lna::Person.create!(hash[:person]) do |p|
         p.primary_org = org
       end
  
-      raise "Lna::Person could not be saved because of the following error(s): " +
-            "#{person.errors.full_messages.join(", ")}" unless person.persisted?
-
       add_to_info(NEW_PERSON, netid)
       
       # Make account and set as account for person.
-      accnt = Lna::Account.create(account_hash) do |a|
+      accnt = Lna::Account.create!(account_hash) do |a|
         a.account_holder = person
       end
-      
-      raise "Lna::Account could not be saved because of the following error(s): " +
-            "#{accnt.errors.full_messages.join(", ")}" unless accnt.persisted?
 
       add_to_info(NEW_ACCOUNT, netid)
       
       # Make membership, belonging to org and person.
       mem_hash = clean_mem_hash(hash[:membership])
-      mem = Lna::Membership.create(mem_hash) do |m|
+      mem = Lna::Membership.create!(mem_hash) do |m|
         m.person = person
         m.organization = org
       end
-
-      raise "Lna::Membership could not be saved because of the following error(s): " +
-            "#{mem.errors.full_messages.join(", ")}" unless mem.persisted?
 
       add_to_info(NEW_MEM, netid)
       
       person.save
     end
-    #puts "Create person record for #{netid}."
     person  
   end
   
-  #TODO: Move method to Lna::Organization
+  #TODO: Move method to Lna::Organization?
+  # @example Usage
+  # org = { label: 'Library',
+  #         code: 'LIB',
+  #         alt_label: ['DCL']
+  #       }
+  # matching_organization(org)
+  #
+  def matching_organization(hash)
+    orgs = Lna::Organization.where(hash)
+    if orgs.count == 1
+      return orgs.first
+    elsif orgs.count == 0
+      if hash_key? :code
+        orgs = Lna::Organization.where(code: hash[:code])
+        if orgs.count
+        end
+      end
+    end
+  end
+  
   #TODO: When comparing make sure that its case insensitive. Might already be based on how .where
   # works.
   def find_or_create_org(hash)
@@ -198,9 +206,7 @@ class Importer
         end
       end
       # If did not find the organization by code, create a new one.
-      org = Lna::Organization.create(hash)
-      raise "Lna::Organization could not be saved because of the following error(s): " +
-            "#{org.errors.full_messages.join(", ")}" unless org.persisted?
+      org = Lna::Organization.create!(hash)
       add_to_info(NEW_ORG, hash[:label])
       return org
     else
@@ -219,18 +225,16 @@ class Importer
     @info.key?(k) ? @info[k] << v : @info[k] = [v]
   end
 
-  # Find memberships belonging to the person given that match the hash
-  # returns matching membership or false if no memberships were found
-  # @param person [Lna::Person]
-  # TODO: could be moved into Lna::Person
-  def matching_membership(person, mem_hash)
-    #TODO: person is a Lna::Person    
-    matching = person.memberships.to_a.select do |m|
-      m.title.casecmp(mem_hash[:title]).zero? &&
-        m.organization.code.casecmp(mem_hash[:org][:code]).zero?
-    end
-
-    raise 'More than one membership was a match for the given hash.' if matching.count > 1
-    return matching.count == 1 ? matching.first : false
+  # print out errors and information(warnings)
+  # pretty prints errors. if verbose flag is set will also pretty print info
+  def output
+    
   end
+
+  def send_email
+    #throw error if no email is set
+
+    add_to_info('Send email', 'at XX to YY')
+  end
+
 end
