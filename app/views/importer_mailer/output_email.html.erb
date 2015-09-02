@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'/>
+  </head>
+  <body>
+	<% if @output.empty? %>
+	  No errors or warnings were produced by the oracle load into LNA.
+	<% else %>
+	  The following errors/warnings were produced by the oracle load into LNA: <br/><br/>
+	
+	  <% @output.each do |type, notifications| %>
+	    <strong><%= notifications.count =%> <%= type.pluralize(notifications.count) =%></strong>
+	    <ul>
+		  <% notifications.each do |key, values| %>
+		    <li><%= key =%></li>
+	          <ul>
+				<% values.each do |v| %>
+	              <li><%= v =%></li>
+				<% end %>
+		      </ul>
+	       <% end %>
+	    </ul>
+	  <% end %>
+	<% end %>
+  </body>
+</html>
