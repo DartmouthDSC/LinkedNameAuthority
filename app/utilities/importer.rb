@@ -1,35 +1,25 @@
 class Importer
-  # Keys for info hash
+  # Keys for warnings hash.
   NEW_ORG = 'Created new organization'
   NEW_PERSON = 'Created new person'
   NEW_MEM = 'Created new membership'
   NEW_ACCOUNT = 'Created new account'
+  CHANGE_PRIMARY_ORG = 'Changed primary org for'
+  SENT_EMAIL = 'Sent email'
 
-  attr_reader :errors, :info
-  attr_accessor :throw_errors, :emails
+  attr_reader :errors, :warnings
+  attr_accessor :verbose, :throw_errors, :emails
   
-  # info = { NEW_ORG    => ['Anthropology[ANTH]'],
-  #          NEW_PERSON => ['Jane Doe(d00000k)'],
-  #          NEW_MEM
-  #          NEW_ACCOUNT
-  #        }
-  #
-  # errors = { 'Error one' => ['Jane Doe(d00000k)', 'd12345k'] }
   #
   # @param verbose [Boolean] 
-  # @param emails [[String]] array of emails
   # @param throw_errors [Boolean] flag to throw errors after logging them
-  def initialize(verbose = true, throw_errors = true, emails = []) 
+  # @param emails [Array<String>|String] array of emails or string containing one email
+  def initialize(verbose: true, throw_errors: true, emails: nil) 
     @verbose = verbose
-    @emails = emails
     @throw_errors = throw_errors
+    @emails = emails.is_a?(String) ? [emails] : emails
     @errors = {}
-    @info = {}
-
-    # If verbose is set the errors and warnings will be displayed on the console or
-    # emailed out if email address are given.
-
-    # if verbose is false only errors will be displayed...
+    @warnings = {}
   end
   
   # Creates or updates Lna objects for the person described by the given hash.
@@ -63,22 +53,36 @@ class Importer
       else
         raise NotImplementedError, 'Can only import if netid is present.'
       end
-    #rescue NotImplementedError => e 
-    #  errors[e.message] = hash #will not have a netid.
+    rescue NotImplementedError => e
+      add_to_errors(e.message, hash.to_s)
+      raise if @throw_errors
     # if its an argument error display the hash?  
     rescue Exception => e
       value = (hash[:person] && hash[:person][:full_name]) ?
                 "#{hash[:person][:full_name]}(#{hash[:netid]})" :
                 hash[:netid]
-
-      @errors.key?(e.message) ?
-        @errors[e.message] << value : #append.
-        @errors[e.message] = [value]  #create new array.
-      
+      add_to_errors(e.message, value)
       raise if @throw_errors
     end  
   end
 
+  def send_email
+    raise(ArgumentError, 'No email provided.') unless @emails
+
+    ImporterMailer.output_email(@emails, self.output).deliver_now
+    t = Time.now
+    add_to_warnings(SENT_EMAIL, "to #{emails.join(', ')} on #{t.strftime('%c')}")
+  end
+
+  # Combine errors and warnings hash into one. Warnings will only be combined if the verbose
+  # flag is true.
+  def output
+    output = Hash.new
+    output['error'] = @errors unless @errors.empty?
+    output['warning'] = @warnings if !@warnings.empty? && @verbose
+    output
+  end
+  
   private
   
   # Creates or updates Lna objects for the person that has the given netid.
@@ -112,7 +116,10 @@ class Importer
       # Update primary organization, if necessary.
       if hash[:membership][:primary]
         org = find_or_create_org(hash[:membership][:org])
-        person.primary_org = org unless org.id == person.primary_org.id
+        unless org.id == person.primary_org.id
+          person.primary_org = org
+          add_to_warnings(CHANGE_PRIMARY_ORG, "#{person.full_name}(#{netid})")
+        end
         person.save
       end
 
@@ -127,7 +134,7 @@ class Importer
           m.organization = find_or_create_org(hash[:membership][:org])
         end
         person.save!
-        add_to_info(NEW_MEM, netid)
+        add_to_warnings(NEW_MEM, "#{mem.title} for #{person.full_name}(#{netid})")
       end
     else   # Create new person.
       # Checking arguments.
@@ -145,14 +152,13 @@ class Importer
         p.primary_org = org
       end
  
-      add_to_info(NEW_PERSON, netid)
+      add_to_warnings(NEW_PERSON, "#{person.full_name}(#{netid})")
       
       # Make account and set as account for person.
       accnt = Lna::Account.create!(account_hash) do |a|
         a.account_holder = person
       end
-
-      add_to_info(NEW_ACCOUNT, netid)
+      add_to_warnings(NEW_ACCOUNT, "#{accnt.title} for #{person.full_name}(#{netid})")
       
       # Make membership, belonging to org and person.
       mem_hash = clean_mem_hash(hash[:membership])
@@ -160,8 +166,7 @@ class Importer
         m.person = person
         m.organization = org
       end
-
-      add_to_info(NEW_MEM, netid)
+      add_to_warnings(NEW_MEM, "#{mem.title} for #{person.full_name}(#{netid})")
       
       person.save
     end
@@ -207,7 +212,8 @@ class Importer
       end
       # If did not find the organization by code, create a new one.
       org = Lna::Organization.create!(hash)
-      add_to_info(NEW_ORG, hash[:label])
+      value = hash[:code] ? "#{hash[:label]}(#{hash[:code]})" : hash[:label]
+      add_to_warnings(NEW_ORG, value)
       return org
     else
       raise "More than one organization matched the fields: #{hash.to_s}."
@@ -221,20 +227,15 @@ class Importer
     mem_hash
   end
 
-  def add_to_info(k, v)
-    @info.key?(k) ? @info[k] << v : @info[k] = [v]
+  def add_to_warnings(k, v)
+    add_to_hash(@warnings, k, v)
   end
 
-  # print out errors and information(warnings)
-  # pretty prints errors. if verbose flag is set will also pretty print info
-  def output
-    
+  def add_to_errors(k, v)
+    add_to_hash(@errors, k, v)
   end
 
-  def send_email
-    #throw error if no email is set
-
-    add_to_info('Send email', 'at XX to YY')
+  def add_to_hash(hash, k, v)
+    hash.key?(k) ? hash[k] << v : hash[k] = [v]
   end
-
 end
