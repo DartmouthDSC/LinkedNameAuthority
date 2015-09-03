@@ -134,7 +134,7 @@ class Importer
           m.organization = find_or_create_org(hash[:membership][:org])
         end
         person.save!
-        add_to_warnings(NEW_MEM, "#{mem.title} for #{person.full_name}(#{netid})")
+        add_to_warnings(NEW_MEM, "'#{mem.title}' for #{person.full_name}(#{netid})")
       end
     else   # Create new person.
       # Checking arguments.
@@ -158,7 +158,7 @@ class Importer
       accnt = Lna::Account.create!(account_hash) do |a|
         a.account_holder = person
       end
-      add_to_warnings(NEW_ACCOUNT, "#{accnt.title} for #{person.full_name}(#{netid})")
+      add_to_warnings(NEW_ACCOUNT, "#{accnt.title} account for #{person.full_name}(#{netid})")
       
       # Make membership, belonging to org and person.
       mem_hash = clean_mem_hash(hash[:membership])
@@ -166,7 +166,7 @@ class Importer
         m.person = person
         m.organization = org
       end
-      add_to_warnings(NEW_MEM, "#{mem.title} for #{person.full_name}(#{netid})")
+      add_to_warnings(NEW_MEM, "'#{mem.title}' for #{person.full_name}(#{netid})")
       
       person.save
     end
@@ -197,6 +197,8 @@ class Importer
   #TODO: When comparing make sure that its case insensitive. Might already be based on how .where
   # works.
   def find_or_create_org(hash)
+    raise ArgumentError, 'Must have a label to find or create an organization.' if hash[:label]
+    
     orgs = Lna::Organization.where(hash) #probably throws errors too
     if orgs.count == 1
       return orgs.first

@@ -10,7 +10,8 @@
 	  The following errors/warnings were produced by the oracle load into LNA: <br/><br/>
 	
 	  <% @output.each do |type, notifications| %>
-	    <strong><%= notifications.count =%> <%= type.pluralize(notifications.count) =%></strong>
+	    <% a = notifications.collect { |_, v| v.count } %>
+	    <strong><%= a.sum =%> <%= type.pluralize(a.sum) =%></strong>
 	    <ul>
 		  <% notifications.each do |key, values| %>
 		    <li><%= key =%></li>
