@@ -5,9 +5,10 @@
   </head>
   <body>
 	<% if @output.empty? %>
-	  No errors or warnings were produced by the oracle load into LNA.
+	  No errors or warnings were produced by the load <%= 'from ' + @title if @title =%> to LNA.
 	<% else %>
-	  The following errors/warnings were produced by the oracle load into LNA: <br/><br/>
+	  The following errors/warnings were produced by the load from <%= 'from ' + @title if @title =%>to LNA:
+	  <br/><br/>
 	
 	  <% @output.each do |type, notifications| %>
 	    <% a = notifications.collect { |_, v| v.count } %>

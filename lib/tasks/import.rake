@@ -2,7 +2,7 @@ namespace :import do
 
   desc "Import faculty from Oracle."
   task oracle_faculty: :environment do
-    import = Importer.new(verbose: true, throw_errors: false, emails: 'carlamgalarza@gmail.com')
+    import = Importer.new(title: 'HR-faculty', verbose: true, throw_errors: false, emails: 'carlamgalarza@gmail.com')
     Oracle::Faculty.find_each do |person|
       import.into_lna(person.to_hash)
     end

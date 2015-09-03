@@ -14,7 +14,8 @@ class Importer
   # @param verbose [Boolean] 
   # @param throw_errors [Boolean] flag to throw errors after logging them
   # @param emails [Array<String>|String] array of emails or string containing one email
-  def initialize(verbose: true, throw_errors: true, emails: nil) 
+  def initialize(title: nil, verbose: true, throw_errors: true, emails: nil)
+    @title = title
     @verbose = verbose
     @throw_errors = throw_errors
     @emails = emails.is_a?(String) ? [emails] : emails
@@ -69,7 +70,7 @@ class Importer
   def send_email
     raise(ArgumentError, 'No email provided.') unless @emails
 
-    ImporterMailer.output_email(@emails, self.output).deliver_now
+    ImporterMailer.output_email(@title, @emails, self.output).deliver_now
     t = Time.now
     add_to_warnings(SENT_EMAIL, "to #{emails.join(', ')} on #{t.strftime('%c')}")
   end
