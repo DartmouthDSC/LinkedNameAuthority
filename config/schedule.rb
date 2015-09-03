@@ -2,9 +2,15 @@ require File.expand_path(File.dirname(__FILE__) + "/environment")
 
 # Use this file to easily define all of your cron jobs.
 
+# Cron log path.
+CRON_LOG = "#{Rails.root}/log/cron.log"
+
+# Where error emails will be sent.
 env :MAILTO, 'carlamgalarza@gmail.com'
 
-CRON_LOG = "#{Rails.root}/log/cron.log"
+# Set environment based on environmental variable otherwise
+# will always default to production.
+set :environment, "#{Rails.env}"
 
 # All output is written to cron.log and errors are emailed out.
 set :output, lambda { "2>&1 >> #{CRON_LOG} | tee --append  #{CRON_LOG} " }
