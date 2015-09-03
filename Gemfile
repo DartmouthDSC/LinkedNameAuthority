@@ -11,6 +11,9 @@ gem 'activerecord-oracle_enhanced-adapter', '~> 1.6.0'
 # branch includes org, p-plan, and bibo ontologies).
 gem 'rdf-vocab', github: 'ruby-rdf/rdf-vocab', branch: 'develop'
 
+# Used to run cron jobs.
+gem 'whenever'
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.0'
 # Use sqlite3 as the database for Active Record
