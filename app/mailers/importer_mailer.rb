@@ -5,7 +5,7 @@ class ImporterMailer < ApplicationMailer
   def output_email(title, emails, output)
     @title = title
     @output = output
-    subject = title ? "Load from #{title} to LNA" : "Load to LNA"
+    subject = title ? "Import from #{title} to LNA" : "Import to LNA"
     mail(to: emails, subject: subject)
   end
 end

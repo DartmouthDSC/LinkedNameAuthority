@@ -57,7 +57,9 @@ class Importer
     rescue NotImplementedError => e
       add_to_errors(e.message, hash.to_s)
       raise if @throw_errors
-    # if its an argument error display the hash?  
+    rescue ArgumentError => e
+      add_to_errors(e.message, hash.to_s)
+      raise if @throw_errors
     rescue Exception => e
       value = (hash[:person] && hash[:person][:full_name]) ?
                 "#{hash[:person][:full_name]}(#{hash[:netid]})" :
@@ -198,7 +200,7 @@ class Importer
   #TODO: When comparing make sure that its case insensitive. Might already be based on how .where
   # works.
   def find_or_create_org(hash)
-    raise ArgumentError, 'Must have a label to find or create an organization.' if hash[:label]
+    raise ArgumentError, 'Must have a label to find or create an organization.' unless hash[:label]
     
     orgs = Lna::Organization.where(hash) #probably throws errors too
     if orgs.count == 1

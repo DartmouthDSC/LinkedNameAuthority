@@ -223,6 +223,12 @@ RSpec.describe Importer do
       it 'org does not have a label' do
         hash = FactoryGirl.create(:lna_hash)
         hash[:membership][:org][:label] = nil
+        expect { @import.into_lna(hash) }.to raise_error ArgumentError
+      end
+
+      it 'person does not have a name' do
+        hash = FactoryGirl.create(:lna_hash)
+        hash[:person][:full_name] = nil
         expect { @import.into_lna(hash) }.to raise_error ActiveFedora::RecordInvalid
       end
     end

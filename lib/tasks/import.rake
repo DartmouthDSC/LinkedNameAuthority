@@ -7,6 +7,7 @@ namespace :import do
       import.into_lna(person.to_hash)
     end
     import.send_email
+    puts import.output.to_s
   end
 
   require 'pry'

@@ -5,9 +5,9 @@
   </head>
   <body>
 	<% if @output.empty? %>
-	  No errors or warnings were produced by the load <%= 'from ' + @title if @title =%> to LNA.
+	  No errors or warnings were produced by the import <%= 'from ' + @title if @title =%> to LNA.
 	<% else %>
-	  The following errors/warnings were produced by the load from <%= 'from ' + @title if @title =%>to LNA:
+	  The following errors/warnings were produced by the import from <%= 'from ' + @title if @title =%>to LNA:
 	  <br/><br/>
 	
 	  <% @output.each do |type, notifications| %>
