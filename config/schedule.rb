@@ -17,5 +17,5 @@ set :output, lambda { "2>&1 >> #{CRON_LOG} | tee --append  #{CRON_LOG} " }
 
 # Run oracle-faculty load once a day.
 every 1.day, :at => '3:00 am' do
-  rake "import:oracle-faculty"
+  rake "import:oracle_faculty"
 end
