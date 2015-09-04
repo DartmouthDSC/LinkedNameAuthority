@@ -89,8 +89,6 @@ module Oracle
         hash.delete(key)
       end
 
-      puts("Faculty: #{hash}")
-
 #     Return our (reduced) hash.
       return hash
       
