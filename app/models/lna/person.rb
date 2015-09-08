@@ -10,10 +10,12 @@ module Lna
     #Not Working.
     #has_many :organizations, through: :memberships, class_name: 'Lna::Organization'
   
-    belongs_to :primary_org, class_name: 'Lna::Organization',
+    belongs_to :primary_org, class_name: 'ActiveFedora::Base',
                predicate: ::RDF::Vocab::ORG.reportsTo
              
     validates_presence_of :primary_org, :full_name, :given_name, :family_name
+
+    validates :primary_org, type: { valid_types: [Lna::Organization, Lna::Organization::Historic] }
 
     type ::RDF::FOAF.Person
   

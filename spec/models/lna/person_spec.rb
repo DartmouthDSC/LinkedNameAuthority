@@ -79,6 +79,8 @@ RSpec.describe Lna::Person, type: :model do
     it 'is an Lna::Organization' do
       expect(subject.primary_org).to be_instance_of Lna::Organization
     end
+
+    it 'can be a Lna::Organization::Historic'
     
     it 'sets person in primary org' do
       expect(subject.primary_org.people).to include @jane
