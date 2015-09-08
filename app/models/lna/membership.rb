@@ -1,12 +1,15 @@
+require 'owl_time'
 module Lna
   class Membership < ActiveFedora::Base
     belongs_to :person, class_name: 'Lna::Person',
                predicate: ::RDF::Vocab::ORG.hasMember
-    belongs_to :organization, class_name: 'Lna::Organization',
+    belongs_to :organization, class_name: 'ActiveFedora::Base',
                predicate: ::RDF::Vocab::ORG.Organization
+
+    validates :organization,
+              type: { valid_types: [Lna::Organization, Lna::Organization::Historic] }
     
-    #validates_presence_of :person, :organization, :title, :member_during
-    validates_presence_of :person, :organization, :title
+    validates_presence_of :person, :organization, :title #, :start_date
     
     property :title, predicate: ::RDF::VCARD.title, multiple: false do |index|
       index.as :stored_searchable
@@ -38,8 +41,12 @@ module Lna
       index.as :displayable
     end
     
-    property :member_during, predicate: ::RDF::Vocab::ORG.memberDuring, multiple: false do |index|
-      index.as :displayable
+    property :begin_date, predicate: Vocabs::OwlTime.hasBeginning, multiple: false do |index|
+      index.as :dateable
+    end
+
+    property :end_date, predicate: Vocabs::OwlTime.hasEnd, multiple: false do |index|
+      index.as :dateable
     end
   end
 end

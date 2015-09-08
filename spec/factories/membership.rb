@@ -7,7 +7,6 @@ FactoryGirl.define do
     locality       'Hanover, NH'
     postal_code    '03755'
     country_name   'United States'
-    member_during  'July 1, 2015-'
 
     association    :organization, factory: :thayer
 

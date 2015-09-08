@@ -69,6 +69,8 @@ RSpec.describe Lna::Membership, type: :model do
       expect(subject.organization).to be_instance_of Lna::Organization
     end
 
+    it 'can be a Lna::Organization::Historic'
+    
     it 'contains this as one of its memberships' do
       expect(subject.organization.memberships).to include @prof
     end
@@ -109,11 +111,6 @@ RSpec.describe Lna::Membership, type: :model do
     
     it 'assure title is set' do
       subject.title = nil
-      expect(subject.save).to be false
-    end
-
-    it 'assure member during is set' do
-      subject.member_during = nil
       expect(subject.save).to be false
     end
 
