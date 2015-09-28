@@ -1,4 +1,5 @@
 require 'owl_time'
+require 'date'
 module Lna
   class Membership < ActiveFedora::Base
     belongs_to :person, class_name: 'Lna::Person',
@@ -47,6 +48,18 @@ module Lna
 
     property :end_date, predicate: Vocabs::OwlTime.hasEnd, multiple: false do |index|
       index.as :dateable
+    end
+
+    def begin_date=(d)
+      format = "%F"
+      if d.respond_to?('strftime')
+        return d.strftime(format)
+      elsif d.is_a?(String)
+        date = Date.parse(d)
+        return date.strftime(format)
+      else
+        raise ArgumentError, "begin_date cannot be a #{d.class}."
+      end
     end
   end
 end
