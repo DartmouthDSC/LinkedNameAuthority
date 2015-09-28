@@ -4,9 +4,9 @@ module Lna
     extend ActiveSupport::Concern
     included do
       has_many :people, class_name: 'Lna::Person', dependent: :restrict,
-               as: :primary_org
-      has_many :memberships, class_name: 'Lna::Membership', dependent: :destroy
-      #predicate: ::RDF::Vocab::ORG.organization
+               inverse_of: :primary_org, as: :primary_org
+      has_many :memberships, class_name: 'Lna::Membership', dependent: :destroy,
+               inverse_of: :organization
 
       belongs_to :resulted_from, class_name: 'Lna::Organization::ChangeEvent',
                  predicate: ::RDF::Vocab::ORG.resultedFrom

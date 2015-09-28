@@ -1,4 +1,5 @@
 require 'owl_time'
+
 module Lna
   class Organization
     class Historic < ActiveFedora::Base
