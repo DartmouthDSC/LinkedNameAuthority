@@ -1,13 +1,9 @@
 FactoryGirl.define do
-  factory :name_change, class: Lna::Organization::ChangeEvent do
-    at_time                 Time.now
-    description             'Organization name change.'
+  factory :code_change, class: Lna::Organization::ChangeEvent do
+    at_time     '2000-01-01'
+    description 'Organization code change.'
 
-    # Required to have one original_organization and at least one
-    # resulting organization.
-    after(:build) do |change_event|
-      change_event.original_organizations << FactoryGirl.create(:thayer, changed_by: change_event)
-      change_event.resulting_organizations << FactoryGirl.create(:thayer, label: 'thayer', resulted_from: change_event)
-    end
+    association :original_organizations, factory: :old_thayer
+    association :resulting_organizations, factory: :thayer
   end
 end
