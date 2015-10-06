@@ -7,7 +7,8 @@ FactoryGirl.define do
     locality       'Hanover, NH'
     postal_code    '03755'
     country_name   'United States'
-
+    begin_date     Date.today
+    
     association    :organization, factory: :thayer
 
     # To create less objects, the primary_org of the person is the same

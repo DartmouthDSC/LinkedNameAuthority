@@ -1,5 +1,5 @@
 require 'owl_time'
-require 'date'
+#require 'date'
 module Lna
   class Membership < ActiveFedora::Base
     belongs_to :person, class_name: 'Lna::Person',
@@ -43,23 +43,33 @@ module Lna
     end
     
     property :begin_date, predicate: Vocabs::OwlTime.hasBeginning, multiple: false do |index|
-      index.as :dateable
+      index.type :date
+      index.as :stored_searchable
     end
 
     property :end_date, predicate: Vocabs::OwlTime.hasEnd, multiple: false do |index|
-      index.as :dateable
+      index.type :date
+      index.as :stored_searchable
     end
 
+    # template that should be used for all properties that are dates.
     def begin_date=(d)
-      format = "%F"
-      if d.respond_to?('strftime')
-        return d.strftime(format)
+      if d.is_a?(::RDF::Literal::Date)
+        value = d
       elsif d.is_a?(String)
-        date = Date.parse(d)
-        return date.strftime(format)
+        begin
+          value = ::RDF::Literal.new(Date.parse(d))
+        rescue
+          raise ArgumentError, 'begin_date could not be converted to a date.'
+        end
+      elsif d.respond_to?('strftime')
+        date = Date.parse(d.strftime)
+        value = ::RDF::Literal.new(date)
       else
         raise ArgumentError, "begin_date cannot be a #{d.class}."
       end
+
+      set_value('begin_date', value)
     end
   end
 end
