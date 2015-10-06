@@ -2,18 +2,12 @@ module Lna
   class Organization
     class ChangeEvent < ActiveFedora::Base
       has_many :resulting_organizations, class_name: 'ActiveFedora::Base',
-               predicate: ::RDF::Vocab::ORG.resultingOrganization,
-               as: 'resulted_from'
+               predicate: ::RDF::Vocab::ORG.resultedFrom
       has_many :original_organizations, class_name: 'Lna::Organization::Historic',
-               predicate: ::RDF::Vocab::ORG.originalOrganization,
-               as: 'changed_by'
+               inverse_of: :changed_by, as: :changed_by
       
       validate :max_one_original_org
 
-      # Resulting organization must be a Lna::Organization or Lna::Organization::Historic
-      validates :resulting_organizations,
-               type: { valid_types: [Lna::Organization, Lna::Organization::Historic] }
-                                                                    
       validates_presence_of :resulting_organizations, :original_organizations,
                             :at_time, :description
   

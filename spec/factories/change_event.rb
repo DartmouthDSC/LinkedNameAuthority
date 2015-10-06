@@ -3,7 +3,9 @@ FactoryGirl.define do
     at_time     '2000-01-01'
     description 'Organization code change.'
 
-    association :original_organizations, factory: :old_thayer
-    association :resulting_organizations, factory: :thayer
+    after(:build) do |event|
+      event.original_organizations << FactoryGirl.create(:old_thayer, changed_by: event)
+      event.resulting_organizations << FactoryGirl.create(:thayer, resulted_from: event)
+    end
   end
 end
