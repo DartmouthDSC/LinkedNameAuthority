@@ -53,14 +53,27 @@ shared_examples_for 'organization_core_behavior' do |org|
     end
   end
   
-  describe '#resulted_from' do  #belongs_to relationship
-    #before :context do
-    #  org.resulted_from = FactoryGirl.create(:code_change)
-    it 'can be the result of a change event'
+  describe '#resulted_from' do
+    before :context do
+      org.resulted_from = FactoryGirl.create(:code_change)
+    end
+    
+    it 'can be the result of a change event' do
+      expect(org.resulted_from).to be_instance_of Lna::Organization::ChangeEvent
+    end
   end
 
   describe 'validations' do
-    it 'assures label is set'
-    it 'assures begin_date is set'
+    it 'assures label is set' do
+      org.label = nil
+      expect(org.save).to be false
+      org.reload
+    end
+    
+    it 'assures begin_date is set' do
+      org.begin_date = nil
+      expect(org.save).to be false
+      org.reload
+    end
   end
 end
