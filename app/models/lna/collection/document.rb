@@ -1,6 +1,8 @@
 module Lna
   class Collection
     class Document < ActiveFedora::Base
+      include DateHelpers
+      
       # is reviewed by many documents
       has_many :reviews, class_name: 'Lna::Collection::Document', inverse_of: :review_of,
                as: :review_of
@@ -61,6 +63,10 @@ module Lna
 
       property :doi, predicate: ::RDF::Vocab::BIBO.doi, multiple: false do |index|
         index.as :stored_searchable
+      end
+
+      def date=(d)
+        date_setter('date', d)
       end
     end
   end
