@@ -1,7 +1,7 @@
 module Lna
   class Collection
     class Document < ActiveFedora::Base
-      include DateHelpers
+      include DateHelper
       
       # is reviewed by many documents
       has_many :reviews, class_name: 'Lna::Collection::Document', inverse_of: :review_of,
