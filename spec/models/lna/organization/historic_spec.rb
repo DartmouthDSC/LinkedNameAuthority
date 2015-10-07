@@ -24,7 +24,8 @@ RSpec.describe Lna::Organization::Historic, type: :model do
     it { is_expected.to be_instance_of Lna::Organization::Historic }
 
     it 'sets end date' do
-      expect(subject.end_date).to match(/\d{4}-\d{2}-\d{2}/)
+      expect(subject.end_date).to be_instance_of Date
+      expect(subject.end_date.to_s).to eql '2000-01-01'
     end
 
     it 'sets historic placement'
@@ -33,5 +34,20 @@ RSpec.describe Lna::Organization::Historic, type: :model do
 
   context '#changed_by'
 
-  context 'validations'
+  context 'validations' do
+    before :example do
+      @old_thayer = FactoryGirl.create(:old_thayer)
+    end
+
+    after :example do
+      @old_thayer.destroy
+    end
+    
+    subject { @old_thayer }
+    
+    it 'assures end date is set' do
+      subject.end_date = nil
+      expect(subject.save).to be false
+    end
+  end
 end

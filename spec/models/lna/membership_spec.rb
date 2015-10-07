@@ -50,6 +50,16 @@ RSpec.describe Lna::Membership, type: :model do
     it 'sets country code' do
       expect(subject.country_name).to eql 'United States'
     end
+
+    it 'sets begin date' do
+      expect(subject.begin_date).to be_instance_of Date
+      expect(subject.begin_date.to_s).to eql Date.today.to_s
+    end
+    
+    it 'sets end date' do
+      expect(subject.end_date).to be_instance_of Date
+      expect(subject.end_date.to_s).to eql Date.tomorrow.to_s
+    end
   end
 
   describe '#organization' do
@@ -99,13 +109,14 @@ RSpec.describe Lna::Membership, type: :model do
   
   describe 'validations' do
     before :example do
-      @prof = FactoryGirl.build(:thayer_prof)
+      @prof = FactoryGirl.create(:thayer_prof)
     end
 
-   # after :example do
-   #   @prof.person.destroy
-   #   @prof.organization.destroy
-   # end
+    after :example do
+      @prof.reload
+      @prof.person.destroy
+      @prof.organization.destroy
+    end
 
     subject { @prof }
     
@@ -121,6 +132,11 @@ RSpec.describe Lna::Membership, type: :model do
 
     it 'assure person is set' do
       subject.person = nil
+      expect(subject.save).to be false
+    end
+
+    it 'assure begin_date is set' do
+      subject.begin_date = nil
       expect(subject.save).to be false
     end
   end

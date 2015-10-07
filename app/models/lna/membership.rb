@@ -12,7 +12,7 @@ module Lna
     validates :organization,
               type: { valid_types: [Lna::Organization, Lna::Organization::Historic] }
     
-    validates_presence_of :person, :organization, :title #, :start_date
+    validates_presence_of :person, :organization, :title, :begin_date
     
     property :title, predicate: ::RDF::VCARD.title, multiple: false do |index|
       index.as :stored_searchable

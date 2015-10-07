@@ -8,6 +8,7 @@ FactoryGirl.define do
     postal_code    '03755'
     country_name   'United States'
     begin_date     Date.today
+    end_date       Date.tomorrow
     
     association    :organization, factory: :thayer
 

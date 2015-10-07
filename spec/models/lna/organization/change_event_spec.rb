@@ -25,7 +25,10 @@ RSpec.describe Lna::Organization::ChangeEvent, type: :model do
     it { is_expected.to be_instance_of Lna::Organization::ChangeEvent }
     it { is_expected.to be_an ActiveFedora::Base }
     
-    it 'sets time'
+    it 'sets time' do
+      expect(subject.at_time).to be_instance_of Date
+      expect(subject.at_time.to_s).to eql '2000-01-01'
+    end
     
     it 'sets description' do
       expect(subject.description).to eql 'Organization code change.'
@@ -102,7 +105,10 @@ RSpec.describe Lna::Organization::ChangeEvent, type: :model do
     
     subject { @code_change }
 
-    it 'assures time is set'
+    it 'assures time is set' do
+      subject.at_time = nil
+      expect(subject.save).to be false
+    end
 
     it 'assured description is set' do
       subject.description = nil

@@ -25,7 +25,7 @@ shared_examples_for 'organization_core_behavior' do |org|
     end
     
     it 'sets begin_date' do
-      expect(org.begin_date).to match(/\d{4}-\d{2}-\d{2}/)
+      expect(org.begin_date).to be_an_instance_of Date
     end
   end
 
