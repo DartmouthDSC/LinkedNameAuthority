@@ -2,6 +2,8 @@ require 'owl_time'
 module Lna
   module OrganizationCoreBehavior
     extend ActiveSupport::Concern
+    include Lna::DateHelper
+    
     included do
       has_many :people, class_name: 'Lna::Person', dependent: :restrict,
                inverse_of: :primary_org, as: :primary_org
@@ -11,7 +13,7 @@ module Lna
       belongs_to :resulted_from, class_name: 'Lna::Organization::ChangeEvent',
                  predicate: ::RDF::Vocab::ORG.resultedFrom
 
-      validates_presence_of :label #, :begin_date
+      validates_presence_of :label, :begin_date
 
       type ::RDF::Vocab::ORG.Organization
 
@@ -28,8 +30,13 @@ module Lna
       end
 
       property :begin_date, predicate: Vocabs::OwlTime.hasBeginning, multiple: false do |index|
-        index.as :dateable
+        index.type :date
+        index.as :stored_searchable
       end
-    end      
+
+      def begin_date=(d)
+        date_setter('begin_date', d)
+      end
+    end
   end
 end
