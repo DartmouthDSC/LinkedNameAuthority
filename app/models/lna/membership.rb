@@ -1,9 +1,8 @@
 require 'owl_time'
-require 'date_helper'
 
 module Lna
   class Membership < ActiveFedora::Base
-    include ::DateHelper
+    include Lna::DateHelper
     
     belongs_to :person, class_name: 'Lna::Person',
                predicate: ::RDF::Vocab::ORG.hasMember
