@@ -4,19 +4,20 @@ module Lna
     has_many :memberships, class_name: 'Lna::Membership', dependent: :destroy
     has_many :accounts, class_name: 'Lna::Account', dependent: :destroy,
              as: :account_holder, inverse_of: :account_holder
-    has_many :collections, class_name: 'Lna::Collection', dependent: :destroy,
-             predicate: ::RDF::FOAF.publications
-  
-    #Not Working.
-    #has_many :organizations, through: :memberships, class_name: 'Lna::Organization'
-  
+    has_many :collections, class_name: 'Lna::Collection', dependent: :destroy
+
     belongs_to :primary_org, class_name: 'ActiveFedora::Base',
                predicate: ::RDF::Vocab::ORG.reportsTo
-             
-    validates_presence_of :primary_org, :full_name, :given_name, :family_name
 
+    # Create collection when the object is first created.
+    after_initialize :create_collection, if: :new_record?
+    
+    validates_presence_of :primary_org, :full_name, :given_name, :family_name, :collections
+    
+    validates :collections, length_is_one: true
+    
     validates :primary_org, type: { valid_types: [Lna::Organization, Lna::Organization::Historic] }
-
+    
     type ::RDF::FOAF.Person
   
     property :full_name, predicate: ::RDF::FOAF.name, multiple: false do |index|
@@ -72,6 +73,12 @@ module Lna
       end
       raise 'More than one membership was a match for the given hash.' if matching.count > 1
       return matching.count == 1 ? matching.first : false
+    end
+
+    private
+    
+    def create_collection
+      self.collections << Lna::Collection.create if self.collections.empty?
     end
   end
 end

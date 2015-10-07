@@ -2,15 +2,14 @@ module Lna
   class Collection
     class Document < ActiveFedora::Base
       # is reviewed by many documents
-      has_many :reviews, class_name: 'Lna::Collection::Document',
-               inverse_of: :review_of, as: :review_of
+      has_many :reviews, class_name: 'Lna::Collection::Document', inverse_of: :review_of,
+               as: :review_of
 
       # reviews one document
       belongs_to :review_of, class_name: 'Lna::Collection::Document',
-                 predicate ::RDF::Vocab::BIBO.reviewOf
+                 predicate: ::RDF::Vocab::BIBO.reviewOf
       
-      belongs_to :collection, class_name: 'Lna::Collection',
-                 predicate: ::RDF::DC.isPartOf
+      belongs_to :collection, class_name: 'Lna::Collection', predicate: ::RDF::DC.isPartOf
       
       validates_presence_of :collection, :author_list, :title
       
@@ -56,7 +55,7 @@ module Lna
         index.as :displayable
       end
       
-      property :uri_identifier, predicate: ::RDF::Vocab::BIBO.uri do |index|
+      property :canonical_uri, predicate: ::RDF::Vocab::BIBO.uri do |index|
         index.as :displayable
       end
 

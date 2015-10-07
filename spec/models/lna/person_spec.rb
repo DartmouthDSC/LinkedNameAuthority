@@ -61,6 +61,12 @@ RSpec.describe Lna::Person, type: :model do
     it 'sets homepage' do
       expect(subject.homepage).to eql ['http://janeadoe.dartmouth.edu']
     end
+
+    it 'creates a collection object' do
+      expect(subject.collections.count).to eql 1
+      expect(subject.collections.first).to be_instance_of Lna::Collection
+      expect(subject.collections.first.person.id).to eql subject.id
+    end
   end
 
   describe '#primary_org' do
@@ -175,6 +181,16 @@ RSpec.describe Lna::Person, type: :model do
 
     it 'assure primary organization is set' do
       subject.primary_org = nil
+      expect(subject.save).to be false
+    end
+
+    it 'assures there is not more than one collection' do
+      subject.collections << Lna::Collection.create(person: subject)
+      expect(subject.save).to be false
+    end
+
+    it 'assures there is at least one collection' do
+      subject.collections = []
       expect(subject.save).to be false
     end
   end
