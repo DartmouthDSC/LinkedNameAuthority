@@ -4,7 +4,7 @@ module Lna
     
     def date_setter(name, d)
       case d.class.name
-      when 'RDF::Literal::Date'
+      when 'RDF::Literal::Date', 'NilClass'
         value = d
       when 'String'
         begin
