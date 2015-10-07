@@ -8,7 +8,7 @@ module Lna
       has_many :original_organizations, class_name: 'Lna::Organization::Historic',
                inverse_of: :changed_by, as: :changed_by
       
-      validate :max_one_original_org
+      validates :original_organizations, length_is_one: true
 
       validates_presence_of :resulting_organizations, :original_organizations,
                             :at_time, :description
@@ -22,12 +22,6 @@ module Lna
         index.as :displayable
       end
       
-      def max_one_original_org
-        if original_organizations.size > 1
-          errors.add(:original_organizations, 'can\'t have more than 1 organization.')
-        end
-      end
-
       def at_time=(d)
         date_setter('at_time', d)
       end
