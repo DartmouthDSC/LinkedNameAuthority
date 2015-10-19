@@ -4,17 +4,20 @@ module Lna
       include DateHelper
       
       # is reviewed by many documents
-      has_many :reviews, class_name: 'Lna::Collection::Document', inverse_of: :review_of,
-               as: :review_of
+      has_many :reviews, class_name: 'Lna::Collection::Document', dependent: :destroy,
+               inverse_of: :review_of, as: :review_of
 
       # reviews one document
       belongs_to :review_of, class_name: 'Lna::Collection::Document',
                  predicate: ::RDF::Vocab::BIBO.reviewOf
       
       belongs_to :collection, class_name: 'Lna::Collection', predicate: ::RDF::DC.isPartOf
-      
-      validates_presence_of :collection, :author_list, :title
-      
+
+      # Assures that a document is part of a collection or a review of a document, but not both.
+      validate :part_of_collection_or_review_of
+
+      validates_presence_of :author_list, :title
+            
       type ::RDF::Vocab::BIBO.Document
       
       property :author_list, predicate: ::RDF::Vocab::BIBO.authorList, multiple: false do |index|
@@ -67,6 +70,18 @@ module Lna
 
       def date=(d)
         date_setter('date', d)
+      end
+
+      private
+
+      # Document must be part of a collection or be a review of a document.
+      # It cannot be both.
+      def part_of_collection_or_review_of
+        if self.collection && self.review_of
+          errors[:base] << 'Document cannot be a part of a collection and a review.'
+        elsif !self.collection && !self.review_of
+          errors[:base] << 'Document must be a part of a collection or a review, but not both.'
+        end
       end
     end
   end

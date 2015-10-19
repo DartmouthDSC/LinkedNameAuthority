@@ -12,7 +12,7 @@ module Lna
     # Create collection when the object is first created.
     after_initialize :create_collection, if: :new_record?
     
-    validates_presence_of :primary_org, :full_name, :given_name, :family_name, :collections
+    validates_presence_of :primary_org, :full_name, :given_name, :family_name
     
     validates :collections, length_is_one: true
     
@@ -78,7 +78,9 @@ module Lna
     private
     
     def create_collection
-      self.collections << Lna::Collection.create if self.collections.empty?
+      if collections.size == 0 # empty? creates a really odd behavior
+        collections << Lna::Collection.create(person: self)
+      end
     end
   end
 end

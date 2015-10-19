@@ -184,7 +184,7 @@ RSpec.describe Lna::Person, type: :model do
       expect(subject.save).to be false
     end
 
-    it 'assures there is not more than one collection' do
+    it 'assures there is no more than one collection' do
       subject.collections << Lna::Collection.create(person: subject)
       expect(subject.save).to be false
     end
