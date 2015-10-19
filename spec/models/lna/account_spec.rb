@@ -54,41 +54,33 @@ RSpec.describe Lna::Account, type: :model do
     it 'can be Lna::Organization' do
       orcid = FactoryGirl.create(:orcid_for_org)
       expect(orcid.account_holder).to be_a Lna::Organization
-      expect(orcid.account_holder.accounts).to include orcid # its own test?
+      expect(orcid.account_holder.accounts).to include orcid
       orcid.account_holder.destroy
     end
   end
 
   describe 'validations' do
     before :example do
-      @orcid = FactoryGirl.build(:orcid_for_person)
+      @orcid = FactoryGirl.create(:orcid_for_person)
     end
 
     after :example do
-      if @orcid.account_holder.is_a? Lna::Person
-        id = @orcid.account_holder.primary_org.id
-        @orcid.account_holder.destroy
-        Lna::Organization.find(id).destroy
-      end
+      @orcid.reload
+      id = @orcid.account_holder.primary_org.id
+      @orcid.account_holder.destroy
+      Lna::Organization.find(id).destroy
     end
     
     subject { @orcid }
     
     it 'assure account_holder is set' do
-      id = subject.account_holder.primary_org.id
-      subject.account_holder.destroy
-      Lna::Organization.find(id).destroy
       subject.account_holder = nil
       expect(subject.save).to be false
     end
 
     it 'assure account_holder is a person or organization' do
-      id = subject.account_holder.primary_org.id
-      subject.account_holder.destroy
-      Lna::Organization.find(id).destroy
-      subject.account_holder = FactoryGirl.create(:orcid_for_org)
+      subject.account_holder = ActiveFedora::Base.new
       expect(subject.save).to be false
-      subject.account_holder.account_holder.destroy
     end
     
     it 'assure title is set' do
