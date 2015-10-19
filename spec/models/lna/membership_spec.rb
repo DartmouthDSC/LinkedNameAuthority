@@ -79,7 +79,16 @@ RSpec.describe Lna::Membership, type: :model do
       expect(subject.organization).to be_instance_of Lna::Organization
     end
 
-    it 'can be a Lna::Organization::Historic'
+    it 'can be a Lna::Organization::Historic' do
+      historic_org = FactoryGirl.create(:old_thayer)
+      active_org = subject.organization
+      subject.organization = historic_org
+      expect(subject.save).to be true
+      expect(subject.organization).to be_instance_of Lna::Organization::Historic
+      subject.organization = active_org
+      subject.save
+      historic_org.destroy
+    end
     
     it 'contains this as one of its memberships' do
       expect(subject.organization.memberships).to include @prof
@@ -137,6 +146,11 @@ RSpec.describe Lna::Membership, type: :model do
 
     it 'assure begin_date is set' do
       subject.begin_date = nil
+      expect(subject.save).to be false
+    end
+
+    it 'assures organization is a Lna::Organization or Lna::Organization::Historic' do
+      subject.organization = ActiveFedora::Base.new
       expect(subject.save).to be false
     end
   end
