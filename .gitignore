@@ -17,5 +17,9 @@
 /tmp
 
 # Ignore file with environmental variables.
-/.env
+/.env*
+
+# Ignore compiled assets
+/public/assets
+
 
