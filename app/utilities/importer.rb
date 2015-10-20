@@ -135,6 +135,7 @@ class Importer
         mem = Lna::Membership.create!(mem_hash) do |m|
           m.person = person
           m.organization = find_or_create_org(hash[:membership][:org])
+          m.begin_date = Date.today
         end
         person.save!
         add_to_warnings(NEW_MEM, "'#{mem.title}' for #{person.full_name}(#{netid})")
@@ -168,6 +169,7 @@ class Importer
       mem = Lna::Membership.create!(mem_hash) do |m|
         m.person = person
         m.organization = org
+        m.begin_date = Date.today
       end
       add_to_warnings(NEW_MEM, "'#{mem.title}' for #{person.full_name}(#{netid})")
       
@@ -216,7 +218,9 @@ class Importer
         end
       end
       # If did not find the organization by code, create a new one.
-      org = Lna::Organization.create!(hash)
+      org = Lna::Organization.create!(hash) do |o|
+        o.begin_date = Date.today
+      end
       value = hash[:code] ? "#{hash[:label]}(#{hash[:code]})" : hash[:label]
       add_to_warnings(NEW_ORG, value)
       return org
