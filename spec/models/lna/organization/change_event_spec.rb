@@ -130,7 +130,5 @@ RSpec.describe Lna::Organization::ChangeEvent, type: :model do
       subject.resulting_organizations.destroy_all
       expect(subject.save).to be false
     end
-
-    it 'assures resulting organization is an organization'
   end
 end

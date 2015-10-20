@@ -1,79 +1,105 @@
 require 'spec_helper'
 
-shared_examples_for 'organization_core_behavior' do |org|
-  after :context do
-    org.reload
-    org.people.destroy_all
-    org.destroy
+shared_examples_for 'organization_core_behavior' do |factory|
+
+  before :context do
+    @org = FactoryGirl.create(factory)
   end
+  
+  after :context do
+    @org.reload
+    @org.people.destroy_all
+    @org.destroy
+  end
+
+  subject { @org }
 
   describe '.create' do
     it 'is a ActiveFedora::Base' do
-      expect(org).to be_an ActiveFedora::Base
+      expect(subject).to be_an ActiveFedora::Base
     end
     
     it 'sets label' do
-      expect(org.label).to eql 'Thayer School of Engineering'
+      expect(subject.label).to eql 'Thayer School of Engineering'
     end
   
     it 'sets alt_label' do
-      expect(org.alt_label).to match_array(['Engineering School', 'Thayer'])
+      expect(subject.alt_label).to match_array(['Engineering School', 'Thayer'])
     end
     
     it 'sets code' do 
-      expect(org.code).to start_with 'THAY'
+      expect(subject.code).to start_with 'THAY'
     end
     
     it 'sets begin_date' do
-      expect(org.begin_date).to be_an_instance_of Date
+      expect(subject.begin_date).to be_an_instance_of Date
     end
   end
 
   describe '#people' do
     before :context do 
-      org.people << FactoryGirl.create(:jane, primary_org: org)
-      org.save
+      @org.people << FactoryGirl.create(:jane, primary_org: @org)
+      @org.save
     end
     
     it 'can have a person' do
-      expect(org.people.count).to be >= 1
-      expect(org.people.first).to be_an_instance_of Lna::Person
+      expect(subject.people.count).to be >= 1
+      expect(subject.people.first).to be_an_instance_of Lna::Person
+    end
+
+    it 'can have multiple people' do
+      subject.people << FactoryGirl.create(:jane, primary_org: subject)
+      expect(subject.people.count).to eql 2
     end
   end
 
   describe '#memberships' do
     before :context do
-      org.memberships << FactoryGirl.create(:thayer_prof, organization: org)
-      org.save
+      @org.memberships << FactoryGirl.create(:thayer_prof, organization: @org)
+      @org.save
     end
     
     it 'can have a membership' do
-      expect(org.memberships.count).to be >= 1
-      expect(org.memberships.first).to be_an_instance_of Lna::Membership
+      expect(subject.memberships.count).to be >= 1
+      expect(subject.memberships.first).to be_an_instance_of Lna::Membership
+    end
+
+    it 'can have multiple memberships' do
+      subject.memberships << FactoryGirl.create(:thayer_prof, title: 'Dean of Thayer',
+                                            organization: subject)
+      expect(subject.memberships.count).to eql 2
     end
   end
   
   describe '#resulted_from' do
     before :context do
-      org.resulted_from = FactoryGirl.create(:code_change)
+      @change_event = FactoryGirl.create(:code_change, resulting_organizations: [@org])
+      @org.reload
+    end
+
+    after :context do
+      @org.resulted_from = nil
+      @org.save
+      @change_event.original_organizations.first.destroy
+      @change_event.destroy
     end
     
     it 'can be the result of a change event' do
-      expect(org.resulted_from).to be_instance_of Lna::Organization::ChangeEvent
+      expect(subject.resulted_from).to be_instance_of Lna::Organization::ChangeEvent
     end
   end
 
   describe 'validations' do
     it 'assures label is set' do
-      org.label = nil
-      expect(org.save).to be false
-      org.reload
+      subject.label = nil
+      expect(subject.save).to be false
+      subject.reload
     end
     
     it 'assures begin_date is set' do
-      org.begin_date = nil
-      expect(org.save).to be false
-      org.reload
+      subject.begin_date = nil
+      expect(subject.save).to be false
+      subject.reload
     end
   end
 end

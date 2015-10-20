@@ -4,8 +4,13 @@ FactoryGirl.define do
     description 'Organization code change.'
 
     after(:build) do |event|
-      event.original_organizations << FactoryGirl.create(:old_thayer, changed_by: event)
-      event.resulting_organizations << FactoryGirl.create(:thayer, resulted_from: event)
+      if event.original_organizations.size == 0
+        event.original_organizations << FactoryGirl.create(:old_thayer, changed_by: event)
+      end
+      
+      if event.resulting_organizations.size == 0
+        event.resulting_organizations << FactoryGirl.create(:thayer, resulted_from: event)
+      end
     end
   end
 end

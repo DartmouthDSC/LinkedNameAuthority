@@ -8,13 +8,13 @@ RSpec.describe Lna::Organization::Historic, type: :model do
     old_thayer.destroy
   end
 
-  it_behaves_like 'organization_core_behavior', FactoryGirl.create(:old_thayer)
+  it_behaves_like 'organization_core_behavior', :old_thayer
 
   context '.create' do
     before :context do
       @old_thayer = FactoryGirl.create(:old_thayer)
     end
-
+    
     after :context do
       @old_thayer.destroy
     end
@@ -32,7 +32,27 @@ RSpec.describe Lna::Organization::Historic, type: :model do
     
   end
 
-  context '#changed_by'
+  context '#changed_by' do
+    before :context do
+      @old_thayer = FactoryGirl.create(:old_thayer)
+      @new_thayer = FactoryGirl.create(:thayer)
+      @change_event = FactoryGirl.create(:code_change, resulting_organizations: [@new_thayer],
+                                         original_organizations: [@old_thayer])
+    end
+
+    after :context do
+      @old_thayer.destroy
+      @new_thayer.destroy
+      @change_event.destroy
+    end
+
+    subject { @old_thayer }
+    
+    it 'can have one changed_by event' do
+      expect(subject.changed_by).to be_instance_of Lna::Organization::ChangeEvent
+      expect(subject.changed_by).to be @change_event
+    end
+  end
 
   context 'validations' do
     before :example do
