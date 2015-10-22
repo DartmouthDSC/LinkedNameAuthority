@@ -61,5 +61,13 @@ module Lna
     def end_date=(d)
       date_setter('end_date', d)
     end
+
+    def ended?
+      end_date != nil
+    end
+
+    def active?
+      end_date == nil
+    end
   end
 end
