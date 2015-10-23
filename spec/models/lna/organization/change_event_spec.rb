@@ -55,6 +55,8 @@ RSpec.describe Lna::Organization::ChangeEvent, type: :model do
     it 'original organization is historic' do
       expect(subject.original_organizations.first).to be_instance_of Lna::Organization::Historic
     end
+
+    it 'can have multiple original organizations'
   end
 
   context '#resulting_organizations' do    
@@ -115,11 +117,6 @@ RSpec.describe Lna::Organization::ChangeEvent, type: :model do
       expect(subject.save).to be false
     end
     
-    it 'assures that there is only one original organization' do
-      subject.original_organizations << FactoryGirl.create(:old_thayer)
-      expect(subject.save).to be false
-    end
-
     it 'assures original organization is historic' do
       new = FactoryGirl.create(:thayer)
       expect { subject.original_organizations << new }.to raise_error ActiveFedora::AssociationTypeMismatch
@@ -129,6 +126,21 @@ RSpec.describe Lna::Organization::ChangeEvent, type: :model do
     it 'assures there is at least one resulting organization' do
       subject.resulting_organizations.destroy_all
       expect(subject.save).to be false
+    end
+  end
+
+  context '.trigger_change_event' do
+    before :context do
+      thayer = FactoryGirl.create(:thayer)
+      @active = Lna::Organization::ChangeEvent.trigger_change_event(
+        thayer, 'code change', { code: 'THAYER' }
+      )
+    end
+
+    subject { @active }
+
+    it 'active organization has change_by event' do
+      expect(@active.resulted_from.description).to eql 'code change'
     end
   end
 end
