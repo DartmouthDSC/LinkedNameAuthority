@@ -3,8 +3,17 @@ source 'https://rubygems.org'
 # Main hydra gem.
 gem 'hydra', '9.1.0.rc1'
 
+# Oracle gem.
+gem 'ruby-oci8'
+gem 'activerecord-oracle_enhanced-adapter', '~> 1.6.0'
+
+gem 'rdf-vocab'
+
+# Used to run cron jobs.
+gem 'whenever'
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.0'
+gem 'rails', '4.2.4'
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
 # Use SCSS for stylesheets
@@ -49,9 +58,11 @@ end
 gem 'rsolr', '~> 1.0.6'
 gem 'devise'
 gem 'omniauth-cas'
-gem 'devise-guests', '~> 0.3'
+
 group :development, :test do
   gem 'rspec-rails'
   gem 'factory_girl_rails'
+  gem 'dotenv-rails'
 # gem 'jettywrapper' # Remove because we aren't using hydra-jetty
+  gem 'pry-nav'
 end

@@ -23,3 +23,20 @@ test:
 production:
   <<: *default
   database: db/production.sqlite3
+
+oracle_default: &oracle_default
+  adapter: oracle_enhanced
+  username: <%= ENV['LNA_ORACLE_USERNAME'] %>
+  password: <%= ENV['LNA_ORACLE_PASSWORD'] %>
+
+oracle_development:
+  <<: *oracle_default
+  database: lib_dev
+
+oracle_test:
+  <<: *oracle_default
+  database: lib_dev
+
+oracle_production:
+  <<: *oracle_default
+  database: library

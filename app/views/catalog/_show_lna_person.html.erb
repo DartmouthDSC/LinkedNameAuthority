@@ -1,0 +1,17 @@
+<%= render partial: 'show_default', locals: { document: @document } =%>
+
+
+<% Lna::Membership.find_in_batches(hasMember_ssim: @document.id) do |results| %>
+  <% results.each do |appoint| %>
+    <h3><%= appoint['title_tesim'].first =%> appointment</h3>
+    <%= render partial: 'show_default', locals: { document: SolrDocument.new(appoint) } =%>
+  <% end %>
+<% end %>
+
+
+<% Lna::Account.find_in_batches(account_ssim: @document.id) do |results| %>
+  <% results.each do |account| %>
+    <h3><%= account['title_tesim'].first =%> account</h3>
+    <%= render partial: 'show_default', locals: { document: SolrDocument.new(account) } =%>
+  <% end %>
+<% end %>	
