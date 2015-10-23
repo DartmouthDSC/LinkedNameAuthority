@@ -10,7 +10,13 @@ module Lna
     has_and_belongs_to_many :super_organizations, class_name: 'Lna::Organization',
                             predicate: ::RDF::Vocab::ORG.subOrganizationOf
 
-    
+
+    # Serializes organization, as per our needs, only supers of supers and subs of subs are
+    # serialized. By not placing this limitation this method would infinitly recurse.
+    #
+    # @param [Hash] options Optional options that can be provided to the method.
+    # @option options [Symbol] :only specified whether super or sub should be serialized
+    # @return [Hash] serialization in hash form
     def serialize(options = {})
       hash =
         {
@@ -34,6 +40,9 @@ module Lna
       hash
     end
 
+    # Retuns json serialization of object. Serialization is based of the serialize method.
+    #
+    # @return [String] json string of serialization
     def json_serialization
       JSON.generate(self.serialize)
     end

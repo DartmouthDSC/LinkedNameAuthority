@@ -108,4 +108,63 @@ RSpec.describe Lna::Organization, type: :model do
       expect(subject.super_organizations).to include pres
     end
   end
+
+  describe '#serialize' do
+    before :context do
+      @sub_org = FactoryGirl.create(:thayer, label: 'Thayer Career Services', code: 'CRE')
+      @super_org = FactoryGirl.create(:thayer, label: 'Office of the President', code: 'PREZ')
+      @org = FactoryGirl.create(:thayer, super_organizations: [@super_org],
+                                sub_organizations: [@sub_org])
+      @s = @org.serialize
+    end
+
+    after :context do
+      @sub_org.destroy
+      @super_org.destroy
+      @org.destroy
+    end
+
+    subject { @s }
+
+    it 'returns hash' do
+      expect(subject).to be_instance_of Hash
+    end
+
+    it 'hash contains organization attributes' do
+      expect(subject[:label]).to eql 'Thayer School of Engineering'
+      expect(subject[:code]).to eql 'THAY'
+      expect(subject[:alt_label]).to be_instance_of Array
+      expect(subject[:alt_label]).to match_array(['Engineering School', 'Thayer'])
+      expect(subject[:begin_date]).to eql '2000-01-01'
+    end
+    
+    it 'hash contains super organization' do
+      expect(subject[:super_organizations][0][:label]).to eql 'Office of the President'
+    end
+
+    it 'hash contain sub organizations' do
+      expect(subject[:sub_organizations][0][:label]).to eql 'Thayer Career Services'
+    end
+  end
+  
+  describe '#json_serialization' do
+    before :context do
+      @org = FactoryGirl.create(:thayer)
+      @s = @org.json_serialization
+    end
+
+    after :context do
+      @org.destroy
+    end
+
+    subject { @s }
+    
+    it 'return a string' do
+      expect(subject).to be_instance_of String
+    end
+    
+    it 'can be converted to a hash using JSON.parse' do
+      expect(JSON.parse(subject)).to be_instance_of Hash
+    end
+  end
 end
