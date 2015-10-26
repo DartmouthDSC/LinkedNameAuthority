@@ -9,10 +9,12 @@ module Lna
     belongs_to :organization, class_name: 'ActiveFedora::Base',
                predicate: ::RDF::Vocab::ORG.Organization
 
+    validates_presence_of :person, :organization, :title, :begin_date
+    
     validates :organization,
               type: { valid_types: [Lna::Organization, Lna::Organization::Historic] }
-    
-    validates_presence_of :person, :organization, :title, :begin_date
+
+    validates :end_date, date: { on_or_after: :begin_date }, if: :ended?
     
     property :title, predicate: ::RDF::VCARD.title, multiple: false do |index|
       index.as :stored_searchable

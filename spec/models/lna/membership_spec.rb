@@ -149,6 +149,17 @@ RSpec.describe Lna::Membership, type: :model do
       expect(subject.save).to be false
     end
 
+    it 'assure end_date is after begin_date' do
+      subject.end_date = subject.begin_date - 3
+      expect(subject.save).to be false
+    end
+    
+    it 'assure begin_date is before end_date' do
+      subject.begin_date = Date.tomorrow
+      subject.end_date = Date.today
+      expect(subject.save).to be false
+    end
+
     it 'assures organization is a Lna::Organization or Lna::Organization::Historic' do
       subject.organization = ActiveFedora::Base.new
       expect(subject.save).to be false
