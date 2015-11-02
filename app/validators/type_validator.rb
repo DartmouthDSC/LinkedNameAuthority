@@ -3,8 +3,8 @@ class TypeValidator < ActiveModel::EachValidator
   # A hash with types must be present.
   # 
   # @example Usage
-  #   validate :resulting_organizations,
-  #            association_type: { types: [Lna::Organization, Lna::Organization::Historic] }
+  #   validates :resulting_organizations,
+  #             association_type: { types: [Lna::Organization, Lna::Organization::Historic] }
   # 
   def validate_each(record, attribute, value)
     if !options[:valid_types]
