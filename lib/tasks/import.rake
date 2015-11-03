@@ -2,12 +2,13 @@ namespace :import do
 
   desc "Import faculty from Oracle."
   task oracle_faculty: :environment do
-    import = Importer.new(title: 'HR-faculty', verbose: true, throw_errors: false, emails: 'carlamgalarza@gmail.com')
+    require 'yaml'
+    import = Importer.new(title: 'HR-faculty', verbose: true, throw_errors: false, emails: ENV['IMPORTER_EMAIL_NOTICES'])
     Oracle::Faculty.find_each do |person|
       import.into_lna(person.to_hash)
     end
     import.send_email
-    puts import.output.to_s
+    puts "[#{Time.now}] Output from Faculty Load\n #{import.output.to_yaml}"
   end
 
   require 'pry'
