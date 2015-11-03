@@ -6,7 +6,7 @@ class Ability
 
     # Permissions needed for hydra-role-management
     if current_user.admin?
-      can [:edit, :create, :show, :add_user, :remove_user, :index], Role
+      can [:create, :show, :add_user, :remove_user, :index, :edit, :update, :destroy], Role
     end
     
     # Limits deleting objects to a the admin user
