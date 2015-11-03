@@ -1,12 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe Lna::Person, type: :model do
-
   it 'has valid factory' do
     jane = FactoryGirl.create(:jane)
     expect(jane).to be_truthy
-    jane.primary_org.destroy
+    id = jane.primary_org.id
     jane.destroy
+    Lna::Organization.find(id).destroy
   end
 
   describe '.create' do
@@ -15,8 +15,9 @@ RSpec.describe Lna::Person, type: :model do
     end
     
     after :context do
-      @jane.primary_org.destroy
+      id = @jane.primary_org.id
       @jane.destroy
+      Lna::Organization.find(id).destroy
     end
 
     subject { @jane }
@@ -59,6 +60,12 @@ RSpec.describe Lna::Person, type: :model do
     it 'sets homepage' do
       expect(subject.homepage).to eql ['http://janeadoe.dartmouth.edu']
     end
+
+    it 'creates a collection object' do
+      expect(subject.collections.count).to eql 1
+      expect(subject.collections.first).to be_instance_of Lna::Collection
+      expect(subject.collections.first.person.id).to eql subject.id
+    end
   end
 
   describe '#primary_org' do
@@ -67,8 +74,9 @@ RSpec.describe Lna::Person, type: :model do
     end
 
     after :context do
-      @jane.primary_org.destroy
+      id = @jane.primary_org.id
       @jane.destroy
+      Lna::Organization.find(id).destroy
     end
 
     subject { @jane }
@@ -76,14 +84,23 @@ RSpec.describe Lna::Person, type: :model do
     it 'is an Lna::Organization' do
       expect(subject.primary_org).to be_instance_of Lna::Organization
     end
+
+    it 'can be a Lna::Organization::Historic' do
+      active_id = subject.primary_org.id
+      subject.primary_org = FactoryGirl.create(:old_thayer)
+      subject.save
+      expect(subject.primary_org).to be_instance_of Lna::Organization::Historic
+      historic_id = subject.primary_org.id
+      subject.primary_org = Lna::Organization.find(active_id)
+      subject.save
+      Lna::Organization::Historic.find(historic_id).destroy
+    end
     
     it 'sets person in primary org' do
       expect(subject.primary_org.people).to include @jane
     end
   end
   
-  describe '#collection'
-
   describe '#accounts' do
     before :context do
       @jane = FactoryGirl.create(:jane)
@@ -91,8 +108,9 @@ RSpec.describe Lna::Person, type: :model do
     end
     
     after :context do
-      @jane.primary_org.destroy
+      id = @jane.primary_org.id
       @jane.destroy
+      Lna::Organization.find(id).destroy
     end
 
     subject { @jane }
@@ -123,8 +141,8 @@ RSpec.describe Lna::Person, type: :model do
     end
 
     after :context do
-      @prof.organization.destroy
       @prof.person.destroy
+      @prof.organization.destroy
     end
     
     it 'is a Lna::Membership' do
@@ -136,17 +154,24 @@ RSpec.describe Lna::Person, type: :model do
       expect(@prof.person).to eq @jane
     end
 
-    it 'can have more than one membership'
+    it 'can have more than one membership' do
+      dean = FactoryGirl.create(:thayer_prof, title: 'Dean of Thayer', person: @jane,
+                                organization: @jane.primary_org)
+      @jane.reload
+      expect(@jane.memberships).to match [@prof, dean]
+    end
   end
 
   describe 'validations' do
     before :example do
-      @jane = FactoryGirl.build(:jane)
+      @jane = FactoryGirl.create(:jane)
     end
 
     after :example do
-      @jane.primary_org.destroy if @jane.primary_org
+      @jane.reload
+      id = @jane.primary_org.id
       @jane.destroy
+      Lna::Organization.find(id).destroy
     end
 
     subject { @jane }
@@ -168,6 +193,21 @@ RSpec.describe Lna::Person, type: :model do
 
     it 'assure primary organization is set' do
       subject.primary_org = nil
+      expect(subject.save).to be false
+    end
+
+    it 'assures there is no more than one collection' do
+      subject.collections << Lna::Collection.create(person: subject)
+      expect(subject.save).to be false
+    end
+
+    it 'assures there is at least one collection' do
+      subject.collections = []
+      expect(subject.save).to be false
+    end
+
+    it 'assures primary_org is an Lna::Organization or Lna::Organization::Historic' do
+      subject.primary_org = ActiveFedora::Base.new
       expect(subject.save).to be false
     end
   end

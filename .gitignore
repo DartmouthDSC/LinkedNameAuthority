@@ -15,3 +15,11 @@
 /log/*
 !/log/.keep
 /tmp
+
+# Ignore file with environmental variables.
+/.env*
+
+# Ignore compiled assets
+/public/assets
+
+

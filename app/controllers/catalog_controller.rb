@@ -19,13 +19,13 @@ class CatalogController < ApplicationController
   configure_blacklight do |config|
     config.search_builder_class = Hydra::SearchBuilder
     config.default_solr_params = {
-      :qf => 'dc_netid_tesim foaf_name_tesim foaf_given_name_tesim foaf_family_name_tesim foaf_title_tesim vcard_title_tesim vcard_org_tesim time_has_beginning_dtsim time_has_end_dtism dc_title_tesim foaf_account_name_tesim foaf_account_service_homepage_tesim',
+      :qf => 'full_name_ssm given_name_tesim family_name_tesim title_tesim account_name_ssim account_service_homepage_ssm',
       :qt => 'search',
       :rows => 10
     }
 
     # solr field configuration for search results/index views
-    config.index.title_field = ['foaf_name_tesim', 'dc_title_tesim', 'vcard_title_tesim']
+    config.index.title_field = ['full_name_ssm', 'title_tesim', 'label_tesim']
     config.index.display_type_field = 'active_fedora_model_ssi'
 
 
@@ -57,7 +57,7 @@ class CatalogController < ApplicationController
     config.add_facet_field solr_name('language', :facetable), :label => 'Language', :limit => true
     config.add_facet_field solr_name('lc1_letter', :facetable), :label => 'Call Number'
     config.add_facet_field solr_name('subject_geo', :facetable), :label => 'Region'
-    config.add_facet_field solr_name('subject_era', :facetable), :label => 'Era'
+    config.add_facet_field solr_name('code', :stored_searchable), label: 'Dept Code'
 
     # Have BL send all facet field names to Solr, which has been the default
     # previously. Simply remove these lines if you'd rather use Solr request
@@ -69,49 +69,44 @@ class CatalogController < ApplicationController
 
     # solr fields to be displayed in the index (search results) view
     # The ordering of the field names is the order of the display
-    # LnaPerson
-    config.add_index_field solr_name('foaf_title', :stored_searchable), label: 'Title'
-    config.add_index_field solr_name('foaf_name', :stored_searchable), label: 'Name'
-    # LnaAccount
-    config.add_index_field solr_name('dc_title', :stored_searchable), label: 'Title'
-    config.add_index_field solr_name('foaf_account_name', :stored_searchable), label: 'Account Name'
-    # LnaAppointment
-    config.add_index_field solr_name('vcard_title', :stored_searchable), label: 'Title'
-    config.add_index_field solr_name('vcard_org', :stored_searchable), label: 'Org'
-    config.add_index_field solr_name('time_has_beginning', :dateable), label: 'Begins'
-    config.add_index_field solr_name('tims_has_end', :dateable), label: 'Ends'
+    # Lna::Person
+    config.add_index_field solr_name('full_name', :stored_searchable), label: 'Name'
+    # Lna::Account
+    config.add_index_field solr_name('title', :stored_searchable), label: 'Title'
+    config.add_index_field solr_name('account_name', :stored_searchable), label: 'Account Name'
+    # Lna::Membership
+    config.add_index_field solr_name('organization', :stored_searchable), label: 'Organization'
+    # Lna::Organization
+    config.add_index_field solr_name('label', :stored_searchable), label: 'Name'
     
-
     # solr fields to be displayed in the show (single result) view
     # The ordering of the field names is the order of the display
-    # LnaPerson
-    config.add_show_field solr_name('foaf_title', :stored_searchable), label: 'Title'
-    config.add_show_field solr_name('foaf_name', :stored_searchable), label: 'Name'
-    config.add_show_field solr_name('foaf_given_name', :stored_searchable), label: 'Given Name'
-    config.add_show_field solr_name('foaf_family_name', :stored_searchable), label: 'Family Name'
-    config.add_show_field solr_name('dc_netid', :stored_searchable), label: 'NetID'
-    config.add_show_field solr_name('foaf_image', :displayable), label: 'Image'
-    config.add_show_field solr_name('foaf_mbox', :displayable), label: 'MBox'
-    config.add_show_field solr_name('foaf_homepage', :displayable), label: 'Homepage'
-    config.add_show_field solr_name('foaf_publications', :displayable), label: 'Publications'
-    config.add_show_field solr_name('foaf_workplace_homepage', :displayable), label: 'Workplace Homepage'
-    # LnaAppointment
-    config.add_show_field solr_name('vcard_title', :stored_searchable), label: 'Title'
-    config.add_show_field solr_name('vcard_email', :stored_searchable), label: 'Email'
-    config.add_show_field solr_name('vcard_org', :stored_searchable), label: 'Org'
-    config.add_show_field solr_name('vcard_street_address', :displayable), label: 'Street Address'
-    config.add_show_field solr_name('vcard_pobox', :displayable), label: 'P.O. Box'
-    config.add_show_field solr_name('vcard_locality', :displayable), label: 'Locality'
-    config.add_show_field solr_name('vcard_postal_code', :displayable), label: 'Postal Code'
-    config.add_show_field solr_name('vcard_country_name', :displayable), label: 'Country'
-    config.add_show_field solr_name('time_has_beginning', :dateable), label: 'Begins'
-    config.add_show_field solr_name('time_has_end', :dateable), label: 'Ends'
-    # Lna Account
-    config.add_show_field solr_name('dc_title', :stored_searchable), label: 'Title'
-    config.add_show_field solr_name('foaf_online_account', :displayable), label: 'Online Account'
-    config.add_show_field solr_name('foaf_account_name', :stored_searchable), label: 'Account Name'
-    config.add_show_field solr_name('foaf_account_service_homepage', :stored_searchable), label: 'Account Service Homepage'
-
+    # Lna::Person
+    config.add_show_field solr_name('title', :displayable), label: 'Title'
+    config.add_show_field solr_name('full_name', :displayable), label: 'Name'
+    config.add_show_field solr_name('given_name', :stored_searchable), label: 'Given Name'
+    config.add_show_field solr_name('family_name', :stored_searchable), label: 'Family Name'
+    config.add_show_field solr_name('image', :displayable), label: 'Image'
+    config.add_show_field solr_name('mbox', :displayable), label: 'MBox'
+    config.add_show_field solr_name('homepage', :stored_searchable), label: 'Homepage'
+    # Lna::Membership
+    config.add_show_field solr_name('title', :stored_searchable), label: 'Title'
+    config.add_show_field solr_name('email', :displayable), label: 'Email'
+    config.add_show_field solr_name('street_address', :displayable), label: 'Street Address'
+    config.add_show_field solr_name('pobox', :displayable), label: 'P.O. Box'
+    config.add_show_field solr_name('locality', :displayable), label: 'Locality'
+    config.add_show_field solr_name('postal_code', :displayable), label: 'Postal Code'
+    config.add_show_field solr_name('country_name', :displayable), label: 'Country'
+    config.add_show_field solr_name('member_during', :displayable), label: 'Begins'
+    # Lna::Account
+    config.add_show_field solr_name('online_account', :stored_searchable), label: 'Online Account'
+    config.add_show_field solr_name('account_name', :stored_searchable), label: 'Account Name'
+    config.add_show_field solr_name('account_service_homepage', :stored_searchable), label: 'Account Service Homepage'
+    # Lna::Organization
+    config.add_show_field solr_name('label', :stored_searchable), label: 'Name'
+    config.add_show_field solr_name('alt_label', :stored_searchable), label: 'Alt. Names'
+    config.add_show_field solr_name('code', :stored_searchable), label: 'Code'
+    
     config.add_show_field 'isDependentOf_ssim', label: 'Belongs to'
     
     # "fielded" search configuration. Used by pulldown among other places.

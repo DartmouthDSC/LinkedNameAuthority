@@ -6,12 +6,17 @@ gem 'hydra', '9.1.0.rc1'
 # Hydra Role Mangement gem.
 gem 'hydra-role-management'
 
-# Use my version of rdf-vocab (includes org and bibo ontology)
-gem 'rdf-vocab', git: 'git@github.com:DartmouthDSC/rdf-vocab.git',
-    branch: 'new-vocabs'
+# Oracle gem.
+gem 'ruby-oci8'
+gem 'activerecord-oracle_enhanced-adapter', '~> 1.6.0'
+
+gem 'rdf-vocab'
+
+# Used to run cron jobs.
+gem 'whenever'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.0'
+gem 'rails', '4.2.4'
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
 # Use SCSS for stylesheets
@@ -60,5 +65,7 @@ gem 'omniauth-cas'
 group :development, :test do
   gem 'rspec-rails'
   gem 'factory_girl_rails'
+  gem 'dotenv-rails'
 # gem 'jettywrapper' # Remove because we aren't using hydra-jetty
+  gem 'pry-nav'
 end
