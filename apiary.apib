@@ -1,0 +1,485 @@
+FORMAT: 1A
+HOST: http://linkednameauthority.apiblueprint.org/
+
+# linkednameauthority
+
+LNA API for Dartmouth College (v0.1.0)
+
+## Path index and valid methods
+
+- /persons/{page} - GET, POST
+- /person/ - POST
+- /person/{id} - GET, PUT, DELETE
+- /person/{id}/account/{account_id}/ - POST, PUT, DELETE
+- /person/{id}/orcid/ - GET, PUT
+- /person/{id}/membership/{membership_id} - POST, PUT, DELETE
+- /person/{id}/works/ - GET
+- /person/{id}/works/{startDate} - GET
+- /person/{id}/work/ - POST
+- /works/{page} - GET, POST
+- /works/{startDate}/{page} - GET, POST
+- /work/{id} - GET, PUT, DELETE
+- /work/{id}/license/{license_id} - POST, PUT, DELETE
+- /organizations/{page} - GET, POST
+- /organization/ - POST
+- /organization/{id} - GET, PUT, DELETE
+- /organization/{id}/changeTo - POST
+
+Generally speaking, GET and POST paths use content negotiation to determine a response. text/html and application/ld+json are supported. PUT, PATCH, and DELETE methods may only respond with application/ld+json.
+
+For LDP compliance, application/x-turtle may be added in the future.
+
+## Persons Collection [/persons/{page}]
+Paginated by *page*, limited to 100 results, foaf:family_name ASC foaf:given_name ASC
+
+If *page* is absent, page 1 is returned.
+
+Organizations are appended to the graph if they are referenced by person nodes.
+
+Pagination is controlled using header links, which only appear as appropriate.
+
+### List all Persons [GET]
+
++ Parameters
+    
+    + page (number, optional) - Which page of the result set to return
+        +default: '1'
+
++ Response 200 (application/ld+json)
+
+    + Headers
+    
+            Link: http://lna.dartmouth.edu/persons/1>; rel="first"
+            Link: http://lna.dartmouth.edu/persons/5>; rel="next"
+            Link: http://lna.dartmouth.edu/persons/3>; rel="prev"
+
+    + Body
+    
+            {
+                "@context: {
+                    "foaf": "http://xmlns.com/foaf/0.1/",
+                    "org": "http://www.w3.org/ns/org#",
+                    "skos": "http://www.w3.org/2004/02/skos/core#"
+                },
+                @id: "http://lna.dartmouth.edu/persons/{page}",
+                "generatedAt": "2015-10-30T09:30:10Z",
+                "status": "success",
+                @graph: [
+                    {
+                        "@id": "http://lna.dartmouth.edu/person/1",
+                        "@type": "http://xmlns.com/foaf/0.1/Person",
+                        "foaf:givenName": "John",
+                        "foaf:familyName": "Bell",
+                        "foaf:title": "Dr.",
+                        "foaf:mbox": "john.p.bell@dartmouth.edu",
+                        "org:reportsTo": "http://lna.dartmouth.edu/organization/3"
+                    },
+                    {
+                        "@id": "http://lna.dartmouth.edu/person/2",
+                        "@type": "http://xmlns.com/foaf/0.1/Person",
+                        "foaf:givenName": "Carla",
+                        "foaf:familyName": "Galarza",
+                        "foaf:title": "Ms.",
+                        "foaf:mbox": "carla.m.galarza@dartmouth.edu",
+                        "org:reportsTo": "http://lna.dartmouth.edu/organization/1"
+                    },
+                    {
+                        "@id": "http://lna.dartmouth.edu/organization/1",
+                        "@type": "http://www.w3.org/ns/org#Organization",
+                        "skos:prefLabel": "Dartmouth College Library"
+                    },
+                    {
+                        "@id": "http://lna.dartmouth.edu/organization/3",
+                        "@type": "http://www.w3.org/ns/org#Organization",
+                        "skos:prefLabel": "Dartmouth ITS"
+                    }
+                ]
+            }
+        
++ Response 200 (text/html)
+
+        <html>Human readable interface</html>
+
+### Search for a list of Persons [POST]
+Request parameters listed are search options and can be mixed as needed.
+
++ Parameters
+
+    + page (number, optional) - Which page of the result set to return
+        +default: '1'
+
++ Request (application/ld+json)
+
+        {   "foaf:name": "John Bell"    }
+        {   "foaf:givenName": "John"    }
+        {   "foaf:familyName": "Bell"   }
+        {   "org:member": "ITS"         }
+
++ Response 200 (application/ld+json)
+
+    + Headers
+    
+            Link: http://lna.dartmouth.edu/persons/1>; rel="first"
+            Link: http://lna.dartmouth.edu/persons/5>; rel="next"
+            Link: http://lna.dartmouth.edu/persons/3>; rel="prev"
+            
+    + Body
+    
+            {
+                "@context: {
+                    "foaf": "http://xmlns.com/foaf/0.1/",
+                    "org": "http://www.w3.org/ns/org#",
+                    "skos": "http://www.w3.org/2004/02/skos/core#"
+                },
+                @id: "http://lna.dartmouth.edu/persons/{page}",
+                "generatedAt": "2015-10-30T09:30:10Z",
+                "queryString": "foaf:givenName=John&org:member="ITS",
+                "status": "success",
+                @graph: [
+                    {
+                        "@id": "http://lna.dartmouth.edu/person/1",
+                        "@type": "http://xmlns.com/foaf/0.1/Person",
+                        "foaf:givenName": "John",
+                        "foaf:familyName": "Bell",
+                        "foaf:title": "Dr.",
+                        "foaf:mbox": "john.p.bell@dartmouth.edu",
+                        "org:reportsTo": "http://lna.dartmouth.edu/organization/3"
+                    },
+                    {
+                        "@id": "http://lna.dartmouth.edu/person/2",
+                        "@type": "http://xmlns.com/foaf/0.1/Person",
+                        "foaf:givenName": "Carla",
+                        "foaf:familyName": "Galarza",
+                        "foaf:title": "Ms.",
+                        "foaf:mbox": "carla.m.galarza@dartmouth.edu",
+                        "org:reportsTo": "http://lna.dartmouth.edu/organization/1"
+                    },
+                    {
+                        "@id": "http://lna.dartmouth.edu/organization/1",
+                        "@type": "http://www.w3.org/ns/org#Organization",
+                        "skos:prefLabel": "Dartmouth College Library"
+                    },
+                    {
+                        "@id": "http://lna.dartmouth.edu/organization/3",
+                        "@type": "http://www.w3.org/ns/org#Organization",
+                        "skos:prefLabel": "Dartmouth ITS"
+                    }
+                ]
+            }
+        
++ Response 200 (text/html)
+
+    + Headers
+    
+            Link: http://lna.dartmouth.edu/persons/1>; rel="first"
+            Link: http://lna.dartmouth.edu/persons/5>; rel="next"
+            Link: http://lna.dartmouth.edu/persons/3>; rel="prev"
+            
+    + Body
+
+            <html>Human readable interface</html>
+
+## Person [/person/{id}]
+
+### Retrieve a Person [GET]
+
++ Parameters
+
+    + id - The ID of the person to get. If omitted, redirect to /persons/ for text/html and error for application/ld+json.
+
++ Request (text/html)
+
+        { id: null }
+        
++ Response 303
+
+    + Headers
+    
+            Location: /persons/
+
++ Request (application/ld+json)
+
+        { id: null }
+        
++ Response 400
+
++ Request (application/ld+json)
+
+        { id: 1 }
+
++ Response 200 (application/ld+json)
+
+        {
+            "@context: {
+                "foaf": "http://xmlns.com/foaf/0.1/",
+                "org": "http://www.w3.org/ns/org#",
+                "skos": "http://www.w3.org/2004/02/skos/core#",
+                "dc": "http://purl.org/dc/elements/1.1/",
+                "vcard": "http://www.w3.org/2006/vcard/ns#",
+                "owltime": "http://www.w3.org/TR/owl-time#"
+            },
+            "skos:primarySubject": {"@id": "http://lna.dartmouth.edu/person/1"},
+            "generatedAt": "2015-10-30T09:30:10Z",
+            "status": "success",
+            "@graph":
+            [   
+                {
+                    "@id": "http://lna.dartmouth.edu/person/1",
+                    "@type": "http://xmlns.com/foaf/0.1/Person",
+                    "foaf:givenName": "John",
+                    "foaf:familyName": "Bell",
+                    "foaf:title": "Dr.",
+                    "foaf:mbox": "john.p.bell@dartmouth.edu",
+                    "foaf:mbox_sha1sum": "a92c12a703e002b7dc3cdc3234017e2983c3549d",
+                    "foaf:account": [
+                        {"@id": "#account1"},
+                        {"@id": "#account2")
+                    ],
+                    "foaf:publications": "http://lna.dartmouth.edu/person/1/works",
+                    "org:reportsTo": "http://lna.dartmouth.edu/organization/3",
+                    "@reverse":
+                    {
+                        "org:member": [
+                            {"@id": "#membership1"},
+                            {"@id": "#membership2"}
+                        ]
+                    }
+                },
+                {
+                    "@id": "#account1",
+                    "@type": "http://xmlns.com/foaf/0.1/OnlineAccount",
+                    "dc:title": "ORCID",
+                    "foaf:accountName": "http://orcid.org/0000-0003-0514-1585",
+                    "foaf:accountServiceHomepage": "http://orcid.org/"
+                },
+                {
+                    "@id": "#account2",
+                    "@type": "http://xmlns.com/foaf/0.1/OnlineAccount",
+                    "dc:title": "Dartmouth NetID",
+                    "foaf:accountName": "q827b3n",
+                    "foaf:accountServiceHomepage": "http://tech.dartmouth.edu/its/services-support/help-yourself/netid-lookup"
+                },
+                {
+                    "@id": "#membership1",
+                    "@type": "http://www.w3.org/ns/org#Membership",
+                    "org:organization": "http://lna.dartmouth.edu/organization/3",
+                    "vcard:email": "john.p.bell@dartmouth.edu",
+                    "vcard:title": "Lead Application Developer",
+                    "vcard:street-address": "Hinman Box 6028, Berry Library",
+                    "vcard:postal-code": "03755",
+                    "vcard:country-name": "United States",
+                    "vcard:locality": "Lebanon, NH",
+                    "owltime:hasBeginning": "2015-08-20",
+                    "owltime:hasEnd": ""
+                },
+                {
+                    "@id": "#membership2",
+                    "@type": "http://www.w3.org/ns/org#Membership",
+                    "org:organization": "http://lna.dartmouth.edu/organization/5",
+                    "vcard:email": "john.p.bell@dartmouth.edu",
+                    "vcard:title": "Test Dummy",
+                    "vcard:street-address": "Hinman Box 6028, Berry Library",
+                    "vcard:postal-code": "03755",
+                    "vcard:country-name": "United States",
+                    "vcard:locality": "Lebanon, NH",
+                    "owltime:hasBeginning": "2015-08-20",
+                    "owltime:hasEnd": ""
+                },
+                {
+                    "@id": "http://lna.dartmouth.edu/organization/5",
+                    "@type": "http://www.w3.org/ns/org#Organization",
+                    "skos:prefLabel": "Dartmouth Crash Testing Corps"
+                },
+                {
+                    "@id": "http://lna.dartmouth.edu/organization/3",
+                    "@type": "http://www.w3.org/ns/org#Organization",
+                    "skos:prefLabel": "Dartmouth ITS"
+                }
+            ]
+            
+        }
+
++ Request (text/html)
+
+        { id: 1 }
+        
++ Response 200 (text/html)
+
+        <html>Human readable interface</html>        
+
+### Create a New Person [POST]
+
++ Parameters
+    + id - if ID is included when POSTing, it will be ignored
+
++ Request (application/ld+json)
+
+        {            
+            "@context: {
+                "foaf": "http://xmlns.com/foaf/0.1/"
+            },
+            "@type": "http://xmlns.com/foaf/0.1/Person",
+            "foaf:name": "John Bell",
+            "foaf:givenName": "John",
+            "foaf:familyName": "Bell",
+            "foaf:title": "Dr.",
+            "foaf:mbox": "john.p.bell@dartmouth.edu",
+            "foaf:homepage": "http://novomancy.org/"
+        }
+        
++ Response 201 (application/ld+json)
+
+    + Headers
+
+            Location: /person/3
+
+    + Body
+
+            {
+                "@context: {
+                    "foaf": "http://xmlns.com/foaf/0.1/"
+                },
+                "status": "success",
+                "@id": "http://lna.dartmouth.edu/person/1",
+                "@type": "http://xmlns.com/foaf/0.1/Person",
+                "foaf:givenName": "John",
+                "foaf:familyName": "Bell",
+                "foaf:title": "Dr.",
+                "foaf:mbox": "john.p.bell@dartmouth.edu",
+                "foaf:mbox_sha1sum": "a92c12a703e002b7dc3cdc3234017e2983c3549d"
+            }
+
+### Update an existing Person [PUT]
+
++ Parameters
+    + id (number, required) - ID of the Person to update
+
++ Request (application/ld+json)
+
+        {            
+            "@context: {
+                "foaf": "http://xmlns.com/foaf/0.1/"
+            },
+            "@type": "http://xmlns.com/foaf/0.1/Person",
+            "foaf:name": "John Bell",
+            "foaf:givenName": "John",
+            "foaf:familyName": "Bell",
+            "foaf:title": "Dr.",
+            "foaf:mbox": "john.p.bell@dartmouth.edu",
+            "foaf:homepage": "http://novomancy.org/"
+        }
+        
++ Response 200 (application/ld+json)
+
+    + Headers
+
+            Location: /person/3
+
+    + Body
+
+            {
+                "@context: {
+                    "foaf": "http://xmlns.com/foaf/0.1/"
+                },
+                "status": "success",
+                "@id": "http://lna.dartmouth.edu/person/1",
+                "@type": "http://xmlns.com/foaf/0.1/Person",
+                "foaf:givenName": "John",
+                "foaf:familyName": "Bell",
+                "foaf:title": "Dr.",
+                "foaf:mbox": "john.p.bell@dartmouth.edu",
+                "foaf:mbox_sha1sum": "a92c12a703e002b7dc3cdc3234017e2983c3549d"
+            }
+
+### Delete an existing Person [DELETE]
+
++ Parameters
+    + id (number, required) - ID of the Person to delete
+
++ Request (application/ld+json)
+
++ Response 200 (application/ld+json)
+
+    + Body
+    
+            { "status": "success" }
+
+## Person Accounts [/person/{id}/account/{account_id}]
+
+### Create an account identifier [POST]
+
+### Update an account identifier [PUT]
+
+### Delete an account identifier [DELETE]
+
+## Person ORCID Accounts convenience function [/person/{id}/orcid/]
+
+### Retrieve an ORCID account [GET]
+
+### Update an ORCID account [PUT]
+
+### Delete an ORCID account [DELETE]
+
+## Person Memberships [/person/{id}/membership/{membership_id}/]
+
+### Create a membership [POST]
+
+### Update a membership [PUT]
+
+### Delete a membership [DELETE]
+
+## Person's Works Collection [/person/{id}/works/{startDate}/]
+
+### Retrieve a list of a person's works [GET]
+
+## Add a New Work by a Person [/person/{id}/work/]
+
+### Create a new work [POST]
+
+## Works Collections [/works/{page}/]
+
+### Get a paginated list of all works [GET]
+
+### Search for a list of matching works [POST]
+
+## Recent Works Collections convenience function [/works/{startDate}/{page}/]
+
+### Get a paginated list of all works since a certain date [GET]
+
+### Search for a list of matching works since a certain date [POST]
+
+## Work [/work/{id}]
+
+### Retrieve a Work [GET]
+
+### Update a Work [PUT]
+
+### Delete a Work [DELETE]
+
+## Work License [/work/{id}/license/{license_id}/]
+
+### Create a license [POST]
+
+### Update a license [PUT]
+
+### Delete a license [DELETE]
+
+## Organizations Collection [/organizations/{page}/]
+
+### Retrieve a list of all Organizations [GET]
+
+### Search for a list of Organizations [POST]
+
+## Organization [/organization/{id}]
+
+### Create an Organization [POST]
+
+### Retreive an Organization [GET]
+
+### Update an Organization [PUT]
+
+### Delete an Organization [DELETE]
+
+## Change Events [/organization/{id}/changeTo]
+
+### Migrate one Ogranization to Another [POST]
