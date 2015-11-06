@@ -5,7 +5,7 @@ module PPlan
     
     validates_presence_of :steps, :description, :title
     
-    property :description, predicate: ::RDF::DC.description, multiple: false
-    property :title, predicate: ::RDF::DC.title, multiple: false
+    property :description, predicate: ::RDF::Vocab::DC.description, multiple: false
+    property :title, predicate: ::RDF::Vocab::DC.title, multiple: false
   end
 end

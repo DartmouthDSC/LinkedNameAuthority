@@ -17,11 +17,11 @@ module Lna
 
       type ::RDF::Vocab::ORG.Organization
 
-      property :label, predicate: ::RDF::SKOS.prefLabel, multiple: false do |index|
+      property :label, predicate: ::RDF::Vocab::SKOS.prefLabel, multiple: false do |index|
         index.as :stored_searchable
       end
 
-      property :alt_label, predicate: ::RDF::SKOS.altLabel do |index|
+      property :alt_label, predicate: ::RDF::Vocab::SKOS.altLabel do |index|
         index.as :stored_searchable
       end
 

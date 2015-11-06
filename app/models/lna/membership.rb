@@ -16,32 +16,32 @@ module Lna
 
     validates :end_date, date: { on_or_after: :begin_date }, if: :ended?
     
-    property :title, predicate: ::RDF::VCARD.title, multiple: false do |index|
+    property :title, predicate: ::RDF::Vocab::VCARD.title, multiple: false do |index|
       index.as :stored_searchable
     end
     
-    property :email, predicate: ::RDF::VCARD.email, multiple: false do |index|
+    property :email, predicate: ::RDF::Vocab::VCARD.email, multiple: false do |index|
       index.as :displayable
     end
     
-    property :street_address, predicate: ::RDF::VCARD['street-address'],
+    property :street_address, predicate: ::RDF::Vocab::VCARD['street-address'],
              multiple: false do |index|
       index.as :displayable
     end
     
-    property :pobox, predicate: ::RDF::VCARD['post-office-box'], multiple: false do |index|
+    property :pobox, predicate: ::RDF::Vocab::VCARD['post-office-box'], multiple: false do |index|
       index.as :displayable
     end
     
-    property :locality, predicate: ::RDF::VCARD.locality, multiple: false do |index|
+    property :locality, predicate: ::RDF::Vocab::VCARD.locality, multiple: false do |index|
       index.as :displayable
     end
   
-    property :postal_code, predicate: ::RDF::VCARD['postal-code'], multiple: false do |index|
+    property :postal_code, predicate: ::RDF::Vocab::VCARD['postal-code'], multiple: false do |index|
       index.as :displayable
     end
     
-    property :country_name, predicate: ::RDF::VCARD['country-name'],
+    property :country_name, predicate: ::RDF::Vocab::VCARD['country-name'],
            multiple: false do |index|
       index.as :displayable
     end

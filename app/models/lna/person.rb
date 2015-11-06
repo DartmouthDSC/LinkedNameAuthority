@@ -18,37 +18,37 @@ module Lna
     
     validates :primary_org, type: { valid_types: [Lna::Organization, Lna::Organization::Historic] }
     
-    type ::RDF::FOAF.Person
+    type ::RDF::Vocab::FOAF.Person
   
-    property :full_name, predicate: ::RDF::FOAF.name, multiple: false do |index|
+    property :full_name, predicate: ::RDF::Vocab::FOAF.name, multiple: false do |index|
       index.as :displayable
     end
 
-    property :given_name, predicate: ::RDF::FOAF.givenName, multiple: false do |index|
+    property :given_name, predicate: ::RDF::Vocab::FOAF.givenName, multiple: false do |index|
       index.as :stored_searchable
     end
     
-    property :family_name, predicate: ::RDF::FOAF.familyName, multiple: false do |index|
+    property :family_name, predicate: ::RDF::Vocab::FOAF.familyName, multiple: false do |index|
       index.as :stored_searchable
     end
     
-    property :title, predicate: ::RDF::FOAF.title, multiple: false do |index|
+    property :title, predicate: ::RDF::Vocab::FOAF.title, multiple: false do |index|
       index.as :displayable
     end
     
-    property :image, predicate: ::RDF::FOAF.img, multiple: false do |index|
+    property :image, predicate: ::RDF::Vocab::FOAF.img, multiple: false do |index|
       index.as :displayable
     end
     
-    property :mbox, predicate: ::RDF::FOAF.mbox, multiple: false do |index|
+    property :mbox, predicate: ::RDF::Vocab::FOAF.mbox, multiple: false do |index|
       index.as :displayable
     end
     
-    property :mbox_sha1sum, predicate: ::RDF::FOAF.mbox_sha1sum, multiple: false do |index|
+    property :mbox_sha1sum, predicate: ::RDF::Vocab::FOAF.mbox_sha1sum, multiple: false do |index|
       index.as :stored_searchable
     end
     
-    property :homepage, predicate: ::RDF::FOAF.homepage do |index|
+    property :homepage, predicate: ::RDF::Vocab::FOAF.homepage do |index|
       index.as :stored_searchable
     end  
 

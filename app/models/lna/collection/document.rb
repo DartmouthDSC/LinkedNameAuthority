@@ -11,7 +11,7 @@ module Lna
       belongs_to :review_of, class_name: 'Lna::Collection::Document',
                  predicate: ::RDF::Vocab::BIBO.reviewOf
       
-      belongs_to :collection, class_name: 'Lna::Collection', predicate: ::RDF::DC.isPartOf
+      belongs_to :collection, class_name: 'Lna::Collection', predicate: ::RDF::Vocab::DC.isPartOf
 
       # Assures that a document is part of a collection or a review of a document, but not both.
       validate :part_of_collection_or_review_of
@@ -24,15 +24,15 @@ module Lna
         index.as :stored_searchable
       end
       
-      property :publisher, predicate: ::RDF::DC.publisher, multiple: false do |index|
+      property :publisher, predicate: ::RDF::Vocab::DC.publisher, multiple: false do |index|
         index.as :displayable
       end
       
-      property :date, predicate: ::RDF::DC.date, multiple: false do |index|
+      property :date, predicate: ::RDF::Vocab::DC.date, multiple: false do |index|
         index.as :displayable
       end
       
-      property :title, predicate: ::RDF::DC.title, multiple: false do |index|
+      property :title, predicate: ::RDF::Vocab::DC.title, multiple: false do |index|
         index.as :stored_searchable
       end
       

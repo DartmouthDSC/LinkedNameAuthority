@@ -12,8 +12,8 @@ module PPlan
     validate :has_one_next, :previous_is_not_used
     validates_presence_of :plan, :description, :title
     
-    property :description, predicate: ::RDF::DC.description, multiple: false
-    property :title, predicate: ::RDF::DC.title, multiple: false
+    property :description, predicate: ::RDF::Vocab::DC.description, multiple: false
+    property :title, predicate: ::RDF::Vocab::DC.title, multiple: false
     
     def has_one_next
       if self.next.size > 1

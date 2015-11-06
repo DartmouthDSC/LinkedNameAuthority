@@ -11,12 +11,12 @@ module Lna
       validates_presence_of :resulting_organizations, :original_organizations,
                             :at_time, :description
   
-      property :at_time, predicate: ::RDF::PROV.atTime, multiple: false do |index|
+      property :at_time, predicate: ::RDF::Vocab::PROV.atTime, multiple: false do |index|
         index.type :date
         index.as :displayable
       end
       
-      property :description, predicate: ::RDF::DC.description, multiple: false do |index|
+      property :description, predicate: ::RDF::Vocab::DC.description, multiple: false do |index|
         index.as :displayable
       end
       
