@@ -20,17 +20,17 @@ GEM
       erubis (~> 2.7.0)
       rails-dom-testing (~> 1.0, >= 1.0.5)
       rails-html-sanitizer (~> 1.0, >= 1.0.2)
-    active-fedora (9.1.2)
-      active-triples (~> 0.6.0)
+    active-fedora (9.5.0)
+      active-triples (~> 0.7.1)
       activesupport (>= 4.1.0)
       deprecation
-      ldp (~> 0.3.0)
+      ldp (~> 0.4.0)
       linkeddata
       nom-xml (>= 0.5.1)
       om (~> 3.1)
       rdf-rdfxml (~> 1.1.0)
       rsolr (~> 1.0.10)
-    active-triples (0.6.1)
+    active-triples (0.7.2)
       activemodel (>= 3.0.0)
       activesupport (>= 3.0.0)
       deprecation (~> 0.1)
@@ -123,19 +123,6 @@ GEM
     hashie (3.4.3)
     htmlentities (4.3.4)
     http_logger (0.5.1)
-    hydra (9.1.0.rc1)
-      active-fedora (~> 9.1.1)
-      active-triples (~> 0.6.0)
-      blacklight (~> 5.13.1)
-      hydra-head (~> 9.1.4)
-      jettywrapper (~> 2.0.0)
-      ldp (~> 0.3.0)
-      nokogiri (~> 1.6.5)
-      nom-xml (~> 0.5.1)
-      om (~> 3.1.0)
-      rails (~> 4.1)
-      rsolr (~> 1.0.10)
-      solrizer (~> 3.3.0)
     hydra-access-controls (9.1.4)
       active-fedora (~> 9.0)
       activesupport (~> 4.0)
@@ -172,7 +159,7 @@ GEM
     kaminari (0.16.3)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
-    ldp (0.3.1)
+    ldp (0.4.1)
       faraday
       http_logger
       linkeddata (>= 1.1)
@@ -393,22 +380,30 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  active-fedora (~> 9.5.0)
+  active-triples (~> 0.7.0)
   activerecord-oracle_enhanced-adapter (~> 1.6.0)
+  blacklight (~> 5.13.1)
   byebug
   devise
   dotenv-rails
   factory_girl_rails
-  hydra (= 9.1.0.rc1)
+  hydra-head (~> 9.1.4)
   jbuilder (~> 2.0)
   jquery-rails
+  ldp (~> 0.4.0)
+  nokogiri (~> 1.6.5)
+  nom-xml (~> 0.5.1)
+  om (~> 3.1.0)
   omniauth-cas
   pry-nav
   rails (= 4.2.4)
   rdf-vocab
-  rsolr (~> 1.0.6)
+  rsolr (~> 1.0.10)
   rspec-rails
   ruby-oci8
   sass-rails (~> 5.0)
+  solrizer (~> 3.3.0)
   spring
   sqlite3
   therubyracer
