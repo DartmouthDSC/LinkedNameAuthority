@@ -21,15 +21,15 @@ module Lna
     type ::RDF::Vocab::FOAF.Person
   
     property :full_name, predicate: ::RDF::Vocab::FOAF.name, multiple: false do |index|
-      index.as :displayable
+      index.as Solrizer::Descriptor.new(:text, :stored, :indexed)
     end
 
     property :given_name, predicate: ::RDF::Vocab::FOAF.givenName, multiple: false do |index|
-      index.as :stored_searchable
+      index.as :stored_sortable
     end
     
     property :family_name, predicate: ::RDF::Vocab::FOAF.familyName, multiple: false do |index|
-      index.as :stored_searchable
+      index.as :stored_sortable
     end
     
     property :title, predicate: ::RDF::Vocab::FOAF.title, multiple: false do |index|
@@ -41,7 +41,7 @@ module Lna
     end
     
     property :mbox, predicate: ::RDF::Vocab::FOAF.mbox, multiple: false do |index|
-      index.as :displayable
+      index.as Solrizer::Descriptor.new(:string, :stored)
     end
     
     property :mbox_sha1sum, predicate: ::RDF::Vocab::FOAF.mbox_sha1sum, multiple: false do |index|
@@ -74,7 +74,7 @@ module Lna
       raise 'More than one membership was a match for the given hash.' if matching.count > 1
       return matching.count == 1 ? matching.first : false
     end
-
+   
     private
     
     def create_collection

@@ -8,6 +8,11 @@ Rails.application.routes.draw do
     get 'sign_in', to: 'users/sessions#new', as: :new_user_session
     get 'sign_out', to: 'users/sessions#destroy', as: :destroy_user_session
   end
+
+  get '/persons/:page', to: 'persons#index', defaults: { page: '1' }
+  get '/person/:id', to: 'persons#show'
+
+  get '/personstwo/:page', to: 'person_two#index'
   
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
