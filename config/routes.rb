@@ -10,8 +10,11 @@ Rails.application.routes.draw do
   end
 
   get '/persons/:page', to: 'persons#index', defaults: { page: '1' }
-  get '/person/:id', to: 'persons#show'
+  
+  get '/person/:id', to: 'persons#show', as: :person_path
 
+  get '/organization/:id', to: 'organizations#show', as: :organization_path
+  
   get '/personstwo/:page', to: 'person_two#index'
   
   # The priority is based upon order of creation: first created -> highest priority.

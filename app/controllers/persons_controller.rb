@@ -20,11 +20,19 @@ class PersonsController < ActionController::Base
     args[:start] = page * ROWS if page > 1
     
     @persons = ActiveFedora::SolrService.query("*:*", args)
+
+    org_ids = @persons.map { |p| p['reportsTo_ssim'].first }
+    query = ActiveFedora::SolrQueryBuilder.construct_query_for_ids(org_ids.uniq)
+    @organizations = ActiveFedora::SolrService.query(query)    
   end
 
   def show
     query = ActiveFedora::SolrQueryBuilder.construct_query_for_ids([params[:id]])
     @person = ActiveFedora::SolrService.query(query)
+
+    query = ActiveFedora::SolrQueryBuilder.construct_query([['has_model_ssim', 'Lna::Membership'], ['hasMember_ssim', @person.first['id']]])
+    @memberships = ActiveFedora::SolrService.query(query)
+    @organizations
   end
 
   private
