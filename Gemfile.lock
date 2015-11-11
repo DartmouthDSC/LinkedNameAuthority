@@ -395,7 +395,6 @@ PLATFORMS
 DEPENDENCIES
   activerecord-oracle_enhanced-adapter (~> 1.6.0)
   byebug
-  coffee-rails (~> 4.1.0)
   devise
   dotenv-rails
   factory_girl_rails
