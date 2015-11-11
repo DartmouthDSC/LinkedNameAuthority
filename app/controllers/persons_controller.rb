@@ -30,9 +30,22 @@ class PersonsController < ActionController::Base
     query = ActiveFedora::SolrQueryBuilder.construct_query_for_ids([params[:id]])
     @person = ActiveFedora::SolrService.query(query)
 
-    query = ActiveFedora::SolrQueryBuilder.construct_query([['has_model_ssim', 'Lna::Membership'], ['hasMember_ssim', @person.first['id']]])
+    query = ActiveFedora::SolrQueryBuilder.construct_query(
+      [
+        ['has_model_ssim', 'Lna::Membership'],
+        ['hasMember_ssim', @person.first['id']]
+      ]
+    )
     @memberships = ActiveFedora::SolrService.query(query)
-    @organizations
+
+    
+    query = ActiveFedora::SolrQueryBuilder.construct_query(
+      [
+        ['has_model_ssim', 'Lna::Account'],
+        ['account_ssim', @person.first['id']]
+      ]
+    )
+    @accounts = ActiveFedora::SolrService.query(query) 
   end
 
   private
