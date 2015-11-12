@@ -21,7 +21,7 @@ module Lna
     type ::RDF::Vocab::FOAF.Person
   
     property :full_name, predicate: ::RDF::Vocab::FOAF.name, multiple: false do |index|
-      index.as Solrizer::Descriptor.new(:text, :stored, :indexed)
+      index.as :stored_searchable
     end
 
     property :given_name, predicate: ::RDF::Vocab::FOAF.givenName, multiple: false do |index|
@@ -49,7 +49,7 @@ module Lna
     end
     
     property :homepage, predicate: ::RDF::Vocab::FOAF.homepage do |index|
-      index.as :stored_searchable
+      index.as :multiple_stored_searchable
     end  
 
     # Find memberships for this person that match based on the given hash.

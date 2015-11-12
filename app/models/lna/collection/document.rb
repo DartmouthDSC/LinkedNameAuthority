@@ -61,7 +61,7 @@ module Lna
       end
       
       property :canonical_uri, predicate: ::RDF::Vocab::BIBO.uri do |index|
-        index.as :displayable
+        index.as :multiple_displayable
       end
 
       property :doi, predicate: ::RDF::Vocab::BIBO.doi, multiple: false do |index|

@@ -22,7 +22,7 @@ module Lna
       end
 
       property :alt_label, predicate: ::RDF::Vocab::SKOS.altLabel do |index|
-        index.as :stored_searchable
+        index.as :multiple_stored_searchable
       end
 
       property :code, predicate: ::RDF::Vocab::ORG.identifier, multiple: false do |index|
