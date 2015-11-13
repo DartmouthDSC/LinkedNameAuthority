@@ -62,6 +62,7 @@ RSpec.describe Lna::Person, type: :model do
     end
 
     it 'creates a collection object' do
+      subject.reload
       expect(subject.collections.count).to eql 1
       expect(subject.collections.first).to be_instance_of Lna::Collection
       expect(subject.collections.first.person.id).to eql subject.id
