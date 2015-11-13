@@ -36,6 +36,11 @@ module Lna
       @displayable ||= Solrizer::Descriptor.new(:string, :stored)
     end
 
+    # _sim suffix - for all field types
+    def self.facetable
+      @facetable ||= Descriptor.new(:string, :indexed, :multivalued)
+    end
+
     # Fields that are both stored and sortable
     #  _ssi suffix - if field_type is string
     #  _dtsi suffix - if field_type is date
