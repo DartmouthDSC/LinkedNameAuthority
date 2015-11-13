@@ -9,7 +9,7 @@ class PersonsController < ActionController::Base
   
   ROWS = 100.freeze
   
-  def index
+  def index    
     page = params['page'].to_i
     args =
       {
@@ -23,7 +23,13 @@ class PersonsController < ActionController::Base
 
     org_ids = @persons.map { |p| p['reportsTo_ssim'].first }
     query = ActiveFedora::SolrQueryBuilder.construct_query_for_ids(org_ids.uniq)
-    @organizations = ActiveFedora::SolrService.query(query)    
+    @organizations = ActiveFedora::SolrService.query(query)
+
+    respond_to do |format|
+      format.jsonld { render template: 'persons/index.json',
+                      content_type: 'application/ld+json' }
+      format.html
+    end
   end
 
   def show
@@ -45,7 +51,12 @@ class PersonsController < ActionController::Base
         ['account_ssim', @person.first['id']]
       ]
     )
-    @accounts = ActiveFedora::SolrService.query(query) 
+    @accounts = ActiveFedora::SolrService.query(query)
+    respond_to do |format|
+      format.jsonld { render template: 'persons/show.json',
+                             content_type: 'application/ld+json' }
+      format.html
+    end
   end
 
   private
