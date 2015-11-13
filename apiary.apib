@@ -30,9 +30,10 @@ Generally speaking, GET and POST paths use content negotiation to determine a re
 For LDP compliance, application/x-turtle may be added in the future.
 
 ## Persons Collection [/persons/{page}]
-Paginated by *page*, limited to 100 results, foaf:family_name ASC foaf:given_name ASC
+Paginated by *page*, limited to 100 results. If *page* is absent, page 1 is returned.
 
-If *page* is absent, page 1 is returned.
+GET requests sorted by foaf:family_name ASC foaf:given_name ASC
+POST requests sorted by relevance
 
 Organizations are appended to the graph if they are referenced by person nodes.
 
