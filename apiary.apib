@@ -56,7 +56,7 @@ Pagination is controlled using header links, which only appear as appropriate.
     + Body
     
             {
-                "@context: {
+                "@context": {
                     "foaf": "http://xmlns.com/foaf/0.1/",
                     "org": "http://www.w3.org/ns/org#",
                     "skos": "http://www.w3.org/2004/02/skos/core#"
@@ -128,7 +128,7 @@ Request parameters listed are search options and can be mixed as needed.
     + Body
     
             {
-                "@context: {
+                "@context": {
                     "foaf": "http://xmlns.com/foaf/0.1/",
                     "org": "http://www.w3.org/ns/org#",
                     "skos": "http://www.w3.org/2004/02/skos/core#"
@@ -214,7 +214,7 @@ Request parameters listed are search options and can be mixed as needed.
 + Response 200 (application/ld+json)
 
         {
-            "@context: {
+            "@context": {
                 "foaf": "http://xmlns.com/foaf/0.1/",
                 "org": "http://www.w3.org/ns/org#",
                 "skos": "http://www.w3.org/2004/02/skos/core#",
@@ -320,7 +320,7 @@ Request parameters listed are search options and can be mixed as needed.
 + Request (application/ld+json)
 
         {            
-            "@context: {
+            "@context": {
                 "foaf": "http://xmlns.com/foaf/0.1/"
             },
             "@type": "foaf:Person",
@@ -342,7 +342,7 @@ Request parameters listed are search options and can be mixed as needed.
     + Body
 
             {
-                "@context: {
+                "@context": {
                     "foaf": "http://xmlns.com/foaf/0.1/"
                 },
                 "status": "success",
@@ -365,7 +365,7 @@ Request parameters listed are search options and can be mixed as needed.
 + Request (application/ld+json)
 
         {            
-            "@context: {
+            "@context": {
                 "foaf": "http://xmlns.com/foaf/0.1/"
             },
             "@type": "foaf:Person",
@@ -383,7 +383,7 @@ Request parameters listed are search options and can be mixed as needed.
     + Body
 
             {
-                "@context: {
+                "@context": {
                     "foaf": "http://xmlns.com/foaf/0.1/"
                 },
                 "status": "success",
@@ -416,13 +416,13 @@ Request parameters listed are search options and can be mixed as needed.
 ### Create an account identifier [POST]
 
 + Parameters
-    + id - (number, required) ID of the person that owns this account
-    + account_id - (number, optional) if ID is included when POSTing, it will be ignored
+    + id (number, required) - ID of the person that owns this account
+    + account_id (number, optional) - if ID is included when POSTing, it will be ignored
 
 + Request (application/ld+json)
 
         {            
-            "@context: {
+            "@context": {
                 "foaf": "http://xmlns.com/foaf/0.1/",
                 "dc": "http://purl.org/dc/elements/1.1/"
             },
@@ -436,17 +436,17 @@ Request parameters listed are search options and can be mixed as needed.
 
     + Headers
             
-            Location: /person/1#membership1
+            Location: /person/1#account1
 
     + Body
 
             {
-                "@context: {
+                "@context": {
                     "foaf": "http://xmlns.com/foaf/0.1/",
                     "dc": "http://purl.org/dc/elements/1.1/"
                 },
                 "status": "success",
-                "@id": "http://lna.dartmouth.edu/person/1/account/membership1",
+                "@id": "http://lna.dartmouth.edu/person/1/account/account1",
                 "@type": "foaf:OnlineAccount",
                 "dc:title": "ORCID",
                 "foaf:accountName": "http://orcid.org/0000-0003-0514-1585",
@@ -456,13 +456,13 @@ Request parameters listed are search options and can be mixed as needed.
 ### Update an account identifier [PUT]
 
 + Parameters
-    + id - ID of the person that owns this account
-    + account_id - ID of the account to update
+    + id (number, required) - ID of the person that owns this account
+    + account_id (number, required) - ID of the account to update
 
 + Request (application/ld+json)
 
         {            
-            "@context: {
+            "@context": {
                 "foaf": "http://xmlns.com/foaf/0.1/",
                 "dc": "http://purl.org/dc/elements/1.1/"
             },
@@ -476,12 +476,12 @@ Request parameters listed are search options and can be mixed as needed.
     + Body
 
             {
-                "@context: {
+                "@context": {
                     "foaf": "http://xmlns.com/foaf/0.1/",
                     "dc": "http://purl.org/dc/elements/1.1/"
                 },
                 "status": "success",
-                "@id": "http://lna.dartmouth.edu/person/1/account/membership1",
+                "@id": "http://lna.dartmouth.edu/person/1/account/account1",
                 "@type": "foaf:OnlineAccount",
                 "dc:title": "ORCID",
                 "foaf:accountName": "http://orcid.org/0000-0003-0514-1585",
@@ -491,8 +491,8 @@ Request parameters listed are search options and can be mixed as needed.
 ### Delete an account identifier [DELETE]
 
 + Parameters
-    + id - ID of the person that owns this account
-    + account_id - ID of the account to delete
+    + id (number, required) - ID of the person that owns this account
+    + account_id (number, required) - ID of the account to delete
 
 + Request (application/ld+json)
         
@@ -509,7 +509,7 @@ Request parameters listed are search options and can be mixed as needed.
 ### Retrieve an ORCID account [GET]
 
 + Parameters
-    + id - ID of the person whose ORCID account we're retrieving
+    + id (number, required) - ID of the person whose ORCID account we're retrieving
     
 + Request (application/ld+json)
 
@@ -525,9 +525,123 @@ Request parameters listed are search options and can be mixed as needed.
 
 ### Create a membership [POST]
 
++ Parameters
+    + id (number, required) - ID of the person that owns this membership
+    + membership_id (number, optional) - if ID is included when POSTing, it will be ignored
+
++ Request (application/ld+json)
+
+        {            
+            "@context": {
+                "org": "http://www.w3.org/ns/org#",
+                "vcard": "http://www.w3.org/2006/vcard/ns#",
+                "owltime": "http://www.w3.org/TR/owl-time#"
+            },
+            "org:organization": "http://lna.dartmouth.edu/organization/3",
+            "vcard:email": "john.p.bell@dartmouth.edu",
+            "vcard:title": "Lead Application Developer",
+            "vcard:street-address": "Hinman Box 6028, Berry Library",
+            "vcard:postal-code": "03755",
+            "vcard:country-name": "United States",
+            "vcard:locality": "Lebanon, NH",
+            "owltime:hasBeginning": "2015-08-20",
+            "owltime:hasEnd": ""
+        }
+        
++ Response 201 (application/ld+json)
+
+    + Headers
+            
+            Location: /person/1#membership1
+
+    + Body
+
+            {
+                "@context": {
+                    "org": "http://www.w3.org/ns/org#",
+                    "vcard": "http://www.w3.org/2006/vcard/ns#",
+                    "owltime": "http://www.w3.org/TR/owl-time#"
+                },
+                "@type": "org:Membership",
+                "@id": "http://lna.dartmouth.edu/person/1/membership/membership1
+                "org:organization": "http://lna.dartmouth.edu/organization/3",
+                "vcard:email": "john.p.bell@dartmouth.edu",
+                "vcard:title": "Lead Application Developer",
+                "vcard:street-address": "Hinman Box 6028, Berry Library",
+                "vcard:postal-code": "03755",
+                "vcard:country-name": "United States",
+                "vcard:locality": "Lebanon, NH",
+                "owltime:hasBeginning": "2015-08-20",
+                "owltime:hasEnd": ""
+                }
+            }
+
+
 ### Update a membership [PUT]
 
++ Parameters
+    + id (number, required) - ID of the person that owns this membership
+    + membership_id (number, required) - ID of the membership to update
+
++ Request (application/ld+json)
+
+        {            
+            "@context": {
+                "org": "http://www.w3.org/ns/org#",
+                "vcard": "http://www.w3.org/2006/vcard/ns#",
+                "owltime": "http://www.w3.org/TR/owl-time#"
+            },
+            "org:organization": "http://lna.dartmouth.edu/organization/3",
+            "vcard:email": "john.p.bell@dartmouth.edu",
+            "vcard:title": "Lead Application Developer",
+            "vcard:street-address": "Hinman Box 6028, Berry Library",
+            "vcard:postal-code": "03755",
+            "vcard:country-name": "United States",
+            "vcard:locality": "Lebanon, NH",
+            "owltime:hasBeginning": "2015-08-20",
+            "owltime:hasEnd": ""
+        }
+        
++ Response 200 (application/ld+json)
+
+    + Body
+
+            {
+                "@context": {
+                    "org": "http://www.w3.org/ns/org#",
+                    "vcard": "http://www.w3.org/2006/vcard/ns#",
+                    "owltime": "http://www.w3.org/TR/owl-time#"
+                },
+                "@type": "org:Membership",
+                "@id": "http://lna.dartmouth.edu/person/1/membership/membership1
+                "org:organization": "http://lna.dartmouth.edu/organization/3",
+                "vcard:email": "john.p.bell@dartmouth.edu",
+                "vcard:title": "Lead Application Developer",
+                "vcard:street-address": "Hinman Box 6028, Berry Library",
+                "vcard:postal-code": "03755",
+                "vcard:country-name": "United States",
+                "vcard:locality": "Lebanon, NH",
+                "owltime:hasBeginning": "2015-08-20",
+                "owltime:hasEnd": ""
+                }
+            }
+
 ### Delete a membership [DELETE]
+
++ Parameters
+    + id (number, required) - ID of the person that owns this account
+    + membership_id (number, required) - ID of the membership to delete
+
++ Request (application/ld+json)
+        
++ Response 200 (application/ld+json)
+
+    + Body
+
+            {
+                "status": "success",
+            }
+
 
 ## Person's Works Collection [/person/{id}/works/{startDate}/]
 
