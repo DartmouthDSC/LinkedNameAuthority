@@ -67,30 +67,32 @@ Pagination is controlled using header links, which only appear as appropriate.
                 @graph: [
                     {
                         "@id": "http://lna.dartmouth.edu/person/1",
-                        "@type": "http://xmlns.com/foaf/0.1/Person",
+                        "@type": "foaf:Person",
                         "foaf:givenName": "John",
                         "foaf:familyName": "Bell",
                         "foaf:title": "Dr.",
                         "foaf:mbox": "john.p.bell@dartmouth.edu",
+                        "foaf:image": "http://dartmouth.edu/fictionalImageBank/12094.jpg",
                         "org:reportsTo": "http://lna.dartmouth.edu/organization/3"
                     },
                     {
                         "@id": "http://lna.dartmouth.edu/person/2",
-                        "@type": "http://xmlns.com/foaf/0.1/Person",
+                        "@type": "foaf:Person",
                         "foaf:givenName": "Carla",
                         "foaf:familyName": "Galarza",
                         "foaf:title": "Ms.",
                         "foaf:mbox": "carla.m.galarza@dartmouth.edu",
+                        "foaf:image": "http://dartmouth.edu/fictionalImageBank/98712.jpg",
                         "org:reportsTo": "http://lna.dartmouth.edu/organization/1"
                     },
                     {
                         "@id": "http://lna.dartmouth.edu/organization/1",
-                        "@type": "http://www.w3.org/ns/org#Organization",
+                        "@type": "org:Organization",
                         "skos:prefLabel": "Dartmouth College Library"
                     },
                     {
                         "@id": "http://lna.dartmouth.edu/organization/3",
-                        "@type": "http://www.w3.org/ns/org#Organization",
+                        "@type": "org:Organization",
                         "skos:prefLabel": "Dartmouth ITS"
                     }
                 ]
@@ -138,30 +140,32 @@ Request parameters listed are search options and can be mixed as needed.
                 @graph: [
                     {
                         "@id": "http://lna.dartmouth.edu/person/1",
-                        "@type": "http://xmlns.com/foaf/0.1/Person",
+                        "@type": "foaf:Person",
                         "foaf:givenName": "John",
                         "foaf:familyName": "Bell",
                         "foaf:title": "Dr.",
                         "foaf:mbox": "john.p.bell@dartmouth.edu",
+                        "foaf:image": "http://dartmouth.edu/fictionalImageBank/12094.jpg",
                         "org:reportsTo": "http://lna.dartmouth.edu/organization/3"
                     },
                     {
                         "@id": "http://lna.dartmouth.edu/person/2",
-                        "@type": "http://xmlns.com/foaf/0.1/Person",
+                        "@type": "foaf:Person",
                         "foaf:givenName": "Carla",
                         "foaf:familyName": "Galarza",
                         "foaf:title": "Ms.",
                         "foaf:mbox": "carla.m.galarza@dartmouth.edu",
+                        "foaf:image": "http://dartmouth.edu/fictionalImageBank/97410.jpg",
                         "org:reportsTo": "http://lna.dartmouth.edu/organization/1"
                     },
                     {
                         "@id": "http://lna.dartmouth.edu/organization/1",
-                        "@type": "http://www.w3.org/ns/org#Organization",
+                        "@type": "org:Organization",
                         "skos:prefLabel": "Dartmouth College Library"
                     },
                     {
                         "@id": "http://lna.dartmouth.edu/organization/3",
-                        "@type": "http://www.w3.org/ns/org#Organization",
+                        "@type": "org:Organization",
                         "skos:prefLabel": "Dartmouth ITS"
                     }
                 ]
@@ -225,7 +229,7 @@ Request parameters listed are search options and can be mixed as needed.
             [   
                 {
                     "@id": "http://lna.dartmouth.edu/person/1",
-                    "@type": "http://xmlns.com/foaf/0.1/Person",
+                    "@type": "foaf:Person",
                     "foaf:givenName": "John",
                     "foaf:familyName": "Bell",
                     "foaf:title": "Dr.",
@@ -247,21 +251,21 @@ Request parameters listed are search options and can be mixed as needed.
                 },
                 {
                     "@id": "#account1",
-                    "@type": "http://xmlns.com/foaf/0.1/OnlineAccount",
+                    "@type": "foaf:OnlineAccount",
                     "dc:title": "ORCID",
                     "foaf:accountName": "http://orcid.org/0000-0003-0514-1585",
                     "foaf:accountServiceHomepage": "http://orcid.org/"
                 },
                 {
                     "@id": "#account2",
-                    "@type": "http://xmlns.com/foaf/0.1/OnlineAccount",
+                    "@type": "foaf:OnlineAccount",
                     "dc:title": "Dartmouth NetID",
                     "foaf:accountName": "q827b3n",
                     "foaf:accountServiceHomepage": "http://tech.dartmouth.edu/its/services-support/help-yourself/netid-lookup"
                 },
                 {
                     "@id": "#membership1",
-                    "@type": "http://www.w3.org/ns/org#Membership",
+                    "@type": "org:Membership",
                     "org:organization": "http://lna.dartmouth.edu/organization/3",
                     "vcard:email": "john.p.bell@dartmouth.edu",
                     "vcard:title": "Lead Application Developer",
@@ -274,7 +278,7 @@ Request parameters listed are search options and can be mixed as needed.
                 },
                 {
                     "@id": "#membership2",
-                    "@type": "http://www.w3.org/ns/org#Membership",
+                    "@type": "org:Membership",
                     "org:organization": "http://lna.dartmouth.edu/organization/5",
                     "vcard:email": "john.p.bell@dartmouth.edu",
                     "vcard:title": "Test Dummy",
@@ -287,12 +291,12 @@ Request parameters listed are search options and can be mixed as needed.
                 },
                 {
                     "@id": "http://lna.dartmouth.edu/organization/5",
-                    "@type": "http://www.w3.org/ns/org#Organization",
+                    "@type": "org:Organization",
                     "skos:prefLabel": "Dartmouth Crash Testing Corps"
                 },
                 {
                     "@id": "http://lna.dartmouth.edu/organization/3",
-                    "@type": "http://www.w3.org/ns/org#Organization",
+                    "@type": "org:Organization",
                     "skos:prefLabel": "Dartmouth ITS"
                 }
             ]
@@ -318,12 +322,13 @@ Request parameters listed are search options and can be mixed as needed.
             "@context: {
                 "foaf": "http://xmlns.com/foaf/0.1/"
             },
-            "@type": "http://xmlns.com/foaf/0.1/Person",
+            "@type": "foaf:Person",
             "foaf:name": "John Bell",
             "foaf:givenName": "John",
             "foaf:familyName": "Bell",
             "foaf:title": "Dr.",
             "foaf:mbox": "john.p.bell@dartmouth.edu",
+            "foaf:image": "http://dartmouth.edu/fictionalImageBank/12340.jpg",
             "foaf:homepage": "http://novomancy.org/"
         }
         
@@ -341,11 +346,12 @@ Request parameters listed are search options and can be mixed as needed.
                 },
                 "status": "success",
                 "@id": "http://lna.dartmouth.edu/person/1",
-                "@type": "http://xmlns.com/foaf/0.1/Person",
+                "@type": "foaf:Person",
                 "foaf:givenName": "John",
                 "foaf:familyName": "Bell",
                 "foaf:title": "Dr.",
                 "foaf:mbox": "john.p.bell@dartmouth.edu",
+                "foaf:image": "http://dartmouth.edu/fictionalImageBank/12340.jpg",
                 "foaf:mbox_sha1sum": "a92c12a703e002b7dc3cdc3234017e2983c3549d"
             }
 
@@ -360,12 +366,13 @@ Request parameters listed are search options and can be mixed as needed.
             "@context: {
                 "foaf": "http://xmlns.com/foaf/0.1/"
             },
-            "@type": "http://xmlns.com/foaf/0.1/Person",
+            "@type": "foaf:Person",
             "foaf:name": "John Bell",
             "foaf:givenName": "John",
             "foaf:familyName": "Bell",
             "foaf:title": "Dr.",
             "foaf:mbox": "john.p.bell@dartmouth.edu",
+            "foaf:image": "http://dartmouth.edu/fictionalImageBank/12340.jpg",
             "foaf:homepage": "http://novomancy.org/"
         }
         
@@ -388,6 +395,7 @@ Request parameters listed are search options and can be mixed as needed.
                 "foaf:familyName": "Bell",
                 "foaf:title": "Dr.",
                 "foaf:mbox": "john.p.bell@dartmouth.edu",
+                "foaf:image": "http://dartmouth.edu/fictionalImageBank/12340.jpg",
                 "foaf:mbox_sha1sum": "a92c12a703e002b7dc3cdc3234017e2983c3549d"
             }
 
