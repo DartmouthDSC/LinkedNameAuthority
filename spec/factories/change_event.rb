@@ -12,5 +12,9 @@ FactoryGirl.define do
         event.resulting_organizations << FactoryGirl.create(:thayer, resulted_from: event)
       end
     end
+
+    after(:create) do |event|
+      event.reload
+    end
   end
 end
