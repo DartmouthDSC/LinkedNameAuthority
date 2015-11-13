@@ -11,7 +11,7 @@ LNA API for Dartmouth College (v0.1.0)
 - /person/ - POST
 - /person/{id} - GET, PUT, DELETE
 - /person/{id}/account/{account_id}/ - POST, PUT, DELETE
-- /person/{id}/orcid/ - GET, PUT
+- /person/{id}/orcid/ - GET
 - /person/{id}/membership/{membership_id} - POST, PUT, DELETE
 - /person/{id}/works/ - GET
 - /person/{id}/works/{startDate} - GET
@@ -189,7 +189,7 @@ Request parameters listed are search options and can be mixed as needed.
 
 + Parameters
 
-    + id - The ID of the person to get. If omitted, redirect to /persons/ for text/html and error for application/ld+json.
+    + id (number, required) - The ID of the person to get. If omitted, redirect to /persons/ for text/html and error for application/ld+json.
 
 + Request (text/html)
 
@@ -230,6 +230,7 @@ Request parameters listed are search options and can be mixed as needed.
                 {
                     "@id": "http://lna.dartmouth.edu/person/1",
                     "@type": "foaf:Person",
+                    "foaf:name": "John Bell",
                     "foaf:givenName": "John",
                     "foaf:familyName": "Bell",
                     "foaf:title": "Dr.",
@@ -314,7 +315,7 @@ Request parameters listed are search options and can be mixed as needed.
 ### Create a New Person [POST]
 
 + Parameters
-    + id - if ID is included when POSTing, it will be ignored
+    + id (number, required) - if ID is included when POSTing, it will be ignored
 
 + Request (application/ld+json)
 
@@ -347,6 +348,7 @@ Request parameters listed are search options and can be mixed as needed.
                 "status": "success",
                 "@id": "http://lna.dartmouth.edu/person/1",
                 "@type": "foaf:Person",
+                "foaf:name": "John Bell",
                 "foaf:givenName": "John",
                 "foaf:familyName": "Bell",
                 "foaf:title": "Dr.",
@@ -378,10 +380,6 @@ Request parameters listed are search options and can be mixed as needed.
         
 + Response 200 (application/ld+json)
 
-    + Headers
-
-            Location: /person/3
-
     + Body
 
             {
@@ -391,6 +389,7 @@ Request parameters listed are search options and can be mixed as needed.
                 "status": "success",
                 "@id": "http://lna.dartmouth.edu/person/1",
                 "@type": "http://xmlns.com/foaf/0.1/Person",
+                "foaf:name": "John Bell",
                 "foaf:givenName": "John",
                 "foaf:familyName": "Bell",
                 "foaf:title": "Dr.",
@@ -416,17 +415,111 @@ Request parameters listed are search options and can be mixed as needed.
 
 ### Create an account identifier [POST]
 
++ Parameters
+    + id - (number, required) ID of the person that owns this account
+    + account_id - (number, optional) if ID is included when POSTing, it will be ignored
+
++ Request (application/ld+json)
+
+        {            
+            "@context: {
+                "foaf": "http://xmlns.com/foaf/0.1/",
+                "dc": "http://purl.org/dc/elements/1.1/"
+            },
+            "@type": "foaf:OnlineAccount",
+            "dc:title": "ORCID",
+            "foaf:accountName": "http://orcid.org/0000-0003-0514-1585",
+            "foaf:accountServiceHomepage": "http://orcid.org/"
+        }
+        
++ Response 201 (application/ld+json)
+
+    + Headers
+            
+            Location: /person/1#membership1
+
+    + Body
+
+            {
+                "@context: {
+                    "foaf": "http://xmlns.com/foaf/0.1/",
+                    "dc": "http://purl.org/dc/elements/1.1/"
+                },
+                "status": "success",
+                "@id": "http://lna.dartmouth.edu/person/1/account/membership1",
+                "@type": "foaf:OnlineAccount",
+                "dc:title": "ORCID",
+                "foaf:accountName": "http://orcid.org/0000-0003-0514-1585",
+                "foaf:accountServiceHomepage": "http://orcid.org/"
+            }
+
 ### Update an account identifier [PUT]
 
++ Parameters
+    + id - ID of the person that owns this account
+    + account_id - ID of the account to update
+
++ Request (application/ld+json)
+
+        {            
+            "@context: {
+                "foaf": "http://xmlns.com/foaf/0.1/",
+                "dc": "http://purl.org/dc/elements/1.1/"
+            },
+            "dc:title": "ORCID",
+            "foaf:accountName": "http://orcid.org/0000-0003-0514-1585",
+            "foaf:accountServiceHomepage": "http://orcid.org/"
+        }
+        
++ Response 200 (application/ld+json)
+
+    + Body
+
+            {
+                "@context: {
+                    "foaf": "http://xmlns.com/foaf/0.1/",
+                    "dc": "http://purl.org/dc/elements/1.1/"
+                },
+                "status": "success",
+                "@id": "http://lna.dartmouth.edu/person/1/account/membership1",
+                "@type": "foaf:OnlineAccount",
+                "dc:title": "ORCID",
+                "foaf:accountName": "http://orcid.org/0000-0003-0514-1585",
+                "foaf:accountServiceHomepage": "http://orcid.org/"
+            }
+
 ### Delete an account identifier [DELETE]
+
++ Parameters
+    + id - ID of the person that owns this account
+    + account_id - ID of the account to delete
+
++ Request (application/ld+json)
+        
++ Response 200 (application/ld+json)
+
+    + Body
+
+            {
+                "status": "success",
+            }
 
 ## Person ORCID Accounts convenience function [/person/{id}/orcid/]
 
 ### Retrieve an ORCID account [GET]
 
-### Update an ORCID account [PUT]
++ Parameters
+    + id - ID of the person whose ORCID account we're retrieving
+    
++ Request (application/ld+json)
 
-### Delete an ORCID account [DELETE]
++ Response 200 (application/ld+json)
+
+    + Body
+            
+            {
+                "foaf:accountName": "http://orcid.org/0000-0003-0514-1585"
+            }
 
 ## Person Memberships [/person/{id}/membership/{membership_id}/]
 
