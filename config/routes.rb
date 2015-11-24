@@ -9,7 +9,7 @@ Rails.application.routes.draw do
     get 'sign_out', to: 'users/sessions#destroy', as: :destroy_user_session
   end
 
-  get '/persons/:page', to: 'persons#index', defaults: { page: '1' }
+  get '/persons(/:page)', to: 'persons#index'
   
   get '/person/:id', to: 'persons#show', as: :person_path
 

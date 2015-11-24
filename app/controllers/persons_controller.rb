@@ -9,8 +9,8 @@ class PersonsController < ActionController::Base
   
   ROWS = 100.freeze
   
-  def index    
-    page = params['page'].to_i
+  def index
+    page = (params['page'].blank?) ? 1 : params['page'].to_i
     args =
       {
         rows: ROWS,
