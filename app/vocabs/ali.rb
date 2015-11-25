@@ -1,5 +1,5 @@
 require 'rdf'
-1;95;0cmodule Vocabs
+module Vocabs
   class ALI < RDF::Vocabulary('http://niso.org/schemas/ali/1.0/')
     term :license_ref,
          comment: %(Agreement related to the use of a work. Generally includes payment requirements, if any, and terms of use and re-use-potentially including access, reproduction, adaptation, and
