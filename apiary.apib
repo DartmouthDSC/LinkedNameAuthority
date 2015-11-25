@@ -10,16 +10,16 @@ LNA API for Dartmouth College (v0.1.0)
 - /persons/{page} - GET, POST
 - /person/ - POST
 - /person/{id} - GET, PUT, DELETE
-- /person/{id}/account/{account_id}/ - POST, PUT, DELETE
-- /person/{id}/orcid/ - GET
-- /person/{id}/membership/{membership_id} - POST, PUT, DELETE
-- /person/{id}/works/ - GET
-- /person/{id}/works/{startDate} - GET
-- /person/{id}/work/ - POST
+- /person/{person_id}/account/{id}/ - POST, PUT, DELETE
+- /person/{person_id}/orcid/ - GET
+- /person/{person_id}/membership/{id} - POST, PUT, DELETE
+- /person/{person_id}/works/ - GET
+- /person/{person_id}/works/{start_date} - GET
+- /person/{person_id}/work/ - POST
 - /works/{page} - GET, POST
-- /works/{startDate}/{page} - GET, POST
+- /works/{start_date}/{page} - GET, POST
 - /work/{id} - GET, PUT, DELETE
-- /work/{id}/license/{license_id} - POST, PUT, DELETE
+- /work/{work_id}/license/{id} - POST, PUT, DELETE
 - /organizations/{page} - GET, POST
 - /organization/ - POST
 - /organization/{id} - GET, PUT, DELETE
@@ -62,10 +62,10 @@ Pagination is controlled using header links, which only appear as appropriate.
                     "org": "http://www.w3.org/ns/org#",
                     "skos": "http://www.w3.org/2004/02/skos/core#"
                 },
-                @id: "http://lna.dartmouth.edu/persons/{page}",
+                "@id": "http://lna.dartmouth.edu/persons/{page}",
                 "generatedAt": "2015-10-30T09:30:10Z",
                 "status": "success",
-                @graph: [
+                "@graph": [
                     {
                         "@id": "http://lna.dartmouth.edu/person/1",
                         "@type": "foaf:Person",
@@ -134,11 +134,11 @@ Request parameters listed are search options and can be mixed as needed.
                     "org": "http://www.w3.org/ns/org#",
                     "skos": "http://www.w3.org/2004/02/skos/core#"
                 },
-                @id: "http://lna.dartmouth.edu/persons/{page}",
+                "@id": "http://lna.dartmouth.edu/persons/{page}",
                 "generatedAt": "2015-10-30T09:30:10Z",
                 "queryString": "foaf:givenName=John&org:member="ITS",
                 "status": "success",
-                @graph: [
+                "@graph": [
                     {
                         "@id": "http://lna.dartmouth.edu/person/1",
                         "@type": "foaf:Person",
@@ -412,13 +412,13 @@ Request parameters listed are search options and can be mixed as needed.
     
             { "status": "success" }
 
-## Person Accounts [/person/{id}/account/{account_id}]
+## Person Accounts [/person/{person_id}/account/{id}]
 
 ### Create an account identifier [POST]
 
 + Parameters
-    + id (number, required) - ID of the person that owns this account
-    + account_id (number, optional) - if ID is included when POSTing, it will be ignored
+    + person_id (number, required) - ID of the person that owns this account
+    + id (number, optional) - if ID is included when POSTing, it will be ignored
 
 + Request (application/ld+json)
 
@@ -457,8 +457,8 @@ Request parameters listed are search options and can be mixed as needed.
 ### Update an account identifier [PUT]
 
 + Parameters
-    + id (number, required) - ID of the person that owns this account
-    + account_id (number, required) - ID of the account to update
+    + person_id (number, required) - ID of the person that owns this account
+    + id (number, required) - ID of the account to update
 
 + Request (application/ld+json)
 
@@ -492,8 +492,8 @@ Request parameters listed are search options and can be mixed as needed.
 ### Delete an account identifier [DELETE]
 
 + Parameters
-    + id (number, required) - ID of the person that owns this account
-    + account_id (number, required) - ID of the account to delete
+    + person_id (number, required) - ID of the person that owns this account
+    + id (number, required) - ID of the account to delete
 
 + Request (application/ld+json)
         
@@ -505,12 +505,12 @@ Request parameters listed are search options and can be mixed as needed.
                 "status": "success",
             }
 
-## Person ORCID Accounts convenience function [/person/{id}/orcid/]
+## Person ORCID Accounts convenience function [/person/{person_id}/orcid/]
 
 ### Retrieve an ORCID account [GET]
 
 + Parameters
-    + id (number, required) - ID of the person whose ORCID account we're retrieving
+    + person_id (number, required) - ID of the person whose ORCID account we're retrieving
     
 + Request (application/ld+json)
 
@@ -522,13 +522,13 @@ Request parameters listed are search options and can be mixed as needed.
                 "foaf:accountName": "http://orcid.org/0000-0003-0514-1585"
             }
 
-## Person Memberships [/person/{id}/membership/{membership_id}/]
+## Person Memberships [/person/{person_id}/membership/{id}/]
 
 ### Create a membership [POST]
 
 + Parameters
-    + id (number, required) - ID of the person that owns this membership
-    + membership_id (number, optional) - if ID is included when POSTing, it will be ignored
+    + person_id (number, required) - ID of the person that owns this membership
+    + id (number, optional) - if ID is included when POSTing, it will be ignored
 
 + Request (application/ld+json)
 
@@ -564,7 +564,7 @@ Request parameters listed are search options and can be mixed as needed.
                     "owltime": "http://www.w3.org/TR/owl-time#"
                 },
                 "@type": "org:Membership",
-                "@id": "http://lna.dartmouth.edu/person/1/membership/membership1
+                "@id": "http://lna.dartmouth.edu/person/1/membership/membership1",
                 "org:organization": "http://lna.dartmouth.edu/organization/3",
                 "vcard:email": "john.p.bell@dartmouth.edu",
                 "vcard:title": "Lead Application Developer",
@@ -581,8 +581,8 @@ Request parameters listed are search options and can be mixed as needed.
 ### Update a membership [PUT]
 
 + Parameters
-    + id (number, required) - ID of the person that owns this membership
-    + membership_id (number, required) - ID of the membership to update
+    + person_id (number, required) - ID of the person that owns this membership
+    + id (number, required) - ID of the membership to update
 
 + Request (application/ld+json)
 
@@ -614,7 +614,7 @@ Request parameters listed are search options and can be mixed as needed.
                     "owltime": "http://www.w3.org/TR/owl-time#"
                 },
                 "@type": "org:Membership",
-                "@id": "http://lna.dartmouth.edu/person/1/membership/membership1
+                "@id": "http://lna.dartmouth.edu/person/1/membership/membership1",
                 "org:organization": "http://lna.dartmouth.edu/organization/3",
                 "vcard:email": "john.p.bell@dartmouth.edu",
                 "vcard:title": "Lead Application Developer",
@@ -630,8 +630,8 @@ Request parameters listed are search options and can be mixed as needed.
 ### Delete a membership [DELETE]
 
 + Parameters
-    + id (number, required) - ID of the person that owns this account
-    + membership_id (number, required) - ID of the membership to delete
+    + person_id (number, required) - ID of the person that owns this account
+    + id (number, required) - ID of the membership to delete
 
 + Request (application/ld+json)
         
@@ -644,11 +644,67 @@ Request parameters listed are search options and can be mixed as needed.
             }
 
 
-## Person's Works Collection [/person/{id}/works/{startDate}/]
+## Person's Works Collection [/person/{person_id}/works/{start_date}/]
+
+Note that works metadata varies and the fields referenced here may vary.
 
 ### Retrieve a list of a person's works [GET]
 
-## Add a New Work by a Person [/person/{id}/work/]
++ Parameters
+    + person_id (number, required) - ID of the person whose works are to be retrieved
+    + start_date (YYYY-MM-DD, optional) - Start date for the list. End date is assumed to be today, if omitted, all works are returned
+    
++ Request (application/ld+json)
+
++ Response 200 (application/ld+json)
+
+    + Body
+    
+            {
+                "@context": {
+                    "bibo": "http://purl.org/ontology/bibo/#",
+                    "dc": "http://purl.org/dc/elements/1.1/",
+                    "foaf": "http://xmlns.com/foaf/0.1/",
+                    "ali": "http://www.niso.org/schemas/ali/1.0/",
+                },
+                "@type": "bibo:Collection",
+                "@id": "http://lna.dartmouth.edu/person/1/works",
+                "foaf:primaryTopic": "http://lna.dartmouth.edu/person/1",
+                "bibo:hasPart": "http://lna.dartmouth.edu/work/1",
+                "bibo:hasPart": "http://lna.dartmouth.edu/work/2",
+                "@graph": [
+                    {
+                        "@id": "http://lna.dartmouth.edu/work/1",
+                        "@type": "bibo:Document",
+                        "bibo:doi": "http://dx.doi.org/10.1002/9781118829059",
+                        "dc:title": "Diffused Museums: Networked, Augmented, and Self-Organized Collections",
+                        "dc:authorsList": "John P. Bell, Jon Ippolito",
+                        "dc:date": "2015-05-26"
+                    },
+                    {
+                        "@id": "http://lna.dartmouth.edu/work/2",
+                        "@type": "bibo:Document",
+                        "bibo:uri": "http://10print.org/",
+                        "bibo:isbn13": "9780262526746",
+                        "dc:title": "10 PRINT CHR$(205.5+RND(1)); : GOTO 10",
+                        "dc:authorsList": "Nick Montfort, Patsy Baudoin, John Bell, Ian Bogost, Jeremy Douglass, Mark C. Marino, Michael Mateas, Casey Reas, Mark Sample, and Noah Vawter",
+                        "dc:date": "2012-11-01",
+                        "dc:publisher": "MIT Press",
+                        "dc:license": "#license1"
+                    },
+                    {
+                        "@id": "#license1",
+                        "@type": "ali:LicenseDocument",
+                        "ali:start_date": "2012-11-01",
+                        "ali:url": "https://creativecommons.org/licenses/by-nc-sa/3.0/",
+                        "dc:title": "Creative Commons BY-NC-SA 3.0"
+                    
+                    }
+                ]
+            }
+            
+
+## Add a New Work by a Person [/person/{person_id}/work/]
 
 ### Create a new work [POST]
 
@@ -658,7 +714,7 @@ Request parameters listed are search options and can be mixed as needed.
 
 ### Search for a list of matching works [POST]
 
-## Recent Works Collections convenience function [/works/{startDate}/{page}/]
+## Recent Works Collections convenience function [/works/{start_date}/{page}/]
 
 ### Get a paginated list of all works since a certain date [GET]
 
@@ -672,7 +728,7 @@ Request parameters listed are search options and can be mixed as needed.
 
 ### Delete a Work [DELETE]
 
-## Work License [/work/{id}/license/{license_id}/]
+## Work License [/work/{word_id}/license/{id}/]
 
 ### Create a license [POST]
 
