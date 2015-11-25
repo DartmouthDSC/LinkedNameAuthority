@@ -10,9 +10,22 @@ Rails.application.routes.draw do
   end
 
   get '/persons(/:page)', to: 'persons#index'
-  
-  get '/person/:id', to: 'persons#show', as: :person_path
+  post '/persons(/:page)', to: 'persons#search'
 
+  resources :person, only: [:show, :create, :destroy] do
+    resources :account, only: [:create, :destroy]
+    resources :membership, only: [:create, :destroy]
+
+    put '/account/:id', to: 'account#update'
+    put '/membership/:id', to: 'membership#update'
+    
+    get '/orcid', to: 'person#orcid', as: :person_orcid
+#    get '/works(/:start_date)', to: 'person#works', as:person_works
+  end
+  
+  put '/person/:id', to: 'persons#update'
+
+  
   get '/organization/:id', to: 'organizations#show', as: :organization_path
   
   get '/personstwo/:page', to: 'person_two#index'

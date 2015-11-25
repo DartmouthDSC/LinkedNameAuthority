@@ -1,16 +1,12 @@
-class PersonsController < ActionController::Base
-  include Hydra::Controller::ControllerBehavior
+class PersonsController < ApiController
 
-  # Prevent CSRF attacks by raising an exception.
-  # For APIs, you may want to use :null_session instead.
-  protect_from_forgery with: :exception
-
-  before_action :full_fedora_id, except: :index
+  before_action :page_param, only: [:index, :search]
   
   ROWS = 100.freeze
-  
+
+  # GET /persons
   def index
-    page = (params['page'].blank?) ? 1 : params['page'].to_i
+    page = params['page']
     args =
       {
         rows: ROWS,
@@ -26,45 +22,19 @@ class PersonsController < ActionController::Base
     @organizations = ActiveFedora::SolrService.query(query)
 
     respond_to do |format|
-      format.jsonld { render template: 'persons/index.json',
-                      content_type: 'application/ld+json' }
+      format.jsonld { render :index, content_type: 'application/ld+json' }
       format.html
     end
   end
 
-  def show
-    query = ActiveFedora::SolrQueryBuilder.construct_query_for_ids([params[:id]])
-    @person = ActiveFedora::SolrService.query(query)
-
-    query = ActiveFedora::SolrQueryBuilder.construct_query(
-      [
-        ['has_model_ssim', 'Lna::Membership'],
-        ['hasMember_ssim', @person.first['id']]
-      ]
-    )
-    @memberships = ActiveFedora::SolrService.query(query)
-
+  def search
+    page = params['page']
     
-    query = ActiveFedora::SolrQueryBuilder.construct_query(
-      [
-        ['has_model_ssim', 'Lna::Account'],
-        ['account_ssim', @person.first['id']]
-      ]
-    )
-    @accounts = ActiveFedora::SolrService.query(query)
-    respond_to do |format|
-      format.jsonld { render template: 'persons/show.json',
-                             content_type: 'application/ld+json' }
-      format.html
-    end
   end
-
+  
   private
 
-  def full_fedora_id
-    if params[:id]
-      /(?<first>^[a-zA-Z0-9]+)-/ =~ params[:id]
-      params[:id] = first.scan(/[a-zA-Z0-9]{2}/).join('/') + '/' + params[:id]
-    end
+  def page_param
+    params['page'] = (params['page'].blank?) ? 1 : params['page'].to_i
   end
 end

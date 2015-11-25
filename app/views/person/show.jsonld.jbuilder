@@ -20,7 +20,7 @@ json.status 'success'
 
 json.set! '@graph' do |json|
   json.array! @person do |person|
-    json.partial! 'persons/person', person: person
+    json.partial! 'person/person', person: person
 
     json.set! 'foaf:account' do
       json.array! @accounts do |account|

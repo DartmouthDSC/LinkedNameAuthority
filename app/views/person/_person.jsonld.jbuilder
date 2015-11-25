@@ -1,5 +1,5 @@
 
-json.set! '@id', person_path_url(id: simplify_fedora_id(person['id']))
+json.set! '@id', person_url(id: simplify_fedora_id(person['id']))
 json.set! '@type', 'foaf:Person'
 json.set! 'foaf:givenName', person['given_name_ssi']
 json.set! 'foaf:familyName', person['family_name_ssi']
