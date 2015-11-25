@@ -38,7 +38,7 @@ module Lna
 
     # _sim suffix - for all field types
     def self.facetable
-      @facetable ||= Descriptor.new(:string, :indexed, :multivalued)
+      @facetable ||= Solrizer::Descriptor.new(:string, :indexed, :multivalued)
     end
 
     # Fields that are both stored and sortable
