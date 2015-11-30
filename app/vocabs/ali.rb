@@ -11,15 +11,16 @@ distribution, among others.),
     property :start_date,
              domain: ["ali:free_to_read".freeze, "ali:license_ref".freeze],
              range: "xsd:date".freeze,
-             type: "xsd:date".freeze
+             type: "rdf:Property".freeze
     
     property :end_date,
              domain: ["ali:free_to_read".freeze, "ali:license_ref".freeze],             
              range: "xsd:date".freeze,
-             type: "xsd:date".freeze
+             type: "rdf:Property".freeze
     
     property :uri,
              domain: "ali:license_ref".freeze,
-             type: "xsd:anyURI".freeze
+             range: "xsd:anyURI".freeze,
+             type: "rdf:Property".freeze
   end
 end
