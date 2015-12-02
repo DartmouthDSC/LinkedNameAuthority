@@ -1283,7 +1283,127 @@ Works are sorted by relevance. Paginated by *page*, with 100 results per page.
 
 ### Retrieve a list of all Organizations [GET]
 
+Note that this only retrieves *active* organizations. Sort order is by skos:pref_label ascending.
+
+Orgs returned include their parent org (org:subOrganizationOf) but not a list of child orgs.
+
++ Parameters
+    + page (number, optional) - Which page of the result set to return
+        + default: "1"
+
++ Request (application/ld+json)
+
++ Response 200 (application/ld+json)
+ 
+    + Headers
+    
+            Link: http://lna.dartmouth.edu/organizations/1>; rel="first"
+            Link: http://lna.dartmouth.edu/organizations/5>; rel="next"
+            Link: http://lna.dartmouth.edu/organizations/3>; rel="prev"
+
+    + Body
+    
+            {
+                "@context": {
+                    "skos": "http://www.w3.org/2004/02/skos/core#",
+                    "org": "http://www.w3.org/ns/org#",
+                    "owltime": "http://www.w3.org/TR/owl-time#"
+                },
+                "@id": "http://lna.dartmouth.edu/organizations/1",
+                "generatedAt": "2015-10-30T09:30:10Z",
+                "status": "success",
+                "@graph": [
+                    {
+                        "@id": "http://lna.dartmouth.edu/organization/1",
+                        "@type": "org:Organization",
+                        "org:identifier": "its1",
+                        "skos:pref_label": "Dartmouth Information Technology Services",
+                        "skos:alt_label": "ITS",
+                        "owltime:hasBeginning": "2013-06-01"
+                    },
+                    {
+                        "@id": "http://lna.dartmouth.edu/organization/2",
+                        "@type": "org:Organization",
+                        "org:identifier": "dltg1",
+                        "org:subOrganizationOf": "http://lna.dartmouth.edu/organization/3",
+                        "skos:pref_label": "Dartmouth Digital Library Technology Group",
+                        "skos:alt_label": "DLTG",
+                        "owltime:hasBeginning": "2000-06-01"
+                    },
+                    {
+                        "@id": "http://lna.dartmouth.edu/organization/3",
+                        "@type": "org:Organization",
+                        "org:identifier": "library1",
+                        "skos:pref_label": "Dartmouth College Library",
+                        "owltime:hasBeginning": "1769-06-01"
+                    }
+                ]
+            }
+
 ### Search for a list of Organizations [POST]
+
+Note that this searches both active and historic organizations. Sort order is by skos:pref_label ascending.
+
+Orgs returned include their parent org (org:subOrganizationOf) but not a list of child orgs.
+
++ Parameters
+    + page (number, optional) - Which page of the result set to return
+        + default: "1"
+
++ Request (application/ld+json)
+
+        {   "org:identifier": "its"}
+        {   "bibo:doi": "10.1002/9781118829059.wbihms321" }
+        {   "dc:title": "Print"         }
+        {   "bibo:abstract": "BASIC"    }
+        {   "org:member": "ITS"         }
+
++ Response 200 (application/ld+json)
+ 
+    + Headers
+    
+            Link: http://lna.dartmouth.edu/organizations/1>; rel="first"
+            Link: http://lna.dartmouth.edu/organizations/5>; rel="next"
+            Link: http://lna.dartmouth.edu/organizations/3>; rel="prev"
+
+    + Body
+    
+            {
+                "@context": {
+                    "skos": "http://www.w3.org/2004/02/skos/core#",
+                    "org": "http://www.w3.org/ns/org#",
+                    "owltime": "http://www.w3.org/TR/owl-time#"
+                },
+                "@id": "http://lna.dartmouth.edu/organizations/1",
+                "generatedAt": "2015-10-30T09:30:10Z",
+                "status": "success",
+                "@graph": [
+                    {
+                        "@id": "http://lna.dartmouth.edu/organization/1",
+                        "@type": "org:Organization",
+                        "org:identifier": "its1",
+                        "skos:pref_label": "Dartmouth Information Technology Services",
+                        "skos:alt_label": "ITS",
+                        "owltime:hasBeginning": "2013-06-01"
+                    },
+                    {
+                        "@id": "http://lna.dartmouth.edu/organization/2",
+                        "@type": "org:Organization",
+                        "org:identifier": "dltg1",
+                        "org:subOrganizationOf": "http://lna.dartmouth.edu/organization/3",
+                        "skos:pref_label": "Dartmouth Digital Library Technology Group",
+                        "skos:alt_label": "DLTG",
+                        "owltime:hasBeginning": "2000-06-01"
+                    },
+                    {
+                        "@id": "http://lna.dartmouth.edu/organization/3",
+                        "@type": "org:Organization",
+                        "org:identifier": "library1",
+                        "skos:pref_label": "Dartmouth College Library",
+                        "owltime:hasBeginning": "1769-06-01"
+                    }
+                ]
+            }
 
 ## Organization [/organization/{id}]
 
