@@ -29,6 +29,8 @@ Generally speaking, GET and POST paths use content negotiation to determine a re
 
 For LDP compliance, application/x-turtle may be added in the future.
 
+It's worth noting that the goals of LNA are person-centric. That is expressed in a few ways, most importantly that the 'works' objects are works relative to a person and are really modeling citation entries or references rather than actual works. For instance, a paper co-authered by two Persons will appear as two separate Works because its citation information may be slightly different for each Person.
+
 ## Persons Collection [/persons/{page}]
 Paginated by *page*, limited to 100 results. If *page* is absent, page 1 is returned.
 
@@ -565,6 +567,7 @@ Request parameters listed are search options and can be mixed as needed.
                 },
                 "@type": "org:Membership",
                 "@id": "http://lna.dartmouth.edu/person/1/membership/membership1",
+                "status": "success",
                 "org:organization": "http://lna.dartmouth.edu/organization/3",
                 "vcard:email": "john.p.bell@dartmouth.edu",
                 "vcard:title": "Lead Application Developer",
@@ -574,7 +577,6 @@ Request parameters listed are search options and can be mixed as needed.
                 "vcard:locality": "Lebanon, NH",
                 "owltime:hasBeginning": "2015-08-20",
                 "owltime:hasEnd": ""
-                }
             }
 
 
@@ -606,7 +608,7 @@ Request parameters listed are search options and can be mixed as needed.
 + Response 200 (application/ld+json)
 
     + Body
-
+    
             {
                 "@context": {
                     "org": "http://www.w3.org/ns/org#",
@@ -615,6 +617,7 @@ Request parameters listed are search options and can be mixed as needed.
                 },
                 "@type": "org:Membership",
                 "@id": "http://lna.dartmouth.edu/person/1/membership/membership1",
+                "status": "success",
                 "org:organization": "http://lna.dartmouth.edu/organization/3",
                 "vcard:email": "john.p.bell@dartmouth.edu",
                 "vcard:title": "Lead Application Developer",
@@ -652,7 +655,7 @@ Note that works metadata varies and the fields referenced here may vary.
 
 + Parameters
     + person_id (number, required) - ID of the person whose works are to be retrieved
-    + start_date (YYYY-MM-DD, optional) - Start date for the list. End date is assumed to be today, if omitted, all works are returned
+    + start_date (YYYY-MM-DD, optional) - Start date for the list. No end date is required. If omitted, all works are returned
     
 + Request (application/ld+json)
 
@@ -669,6 +672,7 @@ Note that works metadata varies and the fields referenced here may vary.
                 },
                 "@type": "bibo:Collection",
                 "@id": "http://lna.dartmouth.edu/person/1/works",
+                "status": "success",
                 "foaf:primaryTopic": "http://lna.dartmouth.edu/person/1",
                 "bibo:hasPart": "http://lna.dartmouth.edu/work/1",
                 "bibo:hasPart": "http://lna.dartmouth.edu/work/2",
@@ -706,11 +710,107 @@ Note that works metadata varies and the fields referenced here may vary.
 
 ## Add a New Work by a Person [/person/{person_id}/work/]
 
+Note that the fields shown here are representative and will vary from work to work.
+
 ### Create a new work [POST]
+
++ Parameters
+    + person_id (number, required) - ID of the person to whom the work will be attributed.
+
++ Request (application/ld+json)
+
+        {            
+            "@context": {
+                    "bibo": "http://purl.org/ontology/bibo/#",
+                    "dc": "http://purl.org/dc/elements/1.1/",
+            },
+            "bibo:doi": "http://dx.doi.org/10.1002/9781118829059.wbihms321",
+            "bibo:uri": "http://onlinelibrary.wiley.com/doi/10.1002/9781118829059.wbihms321/abstract",
+            "bibo:volume": "3",
+            "bibo:pages": "24",
+            "bibo:pageStart": "473",
+            "bibo:pageEnd": "497",
+            "bibo:authorsList": "Bell, John and Ippolito, Jon",
+            "bibo:abstract": "Lorem ipsum...",
+            "dc:publisher": "Wiley",
+            "dc:date": "2015",
+            "dc:isPartOf": "http://dx.doi.org/10.1002/9781118829059"
+        }
+        
++ Response 201 (application/ld+json)
+
+    + Headers
+            
+            Location: /work/1
+
+    + Body
+
+            {
+            "@context": {
+                    "bibo": "http://purl.org/ontology/bibo/#",
+                    "dc": "http://purl.org/dc/elements/1.1/",
+            },
+            "@type": "bibo:Document",
+            "@id": "http://lna.dartmouth.edu/work/1",
+            "status": "success",
+            "bibo:doi": "http://dx.doi.org/10.1002/9781118829059.wbihms321",
+            "bibo:uri": "http://onlinelibrary.wiley.com/doi/10.1002/9781118829059.wbihms321",
+            "bibo:volume": "3",
+            "bibo:pages": "24",
+            "bibo:pageStart": "473",
+            "bibo:pageEnd": "497",
+            "bibo:authorsList": "Bell, John and Ippolito, Jon",
+            "bibo:abstract": "Lorem ipsum...",
+            "dc:publisher": "Wiley",
+            "dc:date": "2015",
+            "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works"
+            }
+
 
 ## Works Collections [/works/{page}/]
 
+Works are sorted by date added, descending, then authorlist, ascending. Paginated by *page*, with 100 results per page.
+
 ### Get a paginated list of all works [GET]
+
++ Parameters
+    + page (number, optional) - Which page of the result set to return
+        +default: '1'
+
++ Request (application/ld+json)
+
++ Response 200 (application/ld+json)
+
+    + Body
+    
+            {
+                "@context": {
+                    "bibo": "http://purl.org/ontology/bibo/#",
+                    "dc": "http://purl.org/dc/elements/1.1/",
+                    "ali": "http://www.niso.org/schemas/ali/1.0/",
+                },
+                "@id": "http://lna.dartmouth.edu/works/1",
+                "generatedAt": "2015-10-30T09:30:10Z",
+                "status": "success",
+                "@graph": [
+                    {
+                        "@id": "http://lna.dartmouth.edu/work/1",
+                        "@type": "bibo:Document",
+                        "dc:title": "Diffused Museums: Networked, Augmented, and Self-Organized Collections",
+                        "dc:authorsList": "John P. Bell, Jon Ippolito",
+                        "dc:date": "2015-05-26"
+                        "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works"
+                    },
+                    {
+                        "@id": "http://lna.dartmouth.edu/work/2",
+                        "@type": "bibo:Document",
+                        "dc:title": "10 PRINT CHR$(205.5+RND(1)); : GOTO 10",
+                        "dc:authorsList": "Nick Montfort, Patsy Baudoin, John Bell, Ian Bogost, Jeremy Douglass, Mark C. Marino, Michael Mateas, Casey Reas, Mark Sample, and Noah Vawter",
+                        "dc:date": "2012-11-01",
+                        "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works"
+                    }
+                ]
+            }
 
 ### Search for a list of matching works [POST]
 
