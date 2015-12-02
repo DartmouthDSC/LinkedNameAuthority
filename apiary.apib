@@ -138,7 +138,7 @@ Request parameters listed are search options and can be mixed as needed.
                 },
                 "@id": "http://lna.dartmouth.edu/persons/{page}",
                 "generatedAt": "2015-10-30T09:30:10Z",
-                "queryString": "foaf:givenName=John&org:member="ITS",
+                "queryString": "foaf:givenName=John&org:member='ITS'",
                 "status": "success",
                 "@graph": [
                     {
@@ -780,14 +780,19 @@ Works are sorted by date added, descending, then authorlist, ascending. Paginate
 + Request (application/ld+json)
 
 + Response 200 (application/ld+json)
+ 
+    + Headers
+    
+            Link: http://lna.dartmouth.edu/works/1>; rel="first"
+            Link: http://lna.dartmouth.edu/works/5>; rel="next"
+            Link: http://lna.dartmouth.edu/works/3>; rel="prev"
 
     + Body
     
             {
                 "@context": {
-                    "bibo": "http://purl.org/ontology/bibo/#",
                     "dc": "http://purl.org/dc/elements/1.1/",
-                    "ali": "http://www.niso.org/schemas/ali/1.0/",
+                    "bibo": "http://purl.org/ontology/bibo/#"
                 },
                 "@id": "http://lna.dartmouth.edu/works/1",
                 "generatedAt": "2015-10-30T09:30:10Z",
@@ -814,11 +819,195 @@ Works are sorted by date added, descending, then authorlist, ascending. Paginate
 
 ### Search for a list of matching works [POST]
 
+Request parameters listed are search options and can be mixed as needed.
+
+Works are sorted by relevance. Paginated by *page*, with 100 results per page.
+
++ Parameters
+    + page (number, optional) - Which page of the result set to return
+        +default: '1'
+
++ Request (application/ld+json)
+
+        {   "dc:authorList": "John Bell"}
+        {   "bibo:doi": "10.1002/9781118829059.wbihms321" }
+        {   "dc:title": "Print"         }
+        {   "bibo:abstract": "BASIC"    }
+        {   "org:member": "ITS"         }
+
++ Response 200 (application/ld+json)
+
+    + Headers
+    
+            Link: http://lna.dartmouth.edu/works/1>; rel="first"
+            Link: http://lna.dartmouth.edu/works/5>; rel="next"
+            Link: http://lna.dartmouth.edu/works/3>; rel="prev"
+            
+    + Body
+    
+             {
+                "@context": {
+                    "dc": "http://purl.org/dc/elements/1.1/",
+                    "bibo": "http://purl.org/ontology/bibo/#"
+                },
+                "@id": "http://lna.dartmouth.edu/works/1",
+                "queryString": "foaf:givenName=John&org:member='ITS'",
+                "generatedAt": "2015-10-30T09:30:10Z",
+                "status": "success",
+                "@graph": [
+                    {
+                        "@id": "http://lna.dartmouth.edu/work/1",
+                        "@type": "bibo:Document",
+                        "dc:title": "Diffused Museums: Networked, Augmented, and Self-Organized Collections",
+                        "dc:authorsList": "John P. Bell, Jon Ippolito",
+                        "dc:date": "2015-05-26"
+                        "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works"
+                    },
+                    {
+                        "@id": "http://lna.dartmouth.edu/work/2",
+                        "@type": "bibo:Document",
+                        "dc:title": "10 PRINT CHR$(205.5+RND(1)); : GOTO 10",
+                        "dc:authorsList": "Nick Montfort, Patsy Baudoin, John Bell, Ian Bogost, Jeremy Douglass, Mark C. Marino, Michael Mateas, Casey Reas, Mark Sample, and Noah Vawter",
+                        "dc:date": "2012-11-01",
+                        "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works"
+                    }
+                ]
+            }
+ 
+        
++ Response 200 (text/html)
+
+    + Headers
+    
+            Link: http://lna.dartmouth.edu/works/1>; rel="first"
+            Link: http://lna.dartmouth.edu/works/5>; rel="next"
+            Link: http://lna.dartmouth.edu/works/3>; rel="prev"
+            
+    + Body
+
+            <html>Human readable interface</html>
+
 ## Recent Works Collections convenience function [/works/{start_date}/{page}/]
 
 ### Get a paginated list of all works since a certain date [GET]
 
+Works are sorted by date added, descending, then authorlist, ascending. Paginated by *page*, with 100 results per page.
+
++ Parameters
+    + start_date (YYYY-MM-DD, required) - Start date for the list.
+    + page (number, optional) - Which page of the result set to return
+        +default: '1'
+
++ Request (application/ld+json)
+
++ Response 200 (application/ld+json)
+ 
+    + Headers
+    
+            Link: http://lna.dartmouth.edu/works/1>; rel="first"
+            Link: http://lna.dartmouth.edu/works/5>; rel="next"
+            Link: http://lna.dartmouth.edu/works/3>; rel="prev"
+
+    + Body
+    
+            {
+                "@context": {
+                    "dc": "http://purl.org/dc/elements/1.1/",
+                    "bibo": "http://purl.org/ontology/bibo/#"
+                },
+                "@id": "http://lna.dartmouth.edu/works/1",
+                "generatedAt": "2015-10-30T09:30:10Z",
+                "status": "success",
+                "@graph": [
+                    {
+                        "@id": "http://lna.dartmouth.edu/work/1",
+                        "@type": "bibo:Document",
+                        "dc:title": "Diffused Museums: Networked, Augmented, and Self-Organized Collections",
+                        "dc:authorsList": "John P. Bell, Jon Ippolito",
+                        "dc:date": "2015-05-26"
+                        "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works"
+                    },
+                    {
+                        "@id": "http://lna.dartmouth.edu/work/2",
+                        "@type": "bibo:Document",
+                        "dc:title": "10 PRINT CHR$(205.5+RND(1)); : GOTO 10",
+                        "dc:authorsList": "Nick Montfort, Patsy Baudoin, John Bell, Ian Bogost, Jeremy Douglass, Mark C. Marino, Michael Mateas, Casey Reas, Mark Sample, and Noah Vawter",
+                        "dc:date": "2012-11-01",
+                        "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works"
+                    }
+                ]
+            }
+
 ### Search for a list of matching works since a certain date [POST]
+
+Request parameters listed are search options and can be mixed as needed.
+
+Works are sorted by relevance. Paginated by *page*, with 100 results per page.
+
++ Parameters
+    + start_date (YYYY-MM-DD, required) - Start date for the list.
+    + page (number, optional) - Which page of the result set to return
+        +default: '1'
+
++ Request (application/ld+json)
+
+        {   "dc:authorList": "John Bell"}
+        {   "bibo:doi": "10.1002/9781118829059.wbihms321" }
+        {   "dc:title": "Print"         }
+        {   "bibo:abstract": "BASIC"    }
+        {   "org:member": "ITS"         }
+
++ Response 200 (application/ld+json)
+
+    + Headers
+    
+            Link: http://lna.dartmouth.edu/works/1>; rel="first"
+            Link: http://lna.dartmouth.edu/works/5>; rel="next"
+            Link: http://lna.dartmouth.edu/works/3>; rel="prev"
+            
+    + Body
+    
+             {
+                "@context": {
+                    "dc": "http://purl.org/dc/elements/1.1/",
+                    "bibo": "http://purl.org/ontology/bibo/#"
+                },
+                "@id": "http://lna.dartmouth.edu/works/1",
+                "queryString": "foaf:givenName=John&org:member='ITS'",
+                "generatedAt": "2015-10-30T09:30:10Z",
+                "status": "success",
+                "@graph": [
+                    {
+                        "@id": "http://lna.dartmouth.edu/work/1",
+                        "@type": "bibo:Document",
+                        "dc:title": "Diffused Museums: Networked, Augmented, and Self-Organized Collections",
+                        "dc:authorsList": "John P. Bell, Jon Ippolito",
+                        "dc:date": "2015-05-26"
+                        "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works"
+                    },
+                    {
+                        "@id": "http://lna.dartmouth.edu/work/2",
+                        "@type": "bibo:Document",
+                        "dc:title": "10 PRINT CHR$(205.5+RND(1)); : GOTO 10",
+                        "dc:authorsList": "Nick Montfort, Patsy Baudoin, John Bell, Ian Bogost, Jeremy Douglass, Mark C. Marino, Michael Mateas, Casey Reas, Mark Sample, and Noah Vawter",
+                        "dc:date": "2012-11-01",
+                        "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works"
+                    }
+                ]
+            }
+ 
+        
++ Response 200 (text/html)
+
+    + Headers
+    
+            Link: http://lna.dartmouth.edu/works/1>; rel="first"
+            Link: http://lna.dartmouth.edu/works/5>; rel="next"
+            Link: http://lna.dartmouth.edu/works/3>; rel="prev"
+            
+    + Body
+
+            <html>Human readable interface</html>
 
 ## Work [/work/{id}]
 
