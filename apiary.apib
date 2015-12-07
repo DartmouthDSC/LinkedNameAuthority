@@ -696,7 +696,7 @@ Note that works metadata varies and the fields referenced here may vary.
                         "dc:date": "2012-11-01",
                         "dc:abstract": "Lorem Ipsum...",
                         "dc:publisher": "MIT Press",
-                        "dc:license": "#license1"
+                        "ali:license_ref": "#license1"
                     },
                     {
                         "@id": "#license1",
@@ -1078,8 +1078,8 @@ Works are sorted by relevance. Paginated by *page*, with 100 results per page.
             "dc:abstract": "Lorem Ipsum...",
             "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works",
             "dc:creator": "http://lna.dartmouth.edu/person/1",
-            "dc:license": "#license1",
-            "dc:license": "#license2",
+            "ali:license_ref": "#license1",
+            "ali:license_ref": "#license2",
             "@graph":
             [
                 {   "@id": "http://lna.dartmouth.edu/person/1",
@@ -1092,14 +1092,14 @@ Works are sorted by relevance. Paginated by *page*, with 100 results per page.
                 },
                 {
                     "@id": "#license1",
-                    "@type": "ali:LicenseDocument",
+                    "@type": "dc:LicenseDocument",
                     "ali:start_date": "2012-11-01",
                     "ali:uri": "https://creativecommons.org/licenses/by-nc-sa/3.0/",
                     "dc:title": "Creative Commons BY-NC-SA 3.0"
                 },
                 {
                     "@id": "#license2",
-                    "@type": "ali:LicenseDocument",
+                    "@type": "dc:LicenseDocument",
                     "ali:start_date": "2011-11-01",
                     "ali:end_date": "2012-11-01",
                     "ali:uri": "https://creativecommons.org/licenses/by-nc-sa/2.0/",
@@ -1191,6 +1191,7 @@ Works are sorted by relevance. Paginated by *page*, with 100 results per page.
             { "status": "success" }
 
 ## Work License [/work/{work_id}/license/{id}/]
+Note that dc:description for licenses refers to the ali license type and should be either free_to_read or license_ref.
 
 ### Create a license [POST]
 
@@ -1207,7 +1208,8 @@ Works are sorted by relevance. Paginated by *page*, with 100 results per page.
             "ali:start_date": "2011-11-01",
             "ali:end_date": "2012-11-01",
             "ali:uri": "https://creativecommons.org/licenses/by-nc-sa/2.0/",
-            "dc:title": "Creative Commons BY-NC-SA 2.0"
+            "dc:title": "Creative Commons BY-NC-SA 2.0",
+            "dc:description": "license_ref"
         }
         
 + Response 201 (application/ld+json)
@@ -1227,7 +1229,8 @@ Works are sorted by relevance. Paginated by *page*, with 100 results per page.
                 "ali:start_date": "2011-11-01",
                 "ali:end_date": "2012-11-01",
                 "ali:uri": "https://creativecommons.org/licenses/by-nc-sa/2.0/",
-                "dc:title": "Creative Commons BY-NC-SA 2.0"
+                "dc:title": "Creative Commons BY-NC-SA 2.0",
+                "dc:description": "license_ref"
             }
 
 ### Update a license [PUT]
@@ -1246,7 +1249,8 @@ Works are sorted by relevance. Paginated by *page*, with 100 results per page.
             "ali:start_date": "2011-11-01",
             "ali:end_date": "2012-11-01",
             "ali:uri": "https://creativecommons.org/licenses/by-nc-sa/2.0/",
-            "dc:title": "Creative Commons BY-NC-SA 2.0"
+            "dc:title": "Creative Commons BY-NC-SA 2.0",
+            "dc:description": "license_ref"
         }
         
 + Response 200 (application/ld+json)
@@ -1262,7 +1266,8 @@ Works are sorted by relevance. Paginated by *page*, with 100 results per page.
                 "ali:start_date": "2011-11-01",
                 "ali:end_date": "2012-11-01",
                 "ali:uri": "https://creativecommons.org/licenses/by-nc-sa/2.0/",
-                "dc:title": "Creative Commons BY-NC-SA 2.0"
+                "dc:title": "Creative Commons BY-NC-SA 2.0",
+                "dc:description": "license_ref"
             }
 
 ### Delete a license [DELETE]
