@@ -1,14 +1,14 @@
 class PersonController < ApiController
 
   before_action :full_fedora_id, except: :create
-  before_action :authenticate_user!, only: [:create]
+#  before_action :authenticate_user!, only: [:create]
 
-  # GET /person(/:person_id)
+  # GET /person(/:id)
   def show
     query = ActiveFedora::SolrQueryBuilder.construct_query_for_ids([params[:id]])
     @person = ActiveFedora::SolrService.query(query)
 
-    not_found if @persons.blank?
+    not_found if @person.blank?
     
     query = ActiveFedora::SolrQueryBuilder.construct_query(
       [
@@ -25,6 +25,16 @@ class PersonController < ApiController
       ]
     )
     @accounts = ActiveFedora::SolrService.query(query)
+
+    # primary organization and all the membership's organizations
+    org_ids = [ @person.first['reportsTo_ssim'].first ]
+    @memberships.each do |m|
+      org_ids << m['Organization_ssim'].first
+    end
+
+    query = ActiveFedora::SolrQueryBuilder.construct_query_for_ids(org_ids.uniq)
+    @organizations = ActiveFedora::SolrService.query(query)
+
     respond_to do |format|
       format.jsonld { render :show, content_type: 'application/ld+json' }
       format.html

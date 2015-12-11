@@ -30,10 +30,14 @@ json.set! '@graph' do |json|
   end
 
   json.array! @memberships do |membership|
-    json.partial! 'persons/membership', membership: membership
+    json.partial! 'person/membership', membership: membership
   end
 
   json.array! @accounts do |account|
-    json.partial! 'persons/account', account: account
+    json.partial! 'person/account', account: account
+  end
+
+  json.array! @organizations do |organization|
+    json.partial! 'organization/organization', org: organization
   end
 end

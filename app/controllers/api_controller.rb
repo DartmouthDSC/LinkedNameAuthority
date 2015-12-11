@@ -20,4 +20,10 @@ class ApiController < ActionController::Base
   def not_found
     raise ActionController::RoutingError.new('Not Found')
   end
+
+  private
+  
+  def page_default_to_first
+    params['page'] = (params['page'].blank?) ? 1 : params['page'].to_i
+  end
 end

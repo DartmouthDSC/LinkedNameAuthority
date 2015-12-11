@@ -40,6 +40,7 @@ group :development, :test do
   gem 'factory_girl_rails'
   gem 'pry-nav'
   gem 'rspec-rails'
+  gem 'ruby-debug-passenger'
   gem 'spring'  # Spring speeds up development.
   gem 'web-console', '~> 2.0' # Access an IRB console on exception pages.
 end

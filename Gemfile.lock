@@ -315,6 +315,7 @@ GEM
       rspec-mocks (~> 3.3.0)
       rspec-support (~> 3.3.0)
     rspec-support (3.3.0)
+    ruby-debug-passenger (0.2.0)
     ruby-oci8 (2.2.1)
     rubyzip (1.1.7)
     sass (3.4.19)
@@ -401,6 +402,7 @@ DEPENDENCIES
   rdf-vocab
   rsolr (~> 1.0.10)
   rspec-rails
+  ruby-debug-passenger
   ruby-oci8
   sass-rails (~> 5.0)
   solrizer (~> 3.3.0)

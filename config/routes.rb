@@ -25,10 +25,11 @@ Rails.application.routes.draw do
   
   put '/person/:id', to: 'persons#update'
 
+
+  get '/organizations(/:page)', to: 'organizations#index'
+  get '/organizations(/:page)', to: 'organizatiosn#search'
   
   get '/organization/:id', to: 'organizations#show', as: :organization_path
-  
-  get '/personstwo/:page', to: 'person_two#index'
   
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
