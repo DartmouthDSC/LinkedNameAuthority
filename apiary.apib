@@ -1322,9 +1322,11 @@ Orgs returned include their parent org (org:subOrganizationOf) but not a list of
                         "@id": "http://lna.dartmouth.edu/organization/1",
                         "@type": "org:Organization",
                         "org:identifier": "its1",
+                        "org:subOrganizationOf": "http://lna.dartmouth.edu/organization/8",
                         "skos:pref_label": "Dartmouth Information Technology Services",
-                        "skos:alt_label": "ITS",
-                        "owltime:hasBeginning": "2013-06-01"
+                        "skos:alt_label": ["ITS"],
+                        "owltime:hasBeginning": "2013-06-01",
+                        "owltime:hasEnd": ""
                     },
                     {
                         "@id": "http://lna.dartmouth.edu/organization/2",
@@ -1332,16 +1334,21 @@ Orgs returned include their parent org (org:subOrganizationOf) but not a list of
                         "org:identifier": "dltg1",
                         "org:subOrganizationOf": "http://lna.dartmouth.edu/organization/3",
                         "skos:pref_label": "Dartmouth Digital Library Technology Group",
-                        "skos:alt_label": "DLTG",
-                        "owltime:hasBeginning": "2000-06-01"
+                        "skos:alt_label": ["DLTG"],
+                        "owltime:hasBeginning": "2000-06-01",
+                        "owltime:hasEnd": ""
                     },
                     {
                         "@id": "http://lna.dartmouth.edu/organization/3",
                         "@type": "org:Organization",
                         "org:identifier": "library1",
+                        "org:subOrganizationOf": "http://lna.dartmouth.edu/organization/12",
                         "skos:pref_label": "Dartmouth College Library",
-                        "owltime:hasBeginning": "1769-06-01"
+                        "skos:alt_label": [],
+                        "owltime:hasBeginning": "1769-06-01",
+                        "owltime:hasEnd": ""
                     }
+
                 ]
             }
 
@@ -1360,8 +1367,8 @@ Orgs returned include their parent org (org:subOrganizationOf) but not a list of
         {   "org:identifier": "its"}
         {   "bibo:doi": "10.1002/9781118829059.wbihms321" }
         {   "dc:title": "Print"         }
-        {   "bibo:abstract": "BASIC"    }
-        {   "org:member": "ITS"         }
+        {   "skos:pref_label": "Library"    }
+        {   "org:subOrganizationOf": "ITS"         }
 
 + Response 200 (application/ld+json)
  
@@ -1387,9 +1394,11 @@ Orgs returned include their parent org (org:subOrganizationOf) but not a list of
                         "@id": "http://lna.dartmouth.edu/organization/1",
                         "@type": "org:Organization",
                         "org:identifier": "its1",
+                        "org:subOrganizationOf": "http://lna.dartmouth.edu/organization/8",
                         "skos:pref_label": "Dartmouth Information Technology Services",
-                        "skos:alt_label": "ITS",
-                        "owltime:hasBeginning": "2013-06-01"
+                        "skos:alt_label": ["ITS"],
+                        "owltime:hasBeginning": "2013-06-01",
+                        "owltime:hasEnd": ""
                     },
                     {
                         "@id": "http://lna.dartmouth.edu/organization/2",
@@ -1397,16 +1406,21 @@ Orgs returned include their parent org (org:subOrganizationOf) but not a list of
                         "org:identifier": "dltg1",
                         "org:subOrganizationOf": "http://lna.dartmouth.edu/organization/3",
                         "skos:pref_label": "Dartmouth Digital Library Technology Group",
-                        "skos:alt_label": "DLTG",
-                        "owltime:hasBeginning": "2000-06-01"
+                        "skos:alt_label": ["DLTG"],
+                        "owltime:hasBeginning": "2000-06-01",
+                        "owltime:hasEnd": ""
                     },
                     {
-                        "@id": "http://lna.dartmouth.edu/organization/3",
+                        "@id": "http://lna.dartmouth.edu/organization/4",
                         "@type": "org:Organization",
-                        "org:identifier": "library1",
-                        "skos:pref_label": "Dartmouth College Library",
-                        "owltime:hasBeginning": "1769-06-01"
+                        "org:identifier": "acomp",
+                        "org:subOrganizationOf": "http://lna.dartmouth.edu/organization/8",
+                        "skos:pref_label": "Academic Computing",
+                        "skos:alt_label": [],
+                        "owltime:hasBeginning": "1980-06-01",
+                        "owltime:hasEnd": "2014-01-01"
                     }
+
                 ]
             }
 
