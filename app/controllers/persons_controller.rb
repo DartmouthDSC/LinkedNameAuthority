@@ -1,28 +1,30 @@
 class PersonsController < ApiController
 
   skip_before_action :verify_authenticity_token, only: [:index, :search]
-  
-  # default_to_first_page
-  before_action :page_default_to_first, only: [:index, :search]
+ 
+  before_action :default_to_first_page, only: [:index, :search]
   
   ROWS = 100.freeze
 
   # GET /persons
   def index
     page = params['page']
-    args =
+    params =
       {
         rows: ROWS,
         sort: 'family_name_ssi asc, given_name_ssi asc',
-        fq: 'has_model_ssim:"Lna::Person"'
+        fq: 'has_model_ssim:"Lna::Person"',
+        q: '*:*'
       }
-    args[:start] = page * ROWS if page > 1
+    params[:start] = page * ROWS if page > 1
     
-    @persons = ActiveFedora::SolrService.query("*:*", args)
-
+    @persons = solr_query(params)
     @organizations = get_primary_orgs(@persons)
-
+  
+    link = link_headers('persons/', page, ROWS, params)
+    
     respond_to do |format|
+      response.headers['Link'] = link
       format.jsonld { render :index, content_type: 'application/ld+json' }
       format.html
     end
@@ -49,23 +51,21 @@ class PersonsController < ApiController
         search_query << query
       end
     end
-      
-    # Blacklight.logger.debug - or something similar to display solr query
-    # logger.debug("solr query = #{search_query}");
     
-    args =
+    params =
       {
         rows: ROWS,
-        fq: 'has_model_ssim:"Lna::Person"'
+        fq: 'has_model_ssim:"Lna::Person"',
+        q: search_query
       }
-    args[:start] = page * ROWS if page > 1
+    params[:start] = page * ROWS if page > 1
 
-    @persons = ActiveFedora::SolrService.query(search_query, args)
+    @persons = solr_query(params)
     @organizations = get_primary_orgs(@persons)
-
-#    response.headers['link'] = 'bunnies'
     
     respond_to do |format|
+      response.headers['Link'] = link_headers('persons/', page, ROWS, params)
+      
       format.jsonld { render :search, content_type: 'application/ld+json' }
     end   
   end

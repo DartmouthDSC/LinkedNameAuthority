@@ -1,6 +1,6 @@
 class OrganizationsController < ApiController
 
-  before_action :page_default_to_first, only: [:index, :search]
+  before_action :default_to_first_page, only: [:index, :search]
   
   ROWS = 100.freeze
 

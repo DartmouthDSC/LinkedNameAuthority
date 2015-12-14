@@ -23,7 +23,26 @@ class ApiController < ActionController::Base
 
   private
   
-  def page_default_to_first
+  def default_to_first_page
     params['page'] = (params['page'].blank?) ? 1 : params['page'].to_i
+  end
+
+  def link_headers(namespace, page, max_rows, solr_params)
+    previous_page = (page == 1) ? nil : page - 1;
+    new_page = page + 1
+    solr_params[:start] = new_page * max_rows
+    next_page = new_page if solr_query(solr_params).count > 0
+    
+    url_prefix = root_url + namespace
+
+    links = ["<#{url_prefix}1>; ref=\"first\""]
+    links << "<#{url_prefix}#{previous_page}>; ref=\"prev\"" if previous_page
+    links << "<#{url_prefix}#{next_page}>; ref=\"next\"" if next_page
+    links.join(', ')
+  end
+
+  def solr_query(params)
+    logger.debug("Solr params: #{params.to_s}")
+    ActiveFedora::SolrService.query(params[:q], params)
   end
 end
