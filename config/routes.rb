@@ -23,7 +23,7 @@ Rails.application.routes.draw do
 #    get '/works(/:start_date)', to: 'person#works', as:person_works
   end
   
-  put '/person/:id', to: 'persons#update'
+  put '/person(/:id)', to: 'persons#update'
 
 
   get '/organizations(/:page)', to: 'organizations#index'
