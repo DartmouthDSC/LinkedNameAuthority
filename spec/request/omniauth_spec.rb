@@ -5,6 +5,7 @@ RSpec.describe 'OmniAuth integration', :type => :request do
     OmniAuth.config.test_mode = true
     Rails.application.env_config['devise.mapping'] = Devise.mappings[:user]
     Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:cas]
+    https!
   end
 
   before :each do
