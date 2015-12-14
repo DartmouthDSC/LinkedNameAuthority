@@ -74,7 +74,12 @@ module Lna
       raise 'More than one membership was a match for the given hash.' if matching.count > 1
       return matching.count == 1 ? matching.first : false
     end
-   
+    
+    def mbox=(e)
+      super
+      self.mbox_sha1sum = Digest::SHA1.hexdigest(e)
+    end
+    
     private
     
     def create_collection

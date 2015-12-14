@@ -50,17 +50,17 @@ RSpec.describe Lna::Person, type: :model do
     end
 
     it 'sets mbox' do
-      expect(subject.mbox).to eql 'mailto:jane.a.doe@dartmouth.edu'
-    end
-
-    it 'sets sha1sum' do
-      expect(subject.mbox_sha1sum).to eql 'kjflakjfldjskflaskjfdsfdfadfsdfdf'
+      expect(subject.mbox).to eql 'jane.a.doe@dartmouth.edu'
     end
 
     it 'sets homepage' do
       expect(subject.homepage).to eql ['http://janeadoe.dartmouth.edu']
     end
 
+    it 'creates sha1sum' do
+      expect(subject.mbox_sha1sum).to eql 'd7bf845300e1b5b668bc8215f764886350e9cf31'
+    end
+    
     it 'creates a collection object' do
       subject.reload
       expect(subject.collections.count).to eql 1
