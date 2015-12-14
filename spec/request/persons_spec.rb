@@ -1,9 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe "Persons API", type: :request do
+  before :all do
+    https!
+  end
+  
   describe 'GET persons/' do
     before(:context) do
-      https!
       get '/persons/1', { format: :jsonld }
     end
     

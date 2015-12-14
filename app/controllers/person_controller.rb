@@ -1,7 +1,7 @@
 class PersonController < ApiController
 
   before_action :full_fedora_id, except: :create
-#  before_action :authenticate_user!, only: [:create]
+  before_action :authenticate_user!, only: [:create, :show, :destroy]
 
   # GET /person(/:id)
   def show
@@ -41,10 +41,10 @@ class PersonController < ApiController
     end
   end
 
-  # POST /person
+  # POST /person(/:id)
   def create
     respond_to do |format|
-      format.jsonld { render '{}', content_type: 'application/ld+json' }
+      format.jsonld { render html: '{}', content_type: 'application/ld+json' }
     end
   end
 
