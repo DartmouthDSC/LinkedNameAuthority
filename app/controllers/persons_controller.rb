@@ -18,13 +18,12 @@ class PersonsController < ApiController
       }
     params[:start] = page * ROWS if page > 1
     
-    @persons = solr_query(params)
+    @persons = query(params)
     @organizations = get_primary_orgs(@persons)
   
-    link = link_headers('persons/', page, ROWS, params)
-    
     respond_to do |format|
-      response.headers['Link'] = link
+      response.headers['Link'] = link_headers('persons/', page, ROWS, params)
+
       format.jsonld { render :index, content_type: 'application/ld+json' }
       format.html
     end
@@ -34,23 +33,15 @@ class PersonsController < ApiController
   def search
     page = params['page']
 
-    # org:member maps to the pref label for an organization
-
     # Search query for each field in this search
     query_map = {
-      'foaf:name' => "full_name_tesi:\"#{params['foaf:name']}\"",
-      'foaf:givenName' => "given_name_ssi:\"#{params['foaf:givenName']}\"",
+      'foaf:name'       => "full_name_tesi:\"#{params['foaf:name']}\"",
+      'foaf:givenName'  => "given_name_ssi:\"#{params['foaf:givenName']}\"",
       'foaf:familyName' => "family_name_ssi:\"#{params['foaf:familyName']}\"",
-      'org:member' => "{!join from=id to=reportsTo_ssim}label_tesi:\"#{params['org:member']}\""
+      'org:member'      => "{!join from=id to=reportsTo_ssim}label_tesi:\"#{params['org:member']}\""
     }
 
-    search_query = ''
-    query_map.each do |field, query|
-      if params[field]
-        search_query << " AND " unless search_query.blank?
-        search_query << query
-      end
-    end
+    search_query = query_map.select { |f, _| params[f] }.values.join(" AND ")
     
     params =
       {
@@ -60,7 +51,7 @@ class PersonsController < ApiController
       }
     params[:start] = page * ROWS if page > 1
 
-    @persons = solr_query(params)
+    @persons = query(params)
     @organizations = get_primary_orgs(@persons)
     
     respond_to do |format|

@@ -5,6 +5,8 @@ class ApiController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
+  
+  rescue_from ActionController::RoutingError, with: :render_not_found
 
   # Because we are not using the database authenticatable module provided by
   # devise, we have to define this method so that controller can redirect in
@@ -17,11 +19,19 @@ class ApiController < ActionController::Base
     "https://login.dartmouth.edu/logout.php?app=#{I18n.t 'blacklight.application_name'}&url=#{root_url}"
   end
 
+  # TODO: Need to revist this.
   def not_found
     raise ActionController::RoutingError.new('Not Found')
   end
 
   private
+
+  def render_not_found
+    respond_to do |f|
+      f.jsonld { render json: { error: 'not_found' }.to_json, status: :not_found,
+                        content_type: 'application/ld+json' }
+    end
+  end
   
   def default_to_first_page
     params['page'] = (params['page'].blank?) ? 1 : params['page'].to_i
@@ -31,7 +41,7 @@ class ApiController < ActionController::Base
     previous_page = (page == 1) ? nil : page - 1;
     new_page = page + 1
     solr_params[:start] = new_page * max_rows
-    next_page = new_page if solr_query(solr_params).count > 0
+    next_page = new_page if query(solr_params).count > 0
     
     url_prefix = root_url + namespace
 
@@ -41,8 +51,30 @@ class ApiController < ActionController::Base
     links.join(', ')
   end
 
-  def solr_query(params)
+  def query(params)
     logger.debug("Solr params: #{params.to_s}")
     ActiveFedora::SolrService.query(params[:q], params)
+  end
+
+  def query_for_id!(id)
+    query = ActiveFedora::SolrQueryBuilder.construct_query_for_ids([id])
+    results = ActiveFedora::SolrService.query(query)
+
+    case results.count
+    when 1
+      results.first
+    when 0
+      raise_error 'No results for the id given.'
+    else
+      raise_error 'More than one result for the id given.'
+    end
+  end
+
+  def query_for_id(id)
+    begin
+      query_for_id!(id)
+    rescue
+      not_found
+    end
   end
 end

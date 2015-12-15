@@ -5,16 +5,6 @@ RSpec.describe "Person API", type: :request do
   before :all do
     https!
   end
-
-  shared_context 'authenticate user' do
-    before :all do 
-      OmniAuth.config.test_mode = true
-      Rails.application.env_config['devise.mapping'] = Devise.mappings[:user]
-      Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:cas]
-      OmniAuth.config.mock_auth[:cas] = FactoryGirl.create(:omniauth_hash)
-      get_via_redirect '/sign_in'
-    end
-  end
   
   describe 'POST person/' do
     it 'returns error if user is not authenticated' do
@@ -24,11 +14,31 @@ RSpec.describe "Person API", type: :request do
 
     describe 'when user is authenticated' do
       include_context 'authenticate user'
+
+      before :context do
+        body = {
+          'foaf:name'       => 'John Bell',
+          'foaf:givenName'  => 'John',
+          'foaf:familyName' => 'Bell',
+          'foaf:title'      => 'Dr.',
+          'foaf:mbox'       => 'john.p.bell@dartmouth.edu',
+          'foaf:image'      => 'http://dartmouth.edu/fictionalImageBank/12340.jpg',
+          'foaf:homepage'   => 'http://novomancy.org/'
+        }
+
+        post '/person', body.to_json, {
+               "ACCEPT" => 'application/ld+json',
+               "CONTENT_TYPE" => 'application/ld+json'
+             }
+        # get the id
+      end
     
       it 'returns status code of 200' do
-        post '/person', { format: :jsonld }
         expect(response).to be_success
       end
+
+      it 'creates and saves new person'
+      
     end
   end
 

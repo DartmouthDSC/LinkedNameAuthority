@@ -19,13 +19,12 @@ json.partial! 'shared/generated_at'
 json.status 'success'
 
 json.set! '@graph' do |json|
-  json.array! @person do |person|
-    json.partial! 'person/person', person: person
 
-    json.set! 'foaf:account' do
-      json.array! @accounts do |account|
-        json.set! '@id', '#' + simplify_fedora_id(account['id'])
-      end
+  json.partial! 'person/person', person: @person
+
+  json.set! 'foaf:account' do
+    json.array! @accounts do |account|
+      json.set! '@id', '#' + simplify_fedora_id(account['id'])
     end
   end
 
@@ -34,7 +33,7 @@ json.set! '@graph' do |json|
   end
 
   json.array! @accounts do |account|
-    json.partial! 'person/account', account: account
+    json.partial! 'person/account', account: account, id: nil
   end
 
   json.array! @organizations do |organization|

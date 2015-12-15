@@ -13,10 +13,10 @@ Rails.application.routes.draw do
   post '/persons(/:page)', to: 'persons#search'
 
   resources :person, only: [:show, :create, :destroy] do
-    resources :account, only: [:create, :destroy]
+    resources :account, only: [:create, :destroy], controller: 'person/account'
     resources :membership, only: [:create, :destroy]
 
-    put '/account/:id', to: 'account#update'
+    put '/account/:id', to: 'account#update', controller: 'person/account'
     put '/membership/:id', to: 'membership#update'
     
     get '/orcid', to: 'person#orcid', as: :person_orcid
