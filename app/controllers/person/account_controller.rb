@@ -13,13 +13,13 @@ class Person::AccountController < ApiController
   def create
     person = query_for_id(params[:person_id])
     
-    hash = {}
+    attributes = {}
     PARAM_TO_MODEL.select { |f, _| account_params[f] }.each do |f, v|
-      hash[v] = account_params[f]
+      attributes[v] = account_params[f]
     end
 
     # Create person
-    a = Lna::Account.create!(hash) do |a|
+    a = Lna::Account.create!(attributes) do |a|
       a.account_holder_id = person['id']
     end
 
@@ -87,6 +87,6 @@ class Person::AccountController < ApiController
   end
   
   def account_params
-    params.permit('person_id', 'dc:title', 'foaf:accountName', 'foaf:accountServiceHomepage')
+    params.permit(PARAM_TO_MODEL.keys << 'person_id')
   end
 end
