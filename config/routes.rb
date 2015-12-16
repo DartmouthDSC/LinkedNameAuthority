@@ -16,8 +16,8 @@ Rails.application.routes.draw do
     resources :account, only: [:create, :destroy], controller: 'person/account'
     put '/account/:id', to: 'person/account#update'
     
-    resources :membership, only: [:create, :destroy]
-    put '/membership/:id', to: 'membership#update'
+    resources :membership, only: [:create, :destroy], controller: 'person/membership'
+    put '/membership/:id', to: 'person/membership#update'
     
     get '/orcid', to: 'person#orcid', as: :person_orcid
 #    get '/works(/:start_date)', to: 'person#works', as:person_works
