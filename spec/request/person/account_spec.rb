@@ -1,18 +1,17 @@
 require 'rails_helper'
+require 'fedora_id'
 
 RSpec.describe "Person/Account API", type: :request do
-  include FedoraIdHelper
   
   before :all do
     https!
     @jane = FactoryGirl.create(:jane)
-    @person_id = simplify_fedora_id(@jane.id)
+    @person_id = FedoraID.shorten(@jane.id)
   end
 
   # after all delete person
 
   describe 'POST person/:person_id/account(/:id)' do
-
     it 'returns error when user not authenticated' do
       post "/person/#{@person_id}/account", { format: :jsonld }
       expect(response).not_to be_success
@@ -43,11 +42,12 @@ RSpec.describe "Person/Account API", type: :request do
           expect(response).to have_http_status(:created)
         end
 
-        it 'return correct location header'
+        it 'return correct location header' do
+          expect(response.location).to match %r{/person/#{@person_id}#[a-zA-Z0-9-]+}
+        end
 
         it 'returns body with @id.' do
-          puts response.body
-          expect(response.body).to match %r{"@id":"#{Regexp.escape(root_url)}person/#{@person_id}/account/[a-zA-Z0-9]+}
+          expect(response.body).to match %r{"@id":"#{Regexp.escape(root_url)}person/#{@person_id}/account/[a-zA-Z0-9-]+}
         end
       end
       

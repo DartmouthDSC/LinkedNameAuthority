@@ -8,11 +8,9 @@ class Person::AccountController < ApiController
       'foaf:accountName'            => 'account_name',
       'foaf:accountServiceHomepage' => 'account_service_homepage'
   }.freeze
-  
 
   # POST /person/:person_id/account(/:id)
   def create
-
     person = query_for_id(params[:person_id])
     
     hash = {}
@@ -22,14 +20,15 @@ class Person::AccountController < ApiController
 
     # Create person
     a = Lna::Account.create!(hash) do |a|
-      a.account_holder_id = params[:person_id]
+      a.account_holder_id = person['id']
     end
 
     # Throw errors if not enough information
     @account = query_for_id(a.id)
+    location = "/person/#{FedoraID.shorten(person['id'])}##{FedoraID.shorten(@account['id'])}"
     
     respond_to do |format|
-      format.jsonld { render :create, status: :created, content_type: 'application/ld+json' }
+      format.jsonld { render :create, status: :created, location: location, content_type: 'application/ld+json' }
     end
   end
 
@@ -45,18 +44,9 @@ class Person::AccountController < ApiController
   private
 
   def convert_to_full_fedora_id
-    [:id, :person_id].each { |i| full_fedora_id(i) }
+    [:id, :person_id].each { |i| params[i] = FedoraID.lengthen(params[i]) }
   end
   
-  def full_fedora_id(id_sym)
-    if params[id_sym]
-      /(?<first>^[a-zA-Z0-9]+)-/ =~ params[id_sym]
-      if first
-        params[id_sym] = first.scan(/[a-zA-Z0-9]{2}/).join('/') + '/' + params[id_sym]
-      end
-    end
-  end
-
   def account_params
     params.permit('person_id', 'dc:title', 'foaf:accountName', 'foaf:accountServiceHomepage')
   end

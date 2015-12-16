@@ -24,7 +24,7 @@ json.set! '@graph' do |json|
 
   json.set! 'foaf:account' do
     json.array! @accounts do |account|
-      json.set! '@id', '#' + simplify_fedora_id(account['id'])
+      json.set! '@id', '#' + FedoraID.shorten(account['id'])
     end
   end
 

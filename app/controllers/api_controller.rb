@@ -1,3 +1,5 @@
+require 'fedora_id'
+
 class ApiController < ActionController::Base
   # Adds a few additional behaviors into the application controller
   include Hydra::Controller::ControllerBehavior
@@ -7,7 +9,7 @@ class ApiController < ActionController::Base
   protect_from_forgery with: :exception
   
   rescue_from ActionController::RoutingError, with: :render_not_found
-
+  
   # Because we are not using the database authenticatable module provided by
   # devise, we have to define this method so that controller can redirect in
   # case of failure.
@@ -37,6 +39,10 @@ class ApiController < ActionController::Base
     params['page'] = (params['page'].blank?) ? 1 : params['page'].to_i
   end
 
+  def convert_to_full_fedora_id
+    params[:id] = FedoraID.lengthen(params[:id])
+  end
+  
   def link_headers(namespace, page, max_rows, solr_params)
     previous_page = (page == 1) ? nil : page - 1;
     new_page = page + 1

@@ -1,6 +1,6 @@
 class PersonController < ApiController
 
-  before_action :full_fedora_id, except: :create
+  before_action :convert_to_full_fedora_id, except: :create
   before_action :authenticate_user!, only: [:create, :update, :destroy]
 
   PARAM_TO_MODEL = {
@@ -86,13 +86,6 @@ class PersonController < ApiController
   end
 
   private
-
-  def full_fedora_id
-    if params[:id]
-      /(?<first>^[a-zA-Z0-9]+)-/ =~ params[:id]
-      params[:id] = first.scan(/[a-zA-Z0-9]{2}/).join('/') + '/' + params[:id]
-    end
-  end
 
   def person_params
     params.permit(PARAM_TO_MODEL.keys)

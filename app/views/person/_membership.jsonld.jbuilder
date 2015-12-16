@@ -1,4 +1,4 @@
-json.set! '@id', '#' + simplify_fedora_id(membership['id'])
+json.set! '@id', '#' + FedoraID.shorten(membership['id'])
 json.set! 'org:organization', membership['Organization_ssim'].first
 json.set! 'vcard:email', membership['email_ss'] || ''
 json.set! 'vcard:title', membership['title_tesi']
