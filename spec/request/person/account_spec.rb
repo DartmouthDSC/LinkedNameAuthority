@@ -22,17 +22,17 @@ RSpec.describe "Person/Account API", type: :request do
   end
   
   describe 'POST person/:person_id/account(/:id)' do
-    describe 'when not authenticated' do
-      it 'returns 401 status code' do 
-        post "/person/#{@person_id}/account", { format: :jsonld }
-        expect(response).to have_http_status(:unauthorized)
-      end
+    include_examples 'requires authentication' do
+      let(:path) { "/person/#{@person_id}/account" }
+      let(:action) { 'post' }
     end
-    
+        
     describe 'when authenticated' do
       include_context 'authenticate user'
-
-      describe 'succesfully adds new account' do 
+      
+      describe 'succesfully adds new account' do
+        include_examples 'successful POST request'
+        
         before :context do    
           body = {
             'dc:title'                    => 'ORCID',
@@ -75,17 +75,17 @@ RSpec.describe "Person/Account API", type: :request do
   describe 'PUT person/:person_id/account/:id' do
     include_context 'get account id'
 
-    describe 'when not authenticated' do
-      it 'returns 401 status code' do
-        put @path, { format: :jsonld }
-        expect(response).to have_http_status(:unauthorized)
-      end
+    include_examples 'requires authentication' do
+      let(:path) { @path }
+      let(:action) { 'put' }
     end
     
     describe 'when authenticated' do
       include_context 'authenticate user'
       
       describe 'succesfully updates a new account' do
+        include_examples 'successful request'
+        
         before :context do
           body = {
             'dc:title'                    => 'ORCID',
@@ -106,10 +106,6 @@ RSpec.describe "Person/Account API", type: :request do
         it 'response body contains new account name' do 
           expect(response.body).to match %r{"foaf:accountName":"http://orcid\.org/0000-0000-0000-1234"}
         end
-        
-        it 'returns a status code of 200' do
-          expect(response).to be_success
-        end
       end
     end
   end
@@ -117,17 +113,17 @@ RSpec.describe "Person/Account API", type: :request do
   describe 'DELETE person/:person_id/account/:id' do
     include_context 'get account id'
 
-    describe 'when not authenticated' do
-      it 'returns error' do
-        delete @path, { format: :jsonld }
-        expect(response).to have_http_status(:unauthorized)
-      end
+    include_examples 'requires authentication' do
+      let(:path) { @path }
+      let(:action) { 'delete' }
     end
     
     describe 'when authenticated' do
       include_context 'authenticate user'
       
       describe 'succesfully deletes account' do
+        include_examples 'successful request'
+        
         before :context do
           delete @path, {}, {
                    'ACCEPT'       => 'application/ld+json',
@@ -135,11 +131,7 @@ RSpec.describe "Person/Account API", type: :request do
                  }
           @jane.reload
         end
-        
-        it 'returns a status code of 200' do
-          expect(response).to be_success
-        end
-        
+                
         it 'response body contains success' do
           expect(response.body).to match /success/
         end
