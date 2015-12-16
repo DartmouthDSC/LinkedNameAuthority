@@ -14,9 +14,9 @@ Rails.application.routes.draw do
 
   resources :person, only: [:show, :create, :destroy] do
     resources :account, only: [:create, :destroy], controller: 'person/account'
+    put '/account/:id', to: 'person/account#update'
+    
     resources :membership, only: [:create, :destroy]
-
-    put '/account/:id', to: 'account#update', controller: 'person/account'
     put '/membership/:id', to: 'membership#update'
     
     get '/orcid', to: 'person#orcid', as: :person_orcid

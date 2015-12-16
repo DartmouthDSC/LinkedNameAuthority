@@ -16,8 +16,6 @@ class PersonController < ApiController
   # GET /person(/:id)
   def show
     @person = query_for_id(params[:id])
-
-    not_found if @person.blank?
     
     query = ActiveFedora::SolrQueryBuilder.construct_query(
       [

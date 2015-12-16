@@ -1,23 +1,35 @@
 require 'rails_helper'
 require 'fedora_id'
 
-RSpec.describe "Person/Account API", type: :request do
-  
+RSpec.describe "Person/Account API", type: :request do  
   before :all do
     https!
     @jane = FactoryGirl.create(:jane)
     @person_id = FedoraID.shorten(@jane.id)
   end
 
-  # after all delete person
+  after :all do
+    id = @jane.primary_org.id
+    @jane.destroy
+    Lna::Organization.find(id).destroy
+  end
 
-  describe 'POST person/:person_id/account(/:id)' do
-    it 'returns error when user not authenticated' do
-      post "/person/#{@person_id}/account", { format: :jsonld }
-      expect(response).not_to be_success
+  shared_context 'get account id' do
+    before :context do
+      @id = FedoraID.shorten(@jane.accounts.first.id)
+      @path = "/person/#{@person_id}/account/#{@id}"
     end
-
-    describe 'when user is authenticated' do
+  end
+  
+  describe 'POST person/:person_id/account(/:id)' do
+    describe 'when not authenticated' do
+      it 'returns 401 status code' do 
+        post "/person/#{@person_id}/account", { format: :jsonld }
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+    
+    describe 'when authenticated' do
       include_context 'authenticate user'
 
       describe 'succesfully adds new account' do 
@@ -61,19 +73,81 @@ RSpec.describe "Person/Account API", type: :request do
   end
 
   describe 'PUT person/:person_id/account/:id' do
-    describe 'when user is authenticated' do
-      it 'returns a status code of 200'
-      it 'returns a body containing...'
+    include_context 'get account id'
+
+    describe 'when not authenticated' do
+      it 'returns 401 status code' do
+        put @path, { format: :jsonld }
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+    
+    describe 'when authenticated' do
+      include_context 'authenticate user'
       
+      describe 'succesfully updates a new account' do
+        before :context do
+          body = {
+            'dc:title'                    => 'ORCID',
+            'foaf:accountName'            => 'http://orcid.org/0000-0000-0000-1234',
+            'foaf:accountServiceHomepage' => 'http://orcid.org/'
+          }
+          put @path, body.to_json, {
+                'ACCEPT'       => 'application/ld+json',
+                'CONTENT_TYPE' => 'application/ld+json'
+              }
+          @jane.reload
+        end
+
+        it 'updates account name in fedora store' do
+          expect(@jane.accounts.first.account_name).to eql 'http://orcid.org/0000-0000-0000-1234'
+        end
+        
+        it 'response body contains new account name' do 
+          expect(response.body).to match %r{"foaf:accountName":"http://orcid\.org/0000-0000-0000-1234"}
+        end
+        
+        it 'returns a status code of 200' do
+          expect(response).to be_success
+        end
+      end
     end
   end
 
   describe 'DELETE person/:person_id/account/:id' do
-    describe 'when user is authenticated' do
-      it 'returns a status code of 200'
-      it 'returns body containing...'
+    include_context 'get account id'
+
+    describe 'when not authenticated' do
+      it 'returns error' do
+        delete @path, { format: :jsonld }
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+    
+    describe 'when authenticated' do
+      include_context 'authenticate user'
+      
+      describe 'succesfully deletes account' do
+        before :context do
+          delete @path, {}, {
+                   'ACCEPT'       => 'application/ld+json',
+                   'CONTENT_TYPE' => 'application/ld+json'
+                 }
+          @jane.reload
+        end
+        
+        it 'returns a status code of 200' do
+          expect(response).to be_success
+        end
+        
+        it 'response body contains success' do
+          expect(response.body).to match /success/
+        end
+        
+        it 'account is deleted from fedora store' do
+          expect(@jane.accounts.count).to eq 0
+        end
+      end
     end
   end
-
-  
 end

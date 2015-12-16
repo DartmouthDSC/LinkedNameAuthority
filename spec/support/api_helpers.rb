@@ -9,4 +9,8 @@ RSpec.shared_context 'authenticate user' do
     OmniAuth.config.mock_auth[:cas] = FactoryGirl.create(:omniauth_hash)
     get_via_redirect '/sign_in'
   end
+
+  after :all do
+    get '/sign_out'
+  end
 end

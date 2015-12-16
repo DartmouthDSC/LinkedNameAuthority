@@ -27,24 +27,63 @@ class Person::AccountController < ApiController
     @account = query_for_id(a.id)
     location = "/person/#{FedoraID.shorten(person['id'])}##{FedoraID.shorten(@account['id'])}"
     
-    respond_to do |format|
-      format.jsonld { render :create, status: :created, location: location, content_type: 'application/ld+json' }
+    respond_to do |f|
+      f.jsonld { render :create, status: :created, location: location, content_type: 'application/ld+json' }
     end
   end
 
 
   # PUT /person/:person_id/account/:id
   def update
+    account = query_for_account
+    
+    # update person's account
+    attributes = {}
+    PARAM_TO_MODEL.each do |f, v|
+      attributes[v] = account_params[f] || ''
+    end
+
+    Lna::Account.find(params[:id]).update(attributes)
+    
+    # what should happen if update doesnt work
+
+    @account = query_for_id(params[:id])
+    
+    respond_to do |f|
+      f.jsonld { render :create, content_type: 'application/ld+json' }
+    end
   end
 
   # DELETE /person/:person_id/account/:id
-  def delete
+  def destroy
+    account = query_for_account
+
+    # Delete account.
+    Lna::Account.find(account['id']).destroy
+
+    # what to do if it doesnt work?
+
+    respond_to do |f|
+      f.jsonld { render json: '{ "status": "success" }', content_type: 'application/ld+json' }
+    end
   end
   
   private
 
   def convert_to_full_fedora_id
     [:id, :person_id].each { |i| params[i] = FedoraID.lengthen(params[i]) }
+  end
+
+  def query_for_account
+    query = ActiveFedora::SolrQueryBuilder.construct_query(
+      [
+        ['has_model_ssim', 'Lna::Account'],
+        ['id', params[:id]],
+        ['account_ssim', params[:person_id]]
+      ]
+    )
+    accounts = ActiveFedora::SolrService.query(query)
+    (accounts.count == 1) ? accounts.first : not_found
   end
   
   def account_params
