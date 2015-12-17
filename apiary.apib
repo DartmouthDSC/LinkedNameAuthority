@@ -319,7 +319,8 @@ Request parameters listed are search options and can be mixed as needed.
 
         {            
             "@context": {
-                "foaf": "http://xmlns.com/foaf/0.1/"
+                "foaf": "http://xmlns.com/foaf/0.1/",
+                "org": "http://www.w3.org/ns/org#"
             },
             "@type": "foaf:Person",
             "foaf:name": "John Bell",
@@ -342,7 +343,8 @@ Request parameters listed are search options and can be mixed as needed.
 
             {
                 "@context": {
-                    "foaf": "http://xmlns.com/foaf/0.1/"
+                    "foaf": "http://xmlns.com/foaf/0.1/",
+                    "org": "http://www.w3.org/ns/org#"
                 },
                 "status": "success",
                 "@id": "http://lna.dartmouth.edu/person/1",
@@ -366,7 +368,8 @@ Request parameters listed are search options and can be mixed as needed.
 
         {            
             "@context": {
-                "foaf": "http://xmlns.com/foaf/0.1/"
+                "foaf": "http://xmlns.com/foaf/0.1/",
+                "org": "http://www.w3.org/ns/org#"
             },
             "@type": "foaf:Person",
             "foaf:name": "John Bell",
@@ -375,7 +378,8 @@ Request parameters listed are search options and can be mixed as needed.
             "foaf:title": "Dr.",
             "foaf:mbox": "john.p.bell@dartmouth.edu",
             "foaf:image": "http://dartmouth.edu/fictionalImageBank/12340.jpg",
-            "foaf:homepage": "http://novomancy.org/"
+            "foaf:homepage": "http://novomancy.org/",
+            "org:reportsTo": "http://lna.dartmouth.edu/organization/1"
         }
         
 + Response 200 (application/ld+json)
@@ -384,7 +388,8 @@ Request parameters listed are search options and can be mixed as needed.
 
             {
                 "@context": {
-                    "foaf": "http://xmlns.com/foaf/0.1/"
+                    "foaf": "http://xmlns.com/foaf/0.1/",
+                    "org": "http://www.w3.org/ns/org#"
                 },
                 "status": "success",
                 "@id": "http://lna.dartmouth.edu/person/1",
@@ -395,6 +400,7 @@ Request parameters listed are search options and can be mixed as needed.
                 "foaf:title": "Dr.",
                 "foaf:mbox": "john.p.bell@dartmouth.edu",
                 "foaf:image": "http://dartmouth.edu/fictionalImageBank/12340.jpg",
+                "org:reportsTo": "http://lna.dartmouth.edu/organization/1",
                 "foaf:mbox_sha1sum": "a92c12a703e002b7dc3cdc3234017e2983c3549d"
             }
 
