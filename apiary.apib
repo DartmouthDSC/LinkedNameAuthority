@@ -24,7 +24,7 @@ LNA API for Dartmouth College (v0.1.0)
 - /organization/{id} - GET, PUT, DELETE
 - /organization/{id}/changeTo - POST
 
-Generally speaking, GET and POST paths use content negotiation to determine a response. text/html and application/ld+json are supported. PUT, PATCH, and DELETE methods may only respond with application/ld+json.
+Generally speaking, GET and POST paths use content negotiation to determine a response. text/html and application/ld+json are supported. PUT and DELETE methods may only respond with application/ld+json.
 
 For LDP compliance, application/x-turtle may be added in the future.
 
@@ -1316,7 +1316,7 @@ Orgs returned include their parent org (org:subOrganizationOf) but not a list of
                         "@id": "http://lna.dartmouth.edu/organization/2",
                         "@type": "org:Organization",
                         "org:identifier": "dltg1",
-                        "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/3]",
+                        "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/3",
                         "skos:pref_label": "Dartmouth Digital Library Technology Group",
                         "skos:alt_label": ["DLTG"],
                         "owltime:hasBeginning": "2000-06-01",
