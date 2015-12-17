@@ -68,6 +68,10 @@ module Lna
         index.as :stored_searchable
       end
 
+      property :abstract, predicate: ::RDF::Vocab::BIBO.abstract, multiple: false do |index|
+        index.as :displayable
+      end
+      
       def date=(d)
         date_setter('date', d)
       end

@@ -58,28 +58,32 @@ RSpec.describe Lna::Collection::Document, type: :model do
       expect(subject.page_end).to eql '32'
     end
     
-    it 'pages' do
+    it 'sets pages' do
       expect(subject.pages).to eql '18'
     end
     
-    it 'volume' do
+    it 'sets volume' do
       expect(subject.volume).to eql '1'
     end
     
-    it 'issue' do
+    it 'sets issue' do
       expect(subject.issue).to eql '24'
     end
     
-    it 'number' do
+    it 'sets number' do
       expect(subject.number).to eql '3'
     end
     
-    it 'canonical_uri' do
+    it 'sets canonical_uri' do
       expect(subject.canonical_uri).to eql ['http://example.com/newenglandpress/article/14']
     end
     
-    it 'doi' do
+    it 'sets doi' do
       expect(subject.doi).to eql 'http://dx.doi.org/19.1409/ddlp.1490'
+    end
+
+    it 'sets abstract' do
+      expect(subject.abstract).to eql 'Lorem ipsum...'
     end
   end
 

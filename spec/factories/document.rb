@@ -12,6 +12,7 @@ FactoryGirl.define do
     number        '3'
     canonical_uri ['http://example.com/newenglandpress/article/14']
     doi           'http://dx.doi.org/19.1409/ddlp.1490'
+    abstract      'Lorem ipsum...'
 
     before(:create) do |document|
       unless document.collection
@@ -34,5 +35,6 @@ FactoryGirl.define do
     number        '2'
     canonical_uri ['http://example.com/nature/article/13']
     doi           'http://dx.doi.org/29.1093/dslp.1338'
+    abstract      'Lorem ipsum...'
   end
 end
