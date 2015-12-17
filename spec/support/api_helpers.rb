@@ -15,14 +15,14 @@ RSpec.shared_context 'authenticate user' do
   end
 end
 
-
+# Request returns status code of 201
 RSpec.shared_examples 'successful POST request' do
   it 'returns 201 status code' do
     expect(response).to have_http_status(:created)
   end
 end
 
-
+# Request returns status code of 200
 RSpec.shared_examples 'successful request' do
   it 'returns 200 status code' do
     expect(response).to be_success
@@ -36,5 +36,27 @@ RSpec.shared_examples 'requires authentication' do
       send action, path, { format: :jsonld }
       expect(response).to have_http_status(:unauthorized)
     end
+  end
+end
+
+
+# Creates person to test with. Deletes person when done.
+RSpec.shared_context 'creates test person' do
+  before :all do
+    @jane = FactoryGirl.create(:jane)
+    @person_id = FedoraID.shorten(@jane.id)
+  end
+
+  after :all do
+    id = @jane.primary_org.id
+    @jane.destroy
+    Lna::Organization.find(id).destroy
+  end
+end
+
+
+RSpec.shared_context 'forces https requests' do
+  before :all do
+    https!
   end
 end

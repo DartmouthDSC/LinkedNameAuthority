@@ -13,15 +13,13 @@ class Person::AccountController < ApiController
   def create
     person = query_for_id(params[:person_id])
     
-    attributes = {}
+    attributes = { account_holder_id: person['id'] }
     PARAM_TO_MODEL.select { |f, _| account_params[f] }.each do |f, v|
       attributes[v] = account_params[f]
     end
 
-    # Create person
-    a = Lna::Account.create!(attributes) do |a|
-      a.account_holder_id = person['id']
-    end
+    # Create account.
+    a = Lna::Account.create!(attributes)
 
     # Throw errors if not enough information
     @account = query_for_id(a.id)
@@ -36,13 +34,13 @@ class Person::AccountController < ApiController
   # PUT /person/:person_id/account/:id
   def update
     account = query_for_account
-    
-    # update person's account
+
     attributes = {}
     PARAM_TO_MODEL.each do |f, v|
       attributes[v] = account_params[f] || ''
     end
-
+    
+    # Update account.
     Lna::Account.find(params[:id]).update(attributes)
     
     # what should happen if update doesnt work

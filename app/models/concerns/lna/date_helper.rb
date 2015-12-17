@@ -8,7 +8,11 @@ module Lna
         value = d
       when 'String'
         begin
-          value = ::RDF::Literal.new(Date.parse(d))
+          if d.empty?
+            value = nil
+          else
+            value = ::RDF::Literal.new(Date.parse(d))
+          end
         rescue
           raise ArgumentError, "#{name} could not be converted to a date."
         end

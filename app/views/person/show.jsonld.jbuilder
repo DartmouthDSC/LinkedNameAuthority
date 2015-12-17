@@ -29,11 +29,11 @@ json.set! '@graph' do |json|
   end
 
   json.array! @memberships do |membership|
-    json.partial! 'person/membership', membership: membership
+    json.partial! 'person/membership/membership', membership: membership, id: "##{FedoraID.shorten(membership['id'])}"
   end
 
   json.array! @accounts do |account|
-    json.partial! 'person/account', account: account, id: nil
+    json.partial! 'person/account/account', account: account, id: nil
   end
 
   json.array! @organizations do |organization|

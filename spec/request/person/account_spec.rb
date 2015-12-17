@@ -1,18 +1,9 @@
 require 'rails_helper'
 require 'fedora_id'
 
-RSpec.describe "Person/Account API", type: :request do  
-  before :all do
-    https!
-    @jane = FactoryGirl.create(:jane)
-    @person_id = FedoraID.shorten(@jane.id)
-  end
-
-  after :all do
-    id = @jane.primary_org.id
-    @jane.destroy
-    Lna::Organization.find(id).destroy
-  end
+RSpec.describe "Person/Account API", type: :request do
+  include_context 'forces https requests'
+  include_context 'creates test person'
 
   shared_context 'get account id' do
     before :context do
@@ -43,6 +34,7 @@ RSpec.describe "Person/Account API", type: :request do
                  'ACCEPT'       => 'application/ld+json',
                  'CONTENT_TYPE' => 'application/ld+json'
                }
+          @id = FedoraID.shorten(@jane.accounts.first.id)
         end
       
         it 'increases number of accounts' do
@@ -50,16 +42,12 @@ RSpec.describe "Person/Account API", type: :request do
           expect(@jane.accounts.first.title).to eq 'ORCID'
         end
       
-        it 'return a status code of 201' do
-          expect(response).to have_http_status(:created)
-        end
-
         it 'return correct location header' do
-          expect(response.location).to match %r{/person/#{@person_id}#[a-zA-Z0-9-]+}
+          expect(response.location).to match %r{/person/#{@person_id}##{@id}}
         end
 
         it 'returns body with @id.' do
-          expect(response.body).to match %r{"@id":"#{Regexp.escape(root_url)}person/#{@person_id}/account/[a-zA-Z0-9-]+}
+          expect(response.body).to match %r{"@id":"#{Regexp.escape(root_url)}person/#{@person_id}/account/#{@id}}
         end
       end
       
