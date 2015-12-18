@@ -29,7 +29,8 @@ module Lna
       end
       
       property :date, predicate: ::RDF::Vocab::DC.date, multiple: false do |index|
-        index.as :displayable
+        index.type :date
+        index.as :stored_searchable
       end
       
       property :title, predicate: ::RDF::Vocab::DC.title, multiple: false do |index|
@@ -73,6 +74,11 @@ module Lna
       end
       
       def date=(d)
+        if d.is_a? String
+          if match = /(^\d{4}$)/.match(d)
+            d = "01-01-#{match[1]}"
+          end
+        end
         date_setter('date', d)
       end
 
