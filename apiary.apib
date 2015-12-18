@@ -314,7 +314,7 @@ Request parameters listed are search options and can be mixed as needed.
 
         <html>Human readable interface</html>        
 
-### Create a New Person [POST]
+### Create a New Person [POST /person/]
 
 + Request (application/ld+json)
 
@@ -420,7 +420,7 @@ Request parameters listed are search options and can be mixed as needed.
 
 ## Person Accounts [/person/{person_id}/account/{id}]
 
-### Create an account identifier [POST]
+### Create an account identifier [POST /person/{person_id}/account]
 
 + Parameters
     + person_id (number, required) - ID of the person that owns this account
@@ -529,7 +529,7 @@ Request parameters listed are search options and can be mixed as needed.
 
 ## Person Memberships [/person/{person_id}/membership/{id}/]
 
-### Create a membership [POST]
+### Create a membership [POST /person/{person_id}/membership]
 
 + Parameters
     + person_id (number, required) - ID of the person that owns this membership
@@ -964,7 +964,7 @@ Works are sorted by relevance. Paginated by *page*, with 100 results per page.
 
 Note that the fields shown here are representative and will vary from work to work.
 
-### Create a new work [POST]
+### Create a new work [POST /work/]
 
 + Request (application/ld+json)
 
@@ -1188,7 +1188,7 @@ Note that the fields shown here are representative and will vary from work to wo
 ## Work License [/work/{work_id}/license/{id}/]
 Note that dc:description for licenses refers to the ali license type and should be either free_to_read or license_ref.
 
-### Create a license [POST]
+### Create a license [POST /work/{work_id}/license/]
 
 + Parameters
     + work_id (number, required) - ID of the work to which the license refers.
@@ -1417,7 +1417,7 @@ Orgs returned include their parent org (org:subOrganizationOf) but not a list of
 
 ## Organization [/organization/{id}]
 
-### Create an Organization [POST]
+### Create an Organization [POST /organization/]
 
 ### Retreive an Organization [GET]
 
