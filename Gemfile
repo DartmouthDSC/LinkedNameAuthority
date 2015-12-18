@@ -16,6 +16,8 @@ gem 'om', '~> 3.1.0'
 gem 'rsolr', '~> 1.0.10'
 gem 'solrizer', '~> 3.3.0'
 
+gem 'airborne'
+
 gem 'devise'
 gem 'dotenv-rails'
 gem 'jbuilder', '~> 2.0'
