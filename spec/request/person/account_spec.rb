@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'airborne'
 require 'fedora_id'
 
 RSpec.describe "Person/Account API", type: :request do
@@ -43,11 +44,11 @@ RSpec.describe "Person/Account API", type: :request do
         end
       
         it 'return correct location header' do
-          expect(response.location).to match %r{/person/#{@person_id}##{@id}}
+          expect_header('Location', "/person/#{@person_id}##{@id}")
         end
 
         it 'returns body with @id.' do
-          expect(response.body).to match %r{"@id":"#{Regexp.escape(root_url)}person/#{@person_id}/account/#{@id}}
+          expect_json(:@id => "#{root_url}person/#{@person_id}/account/#{@id}")
         end
       end
       
@@ -55,7 +56,7 @@ RSpec.describe "Person/Account API", type: :request do
 
       it 'returns 404 if person_id is invalid' do
         post "/person/dfklajdlfkjasldfj/account", { format: :jsonld }
-        expect(response).to have_http_status(:not_found)
+        expect_status :not_found
       end
     end
   end
@@ -92,7 +93,7 @@ RSpec.describe "Person/Account API", type: :request do
         end
         
         it 'response body contains new account name' do 
-          expect(response.body).to match %r{"foaf:accountName":"http://orcid\.org/0000-0000-0000-1234"}
+          expect_json(:'foaf:accountName' => "http://orcid.org/0000-0000-0000-1234")
         end
       end
     end
@@ -121,7 +122,7 @@ RSpec.describe "Person/Account API", type: :request do
         end
                 
         it 'response body contains success' do
-          expect(response.body).to match /success/
+          expect_json(:status => "success")
         end
         
         it 'account is deleted from fedora store' do

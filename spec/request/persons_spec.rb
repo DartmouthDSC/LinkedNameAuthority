@@ -1,24 +1,22 @@
 require 'rails_helper'
+require 'airborne'
+require 'api_helpers'
 
 RSpec.describe "Persons API", type: :request do
-  before :all do
-    https!
-  end
+  include_context 'force https requests'
   
   describe 'GET persons/' do
-    before(:context) do
-      get '/persons/1', { format: :jsonld }
+    before :context do
+      get '/persons/1', {}, { content_type: 'application/ld+json' }
     end
     
     it 'returns status code of 200' do
-      expect(response).to be_success
+      expect_status :success
     end
 
     it 'return content type of application/ld+json' do
-      expect(response.content_type).to eq 'application/ld+json'
+      expect_header('Content-Type', 'application/ld+json')
     end
-
-    it 'redirects to page 1'
   end
   
   describe 'POST person/'

@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'airborne'
 require 'fedora_id'
 
 RSpec.describe "Person/Membership API", type: :request do
@@ -53,12 +54,11 @@ RSpec.describe "Person/Membership API", type: :request do
         end
       
         it 'return correct location header' do
-          expect(response.location).to match %r{/person/#{@person_id}##{@id}}
+          expect_header('Location', "/person/#{@person_id}##{@id}")
         end
 
         it 'returns body with @id.' do
-          puts response.body
-          expect(response.body).to match %r{"@id":"#{Regexp.escape(root_url)}person/#{@person_id}/membership/#{@id}}
+          expect_json(:@id => "#{root_url}person/#{@person_id}/membership/#{@id}")
         end
       end
       
@@ -66,7 +66,7 @@ RSpec.describe "Person/Membership API", type: :request do
 
       it 'returns 404 if person_id is invalid' do
         post "/person/dfklajdlfkjasldfj/membership", { format: :jsonld }
-        expect(response).to have_http_status(:not_found)
+        expect_status :not_found
       end
     end
   end
@@ -108,8 +108,8 @@ RSpec.describe "Person/Membership API", type: :request do
           expect(@jane.memberships.first.title).to eql 'Associate Professor of Engineering'
         end
         
-        it 'response body contains new membership title' do 
-          expect(response.body).to match %r{"vcard:title":"Associate Professor of Engineering"}
+        it 'response body contains new membership title' do
+          expect_json(:'vcard:title' => "Associate Professor of Engineering")
         end
       end
     end
@@ -138,7 +138,7 @@ RSpec.describe "Person/Membership API", type: :request do
         end
                 
         it 'response body contains success' do
-          expect(response.body).to match /success/
+          expect_json(status: 'success')
         end
         
         it 'membership is deleted from fedora store' do

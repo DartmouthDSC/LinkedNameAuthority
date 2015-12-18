@@ -82,9 +82,9 @@ class Person::MembershipController < ApiController
   end
 
   def convert_org_to_fedora_id
-    if org_uri = params['org:organization']
-      if fid = %r{^#{Regexp.escape(root_url)}organization/([a-zA-Z0-9-]+$)}.match(org_uri)[1]
-        params['org:organization'] = FedoraID.lengthen(fid)
+    if uri = params['org:organization']
+      if match = %r{^#{Regexp.escape(root_url)}organization/([a-zA-Z0-9-]+$)}.match(uri)
+        params['org:organization'] = FedoraID.lengthen(match[1])
       end
     end
   end

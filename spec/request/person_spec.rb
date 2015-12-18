@@ -1,18 +1,18 @@
 require 'rails_helper'
+require 'airborne'
+require 'api_helper'
 
 # Note: These test must be run in the order that they are written.
 RSpec.describe "Person API", type: :request do
-  before :all do
-    https!
-  end
+  include_context 'forces https requests'
   
   describe 'POST person/' do
-    it 'returns error if user is not authenticated' do
-      post '/person', { format: :jsonld }
-      expect(response).not_to be_success
+    include_examples 'requires authentication' do
+      let(:path) { '/person' }
+      let(:action) { 'post' }
     end
-
-    describe 'when user is authenticated' do
+    
+    describe 'when authenticated' do
       include_context 'authenticate user'
 
       before :context do
@@ -24,6 +24,7 @@ RSpec.describe "Person API", type: :request do
           'foaf:mbox'       => 'john.p.bell@dartmouth.edu',
           'foaf:image'      => 'http://dartmouth.edu/fictionalImageBank/12340.jpg',
           'foaf:homepage'   => 'http://novomancy.org/'
+          'org:member'      => "#{root_url}/organization/"
         }
 
         post '/person', body.to_json, {
@@ -38,12 +39,16 @@ RSpec.describe "Person API", type: :request do
       end
 
       it 'creates and saves new person'
+
+      it 'returns correct location header'
+
+      it 'returns body with @id'
       
     end
   end
 
   describe 'GET person/' do
-    before(:context) do
+    before :context do
       get '/person/1', { format: :jsonld }
     end
     
