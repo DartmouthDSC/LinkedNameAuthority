@@ -10,15 +10,19 @@ LNA API for Dartmouth College (v0.1.0)
 - /persons/{page} - GET, POST
 - /person/ - POST
 - /person/{id} - GET, PUT, DELETE
-- /person/{person_id}/account/{id}/ - POST, PUT, DELETE
+- /person/{person_id}/account/ - POST
+- /person/{person_id}/account/{id}/ - PUT, DELETE
 - /person/{person_id}/orcid/ - GET
-- /person/{person_id}/membership/{id} - POST, PUT, DELETE
+- /person/{person_id}/membership/ - POST
+- /person/{person_id}/membership/{id} - PUT, DELETE
 - /person/{person_id}/works/ - GET
 - /person/{person_id}/works/{start_date} - GET
 - /works/{page} - GET, POST
 - /works/{start_date}/{page} - GET, POST
-- /work/{id} - POST, GET, PUT, DELETE
-- /work/{work_id}/license/{id} - POST, PUT, DELETE
+- /work/ - POST
+- /work/{id} - GET, PUT, DELETE
+- /work/{work_id}/license/ - POST
+- /work/{work_id}/license/{id} - PUT, DELETE
 - /organizations/{page} - GET, POST
 - /organization/ - POST
 - /organization/{id} - GET, PUT, DELETE
@@ -312,9 +316,6 @@ Request parameters listed are search options and can be mixed as needed.
 
 ### Create a New Person [POST]
 
-+ Parameters
-    + id (number, optional) - if ID is included when POSTing, it will be ignored
-
 + Request (application/ld+json)
 
         {            
@@ -423,7 +424,6 @@ Request parameters listed are search options and can be mixed as needed.
 
 + Parameters
     + person_id (number, required) - ID of the person that owns this account
-    + id (number, optional) - if ID is included when POSTing, it will be ignored
 
 + Request (application/ld+json)
 
@@ -533,7 +533,6 @@ Request parameters listed are search options and can be mixed as needed.
 
 + Parameters
     + person_id (number, required) - ID of the person that owns this membership
-    + id (number, optional) - if ID is included when POSTing, it will be ignored
 
 + Request (application/ld+json)
 
@@ -966,9 +965,6 @@ Works are sorted by relevance. Paginated by *page*, with 100 results per page.
 Note that the fields shown here are representative and will vary from work to work.
 
 ### Create a new work [POST]
-
-+ Parameters
-    + id (number) - ID's sent with POST requests will be ignored.
 
 + Request (application/ld+json)
 
