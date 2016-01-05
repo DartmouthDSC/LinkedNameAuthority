@@ -18,15 +18,17 @@ end
 json.partial! 'shared/generated_at'
 json.status 'success'
 
-json.set! '@graph' do |json|
+json.set! '@graph' do
 
-  json.partial! 'person/person', person: @person
+  json.child! { json.partial! 'person/person', person: @person }
 
-  json.set! 'foaf:account' do
-    json.array! @accounts do |account|
-      json.set! '@id', '#' + FedoraID.shorten(account['id'])
+  json.child! {
+    json.set! 'foaf:account' do
+      json.array! @accounts do |account|
+        json.set! '@id', '#' + FedoraID.shorten(account['id'])
+      end
     end
-  end
+  }
 
   json.array! @memberships do |membership|
     json.partial! 'person/membership/membership', membership: membership, id: "##{FedoraID.shorten(membership['id'])}"

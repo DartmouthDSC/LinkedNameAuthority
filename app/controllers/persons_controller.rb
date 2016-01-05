@@ -18,7 +18,7 @@ class PersonsController < ApiController
       }
     params[:start] = page * ROWS if page > 1
     
-    @persons = query(params)
+    @persons = solr_search(params)
     @organizations = get_primary_orgs(@persons)
   
     respond_to do |format|
@@ -51,7 +51,7 @@ class PersonsController < ApiController
       }
     params[:start] = page * ROWS if page > 1
 
-    @persons = query(params)
+    @persons = solr_search(params)
     @organizations = get_primary_orgs(@persons)
     
     respond_to do |format|

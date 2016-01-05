@@ -1,7 +1,7 @@
 class WorkController < ApiController
 
   before_action :authenticate_user!, only: [:create, :update, :destroy]
-  before_action :convert_to_full_fedora_id
+  before_action :convert_to_full_fedora_id, except: :create
   before_action :convert_creator_to_fedora_id
 
   PARAM_TO_MODEL = {
@@ -20,11 +20,10 @@ class WorkController < ApiController
 
   # GET /work/:id
   def show
-    @work = query_for_work
-    
+    @work = search_for_work(id: params[:id])
   end
   
-  # POST /work(/:id)
+  # POST /work
   def create
     person = Lna::Person.find(params['dc:creator'])
     collection = person.collections.first
@@ -38,8 +37,8 @@ class WorkController < ApiController
     w = Lna::Collection::Document.create!(attributes)
 
     # Throw errors if not enough information
-    @work = query_for_id(w.id)
-    @person = query_for_id(person.id)
+    @work = search_for_id(w.id)
+    @person = search_for_person(person.id)
     
     location = "/work/#{FedoraID.shorten(w.id)}"
     
@@ -51,7 +50,7 @@ class WorkController < ApiController
 
   # PUT /work/:id
   def update
-    work = query_for_work
+    work = search_for_works(id: params[:id])
 
     person = Lna::Person.find(params['dc:creator'])
     collection = person.collections.first
@@ -66,8 +65,8 @@ class WorkController < ApiController
     
     # what should happen if update doesnt work
 
-    @work = query_for_id(params[:id])
-    @person = query_for_id(person.id)
+    @work = search_for_id(params[:id])
+    @person = search_for_id(person.id)
     
     respond_to do |f|
       f.jsonld { render :create, content_type: 'application/ld+json' }
@@ -76,7 +75,7 @@ class WorkController < ApiController
 
   # DELETE /work/:id
   def destroy
-    work = query_for_work
+    work = search_for_works(id: params[:id])
 
     # Delete account.
     Lna::Collection::Document.find(work['id']).destroy
@@ -97,18 +96,7 @@ class WorkController < ApiController
       end
     end
   end
-  
-  def query_for_work
-    query = ActiveFedora::SolrQueryBuilder.construct_query(
-      [
-        ['has_model_ssim', 'Lna::Collection::Document'],
-        ['id', params[:id]],
-      ]
-    )
-    works = ActiveFedora::SolrService.query(query)
-    (works.count == 1) ? works.first : not_found
-  end
-  
+    
   def work_params
     params.permit(PARAM_TO_MODEL.keys << 'id')
   end

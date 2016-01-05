@@ -16,9 +16,9 @@ class Person::MembershipController < ApiController
       'owltime:hasEnd'       => 'end_date'
   }.freeze
 
-  # POST /person/:person_id/membership(/:id)
+  # POST /person/:person_id/membership
   def create
-    person = query_for_id(params[:person_id])
+    person = search_for_id(params[:person_id])
 
     logger.debug("membership_params = #{membership_params}")
     
@@ -31,7 +31,7 @@ class Person::MembershipController < ApiController
     m = Lna::Membership.create!(attributes)
 
     # Throw errors if not enough information
-    @membership = query_for_id(m.id)
+    @membership = search_for_id(m.id)
     location = "/person/#{FedoraID.shorten(person['id'])}##{FedoraID.shorten(@membership['id'])}"
     
     respond_to do |f|
@@ -42,7 +42,7 @@ class Person::MembershipController < ApiController
 
   # PUT /person/:person_id/membership/:id
   def update
-    membership = query_for_membership
+    membership = search_for_memberships(id: params[:id], person_id: params[:person_id])
     
     # update person's account
     attributes = {}
@@ -54,7 +54,7 @@ class Person::MembershipController < ApiController
     
     # what should happen if update doesnt work
 
-    @membership = query_for_id(params[:id])
+    @membership = search_for_id(params[:id])
     
     respond_to do |f|
       f.jsonld { render :create, content_type: 'application/ld+json' }
@@ -63,7 +63,7 @@ class Person::MembershipController < ApiController
 
   # DELETE /person/:person_id/membership/:id
   def destroy
-    membership = query_for_membership
+    membership = search_for_memberships(id: params[:id], person_id: params[:person_id])
 
     # Delete account.
     Lna::Membership.find(membership['id']).destroy
@@ -82,23 +82,7 @@ class Person::MembershipController < ApiController
   end
 
   def convert_org_to_fedora_id
-    if uri = params['org:organization']
-      if match = %r{^#{Regexp.escape(root_url)}organization/([a-zA-Z0-9-]+$)}.match(uri)
-        params['org:organization'] = FedoraID.lengthen(match[1])
-      end
-    end
-  end
-  
-  def query_for_membership
-    query = ActiveFedora::SolrQueryBuilder.construct_query(
-      [
-        ['has_model_ssim', 'Lna::Membership'],
-        ['id', params[:id]],
-        ['hasMember_ssim', params[:person_id]]
-      ]
-    )
-    memberships = ActiveFedora::SolrService.query(query)
-    (memberships.count == 1) ? memberships.first : not_found
+    params['org:organization'] = org_uri_to_fedora_id(params['org:organization'])
   end
   
   def membership_params

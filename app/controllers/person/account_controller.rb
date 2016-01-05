@@ -9,9 +9,9 @@ class Person::AccountController < ApiController
       'foaf:accountServiceHomepage' => 'account_service_homepage'
   }.freeze
 
-  # POST /person/:person_id/account(/:id)
+  # POST /person/:person_id/account
   def create
-    person = query_for_id(params[:person_id])
+    person = search_for_id(params[:person_id])
     
     attributes = { account_holder_id: person['id'] }
     PARAM_TO_MODEL.select { |f, _| account_params[f] }.each do |f, v|
@@ -22,7 +22,7 @@ class Person::AccountController < ApiController
     a = Lna::Account.create!(attributes)
 
     # Throw errors if not enough information
-    @account = query_for_id(a.id)
+    @account = search_for_id(a.id)
     location = "/person/#{FedoraID.shorten(person['id'])}##{FedoraID.shorten(@account['id'])}"
     
     respond_to do |f|
@@ -30,11 +30,10 @@ class Person::AccountController < ApiController
     end
   end
 
-
   # PUT /person/:person_id/account/:id
   def update
-    account = query_for_account
-
+    account = search_for_accounts(id: params[:id], person_id: params[:person_id])
+    
     attributes = {}
     PARAM_TO_MODEL.each do |f, v|
       attributes[v] = account_params[f] || ''
@@ -45,7 +44,7 @@ class Person::AccountController < ApiController
     
     # what should happen if update doesnt work
 
-    @account = query_for_id(params[:id])
+    @account = search_for_id(params[:id])
     
     respond_to do |f|
       f.jsonld { render :create, content_type: 'application/ld+json' }
@@ -54,7 +53,7 @@ class Person::AccountController < ApiController
 
   # DELETE /person/:person_id/account/:id
   def destroy
-    account = query_for_account
+    account = search_for_accounts(id: params[:id], person_id: params[:person_id])
 
     # Delete account.
     Lna::Account.find(account['id']).destroy
@@ -70,18 +69,6 @@ class Person::AccountController < ApiController
 
   def convert_to_full_fedora_id
     [:id, :person_id].each { |i| params[i] = FedoraID.lengthen(params[i]) }
-  end
-
-  def query_for_account
-    query = ActiveFedora::SolrQueryBuilder.construct_query(
-      [
-        ['has_model_ssim', 'Lna::Account'],
-        ['id', params[:id]],
-        ['account_ssim', params[:person_id]]
-      ]
-    )
-    accounts = ActiveFedora::SolrService.query(query)
-    (accounts.count == 1) ? accounts.first : not_found
   end
   
   def account_params

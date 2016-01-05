@@ -1,9 +1,9 @@
 require 'fedora_id'
-
 class ApiController < ActionController::Base
   # Adds a few additional behaviors into the application controller
   include Hydra::Controller::ControllerBehavior
-
+  include SolrSearchBehavior
+  
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
@@ -47,7 +47,7 @@ class ApiController < ActionController::Base
     previous_page = (page == 1) ? nil : page - 1;
     new_page = page + 1
     solr_params[:start] = new_page * max_rows
-    next_page = new_page if query(solr_params).count > 0
+    next_page = new_page if solr_search(solr_params).count > 0
     
     url_prefix = root_url + namespace
 
@@ -57,30 +57,16 @@ class ApiController < ActionController::Base
     links.join(', ')
   end
 
-  def query(params)
-    logger.debug("Solr params: #{params.to_s}")
-    ActiveFedora::SolrService.query(params[:q], params)
-  end
-
-  def query_for_id!(id)
-    query = ActiveFedora::SolrQueryBuilder.construct_query_for_ids([id])
-    results = ActiveFedora::SolrService.query(query)
-
-    case results.count
-    when 1
-      results.first
-    when 0
-      raise_error 'No results for the id given.'
-    else
-      raise_error 'More than one result for the id given.'
-    end
-  end
-
-  def query_for_id(id)
-    begin
-      query_for_id!(id)
-    rescue
-      not_found
+  # Converts the uri given to a full fedora id, if its a valid organization uri.
+  # This method is not responsible for checking that the organization is valid.
+  # If the uri is not a valid organization uri the same uri is returned, unchanged.
+  def org_uri_to_fedora_id(uri)
+    if uri
+      if match = %r{^#{Regexp.escape(root_url)}organization/([a-zA-Z0-9-]+$)}.match(uri)
+        params['org:organization'] = FedoraID.lengthen(match[1])
+      else
+        uri
+      end
     end
   end
 end

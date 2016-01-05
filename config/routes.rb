@@ -22,7 +22,7 @@ Rails.application.routes.draw do
     get '/orcid', to: 'person#orcid', as: :person_orcid
 #    get '/works(/:start_date)', to: 'person#works', as:person_works
   end
-  put '/person(/:id)', to: 'persons#update'
+  put '/person(/:id)', to: 'person#update'
 
   resources :work, only: [:show, :create, :destroy]
   put '/work/:id', to: 'work#update'
