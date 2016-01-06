@@ -127,16 +127,15 @@ RSpec.describe "Person API", type: :request do
         @jane.reload
       end
 
-      it 'updates homepage in fedora store' do
+      it 'updates mbox in fedora store' do
         expect(@jane.mbox).to eq 'jane.doe@dartmouth.edu'
       end
 
-      it 'response body contains new homepage' do
+      it 'response body contains updated mbox' do
         expect_json(:'foaf:mbox' => 'jane.doe@dartmouth.edu')
       end
     end
   end
-
 
   describe 'DELETE person/:id' do
     include_context 'get person id'

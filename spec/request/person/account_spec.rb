@@ -99,6 +99,24 @@ RSpec.describe "Person/Account API", type: :request do
     end
   end
 
+  describe 'GET person/:person_id/orcid' do
+    include_examples 'successful request'
+
+    before :context do
+      get "/person/#{@person_id}/orcid", { format: :jsonld }
+    end
+
+#    it 'person has an orcid account' do
+#      expect(@jane.accounts.first.title).to eq 'ORCID'
+#    end
+
+    it 'does not require authentication'
+
+    it 'returns ORCID account name.' do
+      expect_json(:'foaf:accountName' => 'http://orcid.org/0000-0000-0000-1234')
+    end
+  end
+  
   describe 'DELETE person/:person_id/account/:id' do
     include_context 'get account id'
 

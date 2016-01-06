@@ -26,7 +26,7 @@ RSpec.describe Lna::Account, type: :model do
     it { is_expected.to be_kind_of ActiveFedora::Base }
     
     it 'sets title' do
-      expect(subject.title).to eql 'Orcid'
+      expect(subject.title).to eql 'ORCID'
     end
         
     it 'sets account name' do

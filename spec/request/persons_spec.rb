@@ -1,9 +1,9 @@
 require 'rails_helper'
 require 'airborne'
-require 'api_helpers'
+#require 'api_helpers'
 
 RSpec.describe "Persons API", type: :request do
-  include_context 'force https requests'
+  include_context 'forces https requests'
   
   describe 'GET persons/' do
     before :context do

@@ -48,10 +48,8 @@ RSpec.shared_context 'creates test person' do
   end
 
   after :all do
-    if @jane.persisted?
-      id = @jane.primary_org.id
-      @jane.destroy
-    end
+    id = @jane.primary_org.id
+    @jane.destroy
     Lna::Organization.find(id).destroy
   end
 end

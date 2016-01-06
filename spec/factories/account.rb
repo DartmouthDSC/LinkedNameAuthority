@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :orcid, class: Lna::Account do
-    title                    'Orcid'
+    title                    'ORCID'
     account_name             'http://orcid.org/0000-000-0000'
     account_service_homepage 'http://orcid.org'
 
