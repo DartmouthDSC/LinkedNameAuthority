@@ -79,6 +79,12 @@ module Lna
       super
       self.mbox_sha1sum = Digest::SHA1.hexdigest(e)
     end
+
+    def to_solr
+      solr_doc = super
+      Solrizer.set_field(solr_doc, 'collection_id', collections.first.id, :stored_sortable)
+      solr_doc
+    end
     
     private
     
