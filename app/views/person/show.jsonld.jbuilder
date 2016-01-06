@@ -20,7 +20,7 @@ json.status 'success'
 
 json.set! '@graph' do
 
-  json.child! { json.partial! 'person/person', person: @person }
+  json.child! { json.partial! 'person/person', person: @person, full: true }
 
   json.child! {
     json.set! 'foaf:account' do
