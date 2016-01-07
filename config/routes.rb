@@ -8,82 +8,52 @@ Rails.application.routes.draw do
     get 'sign_in', to: 'users/sessions#new', as: :new_user_session
     get 'sign_out', to: 'users/sessions#destroy', as: :destroy_user_session
   end
-
+  
+  # Persons Collection
   get '/persons(/:page)', to: 'persons#index'
   post '/persons(/:page)', to: 'persons#search'
 
+  # Person
   resources :person, only: [:show, :create, :destroy] do
+    # Person Accounts
     resources :account, only: [:create, :destroy], controller: 'person/account'
     put '/account/:id', to: 'person/account#update'
-    
+
+    # Person Memberships
     resources :membership, only: [:create, :destroy], controller: 'person/membership'
     put '/membership/:id', to: 'person/membership#update'
-    
+
+    # Person ORCID Accounts convenience function
     get '/orcid', to: 'person/account#orcid', as: :orcid
-#    get '/works(/:start_date)', to: 'person#works', as:person_works
+
+    # Person's Works Collection
+    get '/works(/:start_date)', to: 'person/works#index', as: :works,
+        constraints: { start_date: /\d{4}-\d{2}-\d{2}/ }
   end
   put '/person(/:id)', to: 'person#update'
 
+  # Recent Works Collections convenience function
+  get '/works/:start_date(/:page)', to: 'works#start_date_index',
+      constraint: { start_date: /\d{4}-\d{2}-\d{2}/, page: /\d+/ }
+  post '/works/:start_date(/:page)', to:'works#start_date_search',
+       constraint: { start_date: /\d{4}-\d{2}-\d{2}/, page: /\d+/ }
+
+  # Works Collection
+  get '/works(/:page)', to: 'works#index', constraints: { page: /\d+/ }
+  post '/works(/:page)', to: 'works#search', constraints: { page: /\d+/ }
+
+  # Work
   resources :work, only: [:show, :create, :destroy]
   put '/work/:id', to: 'work#update'
 
+  # Work License
+
+  # Organizations Collection
   get '/organizations(/:page)', to: 'organizations#index'
   get '/organizations(/:page)', to: 'organizatiosn#search'
-  
+
+  # Organization
   get '/organization/:id', to: 'organizations#show', as: :organization_path
-  
-  # The priority is based upon order of creation: first created -> highest priority.
-  # See how all your routes lay out with "rake routes".
 
-  # You can have the root of your site routed with "root"
-  # root 'welcome#index'
-
-  # Example of regular route:
-  #   get 'products/:id' => 'catalog#view'
-
-  # Example of named route that can be invoked with purchase_url(id: product.id)
-  #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
-
-  # Example resource route (maps HTTP verbs to controller actions automatically):
-  #   resources :products
-
-  # Example resource route with options:
-  #   resources :products do
-  #     member do
-  #       get 'short'
-  #       post 'toggle'
-  #     end
-  #
-  #     collection do
-  #       get 'sold'
-  #     end
-  #   end
-
-  # Example resource route with sub-resources:
-  #   resources :products do
-  #     resources :comments, :sales
-  #     resource :seller
-  #   end
-
-  # Example resource route with more complex sub-resources:
-  #   resources :products do
-  #     resources :comments
-  #     resources :sales do
-  #       get 'recent', on: :collection
-  #     end
-  #   end
-
-  # Example resource route with concerns:
-  #   concern :toggleable do
-  #     post 'toggle'
-  #   end
-  #   resources :posts, concerns: :toggleable
-  #   resources :photos, concerns: :toggleable
-
-  # Example resource route within a namespace:
-  #   namespace :admin do
-  #     # Directs /admin/products/* to Admin::ProductsController
-  #     # (app/controllers/admin/products_controller.rb)
-  #     resources :products
-  #   end
+  # Change Events
 end
