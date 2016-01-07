@@ -67,16 +67,6 @@ class Person::AccountController < ApiController
 
   # GET /person/:person_id/orcid
   def orcid
-    # query = ActiveFedora::SolrQueryBuilder.construct_query(
-    #   [
-    #     ['has_model_ssim', 'Lna::Account'],
-    #     ['account_ssim', params[:id]],
-    #     ['title_tesi', 'ORCID']
-    #   ]
-    # )
-    # accounts = ActiveFedora::SolrService.query(query)
-    # (account.count == 1) ? @account = accounts.first : not_found
-
     @account = search_for_orcid(params[:person_id])
 
     respond_to do |format|
