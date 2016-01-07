@@ -103,12 +103,16 @@ module SolrSearchBehavior
     solr_search(params, id != nil)
   end
 
-  def search_for_works(id:)
+  def search_for_works(id: nil, collection_id: nil, start_date: nil)
+    q = []
+    q << ['id', id] if id
+    q << ['isPartOf_ssim', collection_id] if collection_id
+    # q << ['date_dtsi', "[#{start_date} TO NOW]" ] if start_date
     params = {
       fq: model_filter(Lna::Collection::Document),
-      q:  field_query([['id', id]])
+      q:  field_query(q)
     }
-    solr_search(params, true)
+    solr_search(params, id != nil)
   end
 
   private
@@ -126,4 +130,6 @@ module SolrSearchBehavior
   def solr_escape(terms)
     RSolr.solr_escape(terms).gsub(/\s+/, "\\ ")
   end
+
+  # def search_with_model_filter(model, q, only_one)
 end

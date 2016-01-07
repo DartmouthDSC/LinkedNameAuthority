@@ -25,10 +25,9 @@ class WorkController < ApiController
   
   # POST /work
   def create
-    person = Lna::Person.find(params['dc:creator'])
-    collection = person.collections.first
+    @person = search_for_person(params['dc:creator'])
     
-    attributes = { collection_id: collection.id }
+    attributes = { collection_id: @person['collection_id_ssi'] }
     PARAM_TO_MODEL.select { |f, _| work_params[f] }.each do |f, v|
       attributes[v] = work_params[f]
     end
@@ -38,7 +37,6 @@ class WorkController < ApiController
 
     # Throw errors if not enough information
     @work = search_for_id(w.id)
-    @person = search_for_person(person.id)
     
     location = "/work/#{FedoraID.shorten(w.id)}"
     
@@ -52,11 +50,10 @@ class WorkController < ApiController
   def update
     work = search_for_works(id: params[:id])
 
-    person = Lna::Person.find(params['dc:creator'])
-    collection = person.collections.first
-    
+    @person = search_for_person(params['dc:creator'])
+
     # update person's account
-    attributes = { collection_id: collection.id }
+    attributes = { collection_id: @person['collection_id_ssi'] }
     PARAM_TO_MODEL.each do |f, v|
       attributes[v] = work_params[f] || ''
     end
@@ -66,7 +63,6 @@ class WorkController < ApiController
     # what should happen if update doesnt work
 
     @work = search_for_id(params[:id])
-    @person = search_for_id(person.id)
     
     respond_to do |f|
       f.jsonld { render :create, content_type: 'application/ld+json' }
