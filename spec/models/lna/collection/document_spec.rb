@@ -1,15 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Lna::Collection::Document, type: :model do
-  it 'has valid factory' do
-    article = FactoryGirl.create(:article)
-    expect(article).to be_truthy
-    id = article.collection.person.primary_org.id
-    article.collection.person.destroy
-    Lna::Organization.find(id).destroy
-  end
-
-  describe '.create' do
+  shared_context 'create test article' do
     before :context do
       @article = FactoryGirl.create(:article)
     end
@@ -21,6 +13,18 @@ RSpec.describe Lna::Collection::Document, type: :model do
     end
 
     subject { @article }
+  end
+
+  it 'has valid factory' do
+    article = FactoryGirl.create(:article)
+    expect(article).to be_truthy
+    id = article.collection.person.primary_org.id
+    article.collection.person.destroy
+    Lna::Organization.find(id).destroy
+  end
+
+  describe '.create' do
+    include_context 'create test article'
 
     it { is_expected.to be_instance_of Lna::Collection::Document }
     it { is_expected.to be_a ActiveFedora::Base }
@@ -88,19 +92,12 @@ RSpec.describe Lna::Collection::Document, type: :model do
   end
 
   describe '#reviews' do
+    include_context 'create test article'
+    
     before :context do
-      @article = FactoryGirl.create(:article)
       @review_one = FactoryGirl.create(:review, review_of: @article)
       @article.save
     end
-
-    after :context do
-      id = @article.collection.person.primary_org.id
-      @article.collection.person.destroy
-      Lna::Organization.find(id).destroy
-    end
-
-    subject { @article }
     
     it 'can have one review' do
       expect(subject.reviews.size).to be 1
@@ -120,18 +117,11 @@ RSpec.describe Lna::Collection::Document, type: :model do
   end
 
   describe '#review_of' do
+    include_context 'create test article'
+    
     before :context do
-      @article = FactoryGirl.create(:article)
       @review = FactoryGirl.create(:review, review_of: @article)
     end
-
-    after :context do
-      id = @article.collection.person.primary_org.id
-      @article.collection.person.destroy
-      Lna::Organization.find(id).destroy
-    end
-
-    subject { @article }
     
     it 'can be a review of another document' do
       expect(@review.review_of).to eql subject
@@ -144,19 +134,47 @@ RSpec.describe Lna::Collection::Document, type: :model do
     end
   end
 
-  describe '#collection' do
-    before :example do
-      @article = FactoryGirl.create(:article)
+  describe '#free_to_read_refs' do
+    include_context 'create test article'
+
+    before :context do
+      @open_access = FactoryGirl.create(:unrestricted_access, document: @article)
     end
 
-    after :example do
-      id = @article.collection.person.primary_org.id
-      @article.collection.person.destroy
-      Lna::Organization.find(id).destroy
+    it 'can have free to read reference' do
+      expect(subject.free_to_read_refs.count).to eq 1
+      expect(subject.free_to_read_refs.first).to eq @open_access
     end
     
+    it 'can have multiple free to read references' do
+      FactoryGirl.create(:unrestricted_access, document: @article)
+      expect(subject.free_to_read_refs.count).to eq 2
+    end
+  end
+
+  describe '#license_refs' do
+    include_context 'create test article'
+
+    before :context do
+      @license = FactoryGirl.create(:license, document: @article)
+    end
+    
+    it 'can have license references' do
+      expect(subject.license_refs.count).to eq 1
+      expect(subject.license_refs.first).to eq @license
+    end
+    
+    it 'can have multiple license references' do
+      FactoryGirl.create(:license, document: @article)
+      expect(subject.license_refs.count).to eq 2
+    end
+  end
+  
+  describe '#collection' do
+    include_context 'create test article'
+    
     it 'is part of a collection' do
-      expect(@article.collection).to be_instance_of Lna::Collection
+      expect(subject.collection).to be_instance_of Lna::Collection
     end
   end
   

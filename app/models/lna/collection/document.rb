@@ -2,6 +2,9 @@ module Lna
   class Collection
     class Document < ActiveFedora::Base
       include DateHelper
+
+      has_many :license_refs, class_name: 'Lna::Collection::LicenseReference', dependent: :destroy
+      has_many :free_to_read_refs, class_name: 'Lna::Collection::FreeToRead', dependent: :destroy
       
       # is reviewed by many documents
       has_many :reviews, class_name: 'Lna::Collection::Document', dependent: :destroy,
