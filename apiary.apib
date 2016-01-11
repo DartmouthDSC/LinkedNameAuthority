@@ -1617,11 +1617,13 @@ Change Events trigger conversion of one (or more) organizations to another (or m
 ex: Math splits and becomes Math and CS (order is important here):
 
 /organization/#oldMath/changeTo/#newMath - makes #oldMath historic, creates a change event linking #oldMath and #newMath, migrates Memberships from #oldMath to #newMath
+
 /organziation/#oldMath/changeTo/#CS - #oldMath has an org:changedBy already so #CS is associated with that change event using org:resultedFrom. No migration occurs.
 
 ex: Math absorbs CS (order isn't as important):
 
 /organization/#oldMath/changeTo/#newMath - makes #oldMath historic, creates a change event linking #oldMath and #newMath, migrates Memberships from #oldMath to #newMath
+
 /organziation/#CS/changeTo/#newMath - #newMath has an org:resultedFrom already so #CS is associated with that change event using org:changedBy. Migrates memberships from #CS to #oldMath.
 
 ### Migrate one Ogranization to Another [POST]
