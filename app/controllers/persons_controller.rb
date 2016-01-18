@@ -1,29 +1,19 @@
 class PersonsController < ApiController
-
   skip_before_action :verify_authenticity_token, only: [:index, :search]
- 
   before_action :default_to_first_page, only: [:index, :search]
-  
-  ROWS = 100.freeze
 
   # GET /persons
   def index
     page = params['page']
-    params =
-      {
-        rows: ROWS,
-        sort: 'family_name_ssi asc, given_name_ssi asc',
-        fq: 'has_model_ssim:"Lna::Person"',
-        q: '*:*'
-      }
-    params[:start] = page * ROWS if page > 1
+    parameters = { rows: MAX_ROWS, sort: 'family_name_ssi asc, given_name_ssi asc' }
     
-    @persons = solr_search(params)
+    @persons = search_for_persons(**parameters, page: page)
     @organizations = get_primary_orgs(@persons)
-  
-    respond_to do |format|
-      response.headers['Link'] = link_headers('persons/', page, ROWS, params)
 
+    next_page = search_for_persons(**parameters, page: page + 1).count > 1
+    
+    respond_to do |format|
+      response.headers['Link'] = link_headers('persons/', page, next_page)
       format.jsonld { render :index, content_type: 'application/ld+json' }
       format.html
     end
@@ -40,25 +30,19 @@ class PersonsController < ApiController
       'foaf:familyName' => "family_name_ssi:\"#{params['foaf:familyName']}\"",
       'org:member'      => "{!join from=id to=reportsTo_ssim}label_tesi:\"#{params['org:member']}\""
     }
-
     search_query = query_map.select { |f, _| params[f] }.values.join(" AND ")
     
-    params =
-      {
-        rows: ROWS,
-        fq: 'has_model_ssim:"Lna::Person"',
-        q: search_query
-      }
-    params[:start] = page * ROWS if page > 1
-
-    @persons = solr_search(params)
+    parameters = { rows: MAX_ROWS, q: search_query }
+    
+    @persons = search_for_persons(**parameters, page: page)
     @organizations = get_primary_orgs(@persons)
+
+    next_page = search_for_persons(**parameters, page: page + 1).count != 0
     
     respond_to do |format|
-      response.headers['Link'] = link_headers('persons/', page, ROWS, params)
-      
+      response.headers['Link'] = link_headers('persons/', page, next_page)
       format.jsonld { render :search, content_type: 'application/ld+json' }
-    end   
+    end
   end
 
   private

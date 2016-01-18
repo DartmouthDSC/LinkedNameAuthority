@@ -9,6 +9,8 @@ class ApiController < ActionController::Base
   protect_from_forgery with: :exception
   
   rescue_from ActionController::RoutingError, with: :render_not_found
+
+  MAX_ROWS = 100.freeze
   
   # Because we are not using the database authenticatable module provided by
   # devise, we have to define this method so that controller can redirect in
@@ -43,17 +45,14 @@ class ApiController < ActionController::Base
     params[:id] = FedoraID.lengthen(params[:id])
   end
   
-  def link_headers(namespace, page, max_rows, solr_params)
+  def link_headers(namespace, page, next_page)
     previous_page = (page == 1) ? nil : page - 1;
-    new_page = page + 1
-    solr_params[:start] = new_page * max_rows
-    next_page = new_page if solr_search(solr_params).count > 0
     
     url_prefix = root_url + namespace
 
     links = ["<#{url_prefix}1>; ref=\"first\""]
     links << "<#{url_prefix}#{previous_page}>; ref=\"prev\"" if previous_page
-    links << "<#{url_prefix}#{next_page}>; ref=\"next\"" if next_page
+    links << "<#{url_prefix}#{page + 1}>; ref=\"next\"" if next_page
     links.join(', ')
   end
 

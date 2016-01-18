@@ -1,6 +1,6 @@
-# Wrapper around Active Fedora Solr classes with specific queries for use in the Lna.
-# Controllers that include this module should also implement a not_found method. When a resource
-# is not found, the not_found method is called.
+# Wrapper around Active Fedora Solr helpers. This class contains specific queries for use in the
+# Lna. Controllers that include this module should also implement a not_found method. When a
+# resource is not found, the not_found method is called.
 module SolrSearchBehavior
   extend ActiveSupport::Concern
 
@@ -54,33 +54,28 @@ module SolrSearchBehavior
   # Searches Solr for a Lna::Person with the given id. If there isn't only one result the
   # not_found method is called.
   #
-  #
-  def search_for_person(id)
-    params = {
-      fq: model_filter(Lna::Person),
-      q:  field_query([['id', id]])
-    }
-    solr_search(params, true)
+  # if a query is given it will override the id query
+  def search_for_persons(id: nil, q: nil, **args)
+    q = (id) ? [['id', id]] : q
+    search_with_model_filter(Lna::Person, q: q, only_one: id != nil, **args)
   end
   
   # Search for account(s). If id is given only one result is returned. If only a person_id
-  # is given then all the accounts for that person are returned. 
+  # is given then all the accounts for that person are returned.
+  #
+  # @params id [String]
+  # @params person_id [String]
+  # @params orcid [Boolean]
   def search_for_accounts(id: nil, person_id: nil, orcid: false)
     q = []
     q << ['account_ssim', person_id] if person_id
     q << ['id', id] if id
     q << ['title_tesi', 'ORCID'] if orcid
-    
-    params = {
-      fq: model_filter(Lna::Account),
-      q:  field_query(q)
-    }
 
     only_one = orcid || ( id != nil )
-    solr_search(params, only_one)
+    search_with_model_filter(Lna::Account, q: q, only_one: only_one)
   end
   # could be an alias for search_for_account
-
 
   # Searches for an account of the person given that has a "ORCID" as its title.
   #
@@ -94,32 +89,72 @@ module SolrSearchBehavior
     q = []
     q << [ 'hasMember_ssim', person_id ] if person_id
     q << [ 'id', id ] if id
-
-    params = {
-      fq: model_filter(Lna::Membership),
-      q: field_query(q)
-    }
     
-    solr_search(params, id != nil)
+    search_with_model_filter(Lna::Membership, q: q, only_one: id != nil)
   end
 
-  def search_for_works(id: nil, collection_id: nil, start_date: nil)
+  def search_for_works(id: nil, collection_id: nil, start_date: nil, **args)
     q = []
     q << ['id', id] if id
     q << ['isPartOf_ssim', collection_id] if collection_id
-    # q << ['date_dtsi', "[#{start_date} TO NOW]" ] if start_date
+
+    if start_date
+      date = Date.parse(start_date.to_s).strftime('%FT%TZ')
+      q = field_query(q)
+      q << " AND" unless q.blank?
+      q << " date_dtsi:[#{date} TO *]"
+    end
+    
+    search_with_model_filter(Lna::Collection::Document, q: q, only_one: id != nil, **args)
+  end
+
+  def search_for_licenses(document_ids: nil)
+  end
+
+  def search_for_active_organizations(**args)
+    search_with_model_filter(Lna::Organization, **args)
+  end
+
+  # searches through both historic and active
+  def search_for_organizations(**args)
+    search_with_model_filter([Lna::Organization, Lna::Organization::Historic])
+  end
+
+                             
+  
+  # Search solr with a model filter for the class given
+  # If query is array it assumes its a array of array of field pairs, otherwise it passes the q
+  # parameter as is.
+  #
+  # @params model [Class, Array<Class>] model to be filtered by
+  # @params q [String, Array]
+  # @params only_one [Boolean]
+  # @params rows [Integer, nil]
+  # @params sort [String, nil]
+  # @params page [Integer, nil]
+  def search_with_model_filter(model, q: nil, only_one: false, rows: nil, sort: nil, page: nil)
+    q = '*:*' if q.blank?
+    q = field_query(q) if q.is_a? Array
+    
     params = {
-      fq: model_filter(Lna::Collection::Document),
-      q:  field_query(q)
+      fq: model_filter(model),
+      q: q
     }
-    solr_search(params, id != nil)
+    params[:rows] = rows if rows
+    params[:sort] = sort if sort
+    params[:start] = rows * page if (rows && page && page > 1)
+    
+    solr_search(params, only_one)
   end
 
   private
 
-  #params class name
+  # Generates model filter string to be used as the :fq solr parameter.
+  #
+  # @params class_name [Class, Array<Class>] class or array of classes to filter by
   def model_filter(class_name)
-    "has_model_ssim:\"#{class_name.to_s}\""
+    class_name = [class_name] unless class_name.is_a? Array
+    class_name.map { |c| "has_model_ssim:\"#{c.to_s}\"" }.join(' ')
   end
 
   def field_query(field_array, join_with = " AND ")
@@ -130,6 +165,4 @@ module SolrSearchBehavior
   def solr_escape(terms)
     RSolr.solr_escape(terms).gsub(/\s+/, "\\ ")
   end
-
-  # def search_with_model_filter(model, q, only_one)
 end

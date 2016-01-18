@@ -20,12 +20,12 @@ class WorkController < ApiController
 
   # GET /work/:id
   def show
-    @work = search_for_work(id: params[:id])
+    @work = search_for_works(id: params[:id])
   end
   
   # POST /work
   def create
-    @person = search_for_person(params['dc:creator'])
+    @person = search_for_persons(id: params['dc:creator'])
     
     attributes = { collection_id: @person['collection_id_ssi'] }
     PARAM_TO_MODEL.select { |f, _| work_params[f] }.each do |f, v|
@@ -50,7 +50,7 @@ class WorkController < ApiController
   def update
     work = search_for_works(id: params[:id])
 
-    @person = search_for_person(params['dc:creator'])
+    @person = search_for_persons(id: params['dc:creator'])
 
     # update person's account
     attributes = { collection_id: @person['collection_id_ssi'] }

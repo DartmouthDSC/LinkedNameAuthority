@@ -33,14 +33,15 @@ Rails.application.routes.draw do
   put '/person(/:id)', to: 'person#update'
 
   # Recent Works Collections convenience function
-  get '/works/:start_date(/:page)', to: 'works#start_date_index',
-      constraint: { start_date: /\d{4}-\d{2}-\d{2}/, page: /\d+/ }
-  post '/works/:start_date(/:page)', to:'works#start_date_search',
-       constraint: { start_date: /\d{4}-\d{2}-\d{2}/, page: /\d+/ }
+  get '/works/:start_date(/:page)', to: 'works#index', start_date: /\d{4}-\d{2}-\d{2}/,
+      page: /\d+/
+
+  # post '/works/:start_date(/:page)', to:'works#start_date_search',
+  #      constraint: { start_date: /\d{4}-\d{2}-\d{2}/, page: /\d+/ }
 
   # Works Collection
-  get '/works(/:page)', to: 'works#index', constraints: { page: /\d+/ }
-  post '/works(/:page)', to: 'works#search', constraints: { page: /\d+/ }
+  get '/works(/:page)', to: 'works#index', page: /\d+/
+  post '/works(/:page)', to: 'works#search', page: /\d+/
 
   # Work
   resources :work, only: [:show, :create, :destroy]
@@ -50,7 +51,7 @@ Rails.application.routes.draw do
 
   # Organizations Collection
   get '/organizations(/:page)', to: 'organizations#index'
-  get '/organizations(/:page)', to: 'organizatiosn#search'
+  post '/organizations(/:page)', to: 'organizations#search'
 
   # Organization
   get '/organization/:id', to: 'organizations#show', as: :organization_path

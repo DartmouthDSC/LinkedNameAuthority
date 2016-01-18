@@ -1,5 +1,4 @@
 class PersonController < ApiController
-
   before_action :convert_to_full_fedora_id, except: :create
   before_action :convert_org_to_fedora_id
   before_action :authenticate_user!, only: [:create, :update, :destroy]
@@ -17,7 +16,7 @@ class PersonController < ApiController
   
   # GET /person(/:id)
   def show
-    @person = search_for_person(params[:id])
+    @person = search_for_persons(id: params[:id])
     @memberships = search_for_memberships(person_id: @person['id'])
     @accounts = search_for_accounts(person_id: @person['id'])
 
@@ -56,7 +55,7 @@ class PersonController < ApiController
 
   # PUT /person/:id
   def update
-    person = search_for_person(params[:id])
+    person = search_for_persons(id: params[:id])
     
     attributes = {}
     PARAM_TO_MODEL.each do |f, v|
@@ -67,7 +66,7 @@ class PersonController < ApiController
 
     # What should happen if it doesn't work.
     
-    @person = search_for_person(params[:id])
+    @person = search_for_persons(id: params[:id])
 
     respond_to do |f|
       f.jsonld { render :create, content_type: 'application/ld+json' }
@@ -76,7 +75,7 @@ class PersonController < ApiController
 
   # DELETE /person/:id
   def destroy
-    p = search_for_person(params[:id])
+    p = search_for_persons(id: params[:id])
 
     # Delete person
     Lna::Person.find(p['id']).destroy

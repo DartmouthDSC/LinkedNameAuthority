@@ -85,6 +85,14 @@ module Lna
         date_setter('date', d)
       end
 
+      def to_solr
+        solr_doc = super
+        # Needed for sorting by author list.
+        Solrizer.set_field(solr_doc, 'author_list', author_list, :stored_sortable)
+        Solrizer.set_field(solr_doc, 'creator_id', collection.person.id, :displayable) if collection
+        solr_doc
+      end
+      
       private
 
       # Document must be part of a collection or be a review of a document.

@@ -5,4 +5,4 @@ end
 
 json.status 'success'
 
-json.partial! 'work/work', work: @work, person: @person
+json.partial! 'work/work', work: @work, full: true
