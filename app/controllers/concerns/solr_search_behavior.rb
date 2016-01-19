@@ -51,6 +51,13 @@ module SolrSearchBehavior
     end
   end
 
+  # Search for a list of ids
+  # @params ids [Array<String>] list of ids
+  def search_for_ids(ids)
+    query = ActiveFedora::SolrQueryBuilder.construct_query_for_ids(ids)
+    ActiveFedora::SolrService.query(query)
+  end
+  
   # Searches Solr for a Lna::Person with the given id. If there isn't only one result the
   # not_found method is called.
   #
@@ -93,14 +100,17 @@ module SolrSearchBehavior
     search_with_model_filter(Lna::Membership, q: q, only_one: id != nil)
   end
 
-  def search_for_works(id: nil, collection_id: nil, start_date: nil, **args)
-    q = []
-    q << ['id', id] if id
-    q << ['isPartOf_ssim', collection_id] if collection_id
-
+  # if query is given id and collection id are ignored.
+  def search_for_works(id: nil, collection_id: nil, start_date: nil, q: nil, **args)
+    if q == nil
+      q = []
+      q << ['id', id] if id
+      q << ['isPartOf_ssim', collection_id] if collection_id
+    end
+    
     if start_date
       date = Date.parse(start_date.to_s).strftime('%FT%TZ')
-      q = field_query(q)
+      q = field_query(q) if q.is_a? Array
       q << " AND" unless q.blank?
       q << " date_dtsi:[#{date} TO *]"
     end
@@ -111,16 +121,25 @@ module SolrSearchBehavior
   def search_for_licenses(document_ids: nil)
   end
 
-  def search_for_active_organizations(**args)
-    search_with_model_filter(Lna::Organization, **args)
+  # @params parent [Boolean] if true returns parent organizations
+  def search_for_active_organizations(parents: false, **args)
+    results = search_with_model_filter(Lna::Organization, **args)
+
+    if parents
+      ids = results.map { |p| p['id'] }
+      parent_ids = results.map { |p| p['subOrganizationOf_ssim'] }.flatten.uniq
+      parent_ids = parent_ids.reject { |p| ids.include?(p) } # make sure parents aren't in the results   
+      results = results + search_for_ids(parent_ids)
+    end
+    results
   end
 
   # searches through both historic and active
   def search_for_organizations(**args)
-    search_with_model_filter([Lna::Organization, Lna::Organization::Historic])
+    search_with_model_filter([Lna::Organization, Lna::Organization::Historic], **args)
   end
 
-                             
+          
   
   # Search solr with a model filter for the class given
   # If query is array it assumes its a array of array of field pairs, otherwise it passes the q

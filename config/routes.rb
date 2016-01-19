@@ -35,9 +35,8 @@ Rails.application.routes.draw do
   # Recent Works Collections convenience function
   get '/works/:start_date(/:page)', to: 'works#index', start_date: /\d{4}-\d{2}-\d{2}/,
       page: /\d+/
-
-  # post '/works/:start_date(/:page)', to:'works#start_date_search',
-  #      constraint: { start_date: /\d{4}-\d{2}-\d{2}/, page: /\d+/ }
+  post '/works/:start_date(/:page)', to:'works#search', start_date: /\d{4}-\d{2}-\d{2}/,
+       page: /\d+/
 
   # Works Collection
   get '/works(/:page)', to: 'works#index', page: /\d+/

@@ -37,6 +37,12 @@ module Lna
       def begin_date=(d)
         date_setter('begin_date', d)
       end
+
+      def to_solr
+        solr_doc = super
+        Solrizer.set_field(solr_doc, 'label', label, :stored_sortable)
+        solr_doc
+      end
     end
   end
 end

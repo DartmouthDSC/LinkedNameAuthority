@@ -1,17 +1,14 @@
 class OrganizationsController < ApiController
+  skip_before_action :verify_authenticity_token, only: [:index, :search]
   before_action :default_to_first_page, only: [:index, :search]
 
   # GET /organizations
   def index
     page = params['page']
 
-    parameters = { rows: MAX_ROWS, sort: 'label_tesi asc' }
+    parameters = { rows: MAX_ROWS, sort: 'label_ssi asc' }
     
-    @resulting_orgs = search_for_active_organizations(**parameters, page: page)
-
-    org_ids = @resulting_orgs.map { |p| p['subOrganizationOf_ssim'] }.flatten
-    query = ActiveFedora::SolrQueryBuilder.construct_query_for_ids(org_ids.uniq)
-    @organizations = @resulting_orgs + ActiveFedora::SolrService.query(query)
+    @organizations = search_for_active_organizations(**parameters, parents: true, page: page)
 
     next_page = search_for_active_organizations(**parameters, page: page + 1).count != 0
 
@@ -23,21 +20,26 @@ class OrganizationsController < ApiController
   end
 
   # POST /organizations
-  # Potential search terms. 
-  # {
-  #    "org:identifier": "its",
-  #    "skos:pref_label": "Library",
-  #    "skos:alt_label": "AHRC",
-  #    "org:subOrganizationOf": "ITS"
-  # }
   def search
     page = params['page']
 
-    parameters = { rows: MAX_ROWS, sort: 'label_tesi asc' }
+    query_map = {
+      'org:identifier'        => "code_tesi:\"#{params['org:identifier']}\"",
+      'skos:pref_label'       => "label_tesi:\"#{params['skos:pref_label']}\"",
+      'skos:alt_label'        => "", # alt_label_xxxm
+      'org:subOrganizationOf' => "{!join from=id to=subOrganizationOf_tesim}label_tesi:\"#{params['org:subOrganizationOf']}"
+    }
+    search_query = query_map.select{ |f, _| params[f] }.values.join(" AND ")
+    
+    parameters = { rows: MAX_ROWS, q: search_query }
 
-    search_for_organizations(**parameters, page: page)
-    
-    
-    
+    @organizations = search_for_organizations(**parameters, parents: true, page: page)
+
+    next_page = search_for_persons(**parameters, page: page + 1).count != 0
+
+    respond_to do |f|
+      response.headers['Link'] = link_headers('organizations/', page, next_page)
+      f.jsonld { render :search, content_type: 'application/ld+json' }
+    end
   end
 end

@@ -89,7 +89,7 @@ module Lna
         solr_doc = super
         # Needed for sorting by author list.
         Solrizer.set_field(solr_doc, 'author_list', author_list, :stored_sortable)
-        Solrizer.set_field(solr_doc, 'creator_id', collection.person.id, :displayable) if collection
+        Solrizer.set_field(solr_doc, 'creator_id', collection.person.id, :stored_sortable) if collection
         solr_doc
       end
       
