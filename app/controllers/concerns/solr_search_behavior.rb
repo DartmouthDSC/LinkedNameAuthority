@@ -118,25 +118,34 @@ module SolrSearchBehavior
     search_with_model_filter(Lna::Collection::Document, q: q, only_one: id != nil, **args)
   end
 
-  def search_for_licenses(document_ids: nil)
+  def search_for_licenses()
   end
 
-  # @params parent [Boolean] if true returns parent organizations
+  # Search for active organization only.
+  #
+  # @params parents [Boolean] if true returns parent organizations
   def search_for_active_organizations(parents: false, **args)
-    results = search_with_model_filter(Lna::Organization, **args)
+    search_for_organizations(parents: parents, historic: false, **args)
+  end
+
+  # Searches through both historic and active organizations.
+  #
+  #
+  # @params historic [Boolean] if true includes historic organizations otherwise doesn't
+  # @params parents [Boolean] if true returns parent organizations
+  def search_for_organizations(parents: false, historic: true, **args)
+    models = [Lna::Organization]
+    models << Lna::Organization::Historic if historic
+    
+    results = search_with_model_filter(models, **args)
 
     if parents
       ids = results.map { |p| p['id'] }
       parent_ids = results.map { |p| p['subOrganizationOf_ssim'] }.flatten.uniq
-      parent_ids = parent_ids.reject { |p| ids.include?(p) } # make sure parents aren't in the results   
+      parent_ids = parent_ids.reject { |p| ids.include?(p) } # make sure parents aren't in the results already
       results = results + search_for_ids(parent_ids)
     end
     results
-  end
-
-  # searches through both historic and active
-  def search_for_organizations(**args)
-    search_with_model_filter([Lna::Organization, Lna::Organization::Historic], **args)
   end
 
           
