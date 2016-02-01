@@ -82,7 +82,9 @@ module Lna
 
     def to_solr
       solr_doc = super
-      Solrizer.set_field(solr_doc, 'collection_id', collections.first.id, :stored_sortable)
+      if collections.size > 0
+        Solrizer.set_field(solr_doc, 'collection_id', collections.first.id, :stored_sortable)
+      end
       solr_doc
     end
     
