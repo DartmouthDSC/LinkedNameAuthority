@@ -43,10 +43,12 @@ Rails.application.routes.draw do
   post '/works(/:page)', to: 'works#search', page: /\d+/
 
   # Work
-  resources :work, only: [:show, :create, :destroy]
+  resources :work, only: [:show, :create, :destroy] do
+    # Work License
+    resources :license, only: [:create, :destroy], controller: 'work/license'
+    put '/license/:id', to: 'work/license#update'
+  end
   put '/work/:id', to: 'work#update'
-
-  # Work License
 
   # Organizations Collection
   get '/organizations(/:page)', to: 'organizations#index'
