@@ -1,15 +1,9 @@
 json.prettify!
 
-json.partial! 'persons/context'
-json.set! "@context" do
-  if @memberships
-    json.set! "vcard", "http://www.w3.org/2006/vcard/ns#"
-    json.set! "owltime", "http://www.w3.org/TR/owl-time#"
-  end
-  if @accounts
-    json.set! "dc", "http://purl.org/dc/elements/1.1/"
-  end
-end
+vocabs = [:foaf, :dc, :skos]
+vocabs = vocabs + [:vcard, :owltime] if @memberships
+vocabs << :id if @accounts
+json.partial! 'shared/context', vocabs: vocabs
 
 json.set! 'skos:primarySubject' do
   json.child! { json.set! '@id', request.original_url }

@@ -17,9 +17,4 @@ class Person::WorksController < ApiController
       f.jsonld { render :index, content_type: 'application/ld+json' }
     end
   end
-
-
-  def convert_to_full_fedora_id
-    params[:person_id] = FedoraID.lengthen(params[:person_id])
-  end
 end

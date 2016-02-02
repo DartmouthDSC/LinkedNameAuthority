@@ -1,5 +1,4 @@
 class Person::AccountController < ApiController
-
   before_action :convert_to_full_fedora_id
   before_action :authenticate_user!, only: [:create, :update, :destroy]
 
@@ -75,10 +74,6 @@ class Person::AccountController < ApiController
   end
   
   private
-
-  def convert_to_full_fedora_id
-    [:id, :person_id].each { |i| params[i] = FedoraID.lengthen(params[i]) }
-  end
   
   def account_params
     params.permit(PARAM_TO_MODEL.keys << 'person_id')

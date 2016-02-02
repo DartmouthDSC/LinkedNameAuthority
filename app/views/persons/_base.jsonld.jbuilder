@@ -1,6 +1,6 @@
 json.prettify!
 
-json.partial! 'persons/context'
+json.partial! 'shared/context', vocabs: [:foaf, :dc, :skos]
 
 json.set! '@id', request.original_url
 json.partial! 'shared/generated_at'

@@ -77,10 +77,6 @@ class Person::MembershipController < ApiController
   
   private
 
-  def convert_to_full_fedora_id
-    [:id, :person_id].each { |i| params[i] = FedoraID.lengthen(params[i]) }
-  end
-
   def convert_org_to_fedora_id
     params['org:organization'] = org_uri_to_fedora_id(params['org:organization'])
   end

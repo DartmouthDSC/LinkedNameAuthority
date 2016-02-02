@@ -1,9 +1,5 @@
 
-json.set! "@context" do 
-  json.org "http://www.w3.org/ns/org#"
-  json.vcard "http://www.w3.org/2006/vcard/ns#"
-  json.owltime "http://www.w3.org/TR/owl-time#"
-end
+json.partial! 'shared/context', vocabs: [:org, :vcard, :owltime]
 
 json.status 'success'
 

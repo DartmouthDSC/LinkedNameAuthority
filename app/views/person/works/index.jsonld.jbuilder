@@ -1,10 +1,6 @@
 json.prettify!
 
-json.set! '@context' do
-  json.bibo 'http://purl.org/ontology/bibo/#'
-  json.dc 'http://purl.org/dc/elements/1.1/'
-  json.foaf 'http://xmlns.com/foaf/0.1/'
-end
+json.partial! 'shared/context', vocabs: [:bibo, :dc, :foaf]
 
 person_id = FedoraID.shorten(@person['id'])
 

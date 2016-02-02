@@ -1,7 +1,6 @@
 class WorkController < ApiController
-
   before_action :authenticate_user!, only: [:create, :update, :destroy]
-  before_action :convert_to_full_fedora_id, except: :create
+  before_action :convert_to_full_fedora_id
   before_action :convert_creator_to_fedora_id
 
   PARAM_TO_MODEL = {

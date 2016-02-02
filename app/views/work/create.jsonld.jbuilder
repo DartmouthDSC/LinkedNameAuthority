@@ -1,7 +1,4 @@
-json.set! "@context" do
-  json.bibo 'http://purl.org/ontology/bibo/#'
-  json.dc 'http://purl.org/dc/elements/1.1/'
-end
+json.partial! 'shared/context', vocabs: [:dc, :bibo]
 
 json.status 'success'
 

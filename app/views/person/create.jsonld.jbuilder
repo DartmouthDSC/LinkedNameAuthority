@@ -1,7 +1,4 @@
-json.set! "@context" do
-  json.foaf "http://xmlns.com/foaf/0.1/"
-  json.org "http://www.w3.org/ns/org#"
-end
+json.partial! 'shared/context', vocabs: [:foaf, :org]
 
 json.status "success"
 
