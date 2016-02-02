@@ -1,5 +1,5 @@
 class PersonController < ApiController
-  before_action :convert_to_full_fedora_id, except: :create
+  before_action :convert_to_full_fedora_id
   before_action :convert_org_to_fedora_id
   before_action :authenticate_user!, only: [:create, :update, :destroy]
 
@@ -42,7 +42,9 @@ class PersonController < ApiController
       attributes[v] = person_params[f]
     end
     
-    p = Lna::Person.create!(attributes)
+    p = Lna::Person.new(attributes)
+    
+    render_unprocessable_entity && return unless p.save
     
     @person = search_for_id(p.id)
 
@@ -56,15 +58,15 @@ class PersonController < ApiController
   # PUT /person/:id
   def update
     person = search_for_persons(id: params[:id])
-    
+
     attributes = {}
     PARAM_TO_MODEL.each do |f, v|
       attributes[v] = person_params[f] || nil
     end
 
-    Lna::Person.find(person['id']).update(attributes)
-
-    # What should happen if it doesn't work.
+    unless Lna::Person.find(person['id']).update(attributes)
+      render_unprocessable_entity && return
+    end
     
     @person = search_for_persons(id: params[:id])
 
@@ -78,9 +80,10 @@ class PersonController < ApiController
     p = search_for_persons(id: params[:id])
 
     # Delete person
-    Lna::Person.find(p['id']).destroy
-
-    # What happens if it doesnt work?
+    person = Lna::Person.find(p['id'])
+    person.destroy
+    
+    render_unprocessable_entiry && return unless person.destroyed?
     
     respond_to do |f|
       f.jsonld { render json: '{"status": "success"}', content_type: 'application/ld+json' }
@@ -94,6 +97,6 @@ class PersonController < ApiController
   end
   
   def person_params
-    params.permit(PARAM_TO_MODEL.keys)
+    params.permit(PARAM_TO_MODEL.keys << :id)
   end
 end

@@ -32,7 +32,20 @@ class ApiController < ActionController::Base
 
   def render_not_found
     respond_to do |f|
-      f.jsonld { render json: { error: 'not_found' }.to_json, status: :not_found,
+      f.jsonld { render json: { status: 'failure', error: 'not_found' }.to_json,
+                        status: :not_found, content_type: 'application/ld+json' }
+    end
+  end
+
+  # Error message for when an update, create or delete is unsuccessful.
+  # TODO: Error message should be more detailed put it would require mapping the errors
+  # back to the keys that the user knows about. How exactly we want this to look like should
+  # be decided on before we move in that direction.
+  def render_unprocessable_entity
+    respond_to do |f|
+      f.jsonld { render json: { status: 'failure',
+                                error: 'Problem creating, updating or deleting record'}.to_json,
+                        status: :unprocessable_entity,
                         content_type: 'application/ld+json' }
     end
   end
@@ -41,8 +54,11 @@ class ApiController < ActionController::Base
     params['page'] = (params['page'].blank?) ? 1 : params['page'].to_i
   end
 
+  # Converts to id, person_id and work_id to full fedora ids if they are present.
   def convert_to_full_fedora_id
-    params[:id] = FedoraID.lengthen(params[:id])
+    [:id, :person_id, :work_id].each do |p|
+      params[p] = FedoraID.lengthen(params[p]) if params[p].present?
+    end
   end
   
   def link_headers(namespace, page, next_page)
@@ -56,6 +72,28 @@ class ApiController < ActionController::Base
     links.join(', ')
   end
 
+  # Helper method to map parameters send in request of body to model attributes.
+  #
+  # @private
+  #
+  # @params params [Hash] parameters passed in by user
+  # @params put [boolean] true if used for a put request; all fields are required to contain an
+  #   empty string even if they aren't set.
+  # @params extra_params [Hash]
+  def params_to_attributes(params, put=false, **extra_params)
+    attributes = {}
+    attributes.merge!(extra_params) if extra_params
+    
+    PARAM_TO_MODEL.each do |f, v|
+      if put && !params[f]
+        attributes[v] = ''
+      elsif params[f]
+        attributes[v] = params[f]
+      end
+    end
+    attributes
+  end
+  
   # Converts the uri given to a full fedora id, if its a valid organization uri.
   # This method is not responsible for checking that the organization is valid.
   # If the uri is not a valid organization uri the same uri is returned, unchanged.

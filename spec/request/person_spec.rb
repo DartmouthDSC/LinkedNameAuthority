@@ -94,6 +94,21 @@ RSpec.describe "Person API", type: :request do
         expect_json(:@id => "#{root_url}person/#{@id}")
       end
     end
+
+    describe 'when missing required fields' do
+      include_context 'authenticate user'
+
+      before :context do
+        post '/person', '{}', {
+               "ACCEPT"       => 'application/ld+json',
+               "CONTENT_TYPE" => 'application/ld+json'
+             }
+      end
+
+      it 'returns status code of 422' do
+        expect_status(:unprocessable_entity)
+      end
+    end
   end
 
   describe 'PUT person/:id' do
@@ -133,6 +148,21 @@ RSpec.describe "Person API", type: :request do
 
       it 'response body contains updated mbox' do
         expect_json(:'foaf:mbox' => 'jane.doe@dartmouth.edu')
+      end
+    end
+
+    describe 'when missing required fields' do
+      include_context 'authenticate user'
+
+      before :context do
+        put @path, '{}', {
+               "ACCEPT"       => 'application/ld+json',
+               "CONTENT_TYPE" => 'application/ld+json'
+             }
+      end
+
+      it 'returns status code of 422' do
+        expect_status(:unprocessable_entity)
       end
     end
   end
