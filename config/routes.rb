@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   root to: "catalog#index"
   blacklight_for :catalog
 
-  devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
+  devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
 
   devise_scope :user do
     get 'sign_in', to: 'users/sessions#new', as: :new_user_session
@@ -58,4 +58,9 @@ Rails.application.routes.draw do
   get '/organization/:id', to: 'organizations#show', as: :organization_path
 
   # Change Events
+
+  # Redirects for html requests.
+  get '/person', to: redirect('persons'), constraints: { format: 'html' }
+  get '/work', to: redirect('works'), constraints: { format: 'html' }
+  get '/organization', to: redirect('organizations'), constraints: { format: 'html' }
 end
