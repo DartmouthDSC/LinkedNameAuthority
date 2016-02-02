@@ -1,6 +1,5 @@
 module Lna
   class Person < ActiveFedora::Base
-  
     has_many :memberships, class_name: 'Lna::Membership', dependent: :destroy
     has_many :accounts, class_name: 'Lna::Account', dependent: :destroy,
              as: :account_holder, inverse_of: :account_holder
@@ -77,7 +76,7 @@ module Lna
     
     def mbox=(e)
       super
-      self.mbox_sha1sum = Digest::SHA1.hexdigest(e)
+      self.mbox_sha1sum = (e.nil?) ? nil : Digest::SHA1.hexdigest(e)
     end
 
     def to_solr
@@ -91,7 +90,7 @@ module Lna
     private
     
     def create_collection
-      if collections.size == 0 # empty? creates a really odd behavior
+      unless collections.any? # empty? creates a really odd behavior
         collections << Lna::Collection.create(person: self)
       end
     end
