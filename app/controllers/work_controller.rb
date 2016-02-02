@@ -25,19 +25,18 @@ class WorkController < ApiController
   # POST /work
   def create
     @person = search_for_persons(id: params['dc:creator'])
-    
-    attributes = params_to_attributes(work_params, collection_id: @person['collection_id_ssi'])
 
     # Create work
-    w = Lna::Collection::Document.create!(attributes)
+    attributes = params_to_attributes(work_params, collection_id: @person['collection_id_ssi'])
+    w = Lna::Collection::Document.new(attributes)
+    render_unprocessable_entity && return unless w.save
 
-    # Throw errors if not enough information
     @work = search_for_id(w.id)
     
-    location = "/work/#{FedoraID.shorten(w.id)}"
-    
+    location = "/work/#{FedoraID.shorten(w.id)}"    
     respond_to do |f|
-      f.jsonld { render :create, status: :created, location: location, content_type: 'application/ld+json' }
+      f.jsonld { render :create, status: :created, location: location,
+                        content_type: 'application/ld+json' }
     end
   end
 
@@ -48,13 +47,12 @@ class WorkController < ApiController
 
     @person = search_for_persons(id: params['dc:creator'])
 
-    # update person's account
-    attributes = params_to_attributes(work_params, put: true, collection_id: @person['collection_id_ssi'] )
-
-    Lna::Collection::Document.find(params[:id]).update(attributes)
+    # Update work.
+    attributes = params_to_attributes(work_params, put: true,
+                                      collection_id: @person['collection_id_ssi'] )
+    w = Lna::Collection::Document.find(params[:id])
+    render_unprocessable_entity && return unless w.update(attributes)
     
-    # what should happen if update doesnt work
-
     @work = search_for_id(params[:id])
     
     respond_to do |f|
@@ -67,9 +65,9 @@ class WorkController < ApiController
     work = search_for_works(id: params[:id])
 
     # Delete account.
-    Lna::Collection::Document.find(work['id']).destroy
-
-    # what to do if it doesnt work?
+    w = Lna::Collection::Document.find(work['id'])
+    w.destroy
+    render_unprocessable_entiry && return unless w.destroyed?
 
     respond_to do |f|
       f.jsonld { render json: '{ "status": "success" }', content_type: 'application/ld+json' }

@@ -12,17 +12,17 @@ class Person::AccountController < ApiController
   def create
     person = search_for_id(params[:person_id])
 
-    attributes = params_to_attributes(account_params, account_holder_id: person['id'])
-
     # Create account.
-    a = Lna::Account.create!(attributes)
+    attributes = params_to_attributes(account_params, account_holder_id: person['id'])
+    a = Lna::Account.new(attributes)
+    render_unprocessable_entity && return unless a.save
 
-    # Throw errors if not enough information
     @account = search_for_id(a.id)
     location = "/person/#{FedoraID.shorten(person['id'])}##{FedoraID.shorten(@account['id'])}"
     
     respond_to do |f|
-      f.jsonld { render :create, status: :created, location: location, content_type: 'application/ld+json' }
+      f.jsonld { render :create, status: :created, location: location,
+                        content_type: 'application/ld+json' }
     end
   end
 
@@ -30,13 +30,11 @@ class Person::AccountController < ApiController
   def update
     account = search_for_accounts(id: params[:id], person_id: params[:person_id])
     
-    attributes = params_to_attributes(account_params, put: true)
-    
     # Update account.
-    Lna::Account.find(params[:id]).update(attributes)
+    attributes = params_to_attributes(account_params, put: true)
+    a = Lna::Account.find(params[:id])
+    render_unprocessable_entity && return unless a.update(attributes)
     
-    # what should happen if update doesnt work
-
     @account = search_for_id(params[:id])
     
     respond_to do |f|
@@ -49,9 +47,9 @@ class Person::AccountController < ApiController
     account = search_for_accounts(id: params[:id], person_id: params[:person_id])
 
     # Delete account.
-    Lna::Account.find(account['id']).destroy
-
-    # what to do if it doesnt work?
+    a = Lna::Account.find(account['id'])
+    a.destroy
+    render_unprocessable_entiry && return unless a.destroyed?
 
     respond_to do |f|
       f.jsonld { render json: '{ "status": "success" }', content_type: 'application/ld+json' }

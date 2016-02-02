@@ -15,18 +15,20 @@ class Work::LicenseController < Api::Controller
 
     attributes = params_to_attributes(license_params, document_id: work['id'])
 
-    model = license_params['dc:description']
-    if model == 'license_ref'
-      license = Lna::Collection::LicenseReference.create!(attributes)
-    elsif model  == 'free_to_read'
-      license = Lna::Collection::FreeToRead.create!(attributes)
+    case license_params['dc:description']
+    when 'license_ref'
+      l = Lna::Collection::LicenseReference.new(attributes)
+    when 'free_to_read'
+      l = Lna::Collection::FreeToRead.new(attributes)
     else
-      # raise ArgumentError, dc:description not present or invalid
+      render_unprocessable_entity && return
     end
 
-    @license = search_for_id(license.id)
-    location = "/work/#{FedoraId.shorten(work['id'])}##{FedoraId.shorten(@license['id'])}"
+    render_unprocessable_entity && return unless l.save
 
+    @license = search_for_id(license.id)
+    
+    location = "/work/#{FedoraId.shorten(work['id'])}##{FedoraId.shorten(@license['id'])}"
     respond_to do |f|
       f.jsonld { render :create, status: :created, location: location, content_type: 'application/ld+json'}
     end
@@ -36,10 +38,10 @@ class Work::LicenseController < Api::Controller
   def update
     license = search_for_licenses(id: params[:id], document_id: params[:work_id])
 
+    # Update license.
     attributes = params_to_attributes(license_params, put: true, document_id: params[:work_id])
-    ActiveFedora::Base.find(license['id']).update(attributes)
-
-    # what should happen if it does work?
+    l = ActiveFedora::Base.find(license['id'])
+    render_unprocessable_entity && return unless l.update(attributes)
 
     @license = search_for_id(params[:id])
 
@@ -53,9 +55,9 @@ class Work::LicenseController < Api::Controller
     license = search_for_licenses(id: params[:id], document_id: params[:work_id])
 
     # Delete License
-    ActiveFedora::Base.find(license['id']).destroy
-
-    # what should happen if it doesn't work
+    l = ActiveFedora::Base.find(license['id'])
+    l.destroy
+    render_unprocessable_entiry && return unless l.destroyed?
 
     respond_to do |f|
       f.jsonld { render json: '{ "status": "success" }', content_type: 'application/ld+json' }

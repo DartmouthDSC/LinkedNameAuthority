@@ -18,16 +18,15 @@ class Person::MembershipController < ApiController
   # POST /person/:person_id/membership
   def create
     person = search_for_id(params[:person_id])
-    
-    attributes = params_to_attributes(membership_params, person_id: person['id'])
 
     # Create membership
-    m = Lna::Membership.create!(attributes)
+    attributes = params_to_attributes(membership_params, person_id: person['id'])
+    m = Lna::Membership.new(attributes)
+    render_unprocessable_entity && return unless m.save
 
-    # Throw errors if not enough information
     @membership = search_for_id(m.id)
-    location = "/person/#{FedoraID.shorten(person['id'])}##{FedoraID.shorten(@membership['id'])}"
     
+    location = "/person/#{FedoraID.shorten(person['id'])}##{FedoraID.shorten(@membership['id'])}"
     respond_to do |f|
       f.jsonld { render :create, status: :created, location: location, content_type: 'application/ld+json' }
     end
@@ -37,12 +36,11 @@ class Person::MembershipController < ApiController
   def update
     membership = search_for_memberships(id: params[:id], person_id: params[:person_id])
     
-    # update person's account
+    # Update membership.
     attributes = params_to_attributes(membership_params, put: true)
-    Lna::Membership.find(params[:id]).update(attributes)
+    m = Lna::Membership.find(params[:id])
+    render_unprocessable_entity && return unless m.update(attributes)
     
-    # what should happen if update doesnt work
-
     @membership = search_for_id(params[:id])
     
     respond_to do |f|
@@ -54,10 +52,10 @@ class Person::MembershipController < ApiController
   def destroy
     membership = search_for_memberships(id: params[:id], person_id: params[:person_id])
 
-    # Delete account.
-    Lna::Membership.find(membership['id']).destroy
-
-    # what to do if it doesnt work?
+    # Delete membership
+    m = Lna::Membership.find(membership['id'])
+    m.destroy
+    render_unprocessable_entiry && return unless m.destroyed?
 
     respond_to do |f|
       f.jsonld { render json: '{ "status": "success" }', content_type: 'application/ld+json' }

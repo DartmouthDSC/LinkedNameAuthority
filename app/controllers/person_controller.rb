@@ -37,10 +37,9 @@ class PersonController < ApiController
 
   # POST /person
   def create
+    # Create person.
     attributes = params_to_attributes(person_params)
-    
     p = Lna::Person.new(attributes)
-    
     render_unprocessable_entity && return unless p.save
     
     @person = search_for_id(p.id)
@@ -56,11 +55,10 @@ class PersonController < ApiController
   def update
     person = search_for_persons(id: params[:id])
 
+    # Update person.
     attributes = params_to_attributes(person_params, put: true)
-
-    unless Lna::Person.find(person['id']).update(attributes)
-      render_unprocessable_entity && return
-    end
+    p = Lna::Person.find(person['id'])
+    render_unprocessable_entity && return unless p.update(attributes)
     
     @person = search_for_persons(id: params[:id])
 
@@ -76,7 +74,6 @@ class PersonController < ApiController
     # Delete person
     person = Lna::Person.find(p['id'])
     person.destroy
-    
     render_unprocessable_entiry && return unless person.destroyed?
     
     respond_to do |f|
