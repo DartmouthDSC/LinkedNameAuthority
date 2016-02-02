@@ -37,10 +37,7 @@ class PersonController < ApiController
 
   # POST /person
   def create
-    attributes = {}
-    PARAM_TO_MODEL.select { |f, _| person_params[f] }.each do |f, v|
-      attributes[v] = person_params[f]
-    end
+    attributes = params_to_attributes(person_params)
     
     p = Lna::Person.new(attributes)
     
@@ -59,10 +56,7 @@ class PersonController < ApiController
   def update
     person = search_for_persons(id: params[:id])
 
-    attributes = {}
-    PARAM_TO_MODEL.each do |f, v|
-      attributes[v] = person_params[f] || nil
-    end
+    attributes = params_to_attributes(person_params, put: true)
 
     unless Lna::Person.find(person['id']).update(attributes)
       render_unprocessable_entity && return
@@ -91,6 +85,9 @@ class PersonController < ApiController
   end
 
   private
+
+  
+  
 
   def convert_org_to_fedora_id
     params['org:reportsTo'] = org_uri_to_fedora_id(params['org:reportsTo'])

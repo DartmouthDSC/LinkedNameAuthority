@@ -11,11 +11,8 @@ class Person::AccountController < ApiController
   # POST /person/:person_id/account
   def create
     person = search_for_id(params[:person_id])
-    
-    attributes = { account_holder_id: person['id'] }
-    PARAM_TO_MODEL.select { |f, _| account_params[f] }.each do |f, v|
-      attributes[v] = account_params[f]
-    end
+
+    attributes = params_to_attributes(account_params, account_holder_id: person['id'])
 
     # Create account.
     a = Lna::Account.create!(attributes)
@@ -33,10 +30,7 @@ class Person::AccountController < ApiController
   def update
     account = search_for_accounts(id: params[:id], person_id: params[:person_id])
     
-    attributes = {}
-    PARAM_TO_MODEL.each do |f, v|
-      attributes[v] = account_params[f] || ''
-    end
+    attributes = params_to_attributes(account_params, put: true)
     
     # Update account.
     Lna::Account.find(params[:id]).update(attributes)

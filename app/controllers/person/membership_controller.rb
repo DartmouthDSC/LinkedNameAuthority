@@ -1,5 +1,4 @@
 class Person::MembershipController < ApiController
-
   before_action :convert_to_full_fedora_id
   before_action :convert_org_to_fedora_id
   before_action :authenticate_user!, only: [:create, :update, :destroy]
@@ -19,13 +18,8 @@ class Person::MembershipController < ApiController
   # POST /person/:person_id/membership
   def create
     person = search_for_id(params[:person_id])
-
-    logger.debug("membership_params = #{membership_params}")
     
-    attributes = { person_id: person['id']}
-    PARAM_TO_MODEL.select { |f, _| membership_params[f] }.each do |f, v|
-      attributes[v] = membership_params[f]
-    end
+    attributes = params_to_attributes(membership_params, person_id: person['id'])
 
     # Create membership
     m = Lna::Membership.create!(attributes)
@@ -39,17 +33,12 @@ class Person::MembershipController < ApiController
     end
   end
 
-
   # PUT /person/:person_id/membership/:id
   def update
     membership = search_for_memberships(id: params[:id], person_id: params[:person_id])
     
     # update person's account
-    attributes = {}
-    PARAM_TO_MODEL.each do |f, v|
-      attributes[v] = membership_params[f] || ''
-    end
-
+    attributes = params_to_attributes(membership_params, put: true)
     Lna::Membership.find(params[:id]).update(attributes)
     
     # what should happen if update doesnt work

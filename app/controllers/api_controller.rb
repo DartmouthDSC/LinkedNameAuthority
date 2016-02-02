@@ -80,11 +80,11 @@ class ApiController < ActionController::Base
   # @params put [boolean] true if used for a put request; all fields are required to contain an
   #   empty string even if they aren't set.
   # @params extra_params [Hash]
-  def params_to_attributes(params, put=false, **extra_params)
+  def params_to_attributes(params, put: false, **extra_params)
     attributes = {}
     attributes.merge!(extra_params) if extra_params
     
-    PARAM_TO_MODEL.each do |f, v|
+    self.class::PARAM_TO_MODEL.each do |f, v|
       if put && !params[f]
         attributes[v] = ''
       elsif params[f]
@@ -97,7 +97,7 @@ class ApiController < ActionController::Base
   # Converts the uri given to a full fedora id, if its a valid organization uri.
   # This method is not responsible for checking that the organization is valid.
   # If the uri is not a valid organization uri the same uri is returned, unchanged.
-  def org_uri_to_fedora_id(uri)
+  def org_uri_to_fedora_id(uri) 
     if uri
       if match = %r{^#{Regexp.escape(root_url)}organization/([a-zA-Z0-9-]+$)}.match(uri)
         params['org:organization'] = FedoraID.lengthen(match[1])

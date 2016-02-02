@@ -26,10 +26,7 @@ class WorkController < ApiController
   def create
     @person = search_for_persons(id: params['dc:creator'])
     
-    attributes = { collection_id: @person['collection_id_ssi'] }
-    PARAM_TO_MODEL.select { |f, _| work_params[f] }.each do |f, v|
-      attributes[v] = work_params[f]
-    end
+    attributes = params_to_attributes(work_params, collection_id: @person['collection_id_ssi'])
 
     # Create work
     w = Lna::Collection::Document.create!(attributes)
@@ -52,10 +49,7 @@ class WorkController < ApiController
     @person = search_for_persons(id: params['dc:creator'])
 
     # update person's account
-    attributes = { collection_id: @person['collection_id_ssi'] }
-    PARAM_TO_MODEL.each do |f, v|
-      attributes[v] = work_params[f] || ''
-    end
+    attributes = params_to_attributes(work_params, put: true, collection_id: @person['collection_id_ssi'] )
 
     Lna::Collection::Document.find(params[:id]).update(attributes)
     
