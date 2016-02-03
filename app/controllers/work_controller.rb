@@ -20,6 +20,12 @@ class WorkController < ApiController
   # GET /work/:id
   def show
     @work = search_for_works(id: params[:id])
+    @licenses = search_for_licenses(document_id: params[:id])
+    @person = search_for_persons(id: @work['creator_id_ssi'])
+
+    respond_to do |f|
+      f.jsonld { render :show, content_type: 'application/ld+json' }
+    end
   end
   
   # POST /work

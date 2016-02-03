@@ -13,7 +13,8 @@ class WorksController < ApiController
     }
 
     @works = search_for_works(**parameters, page: page)
-    byebug
+    logger.debug(@works.to_s)
+    
     next_page = search_for_works(**parameters, page: page + 1).count != 0
     
     respond_to do |f|

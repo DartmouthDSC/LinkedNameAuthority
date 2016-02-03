@@ -135,7 +135,7 @@ module SolrSearchBehavior
     q << ['license_ref_ssim', document_id] if document_id
 
     search_with_model_filter([Lna::Collection::FreeToRead, Lna::Collection::LicenseReference],
-                             only_one: id != nil)
+                             q: q, only_one: id != nil)
   end
 
   # Search for active organization only.
