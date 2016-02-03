@@ -1,4 +1,4 @@
-
+require 'fedora_id'
 
 # Log-in test user in before context and log out in after context.
 RSpec.shared_context 'authenticate user' do
