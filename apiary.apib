@@ -3,7 +3,7 @@ HOST: http://linkednameauthority.apiblueprint.org/
 
 # linkednameauthority
 
-LNA API for Dartmouth College (v0.1.0)
+LNA API for Dartmouth College (v0.2.0)
 
 ## Path index and valid methods
 
@@ -222,7 +222,8 @@ Request parameters listed are search options and can be mixed as needed.
                 "vcard": "http://www.w3.org/2006/vcard/ns#",
                 "owltime": "http://www.w3.org/TR/owl-time#"
             },
-            "skos:primarySubject": {"@id": "http://lna.dartmouth.edu/person/1"},
+            "@type": "foaf:Person",
+            "foaf:primaryTopic": "http://lna.dartmouth.edu/person/1",
             "generatedAt": "2015-10-30T09:30:10Z",
             "status": "success",
             "@graph":
@@ -396,7 +397,7 @@ Request parameters listed are search options and can be mixed as needed.
                 },
                 "status": "success",
                 "@id": "http://lna.dartmouth.edu/person/1",
-                "@type": "http://xmlns.com/foaf/0.1/Person",
+                "@type": "foaf:Person",
                 "foaf:name": "John Bell",
                 "foaf:givenName": "John",
                 "foaf:familyName": "Bell",
@@ -796,7 +797,7 @@ Works are sorted by relevance. Paginated by *page*, with 100 results per page.
                     "bibo": "http://purl.org/ontology/bibo/#"
                 },
                 "@id": "http://lna.dartmouth.edu/works/1",
-                "queryString": "foaf:givenName=John&org:member='ITS'",
+                "queryString": "dc:authorsList=John",
                 "generatedAt": "2015-10-30T09:30:10Z",
                 "status": "success",
                 "@graph": [
@@ -924,7 +925,7 @@ Works are sorted by relevance. Paginated by *page*, with 100 results per page.
                     "bibo": "http://purl.org/ontology/bibo/#"
                 },
                 "@id": "http://lna.dartmouth.edu/works/1",
-                "queryString": "foaf:givenName=John&org:member='ITS'",
+                "queryString": "dc:authorsList=John",
                 "generatedAt": "2015-10-30T09:30:10Z",
                 "status": "success",
                 "@graph": [
@@ -1060,26 +1061,28 @@ Note that the fields shown here are representative and will vary from work to wo
                     "ali": "http://www.niso.org/schemas/ali/1.0/",
             },
             "@type": "bibo:Document",
-            "@id": "http://lna.dartmouth.edu/work/1",
             "status": "success",
-            "bibo:doi": "http://dx.doi.org/10.1002/9781118829059.wbihms321",
-            "bibo:uri": ["http://onlinelibrary.wiley.com/doi/10.1002/9781118829059.wbihms321"],
-            "bibo:volume": "3",
-            "bibo:pages": "24",
-            "bibo:pageStart": "473",
-            "bibo:pageEnd": "497",
-            "bibo:authorsList": "Bell, John and Ippolito, Jon",
-            "bibo:abstract": "Lorem ipsum...",
-            "dc:title": "Diffused Museums",
-            "dc:publisher": "Wiley",
-            "dc:date": "2015-12-01",
-            "dc:abstract": "Lorem Ipsum...",
-            "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works",
-            "dc:creator": "http://lna.dartmouth.edu/person/1",
-            "ali:license_ref": "#license1",
-            "ali:license_ref": "#license2",
+            "foaf:primaryTopic": "http://lna.dartmouth.edu/work/1",
             "@graph":
             [
+                {   "@id": "http://lna.dartmouth.edu/work/1",
+                    "@type": "bibo:Document",
+                    "bibo:doi": "http://dx.doi.org/10.1002/9781118829059.wbihms321",
+                    "bibo:uri": ["http://onlinelibrary.wiley.com/doi/10.1002/9781118829059.wbihms321"],
+                    "bibo:volume": "3",
+                    "bibo:pages": "24",
+                    "bibo:pageStart": "473",
+                    "bibo:pageEnd": "497",
+                    "bibo:authorsList": "Bell, John and Ippolito, Jon",
+                    "bibo:abstract": "Lorem ipsum...",
+                    "dc:title": "Diffused Museums",
+                    "dc:publisher": "Wiley",
+                    "dc:date": "2015-12-01",
+                    "dc:abstract": "Lorem Ipsum...",
+                    "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works",
+                    "dc:creator": "http://lna.dartmouth.edu/person/1",
+                    "ali:license_ref": ["#license1", "#license2"]
+                },
                 {   "@id": "http://lna.dartmouth.edu/person/1",
                     "@type": "foaf:Person",
                     "foaf:name": "John Bell",
@@ -1206,7 +1209,8 @@ Note that dc:description for licenses refers to the ali license type and should 
             "@context": {
                     "ali": "http://www.niso.org/schemas/ali/1.0/",
                     "dc": "http://purl.org/dc/elements/1.1/",
-            },        
+            },
+            "@type": "dc:licenseDocument",
             "ali:start_date": "2011-11-01",
             "ali:end_date": "2012-11-01",
             "ali:uri": "https://creativecommons.org/licenses/by-nc-sa/2.0/",
@@ -1227,6 +1231,7 @@ Note that dc:description for licenses refers to the ali license type and should 
                         "ali": "http://www.niso.org/schemas/ali/1.0/",
                         "dc": "http://purl.org/dc/elements/1.1/",
                 },
+                "@type": "dc:licenseDocument",
                 "@id": "http://lna.dartmouth.edu/works/1/license/1",
                 "ali:start_date": "2011-11-01",
                 "ali:end_date": "2012-11-01",
@@ -1247,7 +1252,8 @@ Note that dc:description for licenses refers to the ali license type and should 
             "@context": {
                     "ali": "http://www.niso.org/schemas/ali/1.0/",
                     "dc": "http://purl.org/dc/elements/1.1/",
-            },        
+            },      
+            "@type": "dc:licenseDocument",
             "ali:start_date": "2011-11-01",
             "ali:end_date": "2012-11-01",
             "ali:uri": "https://creativecommons.org/licenses/by-nc-sa/2.0/",
@@ -1264,6 +1270,7 @@ Note that dc:description for licenses refers to the ali license type and should 
                         "ali": "http://www.niso.org/schemas/ali/1.0/",
                         "dc": "http://purl.org/dc/elements/1.1/",
                 },
+                "@type": "dc:licenseDocument",
                 "@id": "http://lna.dartmouth.edu/works/1/license/1",
                 "ali:start_date": "2011-11-01",
                 "ali:end_date": "2012-11-01",
@@ -1391,7 +1398,8 @@ Orgs returned include their parent org (org:subOrganizationOf) but not a list of
                         "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/8"],
                         "skos:pref_label": "Dartmouth Information Technology Services",
                         "skos:alt_label": ["ITS"],
-                        "owltime:hasBeginning": "2013-06-01"
+                        "owltime:hasBeginning": "2013-06-01",
+                        "owltime:hasEnd": ""
                     },
                     {
                         "@id": "http://lna.dartmouth.edu/organization/2",
@@ -1400,7 +1408,8 @@ Orgs returned include their parent org (org:subOrganizationOf) but not a list of
                         "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/3"],
                         "skos:pref_label": "Dartmouth Digital Library Technology Group",
                         "skos:alt_label": ["DLTG"],
-                        "owltime:hasBeginning": "2000-06-01"
+                        "owltime:hasBeginning": "2000-06-01",
+                        "owltime:hasEnd": ""
                     },
                     {
                         "@id": "http://lna.dartmouth.edu/organization/4",
@@ -1457,7 +1466,8 @@ Note that all organizations are created as active orgs. They may be immediately 
                 "org:identifier": "its",
                 "skos:pref_label": "Dartmouth Information Technology Services",
                 "skos:alt_label": ["ITS"],
-                "owltime:hasBeginning": "2013-06-01"
+                "owltime:hasBeginning": "2013-06-01",
+                "owltime:hasEnd": ""
             }
 
 ### Retreive an Organization [GET]
@@ -1505,18 +1515,23 @@ Note that the response data will vary depending on whether the organization is a
                 "dc": "http://purl.org/dc/elements/1.1/",
                 "prov": "http://www.w3.org/ns/prov#"
             },
-            "@type": "org:Organization",
-            "@id": "http://lna.dartmouth.edu/organization/2",
             "status": "success",
-            "org:identifier": "dltg1",
-            "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/3"],
-            "skos:pref_label": "Dartmouth Digital Library Technology Group",
-            "skos:alt_label": ["DLTG"],
-            "owltime:hasBeginning": "2000-06-01",
-            "org:hasSubOrganization": ["http://lna.dartmouth.edu/organization/10"],
-            "org:resultedFrom": "#change1",
-            "foaf:account": ["#account1"]
+            "@type": "org:Organization",
+            "foaf:primaryTopic": "http://lna.dartmouth.edu/organization/2",            
             "@graph": [
+                {
+                    "@type": "org:Organization",
+                    "@id": "http://lna.dartmouth.edu/organization/2",
+                    "org:identifier": "dltg1",
+                    "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/3"],
+                    "skos:pref_label": "Dartmouth Digital Library Technology Group",
+                    "skos:alt_label": ["DLTG"],
+                    "owltime:hasBeginning": "2000-06-01",
+                    "owltime:hasEnd": "",
+                    "org:hasSubOrganization": ["http://lna.dartmouth.edu/organization/10"],
+                    "org:resultedFrom": "#change1",
+                    "foaf:account": ["#account1"]
+                },            
                 {
                     "@id": "http://lna.dartmouth.edu/organization/3",
                     "@type": "org:Organization",
@@ -1524,7 +1539,8 @@ Note that the response data will vary depending on whether the organization is a
                     "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/12"],
                     "skos:pref_label": "Dartmouth College Library",
                     "skos:alt_label": [],
-                    "owltime:hasBeginning": "1769-06-01"
+                    "owltime:hasBeginning": "1769-06-01",
+                    "owltime:hasEnd": ""
                 },
                 {
                     "@id": "http://lna.dartmouth.edu/organization/10",
@@ -1533,7 +1549,8 @@ Note that the response data will vary depending on whether the organization is a
                     "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/3"],
                     "skos:pref_label": "DAC dev team",
                     "skos:alt_label": [],
-                    "owltime:hasBeginning": "2015-01-01"
+                    "owltime:hasBeginning": "2015-01-01",
+                    "owltime:hasEnd": ""
                 },
                 {
                     "@id": "#change1",
@@ -1589,7 +1606,8 @@ Applies to both current and historic orgs. Do not use to add an end date to an o
                 "org:identifier": "its",
                 "skos:pref_label": "Dartmouth Information Technology Services",
                 "skos:alt_label": ["ITS"],
-                "owltime:hasBeginning": "2013-06-01"
+                "owltime:hasBeginning": "2013-06-01",
+                "owltime:hasEnd": ""
             }
 
 
@@ -1661,8 +1679,7 @@ ex: Math absorbs CS (order isn't as important):
                 "@id": "#change1",
                 "@type": "org:ChangeEvent",
                 "org:changedBy": ["{id_from}"],
-                "org:resultedFrom": [{id_to}"],
+                "org:resultedFrom": ["{id_to}"],
                 "prov:atTime": "2012-12-01",
                 "dc:description": "A wild organziation appeared"
             }
-
