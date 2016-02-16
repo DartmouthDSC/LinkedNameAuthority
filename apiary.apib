@@ -26,7 +26,7 @@ LNA API for Dartmouth College (v0.2.0)
 - /organizations/{page} - GET, POST
 - /organization/ - POST
 - /organization/{id} - GET, PUT, DELETE
-- /organization/{id_from}/changeTo/{id_to} - POST
+- /organization/{id_from}/change_to/{id_to} - POST
 
 Generally speaking, GET and POST paths use content negotiation to determine a response. text/html and application/ld+json are supported. PUT and DELETE methods may only respond with application/ld+json.
 
@@ -1624,7 +1624,7 @@ Applies to both current and historic orgs. Do not use to add an end date to an o
     
             { "status": "success" }
 
-## Change Events [/organization/{id_from}/changeTo/{id_to}]
+## Change Events [/organization/{id_from}/change_to/{id_to}]
 
 Change Events trigger conversion of one (or more) organizations to another (or more than one) organization(s). Both orgs must already exist. Some logic applies to {id_from} and {id_to}:
 
@@ -1634,15 +1634,15 @@ Change Events trigger conversion of one (or more) organizations to another (or m
 
 ex: Math splits and becomes Math and CS (order is important here):
 
-/organization/#oldMath/changeTo/#newMath - makes #oldMath historic, creates a change event linking #oldMath and #newMath, migrates Memberships from #oldMath to #newMath
+/organization/#oldMath/change_to/#newMath - makes #oldMath historic, creates a change event linking #oldMath and #newMath, migrates Memberships from #oldMath to #newMath
 
-/organziation/#oldMath/changeTo/#CS - #oldMath has an org:changedBy already so #CS is associated with that change event using org:resultedFrom. No migration occurs.
+/organziation/#oldMath/change_to/#CS - #oldMath has an org:changedBy already so #CS is associated with that change event using org:resultedFrom. No migration occurs.
 
 ex: Math absorbs CS (order isn't as important):
 
-/organization/#oldMath/changeTo/#newMath - makes #oldMath historic, creates a change event linking #oldMath and #newMath, migrates Memberships from #oldMath to #newMath
+/organization/#oldMath/change_to/#newMath - makes #oldMath historic, creates a change event linking #oldMath and #newMath, migrates Memberships from #oldMath to #newMath
 
-/organziation/#CS/changeTo/#newMath - #newMath has an org:resultedFrom already so #CS is associated with that change event using org:changedBy. Migrates memberships from #CS to #oldMath.
+/organziation/#CS/change_to/#newMath - #newMath has an org:resultedFrom already so #CS is associated with that change event using org:changedBy. Migrates memberships from #CS to #oldMath.
 
 ### Migrate one Ogranization to Another [POST]
 
