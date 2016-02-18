@@ -55,7 +55,8 @@ Rails.application.routes.draw do
   post '/organizations(/:page)', to: 'organizations#search'
 
   # Organization
-  get '/organization/:id', to: 'organization#show', as: :organization
+  resources :organization, only: [:show, :create, :destroy]
+  put '/organization/:id', to: 'organization#update'
 
   # Change Events
 
