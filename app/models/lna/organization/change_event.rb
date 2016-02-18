@@ -24,6 +24,13 @@ module Lna
         date_setter('at_time', d)
       end
 
+      def to_solr
+        solr_doc = super
+        Solrizer.set_field(solr_doc, 'resultingOrganization', resulting_organization_ids, :symbol)
+        Solrizer.set_field(solr_doc, 'originalOrganization', original_organization_ids, :symbol)
+        solr_doc
+      end
+      
       def self.trigger_change_event(active, description, update, end_date = Date.today)
         # active must be a Lna::Organization
         raise ArgumentError, 'first parameter must be a Lna::Organization' unless active.is_a?(Lna::Organization)

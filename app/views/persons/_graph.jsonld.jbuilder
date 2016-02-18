@@ -3,6 +3,6 @@ json.set! '@graph' do |json|
     json.partial! 'person/person', person: person, full: false
   end
   json.array! @organizations do |org|
-    json.partial! 'organization/organization', org: org
+    json.partial! 'organization/organization_minimal', org: org
   end
 end

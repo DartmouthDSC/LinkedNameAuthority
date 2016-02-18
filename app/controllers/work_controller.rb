@@ -1,6 +1,4 @@
-class WorkController < ApiController
-  before_action :authenticate_user!, only: [:create, :update, :destroy]
-  before_action :convert_to_full_fedora_id
+class WorkController < CrudController
   before_action :convert_creator_to_fedora_id
 
   PARAM_TO_MODEL = {
@@ -23,9 +21,7 @@ class WorkController < ApiController
     @licenses = search_for_licenses(document_id: params[:id])
     @person = search_for_persons(id: @work['creator_id_ssi'])
 
-    respond_to do |f|
-      f.jsonld { render :show, content_type: 'application/ld+json' }
-    end
+    super
   end
   
   # POST /work
@@ -61,9 +57,7 @@ class WorkController < ApiController
     
     @work = search_for_id(params[:id])
     
-    respond_to do |f|
-      f.jsonld { render :create, content_type: 'application/ld+json' }
-    end
+    super
   end
 
   # DELETE /work/:id
@@ -75,9 +69,7 @@ class WorkController < ApiController
     w.destroy
     render_unprocessable_entiry && return unless w.destroyed?
 
-    respond_to do |f|
-      f.jsonld { render json: '{ "status": "success" }', content_type: 'application/ld+json' }
-    end
+    super
   end
   
   private

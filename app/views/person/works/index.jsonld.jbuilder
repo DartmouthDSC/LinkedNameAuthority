@@ -5,11 +5,11 @@ json.partial! 'shared/context', vocabs: [:bibo, :dc, :foaf]
 person_id = FedoraID.shorten(@person['id'])
 
 json.set! '@type', 'bibo:Collection'
-json.set! '@id', "#{root_url}person/#{person_id}/works"
+json.set! '@id', person_works_url(person_id: person_id)
 json.set! 'status', 'success'
-json.set! 'foaf:primaryTopic', "#{root_url}person/#{person_id}"
+json.set! 'foaf:primaryTopic', person_url(id: person_id)
 
-has_parts = @works.map { |w| "#{root_url}work/#{FedoraID.shorten(w['id'])}/" }
+has_parts = @works.map { |w| work_url(id: FedoraID.shorten(w['id']))}
 
 json.set! 'bibo:hasPart', has_parts
 

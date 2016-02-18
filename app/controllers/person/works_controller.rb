@@ -1,5 +1,4 @@
 class Person::WorksController < ApiController
-
   before_action :convert_to_full_fedora_id
   
   # GET /person/:person_id/works(/:start_date)

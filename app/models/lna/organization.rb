@@ -47,10 +47,19 @@ module Lna
       JSON.generate(self.serialize)
     end
 
+    def to_solr
+      solr_doc = super
+      
+      # Adding sub organizations to solr doc
+      unless sub_organization_ids.empty?
+        Solrizer.set_field(solr_doc, 'hasSubOrganization', sub_organization_ids, :symbol)
+      end
+      solr_doc
+    end
+    
     # Converts given active organization to a historic organization and deletes
     # active organization.
     def self.convert_to_historic(active, end_date = Date.today, changed_by = nil)
-
       raise 'Cannot convert because organization still has accounts' if active.accounts.count > 0
       
       serialization = active.json_serialization
@@ -66,12 +75,10 @@ module Lna
         h.end_date = end_date
         h.historic_placement = serialization
         h.changed_by = changed_by
-
       end
 
       active.destroy
       historic
     end
-    
   end
 end

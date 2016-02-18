@@ -1,7 +1,7 @@
 json.prettify!
 
 vocabs = [:foaf, :dc, :skos]
-vocabs = vocabs + [:vcard, :owltime] if @memberships
+vocabs.concat([:vcard, :owltime]) if @memberships
 vocabs << :id if @accounts
 json.partial! 'shared/context', vocabs: vocabs
 
@@ -10,10 +10,9 @@ json.set! 'skos:primarySubject' do
 end
 
 json.partial! 'shared/generated_at'
-json.status 'success'
+json.partial! 'shared/success'
 
 json.set! '@graph' do
-
   json.child! { json.partial! 'person/person', person: @person, full: true }
 
   json.child! {
@@ -29,10 +28,10 @@ json.set! '@graph' do
   end
 
   json.array! @accounts do |account|
-    json.partial! 'person/account/account', account: account, id: nil
+    json.partial! 'person/account/account', account: account
   end
 
   json.array! @organizations do |organization|
-    json.partial! 'organization/organization', org: organization
+    json.partial! 'organization/organization_minimal', org: organization
   end
 end

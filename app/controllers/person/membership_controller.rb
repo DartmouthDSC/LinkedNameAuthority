@@ -1,7 +1,5 @@
-class Person::MembershipController < ApiController
-  before_action :convert_to_full_fedora_id
+class Person::MembershipController < CrudController
   before_action :convert_org_to_fedora_id
-  before_action :authenticate_user!, only: [:create, :update, :destroy]
 
   PARAM_TO_MODEL = {
       'org:organization'     => 'organization_id',
@@ -43,9 +41,7 @@ class Person::MembershipController < ApiController
     
     @membership = search_for_id(params[:id])
     
-    respond_to do |f|
-      f.jsonld { render :create, content_type: 'application/ld+json' }
-    end
+    super
   end
 
   # DELETE /person/:person_id/membership/:id
@@ -57,9 +53,7 @@ class Person::MembershipController < ApiController
     m.destroy
     render_unprocessable_entiry && return unless m.destroyed?
 
-    respond_to do |f|
-      f.jsonld { render json: '{ "status": "success" }', content_type: 'application/ld+json' }
-    end
+    super
   end
   
   private

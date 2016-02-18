@@ -1,5 +1,5 @@
 
-if id
+if defined?(id)
   json.set! '@id', id
 else
   json.set! '@id', '#' + FedoraID.shorten(account['account_ssim'].first)

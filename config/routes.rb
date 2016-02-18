@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   end
   
   # Persons Collection
-  get '/persons(/:page)', to: 'persons#index'
+  get '/persons(/:page)', to: 'persons#index', as: :persons
   post '/persons(/:page)', to: 'persons#search'
 
   # Person
@@ -55,7 +55,7 @@ Rails.application.routes.draw do
   post '/organizations(/:page)', to: 'organizations#search'
 
   # Organization
-  get '/organization/:id', to: 'organizations#show', as: :organization_path
+  get '/organization/:id', to: 'organization#show', as: :organization
 
   # Change Events
 

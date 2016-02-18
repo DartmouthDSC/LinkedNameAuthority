@@ -1,7 +1,5 @@
-class PersonController < ApiController
-  before_action :convert_to_full_fedora_id
+class PersonController < CrudController
   before_action :convert_org_to_fedora_id
-  before_action :authenticate_user!, only: [:create, :update, :destroy]
 
   PARAM_TO_MODEL = {
       'foaf:name'       => 'full_name',
@@ -29,10 +27,7 @@ class PersonController < ApiController
     query = ActiveFedora::SolrQueryBuilder.construct_query_for_ids(org_ids.uniq)
     @organizations = ActiveFedora::SolrService.query(query)
 
-    respond_to do |format|
-      format.jsonld { render :show, content_type: 'application/ld+json' }
-      format.html
-    end
+    super
   end
 
   # POST /person
@@ -44,7 +39,7 @@ class PersonController < ApiController
     
     @person = search_for_id(p.id)
 
-    location = "/person/#{FedoraID.shorten(p.id)}"
+    location = person_path(id: FedoraID.shorten(p.id))
     
     respond_to do |format|
       format.jsonld { render :create, status: :created, location: location, content_type: 'application/ld+json' }
@@ -62,9 +57,7 @@ class PersonController < ApiController
     
     @person = search_for_persons(id: params[:id])
 
-    respond_to do |f|
-      f.jsonld { render :create, content_type: 'application/ld+json' }
-    end    
+    super
   end
 
   # DELETE /person/:id
@@ -74,17 +67,12 @@ class PersonController < ApiController
     # Delete person
     person = Lna::Person.find(p['id'])
     person.destroy
-    render_unprocessable_entiry && return unless person.destroyed?
+    render_unprocessable_entity && return unless person.destroyed?
     
-    respond_to do |f|
-      f.jsonld { render json: '{"status": "success"}', content_type: 'application/ld+json' }
-    end
+    super
   end
 
   private
-
-  
-  
 
   def convert_org_to_fedora_id
     params['org:reportsTo'] = org_uri_to_fedora_id(params['org:reportsTo'])

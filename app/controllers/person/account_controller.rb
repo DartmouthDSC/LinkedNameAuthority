@@ -1,7 +1,4 @@
-class Person::AccountController < ApiController
-  before_action :convert_to_full_fedora_id
-  before_action :authenticate_user!, only: [:create, :update, :destroy]
-
+class Person::AccountController < CrudController
   PARAM_TO_MODEL = {
       'dc:title'                    => 'title',
       'foaf:accountName'            => 'account_name',
@@ -37,9 +34,7 @@ class Person::AccountController < ApiController
     
     @account = search_for_id(params[:id])
     
-    respond_to do |f|
-      f.jsonld { render :create, content_type: 'application/ld+json' }
-    end
+    super
   end
 
   # DELETE /person/:person_id/account/:id
@@ -51,9 +46,7 @@ class Person::AccountController < ApiController
     a.destroy
     render_unprocessable_entiry && return unless a.destroyed?
 
-    respond_to do |f|
-      f.jsonld { render json: '{ "status": "success" }', content_type: 'application/ld+json' }
-    end
+    super
   end
 
   # GET /person/:person_id/orcid

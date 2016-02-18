@@ -1,6 +1,6 @@
 json.partial! 'shared/context', vocabs: [:ali, :dc]
 
-json.set! '@id', "#{root_url}works/#{FedoraID.shorten(params[:work_id])}/license/#{FedoraID.shorten(@license['id'])}"
+json.set! '@id', work_license_url(work_id: FedoraID.shorten(params[:work_id]), id: FedoraID.shorten(@license['id']))
 
 json.partial! 'work/license/license', license: @license
 

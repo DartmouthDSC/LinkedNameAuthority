@@ -23,5 +23,5 @@ if full
   json.set! 'foaf:homepage', person['homepage_tesim'] || []
 end
 
-json.set! 'org:reportsTo', root_url + 'organization/' + FedoraID.shorten(person['reportsTo_ssim'].first)
+json.set! 'org:reportsTo', organization_url(FedoraID.shorten(person['reportsTo_ssim'].first))
   

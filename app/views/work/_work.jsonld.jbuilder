@@ -1,8 +1,8 @@
 
-creator_uri = "#{root_url}person/#{FedoraID.shorten(work['creator_id_ssi'])}"
+creator_uri = person_url(id: FedoraID.shorten(work['creator_id_ssi']))
 
 json.set! '@type', 'bibo:Document'
-json.set! '@id', "#{root_url}work/#{FedoraID.shorten(work['id'])}"
+json.set! '@id', work_url(id: FedoraID.shorten(work['id']))
 json.set! 'dc:title', work['title_tesi']
 json.set! 'bibo:authorsList', work['author_list_tesi'] || ''
 json.set! 'dc:date', work['date_dtsi'] || ''

@@ -150,14 +150,14 @@ module SolrSearchBehavior
   #
   # @param historic [Boolean] if true includes historic organizations otherwise doesn't
   # @param parents [Boolean] if true returns parent organizations
-  def search_for_organizations(parents: false, historic: true, **args)
+  def search_for_organizations(id: nil, parents: false, historic: true, **args)
     models = [Lna::Organization]
     models << Lna::Organization::Historic if historic
-    
-    results = search_with_model_filter(models, **args)
 
-    logger.debug("#{results.class}")
+    q = (id) ? [['id', id]] : nil
     
+    results = search_with_model_filter(models, q: q, only_one: id != nil, **args)
+
     if parents
       ids = results.map { |p| p['id'] }
       parent_ids = results.map { |p| p['subOrganizationOf_ssim'] }.flatten.uniq

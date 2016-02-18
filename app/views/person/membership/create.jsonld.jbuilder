@@ -3,4 +3,7 @@ json.partial! 'shared/context', vocabs: [:org, :vcard, :owltime]
 
 json.status 'success'
 
-json.partial! 'person/membership/membership', membership: @membership, id: "#{root_url}person/#{FedoraID.shorten(params[:person_id])}/membership/#{FedoraID.shorten(@membership['id'])}"
+json.partial! 'person/membership/membership',
+              membership: @membership,
+              id: person_membership_url(person_id: FedoraID.shorten(params[:person_id]),
+                                        id: FedoraID.shorten(@membership['id']))
