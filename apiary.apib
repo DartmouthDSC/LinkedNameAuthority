@@ -1559,8 +1559,8 @@ Note that the response data will vary depending on whether the organization is a
                 {
                     "@id": "#change1",
                     "@type": "org:ChangeEvent",
-                    "org:changedBy": 
-                    "org:resultedFrom": ["http://lna.dartmouth.edu/organization/2"],
+                    "org:originalOrganization": [], 
+                    "org:resultingOrganization": ["http://lna.dartmouth.edu/organization/2"],
                     "prov:atTime": "2012-12-01",
                     "dc:description": "A wild organziation appeared"
                 },
@@ -1774,8 +1774,8 @@ ex: Math absorbs CS (order isn't as important):
                 },
                 "@id": "#change1",
                 "@type": "org:ChangeEvent",
-                "org:changedBy": ["{id_from}"],
-                "org:resultedFrom": ["{id_to}"],
+                "org:originalOrganization": ["{id_from}"],
+                "org:resultingOrganization": ["{id_to}"],
                 "prov:atTime": "2012-12-01",
                 "dc:description": "A wild organziation appeared"
             }
