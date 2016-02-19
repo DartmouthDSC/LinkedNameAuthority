@@ -50,6 +50,7 @@ class Person::AccountController < CrudController
   end
 
   # GET /person/:person_id/orcid
+  # 404 error if there is not an ORCID present.
   def orcid
     @account = search_for_orcid(params[:person_id])
 

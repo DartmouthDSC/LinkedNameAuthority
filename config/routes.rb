@@ -51,7 +51,7 @@ Rails.application.routes.draw do
   put '/work/:id', to: 'work#update'
 
   # Organizations Collection
-  get '/organizations(/:page)', to: 'organizations#index'
+  get '/organizations(/:page)', to: 'organizations#index', as: :organizations
   post '/organizations(/:page)', to: 'organizations#search'
 
   # Organization
