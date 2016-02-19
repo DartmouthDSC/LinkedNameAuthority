@@ -1,13 +1,11 @@
 json.prettify!
 
-vocabs = [:foaf, :dc, :skos]
+vocabs = [:foaf, :skos]
 vocabs.concat([:vcard, :owltime]) if @memberships
-vocabs << :id if @accounts
+vocabs << :dc unless @accounts.empty?
 json.partial! 'shared/context', vocabs: vocabs
 
-json.set! 'skos:primarySubject' do
-  json.child! { json.set! '@id', request.original_url }
-end
+json.set! 'foaf:primaryTopic', request.original_url
 
 json.partial! 'shared/generated_at'
 json.partial! 'shared/success'
@@ -24,7 +22,7 @@ json.set! '@graph' do
   }
 
   json.array! @memberships do |membership|
-    json.partial! 'person/membership/membership', membership: membership, id: "##{FedoraID.shorten(membership['id'])}"
+    json.partial! 'person/membership/membership', membership: membership
   end
 
   json.array! @accounts do |account|

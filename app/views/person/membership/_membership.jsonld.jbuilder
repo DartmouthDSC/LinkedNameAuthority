@@ -1,5 +1,9 @@
 
-json.set! '@id', id
+if defined?(id)
+  json.set! '@id', id
+else
+  json.set! '@id', '#' + FedoraID.shorten(membership['id'])
+end
 json.set! '@type', 'org:Membership'
 json.set! 'org:organization', organization_url(id: FedoraID.shorten(membership['Organization_ssim'].first))
 json.set! 'vcard:email', membership['email_ss'] || ''

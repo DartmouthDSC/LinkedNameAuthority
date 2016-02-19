@@ -7,7 +7,7 @@ RSpec.describe "Persons API", type: :request do
 
   describe 'GET persons/' do
     before :context do
-      get '/persons', {}, {
+      get persons_path, {}, {
             'ACCEPT'       => 'application/ld+json',
             'CONTENT_TYPE' => 'application/ld+json'
           }
@@ -29,7 +29,7 @@ RSpec.describe "Persons API", type: :request do
       expect_json('@graph.0', :'foaf:mbox' => 'jane.a.doe@dartmouth.edu')
     end
 
-    it 'includes id' do
+    it 'includes @id' do
       expect_json('@graph.0', :@id => person_url(id: FedoraID.shorten(@jane.id)))
     end
     
@@ -50,7 +50,7 @@ RSpec.describe "Persons API", type: :request do
   describe 'POST person/' do
     before :context do
       body = { 'foaf:familyName' => 'notDoe' }
-      post '/persons', body.to_json, {
+      post persons_path, body.to_json, {
              'ACCEPT' => 'application/ld+json',
              'CONTENT_TYPE' => 'application/ld+json'
            }

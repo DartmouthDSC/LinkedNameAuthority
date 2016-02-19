@@ -1,6 +1,5 @@
 require 'rails_helper'
 require 'airborne'
-require 'fedora_id'
 
 # Note: These test must be run in the order that they are written.
 RSpec.describe "Person API", type: :request do
@@ -14,11 +13,11 @@ RSpec.describe "Person API", type: :request do
   shared_context 'get person id' do
     before :context do
       @id = FedoraID.shorten(@jane.id)
-      @path = "/person/#{@id}"
+      @path = person_path(id: @id)
     end
   end
 
-  describe 'GET person/' do
+  describe 'GET person/:id' do
     include_context 'get person id'
     
     before :context do
@@ -33,20 +32,40 @@ RSpec.describe "Person API", type: :request do
       expect(response.content_type).to eq 'application/ld+json'
     end
 
-    it 'response body contains @id' do
-      expect_json('@graph.0', :@id => "#{root_url}person/#{@id}")
-    end
+    context 'response body' do 
+      it 'contains @id' do
+        expect_json('@graph.0', :@id => person_url(id: @id))
+      end
 
-    it 'response body contains name' do
-      expect_json('@graph.0', :'foaf:name' => 'Jane A. Doe')
+      it 'contains name' do
+        expect_json('@graph.0', :'foaf:name' => @jane.full_name)
+      end
+
+      it 'contains family name' do
+        expect_json('@graph.0', :'foaf:familyName' => @jane.family_name)
+      end
+
+      it 'contains email' do
+        expect_json('@graph.0', :'foaf:mbox' => @jane.mbox)
+      end
+
+      it 'contains homepage' do
+        expect_json('@graph.0', :'foaf:homepage' => @jane.homepage)
+      end
     end
-    
-    it 'redirects to page 1 if no id is given'
+  end
+
+  describe 'GET person/' do    
+    subject { get person_index_path, {}, format: :jsonld }
+  
+    it 'redirects to GET persons/' do
+      expect(subject).to redirect_to('/persons')
+    end
   end
   
   describe 'POST person/' do
     include_examples 'requires authentication' do
-      let(:path) { '/person' }
+      let(:path) { person_index_path }
       let(:action) { 'post' }
     end
     
@@ -63,10 +82,10 @@ RSpec.describe "Person API", type: :request do
           'foaf:mbox'       => 'john.p.bell@dartmouth.edu',
           'foaf:image'      => 'http://dartmouth.edu/fictionalImageBank/12340.jpg',
           'foaf:homepage'   => ['http://novomancy.org/'],
-          'org:reportsTo'   => "#{root_url}organization/#{@org_id}"
+          'org:reportsTo'   => organization_url(id: @org_id)
         }
 
-        post '/person', body.to_json, {
+        post person_index_path, body.to_json, {
                "ACCEPT"       => 'application/ld+json',
                "CONTENT_TYPE" => 'application/ld+json'
              }
@@ -87,19 +106,19 @@ RSpec.describe "Person API", type: :request do
       end
 
       it 'returns correct location header' do
-        expect_header('Location', "/person/#{@id}")
+        expect_header('Location', person_path(id: @id))
       end 
 
       it 'returns body with @id' do
-        expect_json(:@id => "#{root_url}person/#{@id}")
+        expect_json(:@id => person_url(id: @id))
       end
     end
 
     describe 'when missing required fields' do
       include_context 'authenticate user'
 
-      before :context do
-        post '/person', '{}', {
+      before :context do 
+        post person_index_path, '{}', {
                "ACCEPT"       => 'application/ld+json',
                "CONTENT_TYPE" => 'application/ld+json'
              }
@@ -132,7 +151,7 @@ RSpec.describe "Person API", type: :request do
           'foaf:mbox'       => 'jane.doe@dartmouth.edu',
           'foaf:image'      => 'http://ld.dartmouth.edu/api/person/F12345F/img',
           'foaf:homepage'   => ['http://janeadoe.dartmouth.edu/'],
-          'org:reportsTo'   => "#{root_url}organization/#{@org_id}"
+          'org:reportsTo'   => organization_url(id: @org_id)
         }
 
         put @path, body.to_json, {
