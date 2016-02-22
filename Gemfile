@@ -27,8 +27,10 @@ gem 'therubyracer', platforms: :ruby # Embed the V8 JavaScript interpreter into 
 gem 'whenever' # Used to run cron jobs.
 
 # Database gems
-gem 'activerecord-oracle_enhanced-adapter', '~> 1.6.0'
-gem 'ruby-oci8' # Oracle
+group :production, :development do 
+  gem 'activerecord-oracle_enhanced-adapter', '~> 1.6.0'
+  gem 'ruby-oci8' # Oracle
+end
 gem 'sqlite3' # used for ActiveRecord
 
 # Asset Pipeline
