@@ -46,6 +46,7 @@ group :development, :test do
   gem 'web-console', '~> 2.0' # Access an IRB console on exception pages.
 end
 
-# group :test do
-#   gem 'jettywrapper', '~> 2.0.0'
-# end
+group :test do
+  gem 'fcrepo_wrapper', '~> 0.1'
+  gem 'solr_wrapper', '~> 0.4'
+end
