@@ -27,6 +27,10 @@ RSpec.shared_examples 'successful request' do
   it 'returns 200 status code' do
     expect(response).to be_success
   end
+
+  it 'returns content type of application/ld+json' do
+    expect(response.content_type).to eq 'application/ld+json'
+  end
 end
 
 
@@ -54,6 +58,17 @@ RSpec.shared_context 'creates test person' do
   end
 end
 
+RSpec.shared_context 'throws error when fields missing' do
+  describe 'when missing required fields' do
+    it 'returns status code of 422' do
+      send action, path, '{}', {
+             "ACCEPT"       => 'application/ld+json',
+             "CONTENT_TYPE" => 'application/ld+json'
+           }
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+  end
+end
 
 RSpec.shared_context 'forces https requests' do
   before :all do

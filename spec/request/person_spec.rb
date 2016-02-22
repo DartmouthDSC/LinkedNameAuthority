@@ -18,20 +18,13 @@ RSpec.describe "Person API", type: :request do
   end
 
   describe 'GET person/:id' do
+    include_context 'successful request'
     include_context 'get person id'
     
     before :context do
       get @path, { format: :jsonld }
     end
     
-    it 'returns status code of 200' do
-      expect(response).to be_success
-    end
-
-    it 'return content type of application/ld+json' do
-      expect(response.content_type).to eq 'application/ld+json'
-    end
-
     context 'response body' do 
       it 'contains @id' do
         expect_json('@graph.0', :@id => person_url(id: @id))
@@ -71,65 +64,54 @@ RSpec.describe "Person API", type: :request do
     
     describe 'when authenticated' do
       include_context 'authenticate user'
-
-      before :context do
-        @count = Lna::Person.all.count
-        body = {
-          'foaf:name'       => 'John Bell',
-          'foaf:givenName'  => 'John',
-          'foaf:familyName' => 'Bell',
-          'foaf:title'      => 'Dr.',
-          'foaf:mbox'       => 'john.p.bell@dartmouth.edu',
-          'foaf:image'      => 'http://dartmouth.edu/fictionalImageBank/12340.jpg',
-          'foaf:homepage'   => ['http://novomancy.org/'],
-          'org:reportsTo'   => organization_url(id: @org_id)
-        }
-
-        post person_index_path, body.to_json, {
-               "ACCEPT"       => 'application/ld+json',
-               "CONTENT_TYPE" => 'application/ld+json'
-             }
-        m = /"@id":"#{Regexp.escape(root_url)}person\/([a-zA-Z0-9-]+)"/.match(response.body)
-        @id = FedoraID.shorten(m[1])
+      include_examples 'throws error when fields missing' do
+        let(:path) { person_index_path }
+        let(:action) { 'post' }
       end
 
-      after :context do
-        Lna::Person.find(FedoraID.lengthen(@id)).destroy
-      end
-      
-      it 'returns status code of 200' do
-        expect(response).to be_success
-      end
-
-      it 'creates and saves new person' do
-        expect(Lna::Person.count).to eq @count + 1
-      end
-
-      it 'returns correct location header' do
-        expect_header('Location', person_path(id: @id))
-      end 
-
-      it 'returns body with @id' do
-        expect_json(:@id => person_url(id: @id))
-      end
-    end
-
-    describe 'when missing required fields' do
-      include_context 'authenticate user'
-
-      before :context do 
-        post person_index_path, '{}', {
-               "ACCEPT"       => 'application/ld+json',
-               "CONTENT_TYPE" => 'application/ld+json'
-             }
-      end
-
-      it 'returns status code of 422' do
-        expect_status(:unprocessable_entity)
-      end
+      describe 'adds new person' do
+        include_examples 'successful POST request'
+        
+        before :context do
+          @count = Lna::Person.all.count
+          body = {
+            'foaf:name'       => 'John Bell',
+            'foaf:givenName'  => 'John',
+            'foaf:familyName' => 'Bell',
+            'foaf:title'      => 'Dr.',
+            'foaf:mbox'       => 'john.p.bell@dartmouth.edu',
+            'foaf:image'      => 'http://dartmouth.edu/fictionalImageBank/12340.jpg',
+            'foaf:homepage'   => ['http://novomancy.org/'],
+            'org:reportsTo'   => organization_url(id: @org_id)
+          }
+          
+          post person_index_path, body.to_json, {
+                 "ACCEPT"       => 'application/ld+json',
+                 "CONTENT_TYPE" => 'application/ld+json'
+               }
+          m = /"@id":"#{Regexp.escape(root_url)}person\/([a-zA-Z0-9-]+)"/.match(response.body)
+          @id = FedoraID.shorten(m[1])
+        end
+        
+        after :context do
+          Lna::Person.find(FedoraID.lengthen(@id)).destroy
+        end
+        
+        it 'creates and saves new person' do
+          expect(Lna::Person.count).to eq @count + 1
+        end
+        
+        it 'returns correct location header' do
+          expect_header('Location', person_path(id: @id))
+        end 
+        
+        it 'returns body with @id' do
+          expect_json(:@id => person_url(id: @id))
+        end
+      end    
     end
   end
-
+    
   describe 'PUT person/:id' do
     include_context 'get person id'
     
@@ -140,48 +122,39 @@ RSpec.describe "Person API", type: :request do
 
     describe 'when authenticated' do
       include_context 'authenticate user'
-      include_examples 'successful request'
-
-      before :context do
-        body = {
-          'foaf:name'       => 'Jane A. Doe',
-          'foaf:givenName'  => 'Jane',
-          'foaf:familyName' => 'Doe',
-          'foaf:title'      => 'Dr.',
-          'foaf:mbox'       => 'jane.doe@dartmouth.edu',
-          'foaf:image'      => 'http://ld.dartmouth.edu/api/person/F12345F/img',
-          'foaf:homepage'   => ['http://janeadoe.dartmouth.edu/'],
-          'org:reportsTo'   => organization_url(id: @org_id)
-        }
-
-        put @path, body.to_json, {
-          'ACCEPT' => 'application/ld+json',
-          'CONTENT_TYPE' => 'application/ld+json'
-        }
-        @jane.reload
+      include_examples 'throws error when fields missing' do
+        let(:path) { @path }
+        let(:action) { 'put' }
       end
 
-      it 'updates mbox in fedora store' do
-        expect(@jane.mbox).to eq 'jane.doe@dartmouth.edu'
-      end
-
-      it 'response body contains updated mbox' do
-        expect_json(:'foaf:mbox' => 'jane.doe@dartmouth.edu')
-      end
-    end
-
-    describe 'when missing required fields' do
-      include_context 'authenticate user'
-
-      before :context do
-        put @path, '{}', {
-               "ACCEPT"       => 'application/ld+json',
-               "CONTENT_TYPE" => 'application/ld+json'
-             }
-      end
-
-      it 'returns status code of 422' do
-        expect_status(:unprocessable_entity)
+      describe 'updates person' do
+        include_examples 'successful request'
+        before :context do
+          body = {
+            'foaf:name'       => 'Jane A. Doe',
+            'foaf:givenName'  => 'Jane',
+            'foaf:familyName' => 'Doe',
+            'foaf:title'      => 'Dr.',
+            'foaf:mbox'       => 'jane.doe@dartmouth.edu',
+            'foaf:image'      => 'http://ld.dartmouth.edu/api/person/F12345F/img',
+            'foaf:homepage'   => ['http://janeadoe.dartmouth.edu/'],
+            'org:reportsTo'   => organization_url(id: @org_id)
+          }
+          
+          put @path, body.to_json, {
+            'ACCEPT' => 'application/ld+json',
+            'CONTENT_TYPE' => 'application/ld+json'
+          }
+          @jane.reload
+        end
+        
+        it 'updates mbox in fedora store' do
+          expect(@jane.mbox).to eq 'jane.doe@dartmouth.edu'
+        end
+        
+        it 'response body contains updated mbox' do
+          expect_json(:'foaf:mbox' => 'jane.doe@dartmouth.edu')
+        end
       end
     end
   end

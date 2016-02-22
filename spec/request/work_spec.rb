@@ -1,6 +1,5 @@
 require 'rails_helper'
 require 'airborne'
-require 'fedora_id'
 
 RSpec.describe "Work API", type: :request do
   include_context 'forces https requests'
@@ -8,12 +7,13 @@ RSpec.describe "Work API", type: :request do
 
   shared_context 'get work id' do
     before :context do
-      @id = FedoraID.shorten(@jane.collections.first.documents.first.id)
-      @path = "/work/#{@id}"
+      @work = @jane.collections.first.documents.first
+      @id = FedoraID.shorten(@work.id)
+      @path = work_path(id: @id)
     end
   end
   
-  describe 'POST work(/:id)' do
+  describe 'POST work/' do
     include_examples 'requires authentication' do
       let(:path) { "/work" }
       let(:action) { 'post' }
@@ -21,8 +21,12 @@ RSpec.describe "Work API", type: :request do
         
     describe 'when authenticated' do
       include_context 'authenticate user'
+      include_examples 'throws error when fields missing' do
+        let(:path) { work_index_path }
+        let(:action) { 'post' }
+      end
       
-      describe 'succesfully adds new account' do
+      describe 'adds new account' do
         include_examples 'successful POST request'
         
         before :context do    
@@ -38,7 +42,7 @@ RSpec.describe "Work API", type: :request do
             "dc:abstract" => "Lorem ipsum...",
             "dc:publisher" => "Wiley",
             "dc:date" => "2015",
-            "dc:creator" => "#{root_url}person/#{FedoraID.shorten(@jane.id)}"
+            "dc:creator" => person_url(id: FedoraID.shorten(@jane.id))
           }
           
           post "/work", body.to_json, {
@@ -54,19 +58,67 @@ RSpec.describe "Work API", type: :request do
         end
       
         it 'return correct location header' do
-          expect_header('Location', "/work/#{@id}")
+          expect_header('Location', work_path(id: @id))
         end
 
         it 'returns body with @id.' do
-          expect_json(:@id => "#{root_url}work/#{@id}")
+          expect_json(:@id => work_url(id: @id))
         end
       end
-      
-      it 'throw error if information is missing'
-
     end
   end
 
+  describe 'GET work/:id' do
+    include_context 'successful request'
+    include_context 'get work id'
+    
+    before :context do
+      get @path, { format: :jsonld }
+    end
+    
+    context 'response body' do
+      it 'contains graph with 2 elements' do
+        expect_json_sizes(:@graph => 2)
+      end
+      
+      it 'contains @id' do
+        expect_json('@graph.0', :@id => work_url(id: @id))
+      end
+      
+      it 'contains doi' do
+        expect_json('@graph.0', :'bibo:doi' => @work.doi)
+      end
+
+      it 'contains volume' do
+        expect_json('@graph.0', :'bibo:volume' => @work.volume)
+      end
+
+      it 'contains pages' do
+        expect_json('@graph.0', :'bibo:pages' => @work.pages)
+      end
+
+      it 'contains title' do
+        expect_json('@graph.0', :'dc:title' => @work.title)
+      end
+
+      it 'contains creator' do
+        expect_json('@graph.0', :'dc:creator' => person_url(id: FedoraID.shorten(@jane.id)))
+      end
+
+      it 'contains license refs' do
+        expect_json('@graph.0', :'ali:license_ref' => [])
+      end
+    end
+  end
+
+  describe 'GET work/' do
+    subject { get work_index_path, format: :jsonld }
+
+    it 'redirects to GET works/' do
+      expect(subject).to redirect_to('/works')
+    end
+  end
+  
   describe 'PUT work/:id' do
     include_context 'get work id'
 
@@ -77,8 +129,12 @@ RSpec.describe "Work API", type: :request do
     
     describe 'when authenticated' do
       include_context 'authenticate user'
+      include_examples 'throws error when fields missing' do
+        let(:path) { @path }
+        let(:action) { 'put' }
+      end
       
-      describe 'succesfully updates a new account' do
+      describe 'updates a new account' do
         include_examples 'successful request'
         
         before :context do
@@ -95,7 +151,7 @@ ract"],
               "dc:abstract" => "Lorem ipsum...",
               "dc:publisher" => "Wiley",
               "dc:date" => "2015",
-              "dc:creator" => "#{root_url}person/#{FedoraID.shorten(@jane.id)}"
+              "dc:creator" => person_url(id: FedoraID.shorten(@jane.id))
           }
           put @path, body.to_json, {
                 'ACCEPT'       => 'application/ld+json',
@@ -114,7 +170,7 @@ ract"],
       end
 
       it 'returns 404 if id is invalid' do
-        put "/work/dfklajdlfkjasldfj", { format: :jsonld }
+        put work_path(id: 'dfklajdlfkjasldfj'), { format: :jsonld }
         expect_status :not_found
       end
     end
@@ -142,10 +198,6 @@ ract"],
           @jane.reload
         end
                 
-        it 'response body contains success' do
-          expect_json(status: "success")
-        end
-        
         it 'account is deleted from fedora store' do
           expect(@jane.collections.first.documents.count).to eq 0
         end

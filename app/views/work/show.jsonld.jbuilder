@@ -1,8 +1,7 @@
 json.partial! 'shared/context', vocabs: [:bibo, :dc, :foaf, :ali]
-
+json.set! '@type', 'bibo:Document'
 json.partial! 'shared/success'
-
-json.partial! 'work/work', work: @work, full: true
+json.set! 'foaf:primaryTopic', request.original_url
 
 free_to_read_ids = []; license_ref_ids = []
 
@@ -15,10 +14,13 @@ free_to_read_ids = []; license_ref_ids = []
   end
 end
 
-json.set! 'ali:license_ref', license_ref_ids
-json.set! 'ali:free_to_read', free_to_read_ids
-
 json.set! '@graph' do
+  json.child! {
+    json.partial! 'work/work', work: @work, full: true
+    json.set! 'ali:license_ref', license_ref_ids
+    json.set! 'ali:free_to_read', free_to_read_ids    
+  }
+
   json.child! { json.partial! 'person/person', person: @person, full: false }
   
   json.array! @licenses do |license|

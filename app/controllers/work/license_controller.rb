@@ -11,7 +11,7 @@ class Work::LicenseController < Api::Controller
   
   # POST /work/:work_id/license
   def create
-    work = search_for_works(id: params['work_id'])
+    work = search_for_works(id: params[:work_id])
 
     attributes = params_to_attributes(license_params, document_id: work['id'])
 
@@ -65,6 +65,6 @@ class Work::LicenseController < Api::Controller
   end
 
   def license_params
-    params.permit(PARAM_TO_MODEL.keys + ['id', 'work_id'])
+    params.permit(PARAM_TO_MODEL.keys.concat(['id', 'work_id']))
   end
 end

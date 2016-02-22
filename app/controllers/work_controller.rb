@@ -26,6 +26,7 @@ class WorkController < CrudController
   
   # POST /work
   def create
+    render_unprocessable_entity && return unless params['dc:creator']
     @person = search_for_persons(id: params['dc:creator'])
 
     # Create work
@@ -35,7 +36,7 @@ class WorkController < CrudController
 
     @work = search_for_id(w.id)
     
-    location = "/work/#{FedoraID.shorten(w.id)}"    
+    location = work_path(id: FedoraID.shorten(w.id))
     respond_to do |f|
       f.jsonld { render :create, status: :created, location: location,
                         content_type: 'application/ld+json' }
@@ -47,6 +48,7 @@ class WorkController < CrudController
   def update
     work = search_for_works(id: params[:id])
 
+    render_unprocessable_entity && return unless params['dc:creator']
     @person = search_for_persons(id: params['dc:creator'])
 
     # Update work.
@@ -83,6 +85,6 @@ class WorkController < CrudController
   end
     
   def work_params
-    params.permit(PARAM_TO_MODEL.keys << 'id')
+    params.permit(PARAM_TO_MODEL.keys.concat(['id', 'dc:creator']))
   end
 end

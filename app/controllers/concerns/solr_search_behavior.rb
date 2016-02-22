@@ -17,7 +17,6 @@ module SolrSearchBehavior
     if only_one && results.count == 1
       results.first
     elsif only_one
-      puts "returning not found"
       not_found
     else
       results
