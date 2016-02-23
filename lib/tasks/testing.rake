@@ -12,7 +12,7 @@ task ci: :environment do
         RSpec::Core::RakeTask.new(:specs_minus_oracle) do |t|
           t.rspec_opts = '--tag ~oracle'
         end
-        Rake::Task['specs_no_oracle'].invoke
+        Rake::Task['specs_minus_oracle'].invoke
       end
     end
   end
