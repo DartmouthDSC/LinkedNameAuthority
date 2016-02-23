@@ -33,9 +33,9 @@ oracle_development:
   <<: *oracle_default
   database: lib_dev
 
-oracle_test:
-  <<: *oracle_default
-  database: lib_dev
+#oracle_test:
+#  <<: *oracle_default
+#  database: lib_dev
 
 oracle_production:
   <<: *oracle_default
