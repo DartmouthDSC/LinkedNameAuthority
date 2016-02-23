@@ -10,7 +10,7 @@ task ci: :environment do
     solr.with_collection(name: 'lna_test', dir: File.join(File.expand_path('../..', File.dirname(__FILE__)), 'solr', 'config')) do
       FcrepoWrapper.wrap(fedora_params) do
         RSpec::Core::RakeTask.new(:specs_minus_oracle) do |t|
-          t.rspec_opts = '--tag ~oracle'
+          t.exclude_pattern = '**/models/oracle/*_spec.rb'
         end
         Rake::Task['specs_minus_oracle'].invoke
       end
