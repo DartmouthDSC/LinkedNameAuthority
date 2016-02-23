@@ -22,4 +22,7 @@
 # Ignore compiled assets
 /public/assets
 
+# Coveralls created directory
+/coverage
+
 
