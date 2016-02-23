@@ -10,6 +10,10 @@ RSpec.describe "Person API", type: :request do
     @org_id = FedoraID.shorten(@jane.primary_org.id)
   end
 
+  after :all do
+    Lna::Organization.find(FedoraID.lengthen(@org_id)).destroy
+  end
+  
   shared_context 'get person id' do
     before :context do
       @id = FedoraID.shorten(@jane.id)
