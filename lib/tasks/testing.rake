@@ -16,10 +16,3 @@ task :ci do
     end
   end
 end
-
-desc "Running Specs"
-task :spec do
-  RSpec::Core::RakeTask.new(:spec) do |t|
-    t.rspec_opts = '--tag ~oracle'
-  end
-end
