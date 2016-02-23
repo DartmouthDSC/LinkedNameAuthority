@@ -3,15 +3,16 @@ require 'solr_wrapper'
 
 # Rake task taken from Hydra-PCDM.
 desc "Sets up Fedora + Solr and runs specs"
-task :ci do
+task ci: :environment do
   solr_params = { port: 8983, version: '5.3.1', verbose: true, managed: true }
   fedora_params = { port: 8080, version: '4.3.0', verbose: true, managed: true }
   SolrWrapper.wrap(solr_params) do |solr|
     solr.with_collection(name: 'lna_test', dir: File.join(File.expand_path('../..', File.dirname(__FILE__)), 'solr', 'config')) do
       FcrepoWrapper.wrap(fedora_params) do
-        RSpec::Core::RakeTask.new(:spec) do |t|
-          t.rspec_opts = "--tag oracle"
+        RSpec::Core::RakeTask.new(:specs_minus_oracle) do |t|
+          t.rspec_opts = '--tag ~oracle'
         end
+        Rake::Task['specs_no_oracle'].invoke
       end
     end
   end
