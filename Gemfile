@@ -38,7 +38,7 @@ gem 'jquery-rails' # Use jquery as the JavaScript library
 gem 'sass-rails', '~> 5.0' # Use SCSS for stylesheets
 gem 'uglifier', '>= 1.3.0' # Use Uglifier as compressor for JavaScript assets
 
-group :development, :test do
+group :development, :test, :ci do
   gem 'byebug'  # Call 'byebug' anywhere in the code to stop to get a debugger console.
   gem 'factory_girl_rails'
   gem 'pry-nav'
@@ -48,7 +48,7 @@ group :development, :test do
   gem 'web-console', '~> 2.0' # Access an IRB console on exception pages.
 end
 
-group :test do
+group :ci do
   gem 'fcrepo_wrapper', '~> 0.1'
   gem 'solr_wrapper', '~> 0.4'
 end
