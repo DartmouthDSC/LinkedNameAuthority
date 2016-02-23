@@ -1,3 +1,4 @@
+require 'rspec/core/rake_task'
 require 'fcrepo_wrapper'
 require 'solr_wrapper'
 
