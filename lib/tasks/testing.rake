@@ -11,6 +11,7 @@ task ci: :environment do
       FcrepoWrapper.wrap(fedora_params) do
         RSpec::Core::RakeTask.new(:specs_minus_oracle) do |t|
           t.exclude_pattern = '**/models/oracle/*_spec.rb'
+          t.rspec_opts = '--color'
         end
         Rake::Task['specs_minus_oracle'].invoke
       end

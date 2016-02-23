@@ -1,1 +1,1 @@
-require Rails.root.join("config/environment/test")
+require Rails.root.join("config/environments/test")
