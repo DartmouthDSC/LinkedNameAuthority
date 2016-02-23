@@ -6,7 +6,7 @@ development:
 test:
   user: fedoraAdmin
   password: fedoraAdmin
-  url: http://localhost:8080
+  url: http://localhost:8080/rest
   base_path: /lna-test
 #  url: http://localhost:8080/fedora/rest  
 production:
