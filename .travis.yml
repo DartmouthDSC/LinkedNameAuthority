@@ -1,5 +1,5 @@
 language: ruby
-#cache: bundler
+cache: bundler
 rvm:
   - "2.2.0"
 bundler_args: --without oracle --jobs=3 --retry=3

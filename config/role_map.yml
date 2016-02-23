@@ -7,7 +7,7 @@ development:
     - d31309k@dartmouth.edu
   archivist:
     - archivist1@example.com
-test:
+test: &test
   archivist:
     - archivist1@example.com
     - archivist2@example.com
@@ -23,3 +23,4 @@ test:
   patron:
     - patron1@example.com
     - leland_himself@example.com
+ci: *test
