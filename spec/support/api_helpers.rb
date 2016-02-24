@@ -1,20 +1,5 @@
 require 'fedora_id'
 
-# Log-in test user in before context and log out in after context.
-RSpec.shared_context 'authenticate user' do
-  before :all do
-    OmniAuth.config.test_mode = true
-    Rails.application.env_config['devise.mapping'] = Devise.mappings[:user]
-    Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:cas]
-    OmniAuth.config.mock_auth[:cas] = FactoryGirl.create(:omniauth_hash)
-    get_via_redirect '/sign_in'
-  end
-
-  after :all do
-    get '/sign_out'
-  end
-end
-
 # Request returns status code of 201
 RSpec.shared_examples 'successful POST request' do
   it 'returns 201 status code' do

@@ -18,8 +18,7 @@ RSpec.describe "Work API", type: :request, https: true do
       let(:action) { 'post' }
     end
         
-    describe 'when authenticated' do
-      include_context 'authenticate user'
+    describe 'when authenticated', authenticated: true do
       include_examples 'throws error when fields missing' do
         let(:path) { work_index_path }
         let(:action) { 'post' }
@@ -126,8 +125,7 @@ RSpec.describe "Work API", type: :request, https: true do
       let(:action) { 'put' }
     end
     
-    describe 'when authenticated' do
-      include_context 'authenticate user'
+    describe 'when authenticated', authenticated: true do
       include_examples 'throws error when fields missing' do
         let(:path) { @path }
         let(:action) { 'put' }
@@ -183,9 +181,7 @@ ract"],
       let(:action) { 'delete' }
     end
     
-    describe 'when authenticated' do
-      include_context 'authenticate user'
-      
+    describe 'when authenticated', authenticated: true do
       describe 'succesfully deletes work' do
         include_examples 'successful request'
         

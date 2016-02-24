@@ -22,9 +22,7 @@ RSpec.describe "Person/Membership API", type: :request, https: true do
       let(:action) { 'post' }
     end
         
-    describe 'when authenticated' do
-      include_context 'authenticate user'
-      
+    describe 'when authenticated', authenticated: true do
       describe 'succesfully adds new account' do
         include_examples 'successful POST request'
         
@@ -78,9 +76,7 @@ RSpec.describe "Person/Membership API", type: :request, https: true do
       let(:action) { 'put' }
     end
     
-    describe 'when authenticated' do
-      include_context 'authenticate user'
-      
+    describe 'when authenticated', authenticated: true do
       describe 'succesfully updates a new account' do
         include_examples 'successful request'
         
@@ -122,9 +118,7 @@ RSpec.describe "Person/Membership API", type: :request, https: true do
       let(:action) { 'delete' }
     end
     
-    describe 'when authenticated' do
-      include_context 'authenticate user'
-      
+    describe 'when authenticated', authenticated: true do
       describe 'succesfully deletes account' do
         include_examples 'successful request'
         

@@ -35,6 +35,21 @@ RSpec.configure do |config|
   config.before(:context, https: true) do
     https!
   end
+
+  # Authenticates User
+  config.before(:context, authenticated: true) do
+    OmniAuth.config.test_mode = true
+    Rails.application.env_config['devise.mapping'] = Devise.mappings[:user]
+    Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:cas]
+    OmniAuth.config.mock_auth[:cas] = FactoryGirl.create(:omniauth_hash)
+    get_via_redirect '/sign_in'
+  end
+
+  # Signs User out
+  config.after(:context, authenticated: true) do
+    get '/sign_out'
+  end
+
   
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
