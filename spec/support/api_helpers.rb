@@ -12,6 +12,7 @@ RSpec.shared_context 'authenticate user' do
 
   after :all do
     get '/sign_out'
+    User.destroy_all
   end
 end
 

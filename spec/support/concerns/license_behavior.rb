@@ -1,6 +1,4 @@
-require 'spec_helper'
-
-shared_examples_for 'license_behavior' do |factory|
+RSpec.shared_examples_for 'license_behavior' do |factory|
   before :context do
     @license = FactoryGirl.create(factory)
   end
