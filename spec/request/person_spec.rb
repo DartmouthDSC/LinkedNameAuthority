@@ -8,10 +8,6 @@ RSpec.describe "Person API", type: :request, https: true do
     @org_id = FedoraID.shorten(@jane.primary_org.id)
   end
 
-  after :all do
-    Lna::Organization.find(FedoraID.lengthen(@org_id)).destroy
-  end
-  
   shared_context 'get person id' do
     before :context do
       @id = FedoraID.shorten(@jane.id)
@@ -92,10 +88,6 @@ RSpec.describe "Person API", type: :request, https: true do
                }
           m = /"@id":"#{Regexp.escape(root_url)}person\/([a-zA-Z0-9-]+)"/.match(response.body)
           @id = FedoraID.shorten(m[1])
-        end
-        
-        after :context do
-          Lna::Person.find(FedoraID.lengthen(@id)).destroy
         end
         
         it 'creates and saves new person' do

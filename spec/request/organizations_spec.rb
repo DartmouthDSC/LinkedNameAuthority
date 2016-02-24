@@ -6,10 +6,6 @@ RSpec.describe "Organizations API", type: :request, https: true do
     @org = FactoryGirl.create(:thayer)
   end
 
-  after :context do
-    @org.destroy
-  end
-  
   describe 'GET organizations/' do
     before :context do
       get organizations_path, format: :jsonld
