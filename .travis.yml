@@ -8,5 +8,9 @@ branches:
   only:
     - master
     - develop
+notifications:
+  slack:
+    on_success: never
+    on_failure: always
 jdk:
   - oraclejdk8
