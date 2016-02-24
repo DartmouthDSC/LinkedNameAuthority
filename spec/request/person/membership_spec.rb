@@ -2,8 +2,7 @@ require 'rails_helper'
 require 'airborne'
 require 'fedora_id'
 
-RSpec.describe "Person/Membership API", type: :request do
-  include_context 'forces https requests'
+RSpec.describe "Person/Membership API", type: :request, https: true do
   include_context 'creates test person'
 
   before :all do

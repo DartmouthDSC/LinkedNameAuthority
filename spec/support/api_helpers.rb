@@ -12,7 +12,6 @@ RSpec.shared_context 'authenticate user' do
 
   after :all do
     get '/sign_out'
-    User.destroy_all
   end
 end
 
@@ -51,12 +50,6 @@ RSpec.shared_context 'creates test person' do
     @jane = FactoryGirl.create(:jane)
     @person_id = FedoraID.shorten(@jane.id)
   end
-
-  after :all do
-    id = @jane.primary_org.id
-    @jane.destroy
-    Lna::Organization.find(id).destroy
-  end
 end
 
 RSpec.shared_context 'throws error when fields missing' do
@@ -68,11 +61,5 @@ RSpec.shared_context 'throws error when fields missing' do
            }
       expect(response).to have_http_status(:unprocessable_entity)
     end
-  end
-end
-
-RSpec.shared_context 'forces https requests' do
-  before :all do
-    https!
   end
 end

@@ -1,9 +1,7 @@
 require 'rails_helper'
 require 'airborne'
-require 'fedora_id'
 
-RSpec.describe "Person/Works API", type: :request do
-  include_context 'forces https requests'
+RSpec.describe "Person/Works API", type: :request, https: true do
   include_context 'creates test person'
 
   # Add documents to test person.

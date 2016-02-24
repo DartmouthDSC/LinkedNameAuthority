@@ -1,9 +1,7 @@
 require 'rails_helper'
 require 'airborne'
 
-RSpec.describe "Organizations API", type: :request do
-  include_context 'forces https requests'
-
+RSpec.describe "Organizations API", type: :request, https: true do
   before :context do 
     @org = FactoryGirl.create(:thayer)
   end

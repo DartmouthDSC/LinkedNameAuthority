@@ -17,11 +17,25 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
-# Adding Coveralls.
+require 'active_fedora/cleaner'
 require 'coveralls'
+
+# Adding Coveralls.
 Coveralls.wear!
 
-RSpec.configure do |config|
+RSpec.configure do |config|  
+  # Cleaning Fedora and Solr before each context. Removing the need to
+  # continuously delete objects.
+  config.before(:context) do
+    ActiveFedora::Cleaner.clean!
+    User.destroy_all
+  end
+  
+  # Forces HTTPS requests.
+  config.before(:context, https: true) do
+    https!
+  end
+  
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.

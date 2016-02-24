@@ -1,8 +1,7 @@
 require 'rails_helper'
 require 'airborne'
 
-RSpec.describe "Persons API", type: :request do
-  include_context 'forces https requests'
+RSpec.describe "Persons API", type: :request, https: true do
   include_context 'creates test person'
 
   describe 'GET persons/' do

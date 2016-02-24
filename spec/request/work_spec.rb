@@ -1,8 +1,7 @@
 require 'rails_helper'
 require 'airborne'
 
-RSpec.describe "Work API", type: :request do
-  include_context 'forces https requests'
+RSpec.describe "Work API", type: :request, https: true do
   include_context 'creates test person'
 
   shared_context 'get work id' do

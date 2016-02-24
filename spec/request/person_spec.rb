@@ -2,9 +2,7 @@ require 'rails_helper'
 require 'airborne'
 
 # Note: These test must be run in the order that they are written.
-RSpec.describe "Person API", type: :request do
-  include_context 'forces https requests'
-
+RSpec.describe "Person API", type: :request, https: true do
   before :all do
     @jane = FactoryGirl.create(:jane)
     @org_id = FedoraID.shorten(@jane.primary_org.id)
