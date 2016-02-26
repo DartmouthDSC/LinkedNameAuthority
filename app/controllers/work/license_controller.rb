@@ -1,7 +1,4 @@
-class Work::LicenseController < Api::Controller
-  before_action :authenticate_user!, only: [:create, :update, :destroy]
-  before_action :convert_to_full_fedora_id
-
+class Work::LicenseController < CrudController
   PARAM_TO_MODEL = {
     'ali:start_date' => 'start_date',
     'ali:end_date'   => 'end_date',
@@ -26,11 +23,12 @@ class Work::LicenseController < Api::Controller
 
     render_unprocessable_entity && return unless l.save
 
-    @license = search_for_id(license.id)
+    @license = search_for_id(l.id)
     
-    location = "/work/#{FedoraId.shorten(work['id'])}##{FedoraId.shorten(@license['id'])}"
+    location = "/work/#{FedoraID.shorten(work['id'])}##{FedoraID.shorten(@license['id'])}"
+
     respond_to do |f|
-      f.jsonld { render :create, status: :created, location: location, content_type: 'application/ld+json'}
+      f.jsonld { render :create, status: :created, location: location, content_type: 'application/ld+json' }
     end
   end
 
@@ -45,9 +43,7 @@ class Work::LicenseController < Api::Controller
 
     @license = search_for_id(params[:id])
 
-    response_to do |f|
-      f.jsonld { render :create, content_type: 'application/ld+json' }
-    end
+    super
   end
 
   # DELETE /work/:work_id/license/:id
@@ -59,12 +55,10 @@ class Work::LicenseController < Api::Controller
     l.destroy
     render_unprocessable_entiry && return unless l.destroyed?
 
-    respond_to do |f|
-      f.jsonld { render json: '{ "status": "success" }', content_type: 'application/ld+json' }
-    end
+    super
   end
 
   def license_params
-    params.permit(PARAM_TO_MODEL.keys.concat(['id', 'work_id']))
+    params.permit(PARAM_TO_MODEL.keys.concat(['id', 'work_id', 'dc:description']))
   end
 end

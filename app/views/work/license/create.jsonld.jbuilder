@@ -1,6 +1,7 @@
 json.partial! 'shared/context', vocabs: [:ali, :dc]
 
-json.set! '@id', work_license_url(work_id: FedoraID.shorten(params[:work_id]), id: FedoraID.shorten(@license['id']))
+json.set! '@id', work_license_url(work_id: FedoraID.shorten(params[:work_id]),
+                                  id: FedoraID.shorten(@license['id']))
 
 json.partial! 'work/license/license', license: @license
 
@@ -11,5 +12,5 @@ elsif model == Lna::Collection::LicenseReference.to_s
   description = "license_ref"
 end
 
-json.set! 'dc:description', model
+json.set! 'dc:description', description
   

@@ -27,7 +27,7 @@ RSpec.describe "Person/Account API", type: :request, https: true do
         let(:action) { 'post' }
       end
       
-      describe 'succesfully adds new account' do
+      describe 'adds new account' do
         include_examples 'successful POST request'
         
         before :context do    
