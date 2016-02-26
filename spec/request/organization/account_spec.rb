@@ -1,19 +1,22 @@
 require 'rails_helper'
 require 'airborne'
 
-RSpec.describe "Person/Account API", type: :request, https: true do
-  include_context 'creates test person'
+RSpec.describe "Organization/Account API", type: :request, https: true do
+  before :all do 
+    @org = FactoryGirl.create(:thayer)
+    @org_id = FedoraID.shorten(@org.id)
+  end
 
   shared_context 'get account id' do
     before :context do
-      @id = FedoraID.shorten(@jane.accounts.first.id)
-      @path = person_account_path(person_id: @person_id, id: @id)
+      @id = FedoraID.shorten(@org.accounts.first.id)
+      @path = organization_account_path(organization_id: @org_id, id: @id)
     end
   end
   
-  describe 'POST person/:person_id/account' do
+  describe 'POST organization/:organization_id/account' do
     before :context do
-      @path = person_account_index_path(person_id: @person_id)
+      @path = organization_account_index_path(organization_id: @org_id)
     end
     
     include_examples 'requires authentication' do
@@ -40,22 +43,22 @@ RSpec.describe "Person/Account API", type: :request, https: true do
                  'ACCEPT'       => 'application/ld+json',
                  'CONTENT_TYPE' => 'application/ld+json'
           }
-          @acnt = @jane.accounts.first
+          @acnt = @org.accounts.first
           @id = FedoraID.shorten(@acnt.id)
         end
       
         it 'increases number of accounts' do
-          expect(@jane.accounts.count).to be 1
-          expect(@jane.accounts.first.title).to eq 'ORCID'
+          expect(@org.accounts.count).to be 1
+          expect(@org.accounts.first.title).to eq 'ORCID'
         end
       
         it 'return correct location header' do
-          expect_header('Location', "/person/#{@person_id}##{@id}")
+          expect_header('Location', "/organization/#{@org_id}##{@id}")
         end
 
         describe 'response body' do 
           it 'contains @id' do
-            expect_json(:@id => person_account_url(person_id: @person_id, id: @id))
+            expect_json(:@id => organization_account_url(organization_id: @org_id, id: @id))
           end
 
           it 'contains title' do
@@ -72,14 +75,14 @@ RSpec.describe "Person/Account API", type: :request, https: true do
         end
       end
 
-      it 'returns 404 if person_id is invalid' do
-        post "/person/dfklajdlfkjasldfj/account", { format: :jsonld }
+      it 'returns 404 if organization_id is invalid' do
+        post "/organization/dfklajdlfkjasldfj/account", { format: :jsonld }
         expect_status :not_found
       end
     end
   end
 
-  describe 'PUT person/:person_id/account/:id' do
+  describe 'PUT organization/:org_id/account/:id' do
     include_context 'get account id'
 
     include_examples 'requires authentication' do
@@ -106,11 +109,11 @@ RSpec.describe "Person/Account API", type: :request, https: true do
                 'ACCEPT'       => 'application/ld+json',
                 'CONTENT_TYPE' => 'application/ld+json'
               }
-          @jane.reload
+          @org.reload
         end
 
         it 'updates account name in fedora store' do
-          expect(@jane.accounts.first.account_name).to eql 'http://orcid.org/0000-0000-0000-1234'
+          expect(@org.accounts.first.account_name).to eql 'http://orcid.org/0000-0000-0000-1234'
         end
         
         describe 'response body' do
@@ -121,24 +124,8 @@ RSpec.describe "Person/Account API", type: :request, https: true do
       end
     end
   end
-
-  describe 'GET person/:person_id/orcid' do
-    include_examples 'successful request'
-
-    before :context do
-      get person_orcid_path(person_id: @person_id), { format: :jsonld }
-    end
-
-    it 'person has an orcid account' do
-      expect(@jane.accounts.first.title).to eq 'ORCID'
-    end
-
-    it 'returns ORCID account name.' do
-      expect_json(:'foaf:accountName' => 'http://orcid.org/0000-0000-0000-1234')
-    end
-  end
   
-  describe 'DELETE person/:person_id/account/:id' do
+  describe 'DELETE organization/:organization_id/account/:id' do
     include_context 'get account id'
 
     include_examples 'requires authentication' do
@@ -155,7 +142,7 @@ RSpec.describe "Person/Account API", type: :request, https: true do
                    'ACCEPT'       => 'application/ld+json',
                    'CONTENT_TYPE' => 'application/ld+json'
                  }
-          @jane.reload
+          @org.reload
         end
                 
         it 'response body contains success' do
@@ -163,7 +150,7 @@ RSpec.describe "Person/Account API", type: :request, https: true do
         end
         
         it 'account is deleted from fedora store' do
-          expect(@jane.accounts.count).to eq 0
+          expect(@org.accounts.count).to eq 0
         end
       end
     end

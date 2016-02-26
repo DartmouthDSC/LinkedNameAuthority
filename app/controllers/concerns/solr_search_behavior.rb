@@ -75,11 +75,11 @@ module SolrSearchBehavior
   # is given then all the accounts for that person are returned.
   #
   # @param id [String]
-  # @param person_id [String]
+  # @param account_holder_id [String]
   # @param orcid [Boolean]
-  def search_for_accounts(id: nil, person_id: nil, orcid: false)
+  def search_for_accounts(id: nil, account_holder_id: nil, orcid: false)
     q = []
-    q << ['account_ssim', person_id] if person_id
+    q << ['account_ssim', account_holder_id] if account_holder_id
     q << ['id', id] if id
     q << ['title_tesi', 'ORCID'] if orcid
 
@@ -89,10 +89,10 @@ module SolrSearchBehavior
 
   # Searches for an account of the person given that has a "ORCID" as its title.
   #
-  # @param person_id [String] full fedora id of the person
+  # @param account_holder_id [String] full fedora id of the person
   # @return
   def search_for_orcid(person_id)
-    search_for_accounts(person_id: person_id, orcid: true)
+    search_for_accounts(account_holder_id: person_id, orcid: true)
   end
 
   # Search for a memberships based on id and/or person_id.

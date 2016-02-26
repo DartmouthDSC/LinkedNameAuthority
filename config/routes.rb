@@ -16,8 +16,8 @@ Rails.application.routes.draw do
   # Person
   resources :person, only: [:show, :create, :destroy] do
     # Person Accounts
-    resources :account, only: [:create, :destroy], controller: 'person/account'
-    put '/account/:id', to: 'person/account#update'
+    resources :account, only: [:create, :destroy]
+    put '/account/:id', to: 'account#update'
 
     # Person Memberships
     resources :membership, only: [:create, :destroy], controller: 'person/membership'
@@ -55,7 +55,10 @@ Rails.application.routes.draw do
   post '/organizations(/:page)', to: 'organizations#search'
 
   # Organization
-  resources :organization, only: [:show, :create, :destroy]
+  resources :organization, only: [:show, :create, :destroy] do
+    resources :account, only: [:create, :destroy]
+    put '/account/:id', to: 'account#update'
+  end
   put '/organization/:id', to: 'organization#update'
 
   # Change Events

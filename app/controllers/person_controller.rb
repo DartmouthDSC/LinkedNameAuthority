@@ -16,7 +16,7 @@ class PersonController < CrudController
   def show
     @person = search_for_persons(id: params[:id])
     @memberships = search_for_memberships(person_id: @person['id'])
-    @accounts = search_for_accounts(person_id: @person['id'])
+    @accounts = search_for_accounts(account_holder_id: @person['id'])
 
     # primary organization and all the membership's organizations
     org_ids = [ @person['reportsTo_ssim'].first ]

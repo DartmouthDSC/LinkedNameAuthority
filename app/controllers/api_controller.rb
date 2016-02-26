@@ -56,7 +56,7 @@ class ApiController < ActionController::Base
 
   # Converts to id, person_id and work_id to full fedora ids if they are present.
   def convert_to_full_fedora_id
-    [:id, :person_id, :work_id].each do |p|
+    [:id, :person_id, :work_id, :organization_id].each do |p|
       params[p] = FedoraID.lengthen(params[p]) if params[p].present?
     end
   end

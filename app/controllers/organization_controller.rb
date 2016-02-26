@@ -19,7 +19,7 @@ class OrganizationController < CrudController
            'hasSubOrganization_ssim'].map{ |i| @organization[i] }.compact.flatten
     @related_orgs = search_for_ids(ids)
 
-    @accounts = search_for_accounts(person_id: @organization['id'])
+    @accounts = search_for_accounts(account_holder_id: @organization['id'])
 
     ids = ['resultedFrom_ssim', 'changedBy_ssim'].map{ |i| @organization[i] }.compact.flatten
     @change_events = search_for_ids(ids)
