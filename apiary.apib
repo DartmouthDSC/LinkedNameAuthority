@@ -26,7 +26,7 @@ LNA API for Dartmouth College (v0.2.0)
 - /organizations/{page} - GET, POST
 - /organization/ - POST
 - /organization/{id} - GET, PUT, DELETE
-- /organization/{org_id}/account/{id} - POST, PUT, DELETE
+- /organization/{organization_id}/account/{id} - POST, PUT, DELETE
 - /organization/{id_from}/change_to/{id_to} - POST
 
 Generally speaking, GET and POST paths use content negotiation to determine a response. text/html and application/ld+json are supported. PUT and DELETE methods may only respond with application/ld+json.
@@ -1628,12 +1628,12 @@ Applies to both current and historic orgs. Do not use to add an end date to an o
     
             { "status": "success" }
             
-## Organization account [/organization/{org_id}/account/{id}]
+## Organization account [/organization/{organization_id}/account/{id}]
             
-### Create an account identifier [POST /organization/{org_id}/account]
+### Create an account identifier [POST /organization/{organization_id}/account]
 
 + Parameters
-    + org_id (number, required) - ID of the organization that owns this account
+    + organization_id (number, required) - ID of the organization that owns this account
 
 + Request (application/ld+json)
 
@@ -1669,10 +1669,10 @@ Applies to both current and historic orgs. Do not use to add an end date to an o
                 "foaf:accountServiceHomepage": "http://www.dartmouth.edu/"
             }
 
-### Update an account identifier [PUT /organization/{org_id}/account/{id}]]
+### Update an account identifier [PUT /organization/{organization_id}/account/{id}]]
 
 + Parameters
-    + org_id (number, required) - ID of the organziation that owns this account
+    + organization_id (number, required) - ID of the organziation that owns this account
     + id (number, required) - ID of the account to update
 
 + Request (application/ld+json)
@@ -1707,7 +1707,7 @@ Applies to both current and historic orgs. Do not use to add an end date to an o
 ### Delete an account identifier [DELETE]
 
 + Parameters
-    + org_id (number, required) - ID of the person that owns this account
+    + organization_id (number, required) - ID of the person that owns this account
     + id (number, required) - ID of the account to delete
 
 + Request (application/ld+json)
