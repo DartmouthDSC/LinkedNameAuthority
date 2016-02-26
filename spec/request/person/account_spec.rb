@@ -1,6 +1,5 @@
 require 'rails_helper'
 require 'airborne'
-require 'fedora_id'
 
 RSpec.describe "Person/Account API", type: :request, https: true do
   include_context 'creates test person'
@@ -8,17 +7,26 @@ RSpec.describe "Person/Account API", type: :request, https: true do
   shared_context 'get account id' do
     before :context do
       @id = FedoraID.shorten(@jane.accounts.first.id)
-      @path = "/person/#{@person_id}/account/#{@id}"
+      @path = person_account_path(person_id: @person_id, id: @id)
     end
   end
   
-  describe 'POST person/:person_id/account(/:id)' do
+  describe 'POST person/:person_id/account' do
+    before :context do
+      @path = person_account_index_path(person_id: @person_id)
+    end
+    
     include_examples 'requires authentication' do
-      let(:path) { "/person/#{@person_id}/account" }
+      let(:path) { @path }
       let(:action) { 'post' }
     end
         
     describe 'when authenticated', authenticated: true do
+      include_examples 'throws error when fields missing' do
+        let(:path) { @path }
+        let(:action) { 'post' }
+      end
+      
       describe 'succesfully adds new account' do
         include_examples 'successful POST request'
         
@@ -28,7 +36,7 @@ RSpec.describe "Person/Account API", type: :request, https: true do
             'foaf:accountName'            => 'http://orcid.org/0000-0000-0000-0000',
             'foaf:accountServiceHomepage' => 'http://orcid.org/'
           }
-          post "/person/#{@person_id}/account", body.to_json, {
+          post @path, body.to_json, {
                  'ACCEPT'       => 'application/ld+json',
                  'CONTENT_TYPE' => 'application/ld+json'
                }
@@ -45,11 +53,9 @@ RSpec.describe "Person/Account API", type: :request, https: true do
         end
 
         it 'returns body with @id.' do
-          expect_json(:@id => "#{root_url}person/#{@person_id}/account/#{@id}")
+          expect_json(:@id => person_account_url(person_id: @person_id, id: @id))
         end
       end
-      
-      it 'throw error if information is missing'
 
       it 'returns 404 if person_id is invalid' do
         post "/person/dfklajdlfkjasldfj/account", { format: :jsonld }
@@ -67,6 +73,11 @@ RSpec.describe "Person/Account API", type: :request, https: true do
     end
     
     describe 'when authenticated', authenticated: true do
+      include_examples 'throws error when fields missing' do
+        let(:path) { @path }
+        let(:action) { 'put' }
+      end
+      
       describe 'succesfully updates a new account' do
         include_examples 'successful request'
         
@@ -98,14 +109,12 @@ RSpec.describe "Person/Account API", type: :request, https: true do
     include_examples 'successful request'
 
     before :context do
-      get "/person/#{@person_id}/orcid", { format: :jsonld }
+      get person_orcid_path(person_id: @person_id), { format: :jsonld }
     end
 
-#    it 'person has an orcid account' do
-#      expect(@jane.accounts.first.title).to eq 'ORCID'
-#    end
-
-    it 'does not require authentication'
+    it 'person has an orcid account' do
+      expect(@jane.accounts.first.title).to eq 'ORCID'
+    end
 
     it 'returns ORCID account name.' do
       expect_json(:'foaf:accountName' => 'http://orcid.org/0000-0000-0000-1234')
