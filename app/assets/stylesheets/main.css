@@ -81,7 +81,7 @@ textarea {
    ========================================================================= */
 
 body{
-    font-family: 'Open Sans' Corbel, sans-serif;
+    font-family: 'Open Sans', Corbel, sans-serif;
     margin: 0;
     background-color: #D2DAD6;
     padding: 1em;
@@ -287,6 +287,36 @@ footer{
 .entryForm{
     display: block;
 }
+.menuButton{
+    display: flex;
+    min-width: 50%;
+    margin: 1em auto;
+    font-size: x-large;
+}
+
+
+
+
+
+
+
+.formSingleColumn label, input{
+    display: block;
+    width: 90%;
+    margin: .1em auto;
+}
+
+.formSingleColumn label{
+    margin-top: .4em;
+}
+
+.formSingleColumn button{
+    float: right;
+    margin-right: 10%;
+    margin-top: 1em;
+}
+
+
 
 
 

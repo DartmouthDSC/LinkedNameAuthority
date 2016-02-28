@@ -1,12 +1,8 @@
-<div class="modal fade newPersonModal formModal" id="newPersonModal" tabindex="-1" role="dialog" aria-labelledby="newPersonModal">
+<div class="modal fade newPersonModal formModal" id="newPersonModal" tabindex="-1" role="dialog" aria-labelledby="newPersonModal" title="Add a Person to LNA">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-      <div class="modal-header">
-        <h4>Add a Person to LNA</h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      </div>
       <div class="modal-body">
-        <form data-lna-query="newPerson">
+        <form data-lna-query="newPerson" class="formSingleColumn">
           <label>Given Name</label><input id="foaf:givenName" name="foaf:givenName"></input>
           <label>Family Name</label><input id="foaf:familyName" name="foaf:familyName"></input>
           <label>Written Name</label><input id="foaf:name" name="foaf:name"></input>
@@ -16,9 +12,6 @@
           <label>Homepage URL</label><input id="foaf:homepage" name="foaf:homepage"></input>
           <button type="submit" id="submit" title="submit">Submit</button>
         </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>

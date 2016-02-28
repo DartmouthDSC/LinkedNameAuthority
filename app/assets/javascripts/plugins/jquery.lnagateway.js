@@ -92,9 +92,6 @@
 
 
       });
-
-            console.log(formElement)
-
     },
 
     'readForm': function(formElement){
@@ -161,4 +158,9 @@
 
       return plugin;
   };
+
+  $('document').ready(function(){
+    var lna = $(document).LNAGateway();
+    lna.init();
+  });
 }(jQuery, window, document));
