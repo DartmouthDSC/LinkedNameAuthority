@@ -18,4 +18,4 @@ Rails.application.config.assets.precompile += [ '*.js',
                                                 '*.ttf',
                                                 '*.woff',
                                                 '*.gif',
-                                                'lna.css']
+                                                'lna.css', 'lna.js']
