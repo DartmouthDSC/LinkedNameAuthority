@@ -1,4 +1,4 @@
-<%# Master template for LNA 
+<%# Master template for LNA
   # Takes the place of application.html.erb, since Blacklight is using that.
   # Gets called from specific controllers when rendering HTML %>
 
@@ -12,10 +12,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <!-- <link rel="stylesheet" href="css/normalize.min.css"> -->
-        <link href='//fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'> 
+        <link href='//fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
 
         <%= stylesheet_link_tag "lna" %>
-        <%= javascript_include_tag "vendor/modernizr-2.8.3.min.js"  %>
+        <%= javascript_include_tag "lna"  %>
     </head>
     <body class="<%= controller_name %> <%= action_name %>">
         <header class="masthead">
@@ -27,9 +27,6 @@
         <footer>
         Linked Name Authority - Dartmouth College
         </footer>
-
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
 
         <%= javascript_include_tag "plugins.js" %>
         <%= javascript_include_tag "main.js" %>
