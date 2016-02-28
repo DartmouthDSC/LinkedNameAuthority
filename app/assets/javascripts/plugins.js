@@ -20,7 +20,3 @@
         }
     }
 }());
-
-// Place any jQuery/helper plugins in here.
-
-//= require plugins/jquery.lnagateway.js
