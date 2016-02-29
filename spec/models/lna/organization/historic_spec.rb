@@ -27,8 +27,9 @@ RSpec.describe Lna::Organization::Historic, type: :model do
       expect(subject.end_date.to_s).to eql '2000-01-01'
     end
 
-    it 'sets historic placement'
-    
+    it 'sets historic placement' do
+      expect(subject.historic_placement).to eql '{}'
+    end
   end
 
   context '#changed_by' do
