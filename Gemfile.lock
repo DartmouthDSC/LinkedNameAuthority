@@ -160,10 +160,6 @@ GEM
     jbuilder (2.4.1)
       activesupport (>= 3.0.0, < 5.1)
       multi_json (~> 1.2)
-    jquery-rails (4.1.0)
-      rails-dom-testing (~> 1.0)
-      railties (>= 4.2.0)
-      thor (>= 0.14, < 2.0)
     json (1.8.3)
     json-ld (1.1.11.1)
       multi_json (~> 1.11)
@@ -421,7 +417,6 @@ DEPENDENCIES
   active-triples (~> 0.7.4)
   activerecord-oracle_enhanced-adapter (~> 1.6.0)
   airborne
-  blacklight (~> 5.16)
   byebug
   coveralls
   devise
@@ -430,7 +425,6 @@ DEPENDENCIES
   fcrepo_wrapper (~> 0.2.1)
   hydra-head (~> 9.8.0)
   jbuilder (~> 2.0)
-  jquery-rails
   ldp (~> 0.4.1)
   nokogiri (~> 1.6.7)
   nom-xml (~> 0.5.1)

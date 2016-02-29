@@ -7,7 +7,7 @@ gem 'rails', '4.2.4'
 # gem 'hydra', '9.1.0.rc1'
 gem 'active-fedora', '~> 9.9.0'
 gem 'active-triples', '~> 0.7.4'
-gem 'blacklight', '~> 5.16'
+# gem 'blacklight', '~> 5.16'
 gem 'hydra-head', '~> 9.8.0'
 gem 'ldp', '~> 0.4.1'
 gem 'nokogiri', '~> 1.6.7'
@@ -34,7 +34,7 @@ end
 gem 'sqlite3' # used for ActiveRecord
 
 # Asset Pipeline
-gem 'jquery-rails' # Use jquery as the JavaScript library
+# gem 'jquery-rails' # Use jquery as the JavaScript library
 gem 'sass-rails', '~> 5.0' # Use SCSS for stylesheets
 gem 'uglifier', '>= 1.3.0' # Use Uglifier as compressor for JavaScript assets
 
