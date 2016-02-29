@@ -4,10 +4,6 @@ rvm:
 - 2.2.0
 bundler_args: "--without oracle --jobs=3 --retry=3"
 script: RAILS_ENV=ci bundle exec rake ci
-branches:
-  only:
-  - master
-  - develop
 jdk:
 - oraclejdk8
 notifications:
