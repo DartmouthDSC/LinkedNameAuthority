@@ -6,8 +6,6 @@ class OrganizationController < CrudController
     'skos:pref_label'        => 'label',
     'skos:alt_label'         => 'alt_label',
     'owltime:hasBeginning'   => 'begin_date',
-    'org:hasSubOrganization' => 'sub_organization_ids', #{application_url}/organization/{id}
-    'org:subOrganizationOf'  => 'super_organization_ids'
   }.freeze
   # historic organization don't have sub and super or accounts
 
@@ -32,7 +30,7 @@ class OrganizationController < CrudController
     # Create organization
     attributes = params_to_attributes(organization_params)
     o = Lna::Organization.new(attributes)
-    render_unprocessable_entity && return unless p.save
+    render_unprocessable_entity && return unless o.save
 
     @organization = search_for_id(o.id)
 
@@ -46,20 +44,22 @@ class OrganizationController < CrudController
 
   # PUT /organization/:id
   def update
-    organization = search_for_organization(id: params[:id])
+    organization = search_for_organizations(id: params[:id])
 
     # Update organization (could be historic or active)
     o = ActiveFedora::Base.find(organization['id'])
     if o.class == Lna::Organization
-      attributes = params_to_attributes(organization_params, put: true
+      attributes = params_to_attributes(organization_params, put: true,
                                         sub_organization_ids: params['org:hasSubOrganization'],
                                         super_organization_ids: params['org:subOrganizationOf'])
     else
-      attributes = params_to_attributes(organization_params, put: true)
+      attributes = params_to_attributes(organization_params, put: true,
+                                        historic_placement: params['lna:historicPlacement'],
+                                        end_date: params['owltime:hasEnd'])
     end
-    render_unprocessable_entity && return unless p.update(attributes)
+    render_unprocessable_entity && return unless o.update(attributes)
 
-    @organization = search_for_organization(id: organization['id'])
+    @organization = search_for_organizations(id: organization['id'])
     
     super
   end
@@ -79,7 +79,17 @@ class OrganizationController < CrudController
   private
 
   def organization_params
-    params.permit(PARAM_TO_MODEL.keys.concat(['id', 'org:hasSubOrganization', 'org:subOrganizationOf']))
+    params.permit('id', 'org:identifier', 'skos:pref_label', 'owltime:hasBeginning',
+                  'lna:historicPlacement', 'owltime:hasEnd', 'skos:alt_label' => [],
+                  'org:hasSubOrganization' => [], 'org:subOrganizationOf' => [])
+  end
+    
+  def convert_sub_and_super_org_ids
+    ['org:hasSubOrganization', 'org:subOrganizationOf'].each do |o|
+      if params[o].kind_of?(Array)
+        params[o].map { |i| org_uri_to_fedora_id(i) }
+      end
+    end
   end
 end
 

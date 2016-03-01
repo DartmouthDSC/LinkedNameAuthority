@@ -9,7 +9,13 @@ json.set! 'foaf:primaryTopic', request.original_url
 
 json.set! '@graph' do 
   json.child! {
-    json.partial! 'organization/organization', org: @organization, full: true, accounts: @accounts
+    json.partial! 'organization/organization', org: @organization, full: true
+
+    if @organization['active_fedora_model_ssi'] == Lna::Organization.to_s
+      json.set! 'foaf:account',
+                (@accounts) ? @accounts.map { |a| '#' + FedoraID.shorten(a['id']) } : []
+    end
+    
   }
 
   json.array! @related_orgs do |org|
