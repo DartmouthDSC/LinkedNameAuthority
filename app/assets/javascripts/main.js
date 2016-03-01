@@ -4,7 +4,17 @@ if($('.formModal').size()>0){
 		autoOpen: false,
 		width: '80%',
 	    maxWidth: 600,
-	    modal: true
+	    modal: true,
+	    show: {
+	    	effect: "drop",
+			duration: 300,
+			direction: "up"
+		},
+		hide: {
+			effect: "drop",
+			duration: 300,
+			direction: "up"
+		}
 	});
 };
 

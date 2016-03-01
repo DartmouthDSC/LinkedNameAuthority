@@ -171,7 +171,6 @@ footer{
     padding-bottom: .3em;
     right: -22em;
     width: 20em;
-    /*height: 100%;*/
     background-color: rgb(227, 232, 230);
     box-shadow: 0 .3em .3em rgba(0,0,0,.5);
     transition: right .3s;
