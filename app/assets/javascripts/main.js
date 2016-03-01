@@ -12,12 +12,12 @@ if($('.formModal').size()>0){
 $('button[data-toggle="modal"]').click(function (e) { 
 	e.preventDefault();
 	$($(this).data('target')).dialog("open");
+	return false;
 });
 
-//Find control panel buttons and attach the open event
-$('.controlPanelToggle').click(function (e){
+//Find control panel buttons and attach the toggle behavior
+$('button[data-toggle="controlPanel"]').click(function (e){
 	e.preventDefault();
 	$('#controlPanel').toggleClass('cpVisible');
-	console.log($('#controlPanel'))
 	return false;
 });

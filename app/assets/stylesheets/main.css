@@ -174,13 +174,13 @@ footer{
     /*height: 100%;*/
     background-color: rgb(227, 232, 230);
     box-shadow: 0 .3em .3em rgba(0,0,0,.5);
-    transition: right .5s;
-    -webkit-transition: right .5s;    
+    transition: right .3s;
+    -webkit-transition: right .3s;    
 }
 .cpVisible{
     right: 0 !important;
-    transition: right .5s;
-    -webkit-transition: right .5s;
+    transition: right .3s;
+    -webkit-transition: right .3s;
     z-index: 2;
 }
 
