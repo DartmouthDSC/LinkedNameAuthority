@@ -18,6 +18,7 @@
 
 # Ignore file with environmental variables.
 /.env*
+/.htaccess
 
 # Ignore compiled assets.
 /public/assets

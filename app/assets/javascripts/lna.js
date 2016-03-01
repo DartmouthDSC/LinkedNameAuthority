@@ -10,6 +10,8 @@
 // Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
 // about supported directives.
 //
+//= require vendor/modernizr-2.8.3.min.js
+//= require vendor/jquery-1.11.2.min.js
+//= require vendor/jquery-ui.min.js
 //= require turbolinks//
-
-//= require_tree .
+//= require plugins/jquery.lnagateway.js
