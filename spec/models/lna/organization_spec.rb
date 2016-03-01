@@ -83,6 +83,7 @@ RSpec.describe Lna::Organization, type: :model do
       @thayer = FactoryGirl.create(:thayer)
       @thayer.super_organizations << @provost
       @thayer.save
+      @provost.reload
     end
 
     after :context do
@@ -112,18 +113,13 @@ RSpec.describe Lna::Organization, type: :model do
     before :context do
       @sub_org = FactoryGirl.create(:thayer, label: 'Thayer Career Services', code: 'CRE')
       @super_org = FactoryGirl.create(:thayer, label: 'Office of the President', code: 'PREZ')
-      @org = FactoryGirl.create(:thayer, super_organizations: [@super_org],
-                                sub_organizations: [@sub_org])
-      @s = @org.serialize
+      @org = FactoryGirl.create(:thayer)
+      @org.super_organizations << @super_org
+      @org.sub_organizations << @sub_org
+      @org.save
     end
 
-    after :context do
-      @sub_org.destroy
-      @super_org.destroy
-      @org.destroy
-    end
-
-    subject { @s }
+    subject { @org.serialize }
 
     it 'returns hash' do
       expect(subject).to be_instance_of Hash
@@ -149,14 +145,13 @@ RSpec.describe Lna::Organization, type: :model do
   describe '#json_serialization' do
     before :context do
       @org = FactoryGirl.create(:thayer)
-      @s = @org.json_serialization
     end
 
     after :context do
       @org.destroy
     end
 
-    subject { @s }
+    subject { @org.json_serialization }
     
     it 'return a string' do
       expect(subject).to be_instance_of String
