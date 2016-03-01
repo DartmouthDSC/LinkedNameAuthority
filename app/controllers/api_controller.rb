@@ -3,6 +3,8 @@ class ApiController < ActionController::Base
   # Adds a few additional behaviors into the application controller
   include Hydra::Controller::ControllerBehavior
   include SolrSearchBehavior
+
+  layout 'lna'
   
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.

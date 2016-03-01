@@ -20,9 +20,10 @@
     <body class="<%= controller_name %> <%= action_name %>">
         <header class="masthead">
             <h1 class="branding"><span>LINKED</span><span>NAME</span><span>AUTHORITY</span></h1>
-            <form class="simpleSearch"><div><input name="simpleSearch" type="text"/><button name="submit" type="submit" value="submit">Search</button><button class="burger fa fa-bars fa-lg"></button></div>
+            <form class="simpleSearch"><div><input name="simpleSearch" type="text"/><button name="submit" type="submit" value="submit">Search</button> <button class="burger fa fa-bars fa-lg controlPanelToggle"></button></div>
             </form>
         </header>
+        <%= render "shared/controls" %>
 		<%= yield %>
         <footer>
         Linked Name Authority - Dartmouth College

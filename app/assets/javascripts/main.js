@@ -1,12 +1,23 @@
 //Create dialogs from modal form elements
-$('.formModal').dialog({
-	autoOpen: false,
-	width: '80%',
-    maxWidth: 600,
-    modal: true
-})
+if($('.formModal').size()>0){
+	$('.formModal').dialog({
+		autoOpen: false,
+		width: '80%',
+	    maxWidth: 600,
+	    modal: true
+	});
+};
 
 //Find corresponding buttons and attach the open event
 $('button[data-toggle="modal"]').click(function (e) { 
+	e.preventDefault();
 	$($(this).data('target')).dialog("open");
+});
+
+//Find control panel buttons and attach the open event
+$('.controlPanelToggle').click(function (e){
+	e.preventDefault();
+	$('#controlPanel').toggleClass('cpVisible');
+	console.log($('#controlPanel'))
+	return false;
 });

@@ -147,22 +147,6 @@ footer{
 .simpleSearch button:first-of-type{
     width: 6em;
 }
-#controlsButton{
-    display: flex;
-    align-items: center;
-    margin-bottom: .2em;
-    background-color: transparent;
-    border: 0;
-    outline: 0;
-    color: inherit;
-    padding: .1em;
-    margin-left: .5em;
-}
-#controlsButton:hover, #controlsButton:focus{
-    margin-top: -.1em;
-    box-shadow: 0 .1em .1em rgba(0,0,0,.5);
-    margin-bottom: .3em;
-}
 
 .content{
     max-width: 55em;
@@ -176,23 +160,64 @@ footer{
     justify-content: space-between;
 }
 
-#controls{
+#controlPanel{
     position: fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    flex: 1 0;
     top: 0;
-    right: 0;
-    width: 15em;
-    height: 100%;
-    background-color: red;
-}
-.cpHidden{
-    display: none;
-    width: 0;
+    padding-top: 1em;
+    padding-bottom: .3em;
+    right: -22em;
+    width: 20em;
+    /*height: 100%;*/
+    background-color: rgb(227, 232, 230);
+    box-shadow: 0 .3em .3em rgba(0,0,0,.5);
+    transition: right .5s;
+    -webkit-transition: right .5s;    
 }
 .cpVisible{
+    right: 0 !important;
+    transition: right .5s;
+    -webkit-transition: right .5s;
+    z-index: 2;
+}
+
+#controlPanel div{
     display: block;
-    width: 15em;
-    transition: width 1s;
-    -webkit-transition: width 1s;
+    font-weight: bold;
+    width: 90%;
+    margin: 0 auto;
+}
+#controlPanel > button{
+    display: block;
+    font-size: 1em;
+    width: 80%;
+    align-items: top;
+    border: 0;
+    outline: 0;
+    color: inherit;
+    padding: .1em;
+    margin: .3em auto;
+}
+#controlPanel > button:hover, #controlPanel > button:focus{
+    margin-top: .2em;
+    box-shadow: 0 .1em .1em rgba(0,0,0,.5);
+    margin-bottom: .4em;
+}
+#controlPanel div button{
+    display: inline;
+    float: right;
+    margin: 0;
+    padding: 0;
+    font-size: 1.3em;
+    height: 1.1em;
+    width: 1.1em;
+    /*border: 1px solid black;*/
+}
+.controlPanelToggle{
+    margin-left: .2em;
 }
 
 .breadcrumbs{
