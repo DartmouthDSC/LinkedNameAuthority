@@ -3,7 +3,7 @@ class User < ActiveRecord::Base
   include Hydra::User
 
   # Connects this user object to Blacklights Bookmarks.
-  include Blacklight::User
+  # include Blacklight::User
 
   validates :name, :netid, :provider, :realm,  presence: true
   validates :uid, :netid, uniqueness: true

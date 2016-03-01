@@ -11,29 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150505154138) do
-
-  create_table "bookmarks", force: :cascade do |t|
-    t.integer  "user_id",       null: false
-    t.string   "user_type"
-    t.string   "document_id"
-    t.string   "title"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "document_type"
-  end
-
-  add_index "bookmarks", ["user_id"], name: "index_bookmarks_on_user_id"
-
-  create_table "searches", force: :cascade do |t|
-    t.text     "query_params"
-    t.integer  "user_id"
-    t.string   "user_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "searches", ["user_id"], name: "index_searches_on_user_id"
+ActiveRecord::Schema.define(version: 20160229172935) do
 
   create_table "users", force: :cascade do |t|
     t.integer  "sign_in_count",      default: 0, null: false
