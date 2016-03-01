@@ -31,3 +31,10 @@ $('button[data-toggle="controlPanel"]').click(function (e){
 	$('#controlPanel').toggleClass('cpVisible');
 	return false;
 });
+
+//Find login form button and attach the toggle behavior
+// $('button[data-toggle="loginForm"]').click(function (e){
+// 	e.preventDefault();
+// 	$('#loginForm').toggleClass('loginVisible');
+// 	return false;
+// });

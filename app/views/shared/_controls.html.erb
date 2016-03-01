@@ -1,6 +1,10 @@
 <nav id="controlPanel">
 	<div>LNA Controls <button class="fa fa-close fa-lg controlPanelToggle" data-toggle="controlPanel"></button></div>
-	<button id="loginButton">Log In</button>
+	<% if !current_user %>
+	<form action="<%= url_for "sign_in" %>"><button id="loginButton" data-toggle="loginForm">Log In</button></form>
+	<% else %>
+	<form action="<%= url_for "sign_out" %>"><button id="loginButton" data-toggle="loginForm">Log <%= current_user.name %> Out</button></form>
+	<% end %>
 	<button id="">Button 2</button>
 	<button id="">Button 3</button>
 	<button id="">Button 4</button>

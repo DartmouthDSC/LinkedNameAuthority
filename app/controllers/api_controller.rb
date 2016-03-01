@@ -22,7 +22,11 @@ class ApiController < ActionController::Base
   end
 
   def after_sign_out_path_for(resource_or_scope)
-    "https://login.dartmouth.edu/logout.php?app=#{I18n.t 'blacklight.application_name'}&url=#{root_url}"
+    request.referrer
+  end
+
+  def after_sign_in_path_for(resource)
+    request.env['omniauth.origin'] || stored_location_for(resource) || root_path
   end
 
   # TODO: Need to revist this.

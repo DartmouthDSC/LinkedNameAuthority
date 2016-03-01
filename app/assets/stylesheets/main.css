@@ -169,8 +169,8 @@ footer{
     top: 0;
     padding-top: 1em;
     padding-bottom: .3em;
-    right: -22em;
-    width: 20em;
+    right: -27em;
+    width: 25em;
     background-color: rgb(227, 232, 230);
     box-shadow: 0 .3em .3em rgba(0,0,0,.5);
     transition: right .3s;
@@ -189,7 +189,7 @@ footer{
     width: 90%;
     margin: 0 auto;
 }
-#controlPanel > button{
+#controlPanel > button, #controlPanel > form > button{
     display: block;
     font-size: 1em;
     width: 80%;
@@ -200,7 +200,7 @@ footer{
     padding: .1em;
     margin: .3em auto;
 }
-#controlPanel > button:hover, #controlPanel > button:focus{
+#controlPanel > button:hover, #controlPanel > form > button:hover, #controlPanel > button:focus, #controlPanel > form > button:focus{
     margin-top: .2em;
     box-shadow: 0 .1em .1em rgba(0,0,0,.5);
     margin-bottom: .4em;
@@ -339,6 +339,50 @@ footer{
     margin-right: 10%;
     margin-top: 1em;
 }
+
+/* tk remove */
+
+/*.formInline{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    width: 80%;
+    margin: 0 auto;
+}
+.formInline p{
+    display: flex;
+    margin: .2em .2em;
+}
+.formInline label{
+    min-width: 6em;
+    margin-right: .5em;
+    text-align: right;
+}
+.formInline input{
+    flex: 1;
+    display: block;
+    min-width: 6em;
+}
+.formInline button{
+    width: 80%;
+    margin: .3em auto;
+}
+
+#loginForm{
+    background-color: white;
+    font-size: smaller;
+    display: flex;
+    max-height: 0;
+    transition: max-height .3s;
+    -webkit-transition: max-height .3s;   
+    overflow: hidden;
+}
+.loginVisible{
+    max-height: 10em !important;
+    transition: max-height .3s;
+    -webkit-transition: max-height .3s;   
+}*/
 
 
 

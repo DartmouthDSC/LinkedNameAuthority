@@ -20,7 +20,11 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_out_path_for(resource_or_scope)
-    "https://login.dartmouth.edu/logout.php?app=lna&url=#{root_url}"
+    request.referrer
+  end
+
+  def after_sign_in_path_for(resource)
+    request.env['omniauth.origin'] || stored_location_for(resource) || root_path
   end
 
   def not_found
