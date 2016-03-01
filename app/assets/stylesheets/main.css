@@ -364,7 +364,7 @@ footer{
 
 
 .sidebar{
-    display; flex;
+    display: flex;
     flex-direction: column;
     text-align: center;
     flex: 1 1 auto;
