@@ -24,7 +24,7 @@ RSpec.describe "Work API", type: :request, https: true do
         let(:action) { 'post' }
       end
       
-      describe 'adds new account' do
+      describe 'adds new work' do
         include_examples 'successful POST request'
         
         before :context do    
@@ -35,7 +35,7 @@ RSpec.describe "Work API", type: :request, https: true do
             "bibo:pages" => "24",
             "bibo:pageStart" => "473",
             "bibo:pageEnd" => "497",
-            "bibo:authorsList" => "Bell, John and Ippolito, Jon",
+            "bibo:authorsList" => ["Bell, John", "Ippolito, Jon"],
             "dc:title" => "Diffused Museums",
             "dc:abstract" => "Lorem ipsum...",
             "dc:publisher" => "Wiley",
@@ -143,7 +143,7 @@ ract"],
               "bibo:pages" => "24",
               "bibo:pageStart" => "473",
               "bibo:pageEnd" => "497",
-              "bibo:authorsList" => "Bell, John and Ippolito, Jon",
+              "bibo:authorsList" => ["Bell, John", "Ippolito, Jon"],
               "dc:title" => "Diffused Museums and Making the Title Longer",
               "dc:abstract" => "Lorem ipsum...",
               "dc:publisher" => "Wiley",

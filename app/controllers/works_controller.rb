@@ -28,7 +28,7 @@ class WorksController < ApiController
 
     # TO DO: Search needs to be tested more throughly.
     query_map = {
-      'bibo:authorList' => "author_list_tesi:(#{params['bibo:authorList']})",
+      'bibo:authorList' => "author_list_tesim:(#{params['bibo:authorList']})",
       'bibo:doi'        => "doi_tesi:\"#{params['bibo:doi']}\"",
       'dc:title'        => "{!complexphrase}title_tesi:\"#{params['dc:title']}\"",
       'bibo:abstract'   => "abstract_ss:\"#{params['bibo:abstract']}\"",
