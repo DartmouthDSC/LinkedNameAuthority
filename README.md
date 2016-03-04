@@ -20,3 +20,7 @@ Once everything is installed, sync the db and load data using:
 
     rake db:migrate
     rake import:oracle_faculty
+
+Note: If you would like notifications about the import set the following environmental variable in
+.env.development to your preferred email. You might need to create a new file.
+`IMPORTER_EMAIL_NOTICES={your email}`  
