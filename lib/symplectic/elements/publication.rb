@@ -2,25 +2,29 @@
 module Symplectic
   module Elements
     class Publication
-
       attr_accessor :author_list, :publisher, :date, :title, :page_start, :page_end, :pages,
                     :volume, :issue, :number, :canonical_url, :doi, :abstract
 
       # Creates publication object from <api:object> element returned from the Elements API.
+      #
       # Note: Each publication can have multiple records, for our purposes we are using the first
       # record, because that should be the prefered record as choosen by our admins.
       #
-      #
       # @param api_object [Nokogiri::XML::Element]
+      # @return [Symplectic::Elements::Publication]
       def initialize(api_object)
-
-        # check for api:errors for errors
+        raise ArgumentError,
+              "Trying to initialize #{class.name} with empty object." unless api_object
         
-        record = api_object.at_xpath("api:records/api:record[@format='native']/api:native")
-        load_from_record(record)
-        
+        if record = api_object.at_xpath("api:records/api:record[@format='native']/api:native")
+          load_from_record(record)
+        else
+          raise ArgumentError, "Object given did not contain the nodes expected of a publication record."
+        end
       end
 
+      # Sets all instance variables with the xml element given.
+      #
       # @params record [Nokogiri::XML::Element]
       def load_from_record(record)
         xpath_queries = {
@@ -36,7 +40,7 @@ module Symplectic
           doi:          "api:field[@name='doi']/api:links/api:link[@type='doi']/@href"
         }
 
-        # loop through all the xpath queries
+        # Loop through all the xpath queries.
         xpath_queries.each do |field, xpath|
           if element = record.at_xpath(xpath)
             send("#{field}=", element.text)
@@ -46,10 +50,12 @@ module Symplectic
         extract_author_list(record.at_xpath("api:field[@name='authors']"))
         extract_date(record.at_xpath("api:field[@name='publication-date']"))
       end
-
       
       # Extract author list from api:field[@name='authors']
-      # author list should be in the following format: [“Bell, John”, “Galarza, Carla”]
+      #
+      # Author list should be in the following format: [“Bell, John”, “Galarza, Carla”].
+      #
+      # @param [Nokogiri::XML::Element] api_field
       def extract_author_list(api_field)
         return unless api_field
         people = api_field.xpath('api:people/api:person')
@@ -63,8 +69,10 @@ module Symplectic
         send(:author_list=, authors)
       end
       
-      # extract publication date
-      # should stringify date to the following format: YYYY-MM-DD
+      # Extract publication date from api:field[@name='publication-date'].
+      # Dates are stringify in the following format: YYYY-MM-DD.
+      #
+      # @param [Nokogiri::XML::Element] api_field
       def extract_date(api_field)
         return unless api_field
         
@@ -75,7 +83,9 @@ module Symplectic
         send(:date=, date)
       end
 
-      # Returns hash representation of object's instance variables
+      # Returns hash representation of object's instance variables.
+      #
+      # @return [Hash]
       def to_hash
         hash = {}
         instance_variables.each do |i|

@@ -9,9 +9,10 @@ module Symplectic
       # @param [String] path request path
       # @param [DateTime] modified_since filters results by date modified
       # @param [Integer] page 
-      # @param [String] detail amount of detail that should be returned. options are 'ref' and 'full'
+      # @param [String] detail amount of detail that should be returned.
+      #   Options are 'ref' and 'full'.
       # @param [Boolean] all_results paginates through result pages and returns all results
-      # @return [Array<Nokogiri::XML::Element>]
+      # @return [Array<Nokogiri::XML::Element>] array of <entry> elements returned by request
       def self.get(path, modified_since: nil, page: 1, detail: 'ref', all_results: false)
         # Check that modified_since is a DateTime object.
         if modified_since && !modified_since.instance_of?(DateTime)
@@ -21,7 +22,7 @@ module Symplectic
         # Check that page is an Integer.
         raise 'page must be an Integer' if page && !page.is_a?(Integer)
 
-        # If all_results flag is true, page is set to 1
+        # If all_results flag is true, page is set to 1.
         page = 1 if all_results
 
         response = Symplectic::Elements::Api.new.get(path) do |req|
@@ -30,7 +31,15 @@ module Symplectic
           req.params['detail'] = detail
         end
 
+        raise "GET request returned #{response.code}." unless response.success?
+        
         xml_doc = Nokogiri::XML(response.body)
+
+        # Need to check that entry does not contain api:errors.
+        unless xml_doc.xpath('/xmlns:feed/xmlns:entry/api:error').count.zero?
+          raise "GET request returned an api:error."
+        end
+        
         entries = xml_doc.xpath('/xmlns:feed/xmlns:entry').to_a
 
         # If retriving all results, calculate last page and retrive results from page 2 through
