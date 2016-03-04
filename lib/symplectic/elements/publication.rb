@@ -33,7 +33,7 @@ module Symplectic
           page_end:     "api:field[@name='pagination']/api:pagination/api:end-page",
           pages:        "api:field[@name='pagination']/api:pagination/api:page-count",
           number:       "api:field[@name='number']/api:text",
-          #        doi:          "api:field[@name='doi']/api:links/api:link[@type='doi']/"
+          doi:          "api:field[@name='doi']/api:links/api:link[@type='doi']/@href"
         }
 
         # loop through all the xpath queries

@@ -18,8 +18,8 @@ module Symplectic
         # Check that its a valid net id
 
         # If netid is set, modified_since and page should not be set.
-        if netid && (modified_since || page)
-          raise 'netid parameter cannot be used in conjunction with modified_since and page'
+        if netid && modified_since
+          raise 'netid parameter cannot be used in conjunction with modified_since'
         end
 
         path = 'users'

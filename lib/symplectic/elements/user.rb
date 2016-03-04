@@ -22,9 +22,10 @@ module Symplectic
       # @param [DateTime] modified_since
       # @param [String] detail
       # @return [Array<Symplectic::Elements::Publication>]
-      def publications(modified_since: nil) #page
+      def publications(modified_since: nil, page: 1)
         Symplectic::Elements::Publications.get(modified_since: modified_since,
-                                               netid: self.proprietary_id)
+                                               netid: self.proprietary_id,
+                                               page: page)
         
       end
 

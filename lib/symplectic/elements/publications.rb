@@ -1,6 +1,6 @@
 require 'symplectic/elements/request'
 require 'symplectic/elements/publication'
-1;95;0c
+
 module Symplectic
   module Elements
     class Publications < Request
