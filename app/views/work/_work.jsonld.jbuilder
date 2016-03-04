@@ -4,7 +4,7 @@ creator_uri = person_url(id: FedoraID.shorten(work['creator_id_ssi']))
 json.set! '@type', 'bibo:Document'
 json.set! '@id', work_url(id: FedoraID.shorten(work['id']))
 json.set! 'dc:title', work['title_tesi']
-json.set! 'bibo:authorsList', work['author_list_tesi'] || ''
+json.set! 'bibo:authorsList', work['author_list_tesim'] || []
 json.set! 'dc:date', work['date_dtsi'] || ''
 json.set! 'dc:abstract', work['abstract_ss'] || ''
 json.set! 'dc:isPartOf', "#{creator_uri}/works" 

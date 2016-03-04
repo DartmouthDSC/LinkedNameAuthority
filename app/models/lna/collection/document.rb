@@ -23,8 +23,8 @@ module Lna
             
       type ::RDF::Vocab::BIBO.Document
       
-      property :author_list, predicate: ::RDF::Vocab::BIBO.authorList, multiple: false do |index|
-        index.as :stored_searchable
+      property :author_list, predicate: ::RDF::Vocab::BIBO.authorList, multiple: true do |index|
+        index.as :multiple_stored_searchable
       end
       
       property :publisher, predicate: ::RDF::Vocab::DC.publisher, multiple: false do |index|
@@ -73,6 +73,11 @@ module Lna
       end
 
       property :abstract, predicate: ::RDF::Vocab::BIBO.abstract, multiple: false do |index|
+        index.as :displayable
+      end
+
+      property :bibliographic_citation, predicate: ::RDF::Vocab::DC.bibliographicCitation,
+               multiple: false do |index|
         index.as :displayable
       end
       
