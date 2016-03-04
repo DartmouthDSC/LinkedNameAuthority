@@ -1,3 +1,5 @@
+require 'symplectic/elements/publications'
+
 module Symplectic
   module Elements
     class User
@@ -20,19 +22,17 @@ module Symplectic
       # @param [DateTime] modified_since
       # @param [String] detail
       # @return [Array<Symplectic::Elements::Publication>]
-      def publications(modified_since: nil, detail: 'ref') #page
-        Symplectic::Elements::Users::Publications.get(modified_since: modified_since,
-                                                      detail: detail,
-                                                      netid: self.proprietary_id)
+      def publications(modified_since: nil) #page
+        Symplectic::Elements::Publications.get(modified_since: modified_since,
+                                               netid: self.proprietary_id)
         
       end
 
       # Returns all of a user's publication. Results can be limited by the date they were modified.
-      def all_publications(modified_since: nil, detail: 'ref')
-        Symplectic::Elements::Users::Publication.get_all(modified_since: modified_since,
-                                                         detail: detail,
-                                                         netid: self.proprietary_id)
-                                                       
+      def all_publications(modified_since: nil)
+        Symplectic::Elements::Publications.get_all(modified_since: modified_since,
+                                                   netid: self.proprietary_id)
+        
       end
       
     end

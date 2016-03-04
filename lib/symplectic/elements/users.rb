@@ -14,7 +14,7 @@ module Symplectic
       #   given
       # @param [Integer] page results page
       # @return [Array<Symplectic::Elements::User>] array of user objects
-      def self.get(netid: nil, modified_since: nil, page: nil, all_results: false)
+      def self.get(netid: nil, modified_since: nil, page: 1, all_results: false)
         # Check that its a valid net id
 
         # If netid is set, modified_since and page should not be set.
@@ -38,7 +38,7 @@ module Symplectic
       #
       #
       def self.get_all(netid: nil, modified_since: nil)
-        get(netid: netid, modified_since: nil, page: 1, all_results: true)
+        get(netid: netid, modified_since: nil, all_results: true)
       end
         
     end

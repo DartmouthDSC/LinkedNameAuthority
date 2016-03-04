@@ -21,6 +21,9 @@ module Symplectic
         # Check that page is an Integer.
         raise 'page must be an Integer' if page && !page.is_a?(Integer)
 
+        # If all_results flag is true, page is set to 1
+        page = 1 if all_results
+
         response = Symplectic::Elements::Api.new.get(path) do |req|
           req.params['modified-since'] = URI.escape(modified_since.strftime) if modified_since
           req.params['page'] = page
