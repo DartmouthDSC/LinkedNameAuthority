@@ -14,7 +14,7 @@ module Symplectic
       # @return [Symplectic::Elements::Publication]
       def initialize(api_object)
         raise ArgumentError,
-              "Trying to initialize #{class.name} with empty object." unless api_object
+              "Trying to initialize #{self.class.name} with empty object." unless api_object
         
         if record = api_object.at_xpath("api:records/api:record[@format='native']/api:native")
           load_from_record(record)
