@@ -84,6 +84,7 @@ class PersonController < CrudController
   end
   
   def person_params
-    params.permit(PARAM_TO_MODEL.keys << :id)
+    params.permit('id', 'foaf:name', 'foaf:givenName', 'foaf:familyName', 'foaf:title',
+                  'foaf:mbox', 'foaf:image', 'org:reportsTo', 'id', 'foaf:homepage' => [])
   end
 end
