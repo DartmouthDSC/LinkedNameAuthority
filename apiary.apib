@@ -689,24 +689,26 @@ Note that works metadata varies and the fields referenced here may vary.
                         "@id": "http://lna.dartmouth.edu/work/1",
                         "@type": "bibo:Document",
                         "dc:title": "Diffused Museums: Networked, Augmented, and Self-Organized Collections",
-                        "bibo:authorList": "John P. Bell, Jon Ippolito",
+                        "bibo:authorList": ["Bell, John", "Ippolito, Jon"],
                         "dc:date": "2015-05-26",
                         "dc:abstract": "Lorem Ipsum...",
                         "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works",
                         "dc:creator": "http://lna.dartmouth.edu/person/1",
-                        "dc:subject": "keywords, go, here"
+                        "dc:subject": "keywords, go, here",
+                        "dc:bibliographicCitation": "Bell, John, and Jon Ippolito. \"Diffused Museums: Networked, Augmented, and Self-Organized Collections.\" The International Handbooks of Museum Studies. Vol. 3. N.p.: n.p., n.d. N. pag. Print."
                     },
                     {
                         "@id": "http://lna.dartmouth.edu/work/2",
                         "@type": "bibo:Document",
                         "dc:title": "10 PRINT CHR$(205.5+RND(1)); : GOTO 10",
-                        "bibo:authorList": "Nick Montfort, Patsy Baudoin, John Bell, Ian Bogost, Jeremy Douglass, Mark C. Marino, Michael Mateas, Casey Reas, Mark Sample, and Noah Vawter",
+                        "bibo:authorList": ["Montfort, Nick", "Baudoin, Patsy", "Bell, John", "Bogost, Ian", "Douglass, Jeremy", "Marino, Mark", "Mateas, Michael", "Reas, Casey", "Sample, Mark", "Vawter, Noah"],
                         "dc:date": "2012-11-01",
                         "dc:abstract": "Lorem Ipsum...",
                         "dc:publisher": "MIT Press",
                         "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works",
                         "dc:creator": "http://lna.dartmouth.edu/person/1",
-                        "dc:subject": "keywords, go, here"
+                        "dc:subject": "keywords, go, here",
+                        "dc:bibliographicCitation": "Montfort, Nick, Patsy Beaudoin, and John Bell. 10 PRINT CHR$(205.5 RND(1)) GOTO 10. N.p.: n.p., n.d. Print."
                     }
                 ]
             }
@@ -745,23 +747,25 @@ Works are sorted by date added, descending, then authorlist, ascending. Paginate
                         "@id": "http://lna.dartmouth.edu/work/1",
                         "@type": "bibo:Document",
                         "dc:title": "Diffused Museums: Networked, Augmented, and Self-Organized Collections",
-                        "bibo:authorList": "John P. Bell, Jon Ippolito",
+                        "bibo:authorList": ["Bell, John", "Ippolito, Jon"],
                         "dc:date": "2015-05-26",
                         "dc:abstract": "Lorem Ipsum...",
                         "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works",
                         "dc:creator": "http://lna.dartmouth.edu/person/1",
-                        "dc:subject": "keywords, go, here"
+                        "dc:subject": "keywords, go, here",
+                        "dc:bibliographicCitation": "Bell, John, and Jon Ippolito. \"Diffused Museums: Networked, Augmented, and Self-Organized Collections.\" The International Handbooks of Museum Studies. Vol. 3. N.p.: n.p., n.d. N. pag. Print."
                     },
                     {
                         "@id": "http://lna.dartmouth.edu/work/2",
                         "@type": "bibo:Document",
                         "dc:title": "10 PRINT CHR$(205.5+RND(1)); : GOTO 10",
-                        "bibo:authorList": "Nick Montfort, Patsy Baudoin, John Bell, Ian Bogost, Jeremy Douglass, Mark C. Marino, Michael Mateas, Casey Reas, Mark Sample, and Noah Vawter",
+                        "bibo:authorList": ["Montfort, Nick", "Baudoin, Patsy", "Bell, John", "Bogost, Ian", "Douglass, Jeremy", "Marino, Mark", "Mateas, Michael", "Reas, Casey", "Sample, Mark", "Vawter, Noah"],
                         "dc:date": "2012-11-01",
                         "dc:abstract": "Lorem Ipsum...",
                         "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works",
                         "dc:creator": "http://lna.dartmouth.edu/person/1",
-                        "dc:subject": "keywords, go, here"
+                        "dc:subject": "keywords, go, here",
+                        "dc:bibliographicCitation": "Montfort, Nick, Patsy Beaudoin, and John Bell. 10 PRINT CHR$(205.5 RND(1)) GOTO 10. N.p.: n.p., n.d. Print."
                     }
                 ]
             }
@@ -778,8 +782,8 @@ Works are sorted by relevance. Paginated by *page*, with 100 results per page.
 
 + Request (application/ld+json)
 
-        {   "bibo:authorList": "John Bell",
-            "bibo:doi": "10.1002/9781118829059.wbihms321",
+        {   "bibo:authorList": ["Bell, John"],
+            "bibo:doi": "http://dx.doi.org/10.1002/9781118829059.wbihms321",
             "dc:title": "Print",
             "dc:abstract": "BASIC",
             "org:member": "ITS"         }
@@ -806,23 +810,25 @@ Works are sorted by relevance. Paginated by *page*, with 100 results per page.
                         "@id": "http://lna.dartmouth.edu/work/1",
                         "@type": "bibo:Document",
                         "dc:title": "Diffused Museums: Networked, Augmented, and Self-Organized Collections",
-                        "bibo:authorList": "John P. Bell, Jon Ippolito",
+                        "bibo:authorList": ["Bell, John", "Ippolito, Jon"],
                         "dc:date": "2015-05-26",
                         "dc:abstract": "Lorem Ipsum...",
                         "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works",
                         "dc:creator": "http://lna.dartmouth.edu/person/1",
-                        "dc:subject": "keywords, go, here"
+                        "dc:subject": "keywords, go, here",
+                        "dc:bibliographicCitation": "Bell, John, and Jon Ippolito. \"Diffused Museums: Networked, Augmented, and Self-Organized Collections.\" The International Handbooks of Museum Studies. Vol. 3. N.p.: n.p., n.d. N. pag. Print."
                     },
                     {
                         "@id": "http://lna.dartmouth.edu/work/2",
                         "@type": "bibo:Document",
                         "dc:title": "10 PRINT CHR$(205.5+RND(1)); : GOTO 10",
-                        "bibo:authorList": "Nick Montfort, Patsy Baudoin, John Bell, Ian Bogost, Jeremy Douglass, Mark C. Marino, Michael Mateas, Casey Reas, Mark Sample, and Noah Vawter",
+                        "bibo:authorList": ["Montfort, Nick", "Baudoin, Patsy", "Bell, John", "Bogost, Ian", "Douglass, Jeremy", "Marino, Mark", "Mateas, Michael", "Reas, Casey", "Sample, Mark", "Vawter, Noah"],
                         "dc:date": "2012-11-01",
                         "dc:abstract": "Lorem Ipsum...",
                         "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works",
                         "dc:creator": "http://lna.dartmouth.edu/person/1",
-                        "dc:subject": "keywords, go, here"
+                        "dc:subject": "keywords, go, here",
+                        "dc:bibliographicCitation": "Montfort, Nick, Patsy Beaudoin, and John Bell. 10 PRINT CHR$(205.5 RND(1)) GOTO 10. N.p.: n.p., n.d. Print."
                     }
                 ]
             }
@@ -872,23 +878,25 @@ Works are sorted by date added, descending, then authorlist, ascending. Paginate
                         "@id": "http://lna.dartmouth.edu/work/1",
                         "@type": "bibo:Document",
                         "dc:title": "Diffused Museums: Networked, Augmented, and Self-Organized Collections",
-                        "bibo:authorList": "John P. Bell, Jon Ippolito",
+                        "bibo:authorList": ["Bell, John", "Ippolito, Jon"],
                         "dc:date": "2015-05-26",
                         "dc:abstract": "Lorem Ipsum...",
                         "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works",
                         "dc:creator": "http://lna.dartmouth.edu/person/1",
-                        "dc:subject": "keywords, go, here"
+                        "dc:subject": "keywords, go, here",
+                        "dc:bibliographicCitation": "Bell, John, and Jon Ippolito. \"Diffused Museums: Networked, Augmented, and Self-Organized Collections.\" The International Handbooks of Museum Studies. Vol. 3. N.p.: n.p., n.d. N. pag. Print."
                     },
                     {
                         "@id": "http://lna.dartmouth.edu/work/2",
                         "@type": "bibo:Document",
                         "dc:title": "10 PRINT CHR$(205.5+RND(1)); : GOTO 10",
-                        "bibo:authorList": "Nick Montfort, Patsy Baudoin, John Bell, Ian Bogost, Jeremy Douglass, Mark C. Marino, Michael Mateas, Casey Reas, Mark Sample, and Noah Vawter",
+                        "bibo:authorList": ["Montfort, Nick", "Baudoin, Patsy", "Bell, John", "Bogost, Ian", "Douglass, Jeremy", "Marino, Mark", "Mateas, Michael", "Reas, Casey", "Sample, Mark", "Vawter, Noah"],
                         "dc:date": "2012-11-01",
                         "dc:abstract": "Lorem Ipsum...",
                         "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works",
                         "dc:creator": "http://lna.dartmouth.edu/person/1",
-                        "dc:subject": "keywords, go, here"
+                        "dc:subject": "keywords, go, here",
+                        "dc:bibliographicCitation": "Montfort, Nick, Patsy Beaudoin, and John Bell. 10 PRINT CHR$(205.5 RND(1)) GOTO 10. N.p.: n.p., n.d. Print."
                     }
                 ]
             }
@@ -906,8 +914,8 @@ Works are sorted by relevance. Paginated by *page*, with 100 results per page.
 
 + Request (application/ld+json)
 
-        {   "bibo:authorList": "John Bell",
-            "bibo:doi": "10.1002/9781118829059.wbihms321",
+        {   "bibo:authorList": ["Bell, John"],
+            "bibo:doi": "http://dx.doi.org/10.1002/9781118829059.wbihms321",
             "dc:title": "Print",
             "bibo:abstract": "BASIC",
             "org:member": "ITS"         }
@@ -934,22 +942,24 @@ Works are sorted by relevance. Paginated by *page*, with 100 results per page.
                         "@id": "http://lna.dartmouth.edu/work/1",
                         "@type": "bibo:Document",
                         "dc:title": "Diffused Museums: Networked, Augmented, and Self-Organized Collections",
-                        "bibo:authorList": "John P. Bell, Jon Ippolito",
+                        "bibo:authorList": ["Bell, John", "Ippolito, Jon"],
                         "dc:date": "2015-05-26"
                         "dc:abstract": "Lorem Ipsum...",
                         "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works",
                         "dc:creator": "http://lna.dartmouth.edu/person/1",
-                        "dc:subject": "keywords, go, here"
+                        "dc:subject": "keywords, go, here",
+                        "dc:bibliographicCitation": "Bell, John, and Jon Ippolito. \"Diffused Museums: Networked, Augmented, and Self-Organized Collections.\" The International Handbooks of Museum Studies. Vol. 3. N.p.: n.p., n.d. N. pag. Print."
                     },
                     {
                         "@id": "http://lna.dartmouth.edu/work/2",
                         "@type": "bibo:Document",
                         "dc:title": "10 PRINT CHR$(205.5+RND(1)); : GOTO 10",
-                        "bibo:authorList": "Nick Montfort, Patsy Baudoin, John Bell, Ian Bogost, Jeremy Douglass, Mark C. Marino, Michael Mateas, Casey Reas, Mark Sample, and Noah Vawter",
+                        "bibo:authorList": ["Montfort, Nick", "Baudoin, Patsy", "Bell, John", "Bogost, Ian", "Douglass, Jeremy", "Marino, Mark", "Mateas, Michael", "Reas, Casey", "Sample, Mark", "Vawter, Noah"],
                         "dc:date": "2012-11-01",
                         "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works",
                         "dc:creator": "http://lna.dartmouth.edu/person/1",
-                        "dc:subject": "keywords, go, here"
+                        "dc:subject": "keywords, go, here",
+                        "dc:bibliographicCitation": "Montfort, Nick, Patsy Beaudoin, and John Bell. 10 PRINT CHR$(205.5 RND(1)) GOTO 10. N.p.: n.p., n.d. Print."
                     }
                 ]
             }
@@ -984,13 +994,14 @@ Note that the fields shown here are representative and will vary from work to wo
             "bibo:pages": "24",
             "bibo:pageStart": "473",
             "bibo:pageEnd": "497",
-            "bibo:authorsList": "Bell, John and Ippolito, Jon",
+            "bibo:authorsList": ["Bell, John", "Ippolito, Jon"],
             "dc:title": "Diffused Museums",
             "dc:abstract": "Lorem ipsum...",
             "dc:publisher": "Wiley",
             "dc:date": "2015",
             "dc:creator": "http://lna.dartmouth.edu/person/1",
-            "dc:subject": "keywords, go, here"
+            "dc:subject": "keywords, go, here",
+            "dc:bibliographicCitation": "Bell, John, and Jon Ippolito. \"Diffused Museums: Networked, Augmented, and Self-Organized Collections.\" The International Handbooks of Museum Studies. Vol. 3. N.p.: n.p., n.d. N. pag. Print."
         }
         
 + Response 201 (application/ld+json)
@@ -1015,14 +1026,15 @@ Note that the fields shown here are representative and will vary from work to wo
             "bibo:pages": "24",
             "bibo:pageStart": "473",
             "bibo:pageEnd": "497",
-            "bibo:authorsList": "Bell, John and Ippolito, Jon",
+            "bibo:authorList": ["Bell, John", "Ippolito, Jon"],
             "dc:title": "Diffused Museums",
             "dc:abstract": "Lorem ipsum...",
             "dc:publisher": "Wiley",
             "dc:date": "2015",
             "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works",
             "dc:creator": "http://lna.dartmouth.edu/person/1",
-            "dc:subject": "keywords, go, here"
+            "dc:subject": "keywords, go, here",
+            "dc:bibliographicCitation": "Bell, John, and Jon Ippolito. \"Diffused Museums: Networked, Augmented, and Self-Organized Collections.\" The International Handbooks of Museum Studies. Vol. 3. N.p.: n.p., n.d. N. pag. Print."
             }
 
 
@@ -1074,12 +1086,13 @@ Note that the fields shown here are representative and will vary from work to wo
                     "bibo:pages": "24",
                     "bibo:pageStart": "473",
                     "bibo:pageEnd": "497",
-                    "bibo:authorsList": "Bell, John and Ippolito, Jon",
+                    "bibo:authorList": ["Bell, John", "Ippolito, Jon"],
                     "bibo:abstract": "Lorem ipsum...",
                     "dc:title": "Diffused Museums",
                     "dc:publisher": "Wiley",
                     "dc:date": "2015-12-01",
                     "dc:abstract": "Lorem Ipsum...",
+                    "dc:bibliographicCitation": "Bell, John, and Jon Ippolito. \"Diffused Museums: Networked, Augmented, and Self-Organized Collections.\" The International Handbooks of Museum Studies. Vol. 3. N.p.: n.p., n.d. N. pag. Print.",
                     "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works",
                     "dc:creator": "http://lna.dartmouth.edu/person/1",
                     "ali:license_ref": ["#license1", "#license2"]
@@ -1142,13 +1155,14 @@ Note that the fields shown here are representative and will vary from work to wo
             "bibo:pages": "24",
             "bibo:pageStart": "473",
             "bibo:pageEnd": "497",
-            "bibo:authorsList": "Bell, John and Ippolito, Jon",
+            "bibo:authorList": ["Bell, John", "Ippolito, Jon"],
             "dc:title": "Diffused Museums",
             "dc:abstract": "Lorem ipsum...",
             "dc:publisher": "Wiley",
             "dc:date": "2015",
             "dc:creator": "http://lna.dartmouth.edu/person/1",
-            "dc:subject": "keywords, go, here"
+            "dc:subject": "keywords, go, here",
+            "dc:bibliographicCitation": "Bell, John, and Jon Ippolito. \"Diffused Museums: Networked, Augmented, and Self-Organized Collections.\" The International Handbooks of Museum Studies. Vol. 3. N.p.: n.p., n.d. N. pag. Print."
         }
         
 + Response 201 (application/ld+json)
@@ -1173,14 +1187,15 @@ Note that the fields shown here are representative and will vary from work to wo
             "bibo:pages": "24",
             "bibo:pageStart": "473",
             "bibo:pageEnd": "497",
-            "bibo:authorsList": "Bell, John and Ippolito, Jon",
+            "bibo:authorsList": ["Bell, John", "Ippolito, Jon"],
             "dc:title": "Diffused Museums",
             "dc:abstract": "Lorem ipsum...",
             "dc:publisher": "Wiley",
             "dc:date": "2015",
             "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works",
             "dc:creator": "http://lna.dartmouth.edu/person/1",
-            "dc:subject": "keywords, go, here"
+            "dc:subject": "keywords, go, here",
+            "dc:bibliographicCitation": "Bell, John, and Jon Ippolito. \"Diffused Museums: Networked, Augmented, and Self-Organized Collections.\" The International Handbooks of Museum Studies. Vol. 3. N.p.: n.p., n.d. N. pag. Print."
             }
         
 ### Delete a Work [DELETE]
