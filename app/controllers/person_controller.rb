@@ -11,11 +11,6 @@ class PersonController < CrudController
       'foaf:homepage'   => 'homepage',
       'org:reportsTo'   => 'primary_org_id'
   }.freeze
-
-  # GET /person
-  def index
-	render layout: "person"
-  end
   
   # GET /person(/:id)
   def show

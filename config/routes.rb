@@ -31,7 +31,6 @@ Rails.application.routes.draw do
         constraints: { start_date: /\d{4}-\d{2}-\d{2}/ }
   end
   put '/person/:id', to: 'person#update'
-  get '/person', to: 'person#index'
 
   # Recent Works Collections convenience function
   get '/works/:start_date(/:page)', to: 'works#index', start_date: /\d{4}-\d{2}-\d{2}/,
