@@ -11,6 +11,11 @@ class PersonController < CrudController
       'foaf:homepage'   => 'homepage',
       'org:reportsTo'   => 'primary_org_id'
   }.freeze
+
+  # GET /person
+  def index
+  render layout: "person"
+  end
   
   # GET /person(/:id)
   def show
@@ -79,6 +84,7 @@ class PersonController < CrudController
   end
   
   def person_params
-    params.permit(PARAM_TO_MODEL.keys << :id, :authenticity_token)
+    params.permit('id', 'foaf:name', 'foaf:givenName', 'foaf:familyName', 'foaf:title',
+                  'foaf:mbox', 'foaf:image', 'org:reportsTo', 'id', 'foaf:homepage' => [])
   end
 end
