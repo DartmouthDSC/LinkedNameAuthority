@@ -88,6 +88,6 @@ class WorkController < CrudController
   def work_params
     params.permit('id', 'dc:creator', 'bibo:doi', 'bibo:volume', 'bibo:pages', 'bibo:pageStart',
                   'bibo:pageEnd', 'dc:title', 'dc:abstract', 'dc:publisher', 'dc:date',
-                  'dc:bibliographicCitation', 'bibo:authorsList' => [], 'bibo:uri' => [], 'authenticity_token')
+                  'dc:bibliographicCitation', 'authenticity_token', 'bibo:authorsList' => [], 'bibo:uri' => [])
   end
 end

@@ -79,9 +79,9 @@ class OrganizationController < CrudController
   private
 
   def organization_params
-    params.permit('id', 'org:identifier', 'skos:pref_label', 'owltime:hasBeginning',
-                  'lna:historicPlacement', 'owltime:hasEnd', 'skos:alt_label' => [],
-                  'org:hasSubOrganization' => [], 'org:subOrganizationOf' => [], 'authenticity_token')
+    params.permit('id', 'org:identifier', 'skos:pref_label', 'owltime:hasBeginning', 
+                  'lna:historicPlacement', 'owltime:hasEnd', 'authenticity_token', 'skos:alt_label' => [],
+                  'org:hasSubOrganization' => [], 'org:subOrganizationOf' => [])
   end
     
   def convert_sub_and_super_org_ids

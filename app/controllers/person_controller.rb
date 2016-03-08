@@ -80,6 +80,6 @@ class PersonController < CrudController
   
   def person_params
     params.permit('id', 'foaf:name', 'foaf:givenName', 'foaf:familyName', 'foaf:title',
-                  'foaf:mbox', 'foaf:image', 'org:reportsTo', 'id', 'foaf:homepage' => [], 'authenticity_token')
+                  'foaf:mbox', 'foaf:image', 'org:reportsTo', 'id', 'authenticity_token', 'foaf:homepage' => [])
   end
 end
