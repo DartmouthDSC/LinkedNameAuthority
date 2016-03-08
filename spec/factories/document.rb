@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :article, class: Lna::Collection::Document do
-    author_list   'Doe, Jane'
+    author_list   ['Doe, Jane']
     publisher     'New England Press'
     date          'January 15, 2000'
     title         'Car Emissions in New England'
@@ -13,6 +13,7 @@ FactoryGirl.define do
     canonical_uri ['http://example.com/newenglandpress/article/14']
     doi           'http://dx.doi.org/19.1409/ddlp.1490'
     abstract      'Lorem ipsum...'
+    bibliographic_citation 'other citation...'
 
     before(:create) do |document|
       unless document.collection
@@ -23,7 +24,7 @@ FactoryGirl.define do
   end
 
   factory :review, class: Lna::Collection::Document do
-    author_list   'Smith, John'
+    author_list   ['Smith, John']
     publisher     'Nature'
     date          'March 14, 2004'
     title         'Problematic Results for Car Emissions Studies'

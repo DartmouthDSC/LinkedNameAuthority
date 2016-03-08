@@ -38,7 +38,7 @@ RSpec.describe Lna::Collection::Document, type: :model do
     end
     
     it 'sets author_list' do
-      expect(subject.author_list).to eql 'Doe, Jane'
+      expect(subject.author_list).to eql ['Doe, Jane']
     end
     
     it 'sets publisher' do
@@ -88,6 +88,10 @@ RSpec.describe Lna::Collection::Document, type: :model do
 
     it 'sets abstract' do
       expect(subject.abstract).to eql 'Lorem ipsum...'
+    end
+
+    it 'sets bibliographic citation' do
+      expect(subject.bibliographic_citation).to eql 'other citation...'
     end
   end
 

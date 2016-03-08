@@ -10,7 +10,6 @@ module Lna
     has_and_belongs_to_many :super_organizations, class_name: 'Lna::Organization',
                             predicate: ::RDF::Vocab::ORG.subOrganizationOf
 
-
     # Serializes organization, as per our needs, only supers of supers and subs of subs are
     # serialized. By not placing this limitation this method would infinitly recurse.
     #
@@ -47,14 +46,15 @@ module Lna
       JSON.generate(self.serialize)
     end
 
-    def to_solr
-      solr_doc = super
-      
-      # Adding sub organizations to solr doc
-      unless sub_organization_ids.empty?
-        Solrizer.set_field(solr_doc, 'hasSubOrganization', sub_organization_ids, :symbol)
+    def to_solr(solr_doc={})
+      super.tap do |solr_doc|
+        self.sub_organizations.reload
+        unless self.sub_organizations.size.zero?
+          solr_doc['hasSubOrganization_ssim'] = self.sub_organizations.map(&:id)
+        end
+
+        solr_doc['label_ssi'] = self.label
       end
-      solr_doc
     end
     
     # Converts given active organization to a historic organization and deletes

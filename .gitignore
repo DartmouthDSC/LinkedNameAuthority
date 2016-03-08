@@ -20,10 +20,13 @@
 /.env*
 /.htaccess
 
-# Ignore compiled assets
+# Ignore compiled assets.
 /public/assets
 
-# Coveralls created directory
+# Ignore Coveralls created directory.
 /coverage
+
+# Ignore byebug history
+/.byebug_history
 
 
