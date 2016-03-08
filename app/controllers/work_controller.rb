@@ -13,6 +13,7 @@ class WorkController < CrudController
       'dc:abstract'      => 'abstract',
       'dc:publisher'     => 'publisher',
       'dc:date'          => 'date',
+      'dc:bibliographicCitation' => 'bibliographic_citation'      
   }.freeze
 
   # GET /work/:id
@@ -85,6 +86,8 @@ class WorkController < CrudController
   end
     
   def work_params
-    params.permit(PARAM_TO_MODEL.keys.concat(['id', 'dc:creator']), :authenticity_token)
+    params.permit('id', 'dc:creator', 'bibo:doi', 'bibo:volume', 'bibo:pages', 'bibo:pageStart',
+                  'bibo:pageEnd', 'dc:title', 'dc:abstract', 'dc:publisher', 'dc:date',
+                  'dc:bibliographicCitation', 'bibo:authorsList' => [], 'bibo:uri' => [], 'authenticity_token')
   end
 end
