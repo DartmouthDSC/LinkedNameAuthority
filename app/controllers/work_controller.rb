@@ -85,6 +85,6 @@ class WorkController < CrudController
   end
     
   def work_params
-    params.permit(PARAM_TO_MODEL.keys.concat(['id', 'dc:creator']))
+    params.permit(PARAM_TO_MODEL.keys.concat(['id', 'dc:creator']), :authenticity_token)
   end
 end

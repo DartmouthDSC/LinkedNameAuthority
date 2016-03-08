@@ -84,6 +84,6 @@ class PersonController < CrudController
   end
   
   def person_params
-    params.permit(PARAM_TO_MODEL.keys << :id)
+    params.permit(PARAM_TO_MODEL.keys << :id, :authenticity_token)
   end
 end

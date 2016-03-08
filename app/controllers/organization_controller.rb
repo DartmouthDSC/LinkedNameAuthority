@@ -79,7 +79,7 @@ class OrganizationController < CrudController
   private
 
   def organization_params
-    params.permit(PARAM_TO_MODEL.keys.concat(['id', 'org:hasSubOrganization', 'org:subOrganizationOf']))
+    params.permit(PARAM_TO_MODEL.keys.concat(['id', 'org:hasSubOrganization', 'org:subOrganizationOf']), :authenticity_token)
   end
 end
 
