@@ -10,7 +10,8 @@
           <label>Email</label><input id="foaf:mbox" name="foaf:mbox"></input>
           <label>Photo URL</label><input id="foaf:image" name="foaf:image"></input>
           <label>Homepage URL</label><input id="foaf:homepage" name="foaf:homepage"></input>
-          <button type="submit" id="submit" title="submit">Submit</button>
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+          <button type="submit" title="submit">Submit</button>
         </form>
       </div>
     </div>

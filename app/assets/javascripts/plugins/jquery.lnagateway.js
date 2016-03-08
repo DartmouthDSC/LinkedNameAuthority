@@ -19,8 +19,9 @@
   var Plugin = function (options){
     //defaults
     this.defaults = {
-      'baseURL': 'https://lna.dartmouth.edu/',    //trailing slash required
-      'lnaVersion': '0.2.0'
+      'baseURL': 'https://jb.dac.dartmouth.edu/lna/',    //trailing slash required
+      'lnaVersion': '0.2.0',
+      'authenticity_token': true                         //whether or not to add auth token field to all queries
     };
     this.options = this.defaults;
     this.errors = [];
@@ -35,7 +36,7 @@
      *
      */
     this.queries = {
-      'newPerson': {'method': 'POST', 'path': 'person/', 'template': {
+      'newPerson':  {'method': 'POST', 'path': 'person/', 'template': {
                       "foaf:name": null,
                       "foaf:givenName": null,
                       "foaf:familyName": null,
@@ -43,7 +44,14 @@
                       "foaf:mbox": null,
                       "foaf:homepage": "",
                       "org:reportsTo": ""}
-                   }
+                    },
+      'newOrg':     {'method': 'POST', 'path': 'organization/', 'template': {
+                      "org:identifier": null,
+                      "skos:pref_label": null,
+                      "skos:alt_label": [],
+                      "owltime:hasBeginning": null,
+                      "owltime:hasEnd": ""}
+                    }                   
     };
 
     // this.init(options);
@@ -72,21 +80,29 @@
       var handle = this;
       var $formElement = $(formElement);
 
-      if(typeof $.data($formElement, 'lna-query')===undefined){
+      //Validation
+      var query = $formElement.data('lna-query');
+      if(typeof query ==="undefined"){
         console.log('Tried to extend a form without an lna-query set');
         return false;
       }
+      if(typeof this.queries[query] === 'undefined'){
+        console.log('Tried to extend a form for which there is no query');
+        return false;
+      }
+      
 
       $formElement.submit(function(e){
         e.preventDefault();
 
         var formData = handle.readForm(this);
+
         if(!formData) {
           console.log(handle.getErrors());    //tk do something useful with errors
           return false;
         }
 
-//**************************************LEFT OFF HERE
+        handle.submitQuery(query, formData);
 
         return false;
 
@@ -114,6 +130,7 @@
       var formData = $formElement.serializeArray();
       $.each(formData, function(k,v){
         if(typeof data[v.name] !== 'undefined' && v.value != '') data[v.name]=v.value;
+        if(v.name == 'authenticity_token' && handle.options.authenticity_token) data[v.name] = v.value;
       });
 
       var fail = false;
@@ -127,12 +144,19 @@
 
       if(fail) return false;
 
-      data.ready = true;
-
       return data;
     },
 
     'submitQuery': function(query, formData){
+      var queryData = this.queries[query];
+      $.ajax({
+        "url": this.options.baseURL + queryData.path,
+        "method": queryData.method,
+        "accepts": "application/ld+json",
+        "data": formData,
+        "dataType": "json",
+        "success": function(data){ console.log(data) }
+      });
 
     }
   };

@@ -51,7 +51,7 @@ class OrganizationController < CrudController
     # Update organization (could be historic or active)
     o = ActiveFedora::Base.find(organization['id'])
     if o.class == Lna::Organization
-      attributes = params_to_attributes(organization_params, put: true
+      attributes = params_to_attributes(organization_params, put: true,
                                         sub_organization_ids: params['org:hasSubOrganization'],
                                         super_organization_ids: params['org:subOrganizationOf'])
     else
