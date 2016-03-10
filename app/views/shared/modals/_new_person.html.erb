@@ -3,13 +3,13 @@
     <div class="modal-content">
       <div class="modal-body">
         <form data-lna-query="newPerson" class="formSingleColumn">
-          <label>Given Name</label><input id="foaf:givenName" name="foaf:givenName"></input>
-          <label>Family Name</label><input id="foaf:familyName" name="foaf:familyName"></input>
-          <label>Written Name</label><input id="foaf:name" name="foaf:name"></input>
-          <label>Title</label><input id="foaf:title" name="foaf:title"></input>
-          <label>Email</label><input id="foaf:mbox" name="foaf:mbox"></input>
-          <label>Photo URL</label><input id="foaf:image" name="foaf:image"></input>
-          <label>Homepage URL</label><input id="foaf:homepage" name="foaf:homepage"></input>
+          <label>Given Name</label><input name="foaf:givenName"></input>
+          <label>Family Name</label><input name="foaf:familyName"></input>
+          <label>Written Name</label><input name="foaf:name"></input>
+          <label>Title</label><input name="foaf:title"></input>
+          <label>Email</label><input name="foaf:mbox"></input>
+          <label>Photo URL</label><input name="foaf:image"></input>
+          <label>Homepage URL</label><input name="foaf:homepage"></input>
           <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
           <button type="submit" title="submit">Submit</button>
         </form>
