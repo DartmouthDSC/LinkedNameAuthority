@@ -147,22 +147,6 @@ footer{
 .simpleSearch button:first-of-type{
     width: 6em;
 }
-#controlsButton{
-    display: flex;
-    align-items: center;
-    margin-bottom: .2em;
-    background-color: transparent;
-    border: 0;
-    outline: 0;
-    color: inherit;
-    padding: .1em;
-    margin-left: .5em;
-}
-#controlsButton:hover, #controlsButton:focus{
-    margin-top: -.1em;
-    box-shadow: 0 .1em .1em rgba(0,0,0,.5);
-    margin-bottom: .3em;
-}
 
 .content{
     max-width: 55em;
@@ -176,23 +160,63 @@ footer{
     justify-content: space-between;
 }
 
-#controls{
+#controlPanel{
     position: fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    flex: 1 0;
     top: 0;
-    right: 0;
-    width: 15em;
-    height: 100%;
-    background-color: red;
-}
-.cpHidden{
-    display: none;
-    width: 0;
+    padding-top: 1em;
+    padding-bottom: .3em;
+    right: -27em;
+    width: 25em;
+    background-color: rgb(227, 232, 230);
+    box-shadow: 0 .3em .3em rgba(0,0,0,.5);
+    transition: right .3s;
+    -webkit-transition: right .3s;    
 }
 .cpVisible{
+    right: 0 !important;
+    transition: right .3s;
+    -webkit-transition: right .3s;
+    z-index: 2;
+}
+
+#controlPanel div{
     display: block;
-    width: 15em;
-    transition: width 1s;
-    -webkit-transition: width 1s;
+    font-weight: bold;
+    width: 90%;
+    margin: 0 auto;
+}
+#controlPanel > button, #controlPanel > form > button{
+    display: block;
+    font-size: 1em;
+    width: 80%;
+    align-items: top;
+    border: 0;
+    outline: 0;
+    color: inherit;
+    padding: .1em;
+    margin: .3em auto;
+}
+#controlPanel > button:hover, #controlPanel > form > button:hover, #controlPanel > button:focus, #controlPanel > form > button:focus{
+    margin-top: .2em;
+    box-shadow: 0 .1em .1em rgba(0,0,0,.5);
+    margin-bottom: .4em;
+}
+#controlPanel div button{
+    display: inline;
+    float: right;
+    margin: 0;
+    padding: 0;
+    font-size: 1.3em;
+    height: 1.1em;
+    width: 1.1em;
+    /*border: 1px solid black;*/
+}
+.controlPanelToggle{
+    margin-left: .2em;
 }
 
 .breadcrumbs{
@@ -316,6 +340,50 @@ footer{
     margin-top: 1em;
 }
 
+/* tk remove */
+
+/*.formInline{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    width: 80%;
+    margin: 0 auto;
+}
+.formInline p{
+    display: flex;
+    margin: .2em .2em;
+}
+.formInline label{
+    min-width: 6em;
+    margin-right: .5em;
+    text-align: right;
+}
+.formInline input{
+    flex: 1;
+    display: block;
+    min-width: 6em;
+}
+.formInline button{
+    width: 80%;
+    margin: .3em auto;
+}
+
+#loginForm{
+    background-color: white;
+    font-size: smaller;
+    display: flex;
+    max-height: 0;
+    transition: max-height .3s;
+    -webkit-transition: max-height .3s;   
+    overflow: hidden;
+}
+.loginVisible{
+    max-height: 10em !important;
+    transition: max-height .3s;
+    -webkit-transition: max-height .3s;   
+}*/
+
 
 
 
@@ -348,8 +416,9 @@ footer{
     margin-top: -.2em;
     margin-bottom: 1.2em;
 }
-.card h1{ margin: 0 auto; font-size: 1.4em;}
-.card p { margin: 0 auto; text-align: center; max-width: 80%; line-height: 1.2em;}
+.card div h1{ margin: 0 auto; text-align: center; max-width: 80%; font-size: 1.4em;}
+.card div p { margin: 0 auto; text-align: center; max-width: 80%; line-height: 1.2em;}
+.card div {width: 100%;}
 .card img{
     width: 100%;
     max-width: 220px;
@@ -440,7 +509,9 @@ footer{
     border-bottom: .15em solid #5D4F3B;
 }
 
-
+#templates{
+    display: none !important;
+}
 
 
 /* icons */
@@ -588,6 +659,7 @@ a.fa{
         width: 22em;
         height: 2em;
     }
+
     .cards{
         display: flex;
         flex-wrap: wrap;
@@ -596,13 +668,33 @@ a.fa{
         padding-right: 2em;
     }
     .card{
-        display: flex;
-        flex: 0 1 calc(50% - 3em);
-        margin-bottom: 2em;
+        flex: 0 1 100%;
+        display: inline-flex;
+        margin-bottom: 1em;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+    }
+    .card img{
+        display: inline-flex;
+        flex: 0 1;
+        max-height: 80px;
+        max-width: 80px;
+        justify-content: flex-start;
+    }
+    .card div p, .card div h1{
+        text-align: left;
+        margin: 0;
+    }
+    .card div{
+        flex: 1 0;
+        margin-left: 1em;
     }
     .card:hover{
-        margin-bottom: 2.2em;
+        margin-bottom: 1.2em;
     }
+
+
     .sidebar{
         flex: 0 0 12em;
     }
@@ -615,25 +707,17 @@ a.fa{
     body.debug{
         background-color: #6666FF;
     }
+
+    /* Overriding jqueryui due to max-width bug */
+    .ui-dialog{
+        max-width: 40em;
+    }
 }
 
 @media only screen and (min-width: 66em) {
     body.debug{
         background-color: black;
     }
-    .cards{
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-    }
-    .card{
-        flex: 0 1 calc(33% - 3em);
-        margin-bottom: 1.75em;
-    }
-    .card:hover{
-        margin-bottom: 1.95em;
-    }
-
 }
 
 

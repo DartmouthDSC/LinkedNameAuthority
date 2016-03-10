@@ -1,15 +1,15 @@
-<div class="modal fade newPersonModal formModal" id="newPersonModal" tabindex="-1" role="dialog" aria-labelledby="newPersonModal" title="Add a Person to LNA">
+<div class="modal fade searchModal formModal" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModal" title="Find People">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-body">
-        <form data-lna-query="newPerson" class="formSingleColumn">
+        <form data-lna-query="findPersons" class="formSingleColumn">
           <label>Given Name</label><input name="foaf:givenName"></input>
           <label>Family Name</label><input name="foaf:familyName"></input>
           <label>Written Name</label><input name="foaf:name"></input>
           <label>Title</label><input name="foaf:title"></input>
           <label>Email</label><input name="foaf:mbox"></input>
-          <label>Photo URL</label><input name="foaf:image"></input>
-          <label>Homepage URL</label><input name="foaf:homepage"></input>
+          <label>Photo URL</label><input  name="foaf:image"></input>
+          <label>Homepage URL</label><input  name="foaf:homepage"></input>
           <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
           <button type="submit" title="submit">Submit</button>
         </form>
