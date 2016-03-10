@@ -50,7 +50,6 @@ class PersonsController < ApiController
   # Get primary organizations for an array of Lna::Person solr documents.
   def get_primary_orgs(persons)
     org_ids = persons.map { |p| p['reportsTo_ssim'].first }
-    query = ActiveFedora::SolrQueryBuilder.construct_query_for_ids(org_ids.uniq)
-    ActiveFedora::SolrService.query(query)
+    search_for_ids(org_ids.uniq)
   end
 end
