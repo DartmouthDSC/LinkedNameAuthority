@@ -3,7 +3,6 @@ LNA = {
 	'loadPersonCards': function(data, textStatus, xhr){
 		var dataArray = $().LNAGateway().readLD.persons(data);
 		var links = $().LNAGateway().parseLink(xhr.getResponseHeader('link'));
-		console.log(links)
 		$(dataArray.persons).each(function(i, person){
 			var node = $('#templates .person').clone();
 			node.find('h1').text(person['foaf:givenName']+' '+person['foaf:familyName']);
@@ -19,7 +18,10 @@ LNA = {
 			// node.children('p[name="dateRange"]').text(person['foaf:title']);
 			$('main').append(node);
 		});
-	}
+	},
+	'loadPerson': function(data, textStatus, xhr){
+		var dataArray = $().LNAGateway().readLD.person(data);
+	}	
 }
 
 //Create dialogs from modal form elements
@@ -27,7 +29,6 @@ if($('.formModal').size()>0){
 	$('.formModal').dialog({
 		autoOpen: false,
 		width: '80%',
-	    maxWidth: 600,
 	    modal: true,
 	    show: {
 	    	effect: "drop",

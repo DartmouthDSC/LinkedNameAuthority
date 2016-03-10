@@ -707,6 +707,11 @@ a.fa{
     body.debug{
         background-color: #6666FF;
     }
+
+    /* Overriding jqueryui due to max-width bug */
+    .ui-dialog{
+        max-width: 40em;
+    }
 }
 
 @media only screen and (min-width: 66em) {

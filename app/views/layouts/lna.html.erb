@@ -20,7 +20,7 @@
     <body class="<%= controller_name %> <%= action_name %>">
         <header class="masthead">
             <h1 class="branding"><span>LINKED</span><span>NAME</span><span>AUTHORITY</span></h1>
-            <form class="simpleSearch"><div><input name="simpleSearch" type="text"/><button name="submit" type="submit" value="submit">Search</button> <button class="burger fa fa-bars fa-lg controlPanelToggle" data-toggle="controlPanel"></button></div>
+            <form class="simpleSearch"><div><input name="simpleSearch" type="text"/><button name="submit" type="submit" value="submit">Search</button> <button class="fa fa-search fa-lg" id="controlPanelToggle" data-toggle="modal" data-target="#searchModal"></button> <button class="fa fa-bars fa-lg controlPanelToggle" data-toggle="controlPanel"></button></div>
             </form>
         </header>
         <%= render "shared/controls" %>

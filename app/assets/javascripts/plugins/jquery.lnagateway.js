@@ -47,6 +47,8 @@
 	                    },
 	    	'listPersons':{'method': 'GET', 'path': 'persons/', 'template': {}
 	    				},
+			'loadPerson': {'method': 'GET', 'path': 'person/', 'template': {}
+	    				},	    				
 			'newOrg':     {'method': 'POST', 'path': 'organization/', 'template': {
 	                      "org:identifier": null,
 	                      "skos:pref_label": null,
@@ -81,6 +83,11 @@
 	    	if(typeof page === "undefined") page = 1;
 	    	this.submitQuery('listPersons', {}, callback, page);
 	    },
+
+	    'loadPerson': function(callback, uid){
+	    	if(typeof uid === "undefined") return false;
+	    	this.submitQuery('loadPerson', {}, callback, uid);
+	    },	    
 
 	    //extendForm is called on all forms that have data-lna-query set on init
 	    //it can also be run manually.
@@ -182,7 +189,15 @@
 	    			}
 	    		});
 	    		return data;
-	    	}
+	    	},
+    		'person': function(xhrData){
+	    		var data = {'person': [], 'orgs': [], 'accounts': [], 'appointments': []};
+
+
+// ************** LEFT OFF HERE  *******************
+
+	    		return data;
+	    	}	    	
     	},
 
     	//Utility function to parse link headers
