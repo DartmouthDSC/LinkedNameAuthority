@@ -1,33 +1,17 @@
         <nav class="centered breadcrumbs" role="navigation">
-            <a href="#" class="crumbContinue"><span>Home</span></a><a href="#" class="crumbContinue"><span>Search</span></a><a href="#" class="crumbContinue crumbHere"><span>"John Bell"</span></a><a href="#" class="add"><span>+</span></a>
+            <%= link_to(root_path, class: "crumbContinue") do %><span>Home</span><% end %><%= link_to(persons_path, class: "crumbStop crumbHere") do %><span>Persons</span><% end %>
         </nav>
         <main class="centered content cards">
         <!--[if lt IE 8]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-
-            <a href="ok" class="person card">
-                <%= image_tag "unknownPerson.svg", alt: "No Photo Available" %>
-                <h1>John P. Bell</h1>
-                <p>Lead Application Developer, ITS</p>
-                <p>2014 - </p>
-            </a>
-            <a href="#" class="person card">
-                <%= image_tag "unknownPerson.svg" %>
-                <h1>John P. Bell</h1>
-                <p>Lead Application Developer with a very long title, ITS</p>
-                <p>2014 - </p>
-            </a>
-            <a href="#" class="person card">
-                <%= image_tag "unknownPerson.svg" %>
-                <h1>John P. Bell</h1>
-                <p>Lead Application Developer, ITS</p>
-                <p>2014 - </p>
-            </a>
-            <a href="#" class="person card">
-                <%= image_tag "unknownPerson.svg" %>
-                <h1>John P. Bell</h1>
-                <p>Lead Application Developer, ITS</p>
-                <p>2014 - </p>
-            </a>
         </main>
+        <section id="templates">
+        <%= render "shared/templates/cards_person" %>
+        </section>
+        <script>
+        $(document).ready(function(){
+            $().LNAGateway().listPersons(LNA.loadPersonCards, <%= @page %>);
+        });
+
+        </script>

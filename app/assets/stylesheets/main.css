@@ -416,8 +416,9 @@ footer{
     margin-top: -.2em;
     margin-bottom: 1.2em;
 }
-.card h1{ margin: 0 auto; font-size: 1.4em;}
-.card p { margin: 0 auto; text-align: center; max-width: 80%; line-height: 1.2em;}
+.card div h1{ margin: 0 auto; text-align: center; max-width: 80%; font-size: 1.4em;}
+.card div p { margin: 0 auto; text-align: center; max-width: 80%; line-height: 1.2em;}
+.card div {width: 100%;}
 .card img{
     width: 100%;
     max-width: 220px;
@@ -508,7 +509,9 @@ footer{
     border-bottom: .15em solid #5D4F3B;
 }
 
-
+#templates{
+    display: none !important;
+}
 
 
 /* icons */
@@ -656,6 +659,7 @@ a.fa{
         width: 22em;
         height: 2em;
     }
+
     .cards{
         display: flex;
         flex-wrap: wrap;
@@ -664,13 +668,33 @@ a.fa{
         padding-right: 2em;
     }
     .card{
-        display: flex;
-        flex: 0 1 calc(50% - 3em);
-        margin-bottom: 2em;
+        flex: 0 1 100%;
+        display: inline-flex;
+        margin-bottom: 1em;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+    }
+    .card img{
+        display: inline-flex;
+        flex: 0 1;
+        max-height: 80px;
+        max-width: 80px;
+        justify-content: flex-start;
+    }
+    .card div p, .card div h1{
+        text-align: left;
+        margin: 0;
+    }
+    .card div{
+        flex: 1 0;
+        margin-left: 1em;
     }
     .card:hover{
-        margin-bottom: 2.2em;
+        margin-bottom: 1.2em;
     }
+
+
     .sidebar{
         flex: 0 0 12em;
     }
@@ -689,19 +713,6 @@ a.fa{
     body.debug{
         background-color: black;
     }
-    .cards{
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-    }
-    .card{
-        flex: 0 1 calc(33% - 3em);
-        margin-bottom: 1.75em;
-    }
-    .card:hover{
-        margin-bottom: 1.95em;
-    }
-
 }
 
 
