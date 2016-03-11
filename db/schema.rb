@@ -11,7 +11,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160229172935) do
+ActiveRecord::Schema.define(version: 20160311151827) do
+
+  create_table "imports", force: :cascade do |t|
+    t.string   "load",         null: false
+    t.datetime "time_started", null: false
+    t.datetime "time_ended",   null: false
+    t.text     "status"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
 
   create_table "roles", force: :cascade do |t|
     t.string "name"
