@@ -4,6 +4,8 @@
 module SolrSearchBehavior
   extend ActiveSupport::Concern
 
+  DEFAULT_MAX_ROWS = 100000.freeze
+  
   # Hits Solr API with parameters given. Returns an array of results. This method allows the
   # most flexibility because all parameters can be used (or ommited).
   #
@@ -58,7 +60,7 @@ module SolrSearchBehavior
   # @param ids [Array<String>] list of full fedora ids
   def search_for_ids(ids)
     query = ActiveFedora::SolrQueryBuilder.construct_query_for_ids(ids)
-    ActiveFedora::SolrService.query(query)
+    ActiveFedora::SolrService.query(query, rows: DEFAULT_MAX_ROWS)
   end
   
   # Searches Solr for a Lna::Person with the given id. If there isn't only one result the
@@ -174,10 +176,12 @@ module SolrSearchBehavior
   # @param model [Class, Array<Class>] model to be filtered by
   # @param q [String, Array] query to be passed to solr, if an array it gets convered to a string.
   # @param only_one [Boolean] if true only one search result should be returned
-  # @param rows [Integer, nil] max number of results to be returned by solr
+  # @param rows [Integer, nil] max number of results to be returned by solr, default is set
+  #   to 100000
   # @param sort [String, nil]  sort solr parameter 
   # @param page [Integer, nil] page of results to be displayed.
-  def search_with_model_filter(model, q: nil, only_one: false, rows: nil, sort: nil, page: nil)
+  def search_with_model_filter(model, q: nil, only_one: false, rows: DEFAULT_MAX_ROWS, sort: nil,
+                               page: nil)
     raise ArgumentError, 'Cannot calculate start param without rows.' if page && !rows
     
     q = '*:*' if q.blank?

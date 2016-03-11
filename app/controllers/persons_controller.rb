@@ -4,16 +4,16 @@ class PersonsController < ApiController
 
   # GET /persons
   def index
-    page = params['page']
+    @page = params['page']
     parameters = { rows: MAX_ROWS, sort: 'family_name_ssi asc, given_name_ssi asc' }
     
-    @persons = search_for_persons(**parameters, page: page)
+    @persons = search_for_persons(**parameters, page: @page)
     @organizations = get_primary_orgs(@persons)
 
-    next_page = search_for_persons(**parameters, page: page + 1).count > 1
+    next_page = search_for_persons(**parameters, page: @page + 1).count > 1
     
     respond_to do |format|
-      response.headers['Link'] = link_headers('persons/', page, next_page)
+      response.headers['Link'] = link_headers('persons/', @page, next_page)
       format.jsonld { render :index, content_type: 'application/ld+json' }
       format.html
     end
@@ -50,7 +50,6 @@ class PersonsController < ApiController
   # Get primary organizations for an array of Lna::Person solr documents.
   def get_primary_orgs(persons)
     org_ids = persons.map { |p| p['reportsTo_ssim'].first }
-    query = ActiveFedora::SolrQueryBuilder.construct_query_for_ids(org_ids.uniq)
-    ActiveFedora::SolrService.query(query)
+    search_for_ids(org_ids.uniq)
   end
 end

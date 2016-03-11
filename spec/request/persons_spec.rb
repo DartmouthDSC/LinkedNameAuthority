@@ -42,7 +42,7 @@ RSpec.describe "Persons API", type: :request, https: true do
     end
 
     it 'includes link headers' do
-      expect_header('Link', "<#{persons_url(page: 1)}>; ref=\"first\"")
+      expect_header('Link', "<#{persons_url(page: 1)}>; rel=\"first\"")
     end
   end
   

@@ -58,7 +58,7 @@ class AccountController < CrudController
   private
 
   def account_params
-    params.permit(PARAM_TO_MODEL.keys.concat(['person_id', 'organization_id']))
+    params.permit(PARAM_TO_MODEL.keys.concat(['person_id', 'organization_id']), :authenticity_token)
   end
 
   # get whether the request is for a person or an organization

@@ -11,17 +11,13 @@ class PersonController < CrudController
       'foaf:homepage'   => 'homepage',
       'org:reportsTo'   => 'primary_org_id'
   }.freeze
-
-  # GET /person
-  def index
-	render layout: "person"
-  end
   
   # GET /person(/:id)
   def show
     @person = search_for_persons(id: params[:id])
     @memberships = search_for_memberships(person_id: @person['id'])
     @accounts = search_for_accounts(account_holder_id: @person['id'])
+    @short_id = FedoraID.shorten(@person['id'])
 
     # primary organization and all the membership's organizations
     org_ids = [ @person['reportsTo_ssim'].first ]
@@ -85,6 +81,6 @@ class PersonController < CrudController
   
   def person_params
     params.permit('id', 'foaf:name', 'foaf:givenName', 'foaf:familyName', 'foaf:title',
-                  'foaf:mbox', 'foaf:image', 'org:reportsTo', 'id', 'foaf:homepage' => [])
+                  'foaf:mbox', 'foaf:image', 'org:reportsTo', 'id', 'authenticity_token', 'foaf:homepage' => [])
   end
 end
