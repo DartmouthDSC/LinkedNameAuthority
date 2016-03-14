@@ -2,7 +2,7 @@
 module Symplectic
   module Elements
     class Publication
-      attr_accessor :author_list, :publisher, :date, :title, :page_start, :page_end, :pages,
+      attr_accessor :id, :author_list, :publisher, :date, :title, :page_start, :page_end, :pages,
                     :volume, :issue, :number, :canonical_url, :doi, :abstract
 
       # Creates publication object from <api:object> element returned from the Elements API.
@@ -15,6 +15,8 @@ module Symplectic
       def initialize(api_object)
         raise ArgumentError,
               "Trying to initialize #{self.class.name} with empty object." unless api_object
+
+        @id = api_object.attribute('id').text
         
         if record = api_object.at_xpath("api:records/api:record[@format='native']/api:native")
           load_from_record(record)
@@ -28,16 +30,16 @@ module Symplectic
       # @params record [Nokogiri::XML::Element]
       def load_from_record(record)
         xpath_queries = {
-          publisher:    "api:field[@name='issue']/api:text",
-          title:        "api:field[@name='title']/api:text",
-          volume:       "api:field[@name='volume']/api:text",
-          abstract:     "api:field[@name='abstract']/api:text",
-          issue:        "api:field[@name='issue']/api:text",
-          page_start:   "api:field[@name='pagination']/api:pagination/api:begin-page",
-          page_end:     "api:field[@name='pagination']/api:pagination/api:end-page",
-          pages:        "api:field[@name='pagination']/api:pagination/api:page-count",
-          number:       "api:field[@name='number']/api:text",
-          doi:          "api:field[@name='doi']/api:links/api:link[@type='doi']/@href"
+          publisher:  "api:field[@name='issue']/api:text",
+          title:      "api:field[@name='title']/api:text",
+          volume:     "api:field[@name='volume']/api:text",
+          abstract:   "api:field[@name='abstract']/api:text",
+          issue:      "api:field[@name='issue']/api:text",
+          page_start: "api:field[@name='pagination']/api:pagination/api:begin-page",
+          page_end:   "api:field[@name='pagination']/api:pagination/api:end-page",
+          pages:      "api:field[@name='pagination']/api:pagination/api:page-count",
+          number:     "api:field[@name='number']/api:text",
+          doi:        "api:field[@name='doi']/api:links/api:link[@type='doi']/@href"
         }
 
         # Loop through all the xpath queries.
@@ -89,7 +91,7 @@ module Symplectic
       def to_hash
         hash = {}
         instance_variables.each do |i|
-          key = i.to_s.delete('@')
+          key = i.to_s.delete('@').to_sym
           hash[key] = send(key)
         end
         hash

@@ -9,7 +9,7 @@ module Symplectic
       #
       # @param [String] netid of user
       # @param [Integer] page results page
-      # @param [DateTime] modified_since filter by date last modified
+      # @param [DateTime|Time] modified_since filter by date last modified
       # @return [Array<Symplectic::Elements::Publication>] array of publication objects
       def self.get(netid:, **args)
         path = "users/username-#{netid}/publications"
@@ -26,7 +26,7 @@ module Symplectic
       # Like self.get, but self.get_all iterates through all results.
       #
       # @param [String] netid of user
-      # @param [DateTime] modified_since
+      # @param [DateTime|Time] modified_since
       # @return [Array<Symplectic::Elements::Publication>] array of publication objects
       def self.get_all(netid:, modified_since: nil)
         get(netid: netid, modified_since: modified_since, all_results: true)
