@@ -17,6 +17,7 @@ ActiveRecord::Schema.define(version: 20160311151827) do
     t.string   "load",         null: false
     t.datetime "time_started", null: false
     t.datetime "time_ended",   null: false
+    t.boolean  "success",      null: false
     t.text     "status"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
