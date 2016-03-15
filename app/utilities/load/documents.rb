@@ -23,7 +23,7 @@ module Load
     #             user, otherwise continue to the next publication.
     def self.from_elements
       # Get the last import.
-      i = Import.where(load: ELEMENTS_IMPORT_TITLE).order(time_started: :asc).first
+      i = Import.where(load: ELEMENTS_IMPORT_TITLE, success: true).order(time_started: :asc).first
       last_import = (i) ? i.time_started : nil
       # puts last_import.class.name # is Time, will throw errors in very near future.
 

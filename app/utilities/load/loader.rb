@@ -48,6 +48,7 @@ module Load
         i.time_started = time_started
         i.time_ended = Time.now
         i.status = status.join(', ') if status
+        i.success = errors.empty?
       end
     end
 
