@@ -7,7 +7,9 @@ script: RAILS_ENV=ci bundle exec rake ci
 jdk:
 - oraclejdk8
 notifications:
+  email: false
   slack:
     secure: A8peDFO7r7AfwWNxfxFRTzmU1uxYX95tGyIDyYyJerhbMDlrGYpoSUC2BfbqdntKh8SWMZQsaojTzQro/eIqkh3TH+vycWlxfLQTTd6qiMS5vI5gvwHJxzFDt+daJ+nCF1MOauJNOJb5O2b4Z4lt/y2kac9144IfE1g7OiLHsYnNbSqm2Nv4CaHVNtKoVKJ20muanMWsF3pnVqMEk6T35U2m3aiH7uslRA7N1fzGBkAOXb8V/ZK9Wo3XKGmzO6vKwzfnshOrwm7U52u6woskjMoU7DQ4jA5vRS6MKdQdru/qohAVyhKHHWiup9l/XUU0bxT/nGVATEhEUimVu00mfY6BVytuPML5IJb833xm/zXFSo54wbBcVgh5nlMh/AeNw7ksbut9z/Vr59xnAL0wiH7UYuwCUaUaRGqPVt6zPggJUo5wCUmjq0a6aUhpmr73mZqrYPHc9FmbbLoLkw64edVNumUym3skWV9fnSG98iIfAUy6E7/xl4wtNea83LuLCW5NAfHwlr9r1zd6hA44Unai+muExGdHIJc9YmL3fYYlBG5Y0DRYZWB7BxodcOQdEruOnpa9bSCmUQYn55NPSG89riFpFvsowaV26V5iXPoLpGtM1usYri+Ojc0Gtq+c0ByeDn/30alWDdj4od2tb+OHmTlfR29MTdiHLgpOlGE=
-    on_success: never
+    on_success: always
     on_failure: always
+    on_change: always
