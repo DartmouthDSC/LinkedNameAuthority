@@ -46,9 +46,9 @@ RSpec.describe "Person API", type: :request, https: true do
     end
   end
 
-  describe 'GET person/' do    
-    subject { get person_index_path, {}, format: :jsonld }
-  
+  describe 'GET person/' do      
+    subject { get person_index_path }
+    
     it 'redirects to GET persons/' do
       expect(subject).to redirect_to('/persons')
     end
