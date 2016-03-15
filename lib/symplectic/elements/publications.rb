@@ -12,6 +12,8 @@ module Symplectic
       # @param [DateTime|Time] modified_since filter by date last modified
       # @return [Array<Symplectic::Elements::Publication>] array of publication objects
       def self.get(netid:, **args)
+        raise RequestError, 'netid cannot be nil' unless netid
+        
         path = "users/username-#{netid}/publications"
         args[:detail] = 'full'
         

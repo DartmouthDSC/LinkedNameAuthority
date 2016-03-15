@@ -5,7 +5,7 @@ module Load
     ELEMENTS_IMPORT_TITLE = 'Documents from Elements'
 
     # Keys for warnings hash.
-    NEW_DOCUMENTS = 'new document'
+    NEW_DOCUMENT = 'new document'
     PERSON_RECORD_NOT_FOUND = 'person records not found'
     
     # Import latest newly created publication records from Elements. If a document is already
@@ -40,7 +40,11 @@ module Load
             puts user.proprietary_id
             publications = user.publications(modified_since: last_import)
           rescue StandardError => e
-            load.add_to_errors(e.message, user.proprietary_id)
+            if user.propritary_id
+              load.add_to_errors(e.message, user.proprietary_id)
+            else
+              load.add_to_errors(e.message, "Elements id: #{user.id}")
+            end
             (load.throw_errors) ? raise : next
           ensure
             next unless publications # If there aren't any modified publications, skip.
@@ -50,6 +54,12 @@ module Load
             begin
               doc_hash = publication.to_hash
               doc_hash[:elements_id] = doc_hash.delete(:id)
+
+              # Remove any singleton backslashes in abstracts (only place the problem has
+              # been present).
+              if abstract = doc_hash[:abstract]
+                doc_hash[:abstract] = abstract.gsub('\\', '')
+              end
               
               hash = {
                 netid: user.proprietary_id,
@@ -102,10 +112,15 @@ module Load
         end
       end
 
-      Lna::Collection::Document.create!(hash[:document]) do |doc|
+      d = Lna::Collection::Document.create!(hash[:document]) do |doc|
         doc.collection = collection
       end
-      add_to_warnings(NEW_DOCUMENT, "for #{hash[:netid]} with the title #{hash[:title]}")
+      
+      warning_text = (d.elements_id) ?
+                       "elements id #{d.elements_id}" :
+                       "title #{d.title}"
+      add_to_warnings(NEW_DOCUMENT,
+                      "for #{hash[:netid]} with the #{warning_text}")
     end
   end
 end
