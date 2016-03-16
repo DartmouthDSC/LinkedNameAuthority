@@ -21,6 +21,11 @@ LNA = {
 	},
 	'loadPerson': function(data, textStatus, xhr){
 		var dataArray = $().LNAGateway().readLD.person(data);
+		console.log(dataArray);
+		//clear all spinners
+		$('.spinner').parent().remove();
+
+		//todo once the feed is fixed
 	}	
 }
 

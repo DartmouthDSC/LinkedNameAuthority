@@ -12,6 +12,6 @@
         <%= render "shared/modals/search" %>
         <script>
         $(document).ready(function(){
-            $().LNAGateway().listPersons(LNA.loadPersonCards, <%= @person %>);
+            $().LNAGateway().listPersons(LNA.loadPersonCards, <%= @page %>);
         });
         </script>

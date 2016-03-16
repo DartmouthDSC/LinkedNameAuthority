@@ -193,8 +193,12 @@
     		'person': function(xhrData){
 	    		var data = {'person': [], 'orgs': [], 'accounts': [], 'appointments': []};
 
+	    		$.each(xhrData['@graph'], function(i, v){
+	    			if(v['@type']=='foaf:Person'){
+	    				data.person = v;
+	    			}
+	    		});
 
-// ************** LEFT OFF HERE  *******************
 
 	    		return data;
 	    	}	    	

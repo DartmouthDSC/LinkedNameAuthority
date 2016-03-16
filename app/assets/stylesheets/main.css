@@ -76,6 +76,42 @@ textarea {
     border: 0;
 }
 
+/* spinner */ 
+@keyframes spinner {
+    to {transform: rotate(360deg);}
+}
+ 
+@-webkit-keyframes spinner {
+    to {-webkit-transform: rotate(360deg);}
+}
+ 
+.spinner {
+    min-width: 24px;
+    min-height: 24px;
+    position:relative;
+}
+ 
+.spinner:before {
+    content: 'Loading…';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    margin-top: -10px;
+    margin-left: -10px;
+}
+ 
+.spinner:not(:required):before {
+    content: '';
+    border-radius: 50%;
+    border: 2px solid transparent;
+    border-top-color: #D2DAD6;
+    border-bottom-color: #D2DAD6;
+    animation: spinner .8s ease infinite;
+    -webkit-animation: spinner .8s ease infinite;
+}
+
 /* =========================================================================
    Content Classes
    ========================================================================= */
@@ -479,7 +515,7 @@ footer{
     font-weight: 600;
     margin: 0;
     padding: 0 0 0 1.6em;
-    background-image: url('../img/icon_downArrow.svg');
+    background-image: url('icon_downArrow.svg');
     background-size: 1.4em;
     background-repeat: no-repeat;
     min-height: 1.6em;
@@ -608,7 +644,7 @@ a.fa{
     background-image: url('icon_add.svg');
 }
 .netID{
-    background-image: url('../img/icon_netid.svg');
+    background-image: url('icon_netid.svg');
 }
 
 /* item types */
