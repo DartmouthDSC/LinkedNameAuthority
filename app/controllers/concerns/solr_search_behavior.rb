@@ -13,6 +13,8 @@ module SolrSearchBehavior
   # @param only_one [Boolean] flag to limit results to only one
   # @return [Hash, RSolr::Response::PaginatedDocSet] document(s) returned by search
   def solr_search(params, only_one = false)
+    raise 'only_one flag cannot be used in cujunction with raw param' if params[:raw] && only_one
+    
     logger.debug("Solr params: #{params.to_s}")
     results = ActiveFedora::SolrService.query(params[:q], params)
 
@@ -161,8 +163,7 @@ module SolrSearchBehavior
     q = (id) ? [['id', id]] : nil
     
     solr_response = search_with_model_filter(models, q: q, only_one: id != nil, **args)
-
-    results = solr_response['response']['docs'] if args[:raw]
+    results = (args[:raw]) ? solr_response['response']['docs'] : solr_response
     
     if parents
       ids = results.map { |p| p['id'] }
