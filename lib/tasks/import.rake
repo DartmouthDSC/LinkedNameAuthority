@@ -11,6 +11,8 @@ namespace :import do
     puts "[#{Time.now}] Output from Faculty Load\n #{import.output.to_yaml}"
   end
 
+
+  # TODO: Should probably be removed?
   require 'pry'
   desc "View faculty from Oracle."
   task debug: :environment do
@@ -20,4 +22,9 @@ namespace :import do
     end
   end
 
+  desc "Import from all feeds."
+  task all: :environment do
+    Load::People.from_hr_faculty_view
+    Load::Documents.from_elements
+  end
 end
