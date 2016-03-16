@@ -1,5 +1,6 @@
 FactoryGirl.define do
   factory :article, class: Lna::Collection::Document do
+    elements_id   '1234'
     author_list   ['Doe, Jane']
     publisher     'New England Press'
     date          'January 15, 2000'

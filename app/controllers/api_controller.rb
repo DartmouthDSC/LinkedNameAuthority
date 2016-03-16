@@ -73,9 +73,9 @@ class ApiController < ActionController::Base
     
     url_prefix = root_url + namespace
 
-    links = ["<#{url_prefix}1>; ref=\"first\""]
-    links << "<#{url_prefix}#{previous_page}>; ref=\"prev\"" if previous_page
-    links << "<#{url_prefix}#{page + 1}>; ref=\"next\"" if next_page
+    links = ["<#{url_prefix}1>; rel=\"first\""]
+    links << "<#{url_prefix}#{previous_page}>; rel=\"prev\"" if previous_page
+    links << "<#{url_prefix}#{page + 1}>; rel=\"next\"" if next_page
     links.join(', ')
   end
 

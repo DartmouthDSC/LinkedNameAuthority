@@ -2,7 +2,7 @@
 if defined?(id)
   json.set! '@id', id
 else
-  json.set! '@id', '#' + FedoraID.shorten(account['account_ssim'].first)
+  json.set! '@id', '#' + FedoraID.shorten(account['id'])
 end
 json.set! '@type', 'foaf:OnlineAccount'
 json.set! 'dc:title', account['title_tesi']

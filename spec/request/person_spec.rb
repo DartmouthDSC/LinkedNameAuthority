@@ -43,12 +43,24 @@ RSpec.describe "Person API", type: :request, https: true do
       it 'contains homepage' do
         expect_json('@graph.0', :'foaf:homepage' => @jane.homepage)
       end
+
+      it 'contains publications' do
+        expect_json('@graph.0', :'foaf:publications' => person_works_url(person_id: @id))
+      end
+
+      it 'contains accounts list' do
+        expect_json('@graph.0', :'foaf:account' => [])
+      end
+
+      it 'contains membership list' do
+        expect_json('@graph.0.@reverse', :'org:member' => [])
+      end
     end
   end
 
-  describe 'GET person/' do    
-    subject { get person_index_path, {}, format: :jsonld }
-  
+  describe 'GET person/' do      
+    subject { get person_index_path }
+    
     it 'redirects to GET persons/' do
       expect(subject).to redirect_to('/persons')
     end

@@ -72,6 +72,12 @@ RSpec.describe "Organization API", type: :request, https: true do
         it 'contains changed by' do
           expect_json('@graph.0', :'org:changedBy' => '#' + FedoraID.shorten(@old_org.changed_by.id))
         end
+
+        it 'contains change by node in graph' do
+          expect_json('@graph.1', :@type => 'org:ChangeEvent')
+          expect_json('@graph.1',
+                      :'org:originalOrganization' => [organization_url(id: @old_org_id)])
+        end
       end
     end
   end

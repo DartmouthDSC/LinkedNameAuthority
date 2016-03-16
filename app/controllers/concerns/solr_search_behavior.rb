@@ -60,7 +60,10 @@ module SolrSearchBehavior
   # @param ids [Array<String>] list of full fedora ids
   def search_for_ids(ids)
     query = ActiveFedora::SolrQueryBuilder.construct_query_for_ids(ids)
-    ActiveFedora::SolrService.query(query, rows: DEFAULT_MAX_ROWS)
+    logger.debug("Solr ids query: #{query}")
+    results = ActiveFedora::SolrService.query(query, rows: DEFAULT_MAX_ROWS)
+    logger.debug(results.inspect)
+    results
   end
   
   # Searches Solr for a Lna::Person with the given id. If there isn't only one result the

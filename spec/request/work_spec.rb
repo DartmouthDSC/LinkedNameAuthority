@@ -110,7 +110,7 @@ RSpec.describe "Work API", type: :request, https: true do
   end
 
   describe 'GET work/' do
-    subject { get work_index_path, format: :jsonld }
+    subject { get work_index_path }
 
     it 'redirects to GET works/' do
       expect(subject).to redirect_to('/works')
