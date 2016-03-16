@@ -42,7 +42,7 @@ RSpec.describe "Persons API", type: :request, https: true do
     end
 
     it 'includes link headers' do
-      expect_header('Link', "<#{persons_url(page: 1)}>; rel=\"first\"")
+      expect_header('Link', "<#{persons_url(page: 1)}>; rel=\"first\", <#{persons_url(page: 1)}>; rel=\"last\"")
     end
   end
   
@@ -61,6 +61,10 @@ RSpec.describe "Persons API", type: :request, https: true do
 
     it 'search different last name returns 0 results' do
       expect_json_sizes(:@graph => 0)
+    end
+    
+    it 'includes link headers' do
+      expect_header('Link', "<#{persons_url(page: 1)}>; rel=\"first\", <#{persons_url(page: 1)}>; rel=\"last\"")
     end
   end
 end

@@ -160,15 +160,23 @@ module SolrSearchBehavior
 
     q = (id) ? [['id', id]] : nil
     
-    results = search_with_model_filter(models, q: q, only_one: id != nil, **args)
+    solr_response = search_with_model_filter(models, q: q, only_one: id != nil, **args)
 
+    results = solr_response['response']['docs'] if args[:raw]
+    
     if parents
       ids = results.map { |p| p['id'] }
       parent_ids = results.map { |p| p['subOrganizationOf_ssim'] }.flatten.uniq
       parent_ids = parent_ids.reject { |p| ids.include?(p) } # make sure parents aren't in the results already
       results = results + search_for_ids(parent_ids)
     end
-    results
+
+    if args[:raw]
+      solr_response['response']['docs'] = results
+      solr_response
+    else
+      results
+    end
   end
   
   # Search solr with a model filter. This method allows for many solr parameters that are passed
@@ -194,7 +202,7 @@ module SolrSearchBehavior
     args[:q] = q
     args[:rows] = rows if rows
     args[:sort] = sort if sort
-    args[:start] = rows * page if (rows && page && page > 1)
+    args[:start] = (rows * (page - 1)) + 1 if (rows && page && page > 1)
     
     solr_search(args, only_one)
   end

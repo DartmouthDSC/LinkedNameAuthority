@@ -36,7 +36,7 @@ RSpec.describe "Organizations API", type: :request, https: true do
     end
 
     it 'includes link headers' do
-      expect_header('Link', "<#{organizations_url(page: 1)}>; rel=\"first\"")
+      expect_header('Link', "<#{organizations_url(page: 1)}>; rel=\"first\", <#{organizations_url(page: 1)}>; rel=\"last\"")
     end
   end
 
@@ -55,6 +55,10 @@ RSpec.describe "Organizations API", type: :request, https: true do
 
     it 'searches a different identifier and returns 0 results' do
       expect_json_sizes(:@graph => 0)
+    end
+
+    it 'includes link headers' do
+      expect_header('Link', "<#{organizations_url(page: 1)}>; rel=\"first\", <#{organizations_url(page: 1)}>; rel=\"last\"")
     end
   end
 end

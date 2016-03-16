@@ -5,15 +5,18 @@ class PersonsController < ApiController
   # GET /persons
   def index
     @page = params['page']
-    parameters = { rows: MAX_ROWS, sort: 'family_name_ssi asc, given_name_ssi asc' }
     
-    @persons = search_for_persons(**parameters, page: @page)
+    result = search_for_persons(
+      rows: MAX_ROWS,
+      sort: 'family_name_ssi asc, given_name_ssi asc',
+      raw: true,
+      page: @page
+    )
+    @persons = result['response']['docs']
     @organizations = get_primary_orgs(@persons)
 
-    next_page = search_for_persons(**parameters, page: @page + 1).count > 1
-    
     respond_to do |format|
-      response.headers['Link'] = link_headers('persons/', @page, next_page)
+      response.headers['Link'] = link_headers(result['response']['numFound'], MAX_ROWS, @page)
       format.jsonld { render :index, content_type: 'application/ld+json' }
       format.html
     end
@@ -32,15 +35,17 @@ class PersonsController < ApiController
     }
     search_query = query_map.select { |f, _| params[f] }.values.join(" AND ")
     
-    parameters = { rows: MAX_ROWS, q: search_query }
-    
-    @persons = search_for_persons(**parameters, page: page)
+    result = search_for_persons(
+      rows: MAX_ROWS,
+      q: search_query,
+      page: page,
+      raw: true
+    )
+    @persons = result['response']['docs']
     @organizations = get_primary_orgs(@persons)
-
-    next_page = search_for_persons(**parameters, page: page + 1).count != 0
     
     respond_to do |format|
-      response.headers['Link'] = link_headers('persons/', page, next_page)
+      response.headers['Link'] = link_headers(result['response']['numFound'], MAX_ROWS, page)
       format.jsonld { render :search, content_type: 'application/ld+json' }
     end
   end
