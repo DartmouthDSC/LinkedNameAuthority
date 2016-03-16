@@ -25,10 +25,15 @@ module Lna
       end
 
       def to_solr
-        solr_doc = super
-        Solrizer.set_field(solr_doc, 'resultingOrganization', resulting_organization_ids, :symbol)
-        Solrizer.set_field(solr_doc, 'originalOrganization', original_organization_ids, :symbol)
-        solr_doc
+        super.tap do |solr_doc|
+          unless self.resulting_organizations.size.zero?
+            solr_doc['resultingOrganization_ssim'] = self.resulting_organization_ids
+          end
+          
+          unless self.original_organizations.size.zero?
+            solr_doc['originalOrganization_ssim'] = self.original_organization_ids
+          end
+        end
       end
       
       def self.trigger_change_event(active, description, update, end_date = Date.today)

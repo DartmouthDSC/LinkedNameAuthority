@@ -20,7 +20,9 @@ class OrganizationController < CrudController
     @accounts = search_for_accounts(account_holder_id: @organization['id'])
 
     ids = ['resultedFrom_ssim', 'changedBy_ssim'].map{ |i| @organization[i] }.compact.flatten
+    logger.debug("ids: #{ids}")
     @change_events = search_for_ids(ids)
+    logger.debug(@change_events)
     
     super
   end
