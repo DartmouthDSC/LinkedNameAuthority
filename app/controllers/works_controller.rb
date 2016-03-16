@@ -6,18 +6,16 @@ class WorksController < ApiController
   def index
     page = params[:page]
 
-    parameters = {
+    result = search_for_works(
       start_date: params[:start_date] || nil,
       rows: MAX_ROWS,
-      sort: 'date_dtsi desc, author_list_ssi asc'
-    }
-
-    @works = search_for_works(**parameters, page: page)
-    
-    next_page = search_for_works(**parameters, page: page + 1).count != 0
+      sort: 'date_dtsi desc, author_list_ssi asc',
+      page: page,
+      raw: true)
+    @works = result['response']['docs']
     
     respond_to do |f|
-      response.headers['Link'] = link_headers('works/', page, next_page)
+      response.headers['Link'] = link_headers(result['response']['numFound'], MAX_ROWS, page)
       f.jsonld { render :index, content_type: 'application/ld+json' }
     end
   end
@@ -36,17 +34,17 @@ class WorksController < ApiController
     }
     search_query = query_map.select{ |f, _| params[f] }.values.join(" AND ")
     
-    parameters = {
+    result = search_for_works(
       start_date: params[:start_date] || nil,
       rows: MAX_ROWS,
-      q: search_query
-    }
-    @works = search_for_works(**parameters, page: page)
+      q: search_query,
+      page: page,
+      raw: true
+    )
 
-    next_page = search_for_works(**parameters, page: page + 1).count != 0
-    
+    @works = result['response']['docs']
     respond_to do |f|
-      response.headers['Link'] = link_headers('works/', page, next_page)
+      response.headers['Link'] = link_headers(result['response']['numFound'], MAX_ROWS, page)
       f.jsonld { render :search, content_type: 'application/ld+json' }
     end
   end

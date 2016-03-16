@@ -13,6 +13,8 @@ module SolrSearchBehavior
   # @param only_one [Boolean] flag to limit results to only one
   # @return [Hash, RSolr::Response::PaginatedDocSet] document(s) returned by search
   def solr_search(params, only_one = false)
+    raise 'only_one flag cannot be used in cujunction with raw param' if params[:raw] && only_one
+    
     logger.debug("Solr params: #{params.to_s}")
     results = ActiveFedora::SolrService.query(params[:q], params)
 
@@ -82,14 +84,14 @@ module SolrSearchBehavior
   # @param id [String]
   # @param account_holder_id [String]
   # @param orcid [Boolean]
-  def search_for_accounts(id: nil, account_holder_id: nil, orcid: false)
+  def search_for_accounts(id: nil, account_holder_id: nil, orcid: false, **args)
     q = []
     q << ['account_ssim', account_holder_id] if account_holder_id
     q << ['id', id] if id
     q << ['title_tesi', 'ORCID'] if orcid
 
     only_one = orcid || ( id != nil )
-    search_with_model_filter(Lna::Account, q: q, only_one: only_one)
+    search_with_model_filter(Lna::Account, q: q, only_one: only_one, **args)
   end
 
   # Searches for an account of the person given that has a "ORCID" as its title.
@@ -104,12 +106,12 @@ module SolrSearchBehavior
   # 
   # @param id [String]
   # @param person_id [String]
-  def search_for_memberships(id: nil, person_id: nil)
+  def search_for_memberships(id: nil, person_id: nil, **args)
     q = []
     q << [ 'hasMember_ssim', person_id ] if person_id
     q << [ 'id', id ] if id
     
-    search_with_model_filter(Lna::Membership, q: q, only_one: id != nil)
+    search_with_model_filter(Lna::Membership, q: q, only_one: id != nil, **args)
   end
 
   # Search for a works based on id, collection id, start_date or any combination.
@@ -133,13 +135,13 @@ module SolrSearchBehavior
     search_with_model_filter(Lna::Collection::Document, q: q, only_one: id != nil, **args)
   end
 
-  def search_for_licenses(id: nil, document_id: nil)
+  def search_for_licenses(id: nil, document_id: nil, **args)
     q = []
     q << ['id', id] if id
     q << ['license_ref_ssim', document_id] if document_id
 
     search_with_model_filter([Lna::Collection::FreeToRead, Lna::Collection::LicenseReference],
-                             q: q, only_one: id != nil)
+                             q: q, only_one: id != nil, **args)
   end
 
   # Search for active organization only.
@@ -160,15 +162,22 @@ module SolrSearchBehavior
 
     q = (id) ? [['id', id]] : nil
     
-    results = search_with_model_filter(models, q: q, only_one: id != nil, **args)
-
+    solr_response = search_with_model_filter(models, q: q, only_one: id != nil, **args)
+    results = (args[:raw]) ? solr_response['response']['docs'] : solr_response
+    
     if parents
       ids = results.map { |p| p['id'] }
       parent_ids = results.map { |p| p['subOrganizationOf_ssim'] }.flatten.uniq
       parent_ids = parent_ids.reject { |p| ids.include?(p) } # make sure parents aren't in the results already
       results = results + search_for_ids(parent_ids)
     end
-    results
+
+    if args[:raw]
+      solr_response['response']['docs'] = results
+      solr_response
+    else
+      results
+    end
   end
   
   # Search solr with a model filter. This method allows for many solr parameters that are passed
@@ -184,21 +193,19 @@ module SolrSearchBehavior
   # @param sort [String, nil]  sort solr parameter 
   # @param page [Integer, nil] page of results to be displayed.
   def search_with_model_filter(model, q: nil, only_one: false, rows: DEFAULT_MAX_ROWS, sort: nil,
-                               page: nil)
+                               page: nil, **args)
     raise ArgumentError, 'Cannot calculate start param without rows.' if page && !rows
     
     q = '*:*' if q.blank?
     q = field_query(q) if q.is_a? Array
     
-    params = {
-      fq: model_filter(model),
-      q: q
-    }
-    params[:rows] = rows if rows
-    params[:sort] = sort if sort
-    params[:start] = rows * page if (rows && page && page > 1)
+    args[:fq] = model_filter(model),
+    args[:q] = q
+    args[:rows] = rows if rows
+    args[:sort] = sort if sort
+    args[:start] = (rows * (page - 1)) + 1 if (rows && page && page > 1)
     
-    solr_search(params, only_one)
+    solr_search(args, only_one)
   end
 
   private
