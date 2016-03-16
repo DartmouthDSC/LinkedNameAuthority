@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-RSpec.describe Importer do
+RSpec.describe Load::People do
   before :context do
-    @import = Importer.new
+    @import = Load::People.new(title: 'Test Person Load')
   end
   
   describe '#into_lna' do

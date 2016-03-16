@@ -80,6 +80,10 @@ module Lna
                multiple: false do |index|
         index.as :displayable
       end
+
+      property :elements_id, predicate: Vocabs::LNA.elementsID, multiple: false do |index|
+        index.as :stored_searchable
+      end
       
       def date=(d)
         if d.is_a? String

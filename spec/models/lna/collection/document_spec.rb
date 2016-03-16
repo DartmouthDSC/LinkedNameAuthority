@@ -36,6 +36,10 @@ RSpec.describe Lna::Collection::Document, type: :model do
     it 'is persisted' do
       expect(subject.persisted?).to be_truthy
     end
+
+    it 'sets elements id' do
+      expect(subject.elements_id).to eql '1234'
+    end
     
     it 'sets author_list' do
       expect(subject.author_list).to eql ['Doe, Jane']
