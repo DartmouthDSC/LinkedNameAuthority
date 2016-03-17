@@ -376,6 +376,26 @@ footer{
     margin-top: 1em;
 }
 
+.formTwoColumn{
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    /*flex-flow: row wrap;*/
+}
+.formTwoColumn > div{
+    display: flex;
+    flex-direction: row;
+}
+.formTwoColumn div label{
+    width: 15%;
+    min-width: 130px;
+    text-align: right;
+    margin-right: .3em;
+}
+.formTwoColumn button{
+    margin: 1em 2em .4em;
+}
+
 /* tk remove */
 
 /*.formInline{

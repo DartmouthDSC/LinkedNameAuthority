@@ -55,7 +55,23 @@
 	                      "skos:alt_label": [],
 	                      "owltime:hasBeginning": null,
 	                      "owltime:hasEnd": ""}
-	                    }                   
+	                    },
+	        'newWork': 	  {'method': 'POST', 'path': 'work/', 'template': {
+	        			  'dc:title': null,
+	        			  'bibo:authorsList[]': null,
+	        			  'dc:abstract': null,
+	        			  'bibo:doi': '',
+	        			  'bibo:uri[]': [],
+	        			  'bibo:volume': '',
+	        			  'bibo:pages': '',
+	        			  'bibo:pageStart': '',
+	        			  'bibo:pageEnd': '',
+	        			  'dc:publisher': '',
+	        			  'dc:subject[]': [],
+	        			  'dc:bibliographicCitation': '',
+	        			  'dc:creator': null}
+	        			}
+	        
 	    };
 	};
 
@@ -117,7 +133,10 @@
         		return false;
        		}
 
-        	handle.submitQuery(query, formData);
+       		var opt = '';
+       		if($formElement.data('opt') !== "undefined") opt = $formElement.data('opt');
+
+        	handle.submitQuery(query, formData, null, opt);
 
         	return false;
 			});
@@ -146,6 +165,18 @@
         		if(v.name == 'authenticity_token' && handle.options.authenticity_token) data[v.name] = v.value;
       		});
 
+      		//If the form has fields with tag behavior, split those fields into an array.
+      		var delimiter = false;
+      		if(typeof $formElement.data('tag-delimiter') !== "undefined") delimiter = $formElement.data('tag-delimiter');
+      		if(delimiter){
+      			$formElement.find('input').each(function(i, v){
+      				if($(v).hasClass('tagBehavior') && typeof data[v.name] === "string") data[v.name] = data[v.name].split(delimiter);
+      			});
+      		} 		
+
+      		console.log(data)
+
+      		//validate and errors
       		var fail = false;
       		$.each(data, function(k,v){
         		if(data[k]===null){
@@ -161,12 +192,15 @@
     	},
 
     	'submitQuery': function(query, formData, fn, opt){
+    		console.log(formData)
+    		if(typeof fn === "undefined" || fn == null) fn = function(){ return false };
     		if(typeof opt === "undefined") opt = '';
 	     	var queryData = this.queries[query];
+	     	console.log(queryData.method)
     	 	$.ajax({
 	    	    "url": this.options.baseURL + queryData.path + opt,
 	        	"method": queryData.method,
-		        "accepts": "application/ld+json",
+		        "accepts": {"json": "application/ld+json"},
 		        "data": formData,
 		        "dataType": "json",
 		        "success": fn
@@ -191,14 +225,22 @@
 	    		return data;
 	    	},
     		'person': function(xhrData){
-	    		var data = {'person': [], 'orgs': [], 'accounts': [], 'appointments': []};
+	    		var data = {'person': [], 'accounts': [], 'memberships': [], 'orgs': []};
 
 	    		$.each(xhrData['@graph'], function(i, v){
-	    			if(v['@type']=='foaf:Person'){
-	    				data.person = v;
-	    			}
+	    			if(v['@type']=='foaf:Person') data.person = v;
+					// if(v['@type']=='org:Membership') data.memberships.push(v);
+					if(v['@type']=='foaf:OnlineAccount') data.accounts.push(v);
+					if(v['@type']=='org:Organization') data.orgs.push(v);
 	    		});
-
+	    		$.each(xhrData['@graph'], function(i, v){
+	    			if(v['@type']=='org:Membership'){
+		    			var org = $.grep(data.orgs, function(o){ return v['org:organization'] == o['@id']});
+		    			if(org.length > 0) v.orgLabel = org[0]['skos:prefLabel'];
+		    			else v.orgLabel = '';
+		    			data.memberships.push(v);
+		    		}
+	    		});
 
 	    		return data;
 	    	}	    	

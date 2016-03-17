@@ -11,10 +11,6 @@
                     <h1></h1>
                     <div><span class="spinner"></span></div>
                     <ul class="iconList">
-                        <li class="netID"><button href="#" title="">F039E2B</button></li>
-                        <li class="orcid"><button href="#">0000-0003-0514-1585</button></li>
-                        <li class="plum"><button href="#">jbell</button></li>
-                        <li class="academia"><button href="#">JohnBell</button></li>
                         <li class="add"><button href="#">Add ID</button></li>
                     </ul>
                 </div>
@@ -29,7 +25,7 @@
                     <button title="add affiliation" id="newAffiliation" data-toggle="modal" data-target="#newAffiliationModal"><span class="add"></span>Add New Affiliation</button>
                 </div>
                 <div class="work">
-                <h1>Work</h1>                    
+                <h1>Works</h1>                    
                     <ul class="iconList">
                         <li><span class='spinner'></span></li>
                     </ul>
@@ -40,6 +36,10 @@
         <section id="templates">
         <%= render "shared/templates/cards_affiliation" %>
         <%= render "shared/templates/cards_work" %>
+        <%= render "shared/templates/cards_account" %>
+        </section>
+        <section id="modals">
+        <%= render "shared/modals/new_work" %>
         </section>        
 		<script>
         $(document).ready(function(){
