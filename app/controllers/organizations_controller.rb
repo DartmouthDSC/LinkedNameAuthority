@@ -6,14 +6,17 @@ class OrganizationsController < ApiController
   def index
     page = params['page']
 
-    parameters = { rows: MAX_ROWS, sort: 'label_ssi asc' }
-    
-    @organizations = search_for_active_organizations(**parameters, parents: true, page: page)
-
-    next_page = search_for_active_organizations(**parameters, page: page + 1).count != 0
+    result = search_for_active_organizations(
+      rows: MAX_ROWS,
+      sort: 'label_ssi asc',
+      parents: true,
+      page: page,
+      raw: true
+    )
+    @organizations = result['response']['docs']
 
     respond_to do |format|
-      response.headers['Link'] = link_headers('organizations/', page, next_page)
+      response.headers['Link'] = link_headers(result['response']['numFound'], MAX_ROWS, page)
       format.jsonld { render :index, content_type: 'application/ld+json' }
       format.html
     end
@@ -32,14 +35,17 @@ class OrganizationsController < ApiController
     }
     search_query = query_map.select{ |f, _| params[f] }.values.join(" AND ")
     
-    parameters = { rows: MAX_ROWS, q: search_query }
-
-    @organizations = search_for_organizations(**parameters, parents: true, page: page)
-
-    next_page = search_for_persons(**parameters, page: page + 1).count != 0
+    result = search_for_organizations(
+      rows: MAX_ROWS,
+      q: search_query,
+      parents: true,
+      page: page,
+      raw: true
+    )
+    @organizations = result['response']['docs']
 
     respond_to do |f|
-      response.headers['Link'] = link_headers('organizations/', page, next_page)
+      response.headers['Link'] = link_headers(result['response']['numFound'], MAX_ROWS, page)
       f.jsonld { render :search, content_type: 'application/ld+json' }
     end
   end
