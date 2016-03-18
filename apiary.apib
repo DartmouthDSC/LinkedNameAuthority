@@ -19,7 +19,7 @@ LNA API for Dartmouth College (v0.2.0)
 - /person/{person_id}/works/{start_date} - GET
 - /works/{page} - GET, POST
 - /works/{start_date}/{page} - GET, POST
-- /work/ - POST
+- /work/{person_id} - POST
 - /work/{id} - GET, PUT, DELETE
 - /work/{work_id}/license/ - POST
 - /work/{work_id}/license/{id} - PUT, DELETE
@@ -979,7 +979,10 @@ Works are sorted by relevance. Paginated by *page*, with 100 results per page.
 
 Note that the fields shown here are representative and will vary from work to work.
 
-### Create a new work [POST /work/]
+### Create a new work [POST /work/{person_id}]
+
++ Parameters
+    + person_id (required) - ID of the Work's primary author.
 
 + Request (application/ld+json)
 

@@ -68,17 +68,22 @@ class ApiController < ActionController::Base
     end
   end
   
-  def link_headers(namespace, page, next_page)
-    previous_page = (page == 1) ? nil : page - 1;
+  def link_headers(total, rows, page)
+    links = { first: 1, last: total.fdiv(rows).ceil }
+    links[:last] = 1 if links[:last].zero?
     
-    url_prefix = root_url + namespace
-
-    links = ["<#{url_prefix}1>; rel=\"first\""]
-    links << "<#{url_prefix}#{previous_page}>; rel=\"prev\"" if previous_page
-    links << "<#{url_prefix}#{page + 1}>; rel=\"next\"" if next_page
-    links.join(', ')
+    if page > links[:last]
+      links[:prev] = links[:last]
+    elsif page > 1
+      links[:prev] = page - 1
+    end
+  
+    links[:next] = page + 1 if page * rows < total
+    
+    links.map{ |k, v| "<#{url_for controller: controller_name, page: v}>; rel=\"#{k}\"" }.join(', ')
   end
 
+  
   # Helper method to map parameters send in request of body to model attributes.
   #
   # @private
