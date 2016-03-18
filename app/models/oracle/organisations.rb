@@ -35,10 +35,10 @@ module Oracle
       end
 
 #     Our full hash.
-      hash = { :name         => self.organization,
+      hash = { :label        => self.organization,
                :org_id       => self.organization_id,
                :long_name    => self.org_long_name,
-               :short_code   => self.org_short_code,
+               :code         => self.org_short_code,
                :type         => self.org_type,
                :hb           => self.hb,
                :gl_org_value => self.gl_org_value,

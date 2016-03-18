@@ -8,7 +8,7 @@ module Load
     
 ##  ORG_TYPE  COUNT(ORG_TYPE)
 ##  -------------------------
-##  TPP       2
+##  TPP       2   [ IGNORE THESE; THEY'LL BE REMOVED FROM THE VIEW ]
 ##  SCH       4
 ##  DIV       5
 ##  ACAD DIV  7
@@ -16,7 +16,7 @@ module Load
 ##  SUBUNIT   99
 ##  DEPT      217
 ##  UNIT      348
-    
+
     def self.from_hr
       batch_load(title: HR_ORG_IMPORT_TITLE,
                  verbose: true,
@@ -28,8 +28,7 @@ module Load
           'SUBDIV',
           'DEPT',
           'UNIT',
-          'SUBUNIT',
-          'TPP' ].each do |orgType|
+          'SUBUNIT' ].each do |orgType|
           Oracle::Organizations.find_by(org_type: orgType) do |org|
             loader.into_lna(org.to_hash);
           end
@@ -39,49 +38,53 @@ module Load
 
 #   Creates or updates Lna objects for the person described by the given hash.
 #
-# @example Example of hash 
-#   lna_hash = { netid: 'd00000k',
-#                person: {
-#                          full_name:   'Carla Galarza',
-#                          given_name:  'Carla',
-#                          family_name: 'Galarza',
-#                          mbox:        'Carla.Galarza@dartmouth.edu',
-#                          homepage:    ['www.dartmouth.edu/d00000k']
-#                        },
-#                membership: {
-#                              primary: true
-#                              title: 'Programmer/Analyst',
-#                              org: {
-#                                     label: 'Library',
-#                                     alt_label: ['DLC']
-#                                     code:  'LIB'
-#                                    }
-#                            },
-#               }
+#   @example Example of hash 
+#     lna_hash = { 
+#                  label: 'Library',
+#                  alt_label: ['DLC']
+#                  code:  'LIB'
+#                }
 #
-# @param hash [Hash] hash containing person, account and membership info
-# @return [Lna::Person] person that was created or updated
+#   @param hash [Hash] hash containing organization info
+#   @return [Lna::Organization] organization that was created or updated
     def into_lna(hash = {})
-###   EJB
-      begin
-        if hash.key?(:netid) && hash[:netid]
-          into_lna_by_netid(hash[:netid], hash)
-        else
-          raise NotImplementedError, 'Can only import if netid is present.'
+      raise ArgumentError, 'Must have a label to find or create an organization.' unless hash[:label]
+
+#     Probably throws errors too
+      orgs = Lna::Organization.where(hash)
+      if orgs.count == 1
+        return orgs.first
+      elsif orgs.count == 0
+        if hash.key? :code
+          orgs = Lna::Organization.where(code: hash[:code])
+          if orgs.count > 1
+            raise "There are two organizations with #{hash[:code]} as their code."
+          elsif orgs.count == 1
+#           Trigger a change event here because data has changed.
+            return orgs.first
+          end
         end
-      rescue NotImplementedError => e
-        add_to_errors(e.message, hash.to_s)
-        raise if throw_errors
-      rescue ArgumentError => e
-        add_to_errors(e.message, hash.to_s)
-        raise if throw_errors
-      rescue StandardError => e
-        value = (hash[:person] && hash[:person][:full_name]) ?
-                  "#{hash[:person][:full_name]}(#{hash[:netid]})" :
-                  hash[:netid]
-        add_to_errors(e.message, value)
-        raise if throw_errors
-      end  
+#       If did not find the organization by code, create a new one.
+        org = Lna::Organization.create!(hash) do |o|
+#	  EJB: Should be hash[:begin_date]...
+          o.begin_date = Date.today
+#         EJB: How to express org:hasSubOrganization/org:subOrganizationOf?
+#         EJB: e.g.:
+#         EJB: if hash[:type] == 'SCH'
+#         EJB:   o. ... org:subOrganizationOf, hash[:division]
+#         EJB: elsif hash[:type] == 'UNIT'
+#         EJB:   o. ... org:subOrganizationOf, hash[:department]
+#         EJB: elsif hash[:type] == 'DEPT'
+#         EJB:   o. ... org:subOrganizationOf, hash[:sub_division]
+#         EJB: ...
+#         EJB: end
+        end
+        value = hash[:code] ? "#{hash[:label]}(#{hash[:code]})" : hash[:label]
+        add_to_warnings(NEW_ORG, value)
+        return org
+      else
+        raise "More than one organization matched the fields: #{hash.to_s}."
+      end
     end
 
   end
