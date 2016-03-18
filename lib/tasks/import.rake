@@ -1,16 +1,10 @@
 namespace :import do
 
+  # TODO: Should be eventually deleted.
   desc "Import faculty from Oracle."
   task oracle_faculty: :environment do
-    require 'yaml'
-    import = Importer.new(title: 'HR-faculty', verbose: true, throw_errors: false, emails: ENV['IMPORTER_EMAIL_NOTICES'])
-    Oracle::Faculty.find_each do |person|
-      import.into_lna(person.to_hash)
-    end
-    import.send_email
-    puts "[#{Time.now}] Output from Faculty Load\n #{import.output.to_yaml}"
+    Load::People.from_hr_faculty_view
   end
-
 
   # TODO: Should probably be removed?
   require 'pry'
