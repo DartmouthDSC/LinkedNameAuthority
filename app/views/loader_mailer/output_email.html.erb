@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'/>
+  </head>
+  <body>
+	<% if @title %>
+	  <h2><%= @title %></h2>
+	<% end %>
+	
+	<% @output.each do |name, notices| %>
+	  <% if notices.empty? %>
+		<p>No <%= name.pluralize %> were produced by the import.</p>
+	  <% else %>
+		<% num_of_notices = notices.values.collect(&:count).sum %>
+		<h3><%= num_of_notices %> <%= name.pluralize(num_of_notices).capitalize %></h3>
+	    <ul>
+		  <% notices.each do |key, values| %>
+		    <li><%= key =%></li>
+	        <ul>
+			  <% values.each do |v| %>
+	            <li><%= v =%></li>
+			  <% end %>
+		    </ul>
+		  <% end %>
+	    </ul>
+	  <% end %>
+	<% end %>
+  </body>
+</html>
