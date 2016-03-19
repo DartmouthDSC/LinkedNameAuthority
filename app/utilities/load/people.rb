@@ -1,6 +1,6 @@
 module Load
   class People < Loader
-    HR_FACULTY_IMPORT_TITLE = 'People from HR faculty view'
+    HR_FACULTY_LOADER_TITLE = 'People from HR faculty view'
     
     # Keys for warnings hash.
     NEW_ORG = 'new organization'
@@ -8,22 +8,18 @@ module Load
     NEW_MEM = 'new membership'
     NEW_ACCOUNT = 'new account'
     CHANGE_PRIMARY_ORG = 'changes primary org'
-    SENT_EMAIL = 'Sent email'
     
     def self.from_hr_faculty_view
-      batch_load(title: HR_FACULTY_IMPORT_TITLE, verbose: true, throw_errors: false,
-                   emails: ENV['IMPORTER_EMAIL_NOTICES']) do |loader|
+      batch_load(HR_FACULTY_IMPORT_TITLE) do |loader|
         Oracle::Faculty.find_each do |person|
           loader.into_lna(person.to_hash)
         end
-        loader.send_email
-        puts "[#{Time.now}] Output from Faculty Load\n #{import.output.to_yaml}"
       end
     end
     
     # Creates or updates Lna objects for the person described by the given hash.
     #
-    # @example Example of hash 
+    # @example Example of hash
     #   lna_hash = { netid: 'd00000k',
     #                person: {
     #                          full_name:   'Carla Galarza',
@@ -52,46 +48,25 @@ module Load
         else
           raise NotImplementedError, 'Can only import if netid is present.'
         end
-      rescue NotImplementedError => e
-        add_to_errors(e.message, hash.to_s)
-        raise if throw_errors
-      rescue ArgumentError => e
-        add_to_errors(e.message, hash.to_s)
-        raise if throw_errors
-      rescue StandardError => e
+      rescue NotImplementedError, ArgumentError => e
+        log_error(e, hash.to_s)
+      rescue => e
         value = (hash[:person] && hash[:person][:full_name]) ?
                   "#{hash[:person][:full_name]}(#{hash[:netid]})" :
                   hash[:netid]
-        add_to_errors(e.message, value)
-        raise if throw_errors
+        log_error(e, value)
       end  
-    end
-    
-    def send_email
-      raise(ArgumentError, 'No email provided.') unless emails
-      
-      ImporterMailer.output_email(title, emails, self.output).deliver_now
-      t = Time.now
-      add_to_warnings(SENT_EMAIL, "to #{emails.join(', ')} on #{t.strftime('%c')}")
-    end
-    
-    # Combine errors and warnings hash into one. Warnings will only be combined if the verbose
-    # flag is true.
-    def output
-      output = Hash.new
-      output['error'] = errors unless errors.empty?
-      output['warning'] = warnings if !warnings.empty? && verbose
-      output
     end
     
     private
     
-    # Creates or updates Lna objects for the person that has the given netid.
+    # Creates or updates Lna objects for the person that has the given netid. Importing people
+    # will not create organizations. Any organizations used should already by present.
     #
     # @private
     #
     # @param netid [String] Dartmouth identifier
-    # @param hash [Hash] hash containing  person, account and membership info
+    # @param hash [Hash] hash containing person, account and membership info
     # @return [Lna::Person] person that was created or updated
     def into_lna_by_netid(netid, hash = {})
       # Argument checking.
@@ -101,25 +76,16 @@ module Load
         raise ArgumentError, 'Membership must have an organization.'
       end
       
-      account_hash = { account_name: netid }.merge(Lna::Account::DART_PROPERTIES)
-      accounts = Lna::Account.where(account_hash)
-      
-      if accounts.count > 1
-        raise "More than one account has this netid."
-      elsif accounts.count == 1  # Update person.
-        person = accounts.first.account_holder
-        
-        raise "Netid is associated with a #{person.class}." unless person.is_a?(Lna::Person)
-        
+      if person = find_person_by_netid(netid)
         # Update person record.
         person.update(hash[:person]) if hash[:person]
         
         # Update primary organization, if necessary.
         if hash[:membership][:primary]
-          org = find_or_create_org(hash[:membership][:org])
+          org = find_organization(hash[:membership][:org])
           unless org.id == person.primary_org.id
             person.primary_org = org
-            add_to_warnings(CHANGE_PRIMARY_ORG, "#{person.full_name}(#{netid})")
+            log_warning(CHANGE_PRIMARY_ORG, "#{person.full_name}(#{netid})")
           end
           person.save
         end
@@ -132,11 +98,11 @@ module Load
         else
           mem = Lna::Membership.create!(mem_hash) do |m|
             m.person = person
-            m.organization = find_or_create_org(hash[:membership][:org])
+            m.organization = find_organization(hash[:membership][:org])
             m.begin_date = Date.today
           end
           person.save!
-          add_to_warnings(NEW_MEM, "'#{mem.title}' for #{person.full_name}(#{netid})")
+          log_warning(NEW_MEM, "'#{mem.title}' for #{person.full_name}(#{netid})")
         end
       else   # Create new person.
         # Checking arguments.
@@ -147,20 +113,20 @@ module Load
         end
         
         # Find or create primary org.
-        org = find_or_create_org(hash[:membership][:org])
+        org = find_organization(hash[:membership][:org])
         
         # Make person and set primary org.
         person = Lna::Person.create!(hash[:person]) do |p|
           p.primary_org = org
         end
         
-        add_to_warnings(NEW_PERSON, "#{person.full_name}(#{netid})")
+        log_warning(NEW_PERSON, "#{person.full_name}(#{netid})")
         
         # Make account and set as account for person.
         accnt = Lna::Account.create!(account_hash) do |a|
           a.account_holder = person
         end
-        add_to_warnings(NEW_ACCOUNT, "#{accnt.title} account for #{person.full_name}(#{netid})")
+        log_warning(NEW_ACCOUNT, "#{accnt.title} account for #{person.full_name}(#{netid})")
       
         # Make membership, belonging to org and person.
         mem_hash = clean_mem_hash(hash[:membership])
@@ -169,13 +135,71 @@ module Load
           m.organization = org
           m.begin_date = Date.today
         end
-        add_to_warnings(NEW_MEM, "'#{mem.title}' for #{person.full_name}(#{netid})")
+        log_warning(NEW_MEM, "'#{mem.title}' for #{person.full_name}(#{netid})")
         
         person.save
       end
       person  
     end
+
+    # Find dartmouth account with the matching netid.
+    #
+    # @param netid [String] netid to lookup
+    # @return [nil] if no matching account was found
+    # @return [Lna::Account] if one matching account was found
+    def find_dart_account(netid)
+      account_hash = { account_name: netid }.merge(Lna::Account::DART_PROPERTIES)
+      accounts = Lna::Account.where(account_hash)
+
+      case accounts.count
+      when 0
+        nil
+      when 1
+        accounts.first
+      else
+        raise ArgumentError, "More than one account has this netid."
+      end
+    end
+
+    # Find person with the matching netid.
+    #
+    # @param netid [String] netid to lookup
+    # @return [nil] if no matching person was found
+    # @return [Lna::Person] if one matching person was found
+    def find_person_by_netid(netid)
+      if account = find_dart_account(netid)
+        acnt_holder = account.account_holder
+        raise "Netid is associated with a #{acnt_holder.class}." unless person.is_a?(Lna::Person)
+        acnt_holder
+      else
+        nil
+      end
+    end
     
+    
+    # Find organization based on hash given.
+    # @example Usage
+    #   org = { label: 'Library', code: 'LIB' }
+    #   find_organization(org)
+    #
+    # @param hash [Hash] information used to look up organization
+    def find_organization(hash)
+      orgs = Lna::Organization.where(hash)
+      orgs = Lna::Organization::Historic.where(hash) if orgs.count.zero?
+      
+      hash_str = hash.to_a.map{ |i| i.join(': ') }.join(', ')
+      
+      case orgs.count
+      when 1
+        orgs.first
+      when 0
+        raise ArgumentError, "organization with the values #{hash_str} could not be found"
+      else
+        raise ArgumentError, "more than one organization with the value #{hash_str} was found"
+      end
+    end
+
+    # CAN BE DELETED?
     #TODO: Move method to Lna::Organization?
     # @example Usage
     # org = { label: 'Library',
@@ -196,7 +220,8 @@ module Load
         end
       end
     end
-    
+
+    # CAN BE DELETED?
     #TODO: When comparing make sure that its case insensitive. Might already be based on how .where
     # works.
     def find_or_create_org(hash)
@@ -220,7 +245,7 @@ module Load
           o.begin_date = Date.today
         end
         value = hash[:code] ? "#{hash[:label]}(#{hash[:code]})" : hash[:label]
-        add_to_warnings(NEW_ORG, value)
+        log_warning(NEW_ORG, value)
         return org
       else
         raise "More than one organization matched the fields: #{hash.to_s}."

@@ -2,7 +2,7 @@ require 'symplectic/elements/users'
 
 module Load
   class Documents < Loader
-    ELEMENTS_IMPORT_TITLE = 'Documents from Elements'
+    ELEMENTS_LOADER_TITLE = 'Documents from Elements'
 
     # Keys for warnings hash.
     NEW_DOCUMENT = 'new document'
@@ -22,30 +22,27 @@ module Load
     #          2. If there isn't a publication record create a new record and attach it to the
     #             user, otherwise continue to the next publication.
     def self.from_elements
-      # Get the last import.
-      i = Import.where(load: ELEMENTS_IMPORT_TITLE, success: true).order(time_started: :asc).first
-      last_import = (i) ? i.time_started : nil
-      # puts last_import.class.name # is Time, will throw errors in very near future.
-
-      batch_load(title: ELEMENTS_IMPORT_TITLE, verbose: true, throw_errors: false) do |load|
+      batch_load(ELEMENTS_IMPORT_TITLE) do |load|
         begin
+          # Get the last import.
+          i = Import.where(load: ELEMENTS_LOADER_TITLE,
+                           success: true).order(time_started: :asc).first
+          last_import = (i) ? i.time_started : nil
+          
           users = Symplectic::Elements::Users.get_all(modified_since: last_import)
-        rescue Exception => e
-          load.add_to_errors(e.message, 'while retrieving users.')
-          (load.throw_errors) ? raise : break
+        rescue StandardError => e
+          load.log_error(e, 'while retrieving users.')
+          break
         end
                        
         users.each do |user|
           begin
-            puts user.proprietary_id
             publications = user.publications(modified_since: last_import)
           rescue StandardError => e
-            if user.propritary_id
-              load.add_to_errors(e.message, user.proprietary_id)
-            else
-              load.add_to_errors(e.message, "Elements id: #{user.id}")
-            end
-            (load.throw_errors) ? raise : next
+            id = (user.proprietary_id) ?
+                   "Proprietary id: #{user.proprietary_id}" : "Elements id: #{user.id}"
+            load.log_errors(e, id)
+#            next
           ensure
             next unless publications # If there aren't any modified publications, skip.
           end
@@ -68,14 +65,11 @@ module Load
 
               load.into_lna(hash)
             rescue StandardError => e
-              load.add_to_errors(e.message,
-                            "Elements document #{publication.id} for #{user.proprietary_id}")
-              (load.throw_errors) ? raise : next
+              load.log_error(e,"Elements document #{publication.id} for #{user.proprietary_id}")
+              next
             end
           end
         end
-        puts load.errors
-        byebug
       end
     end
     
@@ -96,7 +90,7 @@ module Load
                                  account_name: hash[:netid])
       
       if acnts.count.zero?  # Could not find Person.
-        add_to_warnings(PERSON_RECORD_NOT_FOUND, hash[:netid])
+        log_warning(PERSON_RECORD_NOT_FOUND, hash[:netid])
         return
       elsif acnts.count > 1
         raise "More than one account for #{hash[:netid]}" 
@@ -117,10 +111,8 @@ module Load
       end
       
       warning_text = (d.elements_id) ?
-                       "elements id #{d.elements_id}" :
-                       "title #{d.title}"
-      add_to_warnings(NEW_DOCUMENT,
-                      "for #{hash[:netid]} with the #{warning_text}")
+                       "elements id #{d.elements_id}" : "title #{d.title}"
+      log_warning(NEW_DOCUMENT, "for #{hash[:netid]} with the #{warning_text}")
     end
   end
 end
