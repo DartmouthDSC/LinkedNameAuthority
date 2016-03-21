@@ -51,6 +51,14 @@ RSpec.describe "Organization API", type: :request, https: true do
         it 'contains alt label' do
           expect_json('@graph.0', :'skos:altLabel' => @org.alt_label)
         end
+
+        it 'contains purpose' do
+          expect_json('@graph.0', :'org:purpose' => @org.purpose)
+        end
+
+        it 'contains hinman box' do
+          expect_json('@graph.0', :'vcard:postal-box' => @org.hinman_box)
+        end
       end
     end
 
@@ -113,7 +121,9 @@ RSpec.describe "Organization API", type: :request, https: true do
             'org:identifier'       => 'its',
             'skos:pref_label'      => 'Dartmouth Information Technology Services',
             'skos:alt_label'       => ['ITS'],
-            'owltime:hasBeginning' => '2013-06-01'
+            'owltime:hasBeginning' => '2013-06-01',
+            'vcard:postal-box'     => '0000',
+            'org:purpose'          => 'SUBDIV'
           }
 
           post organization_index_path, body.to_json, {
@@ -140,6 +150,14 @@ RSpec.describe "Organization API", type: :request, https: true do
           
           it 'contains alt labels' do
             expect_json(:'skos:altLabel' => ['ITS'])
+          end
+
+          it 'contains purpose' do
+            expect_json(:'org:purpose' => 'SUBDIV')
+          end
+
+          it 'contains postal box' do
+            expect_json(:'vcard:postal-box' => '0000')
           end
         end
       end
@@ -168,7 +186,9 @@ RSpec.describe "Organization API", type: :request, https: true do
             'org:identifier'       => 'LIBR',
             'skos:pref_label'      => 'Dartmouth College Library',
             'skos:alt_label'       => ['Library'],
-            'owltime:hasBeginning' => '1974-01-01'
+            'owltime:hasBeginning' => '1974-01-01',
+            'vcard:postal-box'     => '0000',
+            'org:purpose'          => 'SUBDIV'
           }
           put @path, body.to_json, {
             'ACCEPT' => 'application/ld+json',

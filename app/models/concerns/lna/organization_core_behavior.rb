@@ -34,6 +34,14 @@ module Lna
         index.as :stored_searchable
       end
 
+      property :purpose, predicate: ::RDF::Vocab::ORG.purpose, multiple: false do |index|
+        index.as :stored_searchable
+      end
+
+      property :hinman_box, predicate: ::RDF::Vocab::VCARD['postal-code'], multiple: false do |index|
+        index.as :stored_searchable
+      end
+
       def begin_date=(d)
         date_setter('begin_date', d)
       end

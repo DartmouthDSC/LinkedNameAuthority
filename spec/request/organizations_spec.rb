@@ -31,8 +31,16 @@ RSpec.describe "Organizations API", type: :request, https: true do
       expect_json('@graph.0', :'skos:prefLabel' => @org.label)
     end
     
-    it 'return alt label' do
+    it 'returns alt label' do
       expect_json('@graph.0', :'skos:altLabel' => @org.alt_label)
+    end
+
+    it 'returns purpose' do
+      expect_json('@graph.0', :'org:purpose' => @org.purpose)
+    end
+
+    it 'returns hinman box' do
+      expect_json('@graph.0', :'vcard:postal-box' => @org.hinman_box)
     end
 
     it 'includes link headers' do

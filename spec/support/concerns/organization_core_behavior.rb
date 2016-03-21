@@ -32,6 +32,14 @@ RSpec.shared_examples_for 'organization_core_behavior' do |factory|
     it 'sets begin_date' do
       expect(subject.begin_date).to be_an_instance_of Date
     end
+
+    it 'sets purpose' do
+      expect(subject.purpose).to eql 'SCH'
+    end
+
+    it 'sets hinman box' do
+      expect(subject.hinman_box).to eql '0000'
+    end
   end
 
   describe '#people' do

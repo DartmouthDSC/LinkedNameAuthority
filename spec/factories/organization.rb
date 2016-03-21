@@ -3,6 +3,8 @@ FactoryGirl.define do
     label        'Thayer School of Engineering'
     alt_label    ['Engineering School', 'Thayer']
     code         'THAY'
+    purpose      'SCH'
+    hinman_box   '0000'
     begin_date   '2000-01-01'
 
     factory :old_thayer, class: Lna::Organization::Historic do
@@ -18,6 +20,8 @@ FactoryGirl.define do
     label 'Dartmouth College Library'
     alt_label ['Library']
     code 'LIB'
+    purpose 'SUBDIV'
+    hinman_box '6025'
     begin_date '1974-01-01'
 
     after(:build) do |library|
@@ -30,6 +34,8 @@ FactoryGirl.define do
     label 'Digital Library Technologies Group'
     alt_label ['DLTG']
     code 'DLTG'
+    purpose 'UNIT'
+    hinman_box '6025'
     begin_date '1990-01-01'
   end
 
@@ -37,6 +43,8 @@ FactoryGirl.define do
     label 'Office of the Provost'
     alt_label ['Provost']
     code 'PROV'
+    purpose 'DIV'
+    hinman_box '0000'
     begin_date '1970-01-01'
   end
 end
