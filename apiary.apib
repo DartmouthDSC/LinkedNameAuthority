@@ -1338,7 +1338,8 @@ Orgs returned include their parent org (org:subOrganizationOf) but not a list of
                 "@context": {
                     "skos": "http://www.w3.org/2004/02/skos/core#",
                     "org": "http://www.w3.org/ns/org#",
-                    "owltime": "http://www.w3.org/TR/owl-time#"
+                    "owltime": "http://www.w3.org/TR/owl-time#",
+                    "vcard": "http://www.w3.org/2006/vcard/ns#"
                 },
                 "@id": "http://lna.dartmouth.edu/organizations/1",
                 "generatedAt": "2015-10-30T09:30:10Z",
@@ -1351,6 +1352,7 @@ Orgs returned include their parent org (org:subOrganizationOf) but not a list of
                         "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/8"],
                         "skos:pref_label": "Dartmouth Information Technology Services",
                         "skos:alt_label": ["ITS"],
+                        "vcard:pobox": "1223",
                         "org:purpose": "unit",
                         "owltime:hasBeginning": "2013-06-01",
                         "owltime:hasEnd": "2013-06-01"
@@ -1362,6 +1364,7 @@ Orgs returned include their parent org (org:subOrganizationOf) but not a list of
                         "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/3"],
                         "skos:pref_label": "Dartmouth Digital Library Technology Group",
                         "skos:alt_label": ["DLTG"],
+                        "vcard:pobox": "1098",
                         "org:purpose": "unit",
                         "owltime:hasBeginning": "2000-06-01",
                         "owltime:hasEnd": ""
@@ -1373,6 +1376,7 @@ Orgs returned include their parent org (org:subOrganizationOf) but not a list of
                         "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/12"],
                         "skos:pref_label": "Dartmouth College Library",
                         "skos:alt_label": [],
+                        "vcard:pobox": "1098",
                         "org:purpose": "unit",
                         "owltime:hasBeginning": "1769-06-01",
                         "owltime:hasEnd": ""
@@ -1410,7 +1414,8 @@ Orgs returned include their parent org (org:subOrganizationOf) but not a list of
                 "@context": {
                     "skos": "http://www.w3.org/2004/02/skos/core#",
                     "org": "http://www.w3.org/ns/org#",
-                    "owltime": "http://www.w3.org/TR/owl-time#"
+                    "owltime": "http://www.w3.org/TR/owl-time#",
+                    "vcard": "http://www.w3.org/2006/vcard/ns#"
                 },
                 "@id": "http://lna.dartmouth.edu/organizations/1",
                 "generatedAt": "2015-10-30T09:30:10Z",
@@ -1424,6 +1429,7 @@ Orgs returned include their parent org (org:subOrganizationOf) but not a list of
                         "skos:pref_label": "Dartmouth Information Technology Services",
                         "skos:alt_label": ["ITS"],
                         "org:purpose": "unit",
+                        "vcard:pobox": "1223",
                         "owltime:hasBeginning": "2013-06-01",
                         "owltime:hasEnd": ""
                     },
@@ -1434,6 +1440,7 @@ Orgs returned include their parent org (org:subOrganizationOf) but not a list of
                         "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/3"],
                         "skos:pref_label": "Dartmouth Digital Library Technology Group",
                         "skos:alt_label": ["DLTG"],
+                        "vcard:pobox": "1908",
                         "org:purpose": "unit",
                         "owltime:hasBeginning": "2000-06-01",
                         "owltime:hasEnd": ""
@@ -1445,6 +1452,7 @@ Orgs returned include their parent org (org:subOrganizationOf) but not a list of
                         "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/8"],
                         "skos:pref_label": "Academic Computing",
                         "skos:alt_label": [],
+                        "vcard:pobox": "1980",
                         "org:purpose": "unit",
                         "owltime:hasBeginning": "1980-06-01",
                         "owltime:hasEnd": "2014-01-01",
@@ -1466,11 +1474,13 @@ Note that all organizations are created as active orgs. They may be immediately 
             "@context": {
                 "skos": "http://www.w3.org/2004/02/skos/core#",
                 "org": "http://www.w3.org/ns/org#",
-                "owltime": "http://www.w3.org/TR/owl-time#"
+                "owltime": "http://www.w3.org/TR/owl-time#",
+                "vcard": "http://www.w3.org/2006/vcard/ns#"
             },
             "org:identifier": "its",
             "skos:pref_label": "Dartmouth Information Technology Services",
             "skos:alt_label": ["ITS"],
+            "vcard:pobox": "1223",
             "org:purpose": "unit",
             "owltime:hasBeginning": "2013-06-01"
         }
@@ -1487,7 +1497,8 @@ Note that all organizations are created as active orgs. They may be immediately 
                 "@context": {
                     "skos": "http://www.w3.org/2004/02/skos/core#",
                     "org": "http://www.w3.org/ns/org#",
-                    "owltime": "http://www.w3.org/TR/owl-time#"
+                    "owltime": "http://www.w3.org/TR/owl-time#",
+                    "vcard": "http://www.w3.org/2006/vcard/ns#"
                 },
                 "@type": "org:Organization",
                 "@id": "http://lna.dartmouth.edu/organization/1",
@@ -1495,6 +1506,7 @@ Note that all organizations are created as active orgs. They may be immediately 
                 "org:identifier": "its",
                 "skos:pref_label": "Dartmouth Information Technology Services",
                 "skos:alt_label": ["ITS"],
+                "vcard:pobox": "1223",
                 "org:purpose": "unit",
                 "owltime:hasBeginning": "2013-06-01",
                 "owltime:hasEnd": ""
@@ -1543,7 +1555,8 @@ Note that the response data will vary depending on whether the organization is a
                 "owltime": "http://www.w3.org/TR/owl-time#",
                 "foaf": "http://xmlns.com/foaf/0.1/",
                 "dc": "http://purl.org/dc/elements/1.1/",
-                "prov": "http://www.w3.org/ns/prov#"
+                "prov": "http://www.w3.org/ns/prov#",
+                "vcard": "http://www.w3.org/2006/vcard/ns#"
             },
             "status": "success",
             "@type": "org:Organization",
@@ -1556,6 +1569,7 @@ Note that the response data will vary depending on whether the organization is a
                     "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/3"],
                     "skos:pref_label": "Dartmouth Digital Library Technology Group",
                     "skos:alt_label": ["DLTG"],
+                    "vcard:pobox": "1908",
                     "org:purpose": "unit",
                     "owltime:hasBeginning": "2000-06-01",
                     "owltime:hasEnd": "",
@@ -1570,6 +1584,7 @@ Note that the response data will vary depending on whether the organization is a
                     "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/12"],
                     "skos:pref_label": "Dartmouth College Library",
                     "skos:alt_label": [],
+                    "vcard:pobox": "1008",
                     "org:purpose": "unit",
                     "owltime:hasBeginning": "1769-06-01",
                     "owltime:hasEnd": ""
@@ -1581,6 +1596,7 @@ Note that the response data will vary depending on whether the organization is a
                     "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/3"],
                     "skos:pref_label": "DAC dev team",
                     "skos:alt_label": [],
+                    "vcard:pobox": "9008",
                     "org:purpose": "unit",
                     "owltime:hasBeginning": "2015-01-01",
                     "owltime:hasEnd": ""
@@ -1640,6 +1656,7 @@ Applies to both current and historic orgs. Do not use to add an end date to an o
                 "org:identifier": "its",
                 "skos:pref_label": "Dartmouth Information Technology Services",
                 "skos:alt_label": ["ITS"],
+                "vcard:pobox": "1223",
                 "org:purpose": "unit",
                 "owltime:hasBeginning": "2013-06-01",
                 "owltime:hasEnd": ""
