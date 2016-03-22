@@ -1,5 +1,4 @@
 module Oracle
-
   class Faculty < ActiveRecord::Base
 
     establish_connection("oracle_#{Rails.env}".to_sym)

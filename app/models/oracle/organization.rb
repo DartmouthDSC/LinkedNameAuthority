@@ -1,8 +1,10 @@
 module Oracle
-
-  class Organizations < ActiveRecord::Base
+  class Organization < ActiveRecord::Base
 
     establish_connection("oracle_#{Rails.env}".to_sym)
+
+    # Org types ordered from lowest to highest in the hierarchy.
+    ORDERED_ORG_TYPES = [ 'SUBUNIT', 'UNIT', 'DEPT', 'SUBDIV', 'ACAD DIV', 'SCH', 'DIV'].freeze
 
     self.table_name = 'DARTHR.DC_ACAD_COMMONS_ORG_V'
 #   Could be organization_id...
@@ -27,46 +29,44 @@ module Oracle
 ##  ORGANIZATION_ID	NOT NULL NUMBER(15)
 
 
-#   Return a hash in a connonical form for the LNA ImportController.
+    # Return a hash in a connonical form for the Organization Loader.
     def to_hash
-      
       unless (self.organization)
         raise ArgumentError.new("#{self.organization_id}: No Organization (#{self})")
       end
 
-#     Our full hash.
-      hash = { :label        => self.organization,
-               :org_id       => self.organization_id,
-               :long_name    => self.org_long_name,
-               :code         => self.org_short_code,
-               :type         => self.org_type,
-               :hb           => self.hb,
-               :gl_org_value => self.gl_org_value,
-               :division     => self.division,
-               :school       => self.school,
-               :sub_division => self.sub_division,
-               :department   => self.department,
-               :unit         => self.unit,
-               :sub_unit     => self.sub_unit,
-               :begin_date   => self.org_begin_date,
-               :end_date     => self.org_end_date,
-               :update_date  => self.last_system_update,
-      }
-
-#     Until we build out the LNA ImportController, we ditch fields
-#     that model doesn't know about.
-####      [ :prop_id,
-####        :initials,
-####        :known_as,
-####        :rank,
-####        :primary_group
-####      ].each do |key|
-####        hash.delete(key)
-####      end
-
-#     Return our (reduced) hash.
-      return hash
+      # Deduce the super organization.
+      super_org = case self.org_type
+                  when 'SCH'
+                    self.division
+                  when 'ACAD DIV'
+                    self.school
+                  else
+                    map_types = {
+                      'DIV'      => self.division,
+                      'SCH'      => self.school,
+                      'ACAD DIV' => nil,
+                      'SUBDIV'   => self.sub_division,
+                      'DEPT'     => self.department,
+                      'UNIT'     => self.unit,
+                      'SUBUNIT'  => self.sub_unit
+                    }
+                    super_types = ORDERED_ORG_TYPES.drop_while { |t| t != self.org_type }.drop(1)
+                    super_types.map { |t| map_types[t] }.compact.first
+                  end
       
+      {
+        label:              self.organization,
+        org_id:             self.organization_id,
+        alt_label:          [self.org_long_name],
+        code:               self.org_short_code,
+        type:               self.org_type,
+        hinman_box:         self.hb,
+        super_organization: { label: super_org },
+        begin_date:         self.org_begin_date,
+        end_date:           self.org_end_date,
+        update_date:        self.last_system_update,
+      }
     end
 
   end

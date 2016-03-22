@@ -82,7 +82,7 @@ module Load
         
         # Update primary organization, if necessary.
         if hash[:membership][:primary]
-          org = find_organization(hash[:membership][:org])
+          org = find_organization!(hash[:membership][:org])
           unless org.id == person.primary_org.id
             person.primary_org = org
             log_warning(CHANGE_PRIMARY_ORG, "#{person.full_name}(#{netid})")
@@ -98,7 +98,7 @@ module Load
         else
           mem = Lna::Membership.create!(mem_hash) do |m|
             m.person = person
-            m.organization = find_organization(hash[:membership][:org])
+            m.organization = find_organization!(hash[:membership][:org])
             m.begin_date = Date.today
           end
           person.save!
@@ -112,8 +112,8 @@ module Load
           raise ArgumentError, 'Person hash required to create new person.'
         end
         
-        # Find or create primary org.
-        org = find_organization(hash[:membership][:org])
+        # Find primary org.
+        org = find_organization!(hash[:membership][:org])
         
         # Make person and set primary org.
         person = Lna::Person.create!(hash[:person]) do |p|
@@ -174,83 +174,7 @@ module Load
       else
         nil
       end
-    end
-    
-    
-    # Find organization based on hash given.
-    # @example Usage
-    #   org = { label: 'Library', code: 'LIB' }
-    #   find_organization(org)
-    #
-    # @param hash [Hash] information used to look up organization
-    def find_organization(hash)
-      orgs = Lna::Organization.where(hash)
-      orgs = Lna::Organization::Historic.where(hash) if orgs.count.zero?
-      
-      hash_str = hash.to_a.map{ |i| i.join(': ') }.join(', ')
-      
-      case orgs.count
-      when 1
-        orgs.first
-      when 0
-        raise ArgumentError, "organization with the values #{hash_str} could not be found"
-      else
-        raise ArgumentError, "more than one organization with the value #{hash_str} was found"
-      end
-    end
-
-    # CAN BE DELETED?
-    #TODO: Move method to Lna::Organization?
-    # @example Usage
-    # org = { label: 'Library',
-    #         code: 'LIB',
-    #         alt_label: ['DCL']
-    #       }
-    # matching_organization(org)
-    #
-    def matching_organization(hash)
-      orgs = Lna::Organization.where(hash)
-      if orgs.count == 1
-        return orgs.first
-      elsif orgs.count == 0
-        if hash_key? :code
-          orgs = Lna::Organization.where(code: hash[:code])
-          if orgs.count
-          end
-        end
-      end
-    end
-
-    # CAN BE DELETED?
-    #TODO: When comparing make sure that its case insensitive. Might already be based on how .where
-    # works.
-    def find_or_create_org(hash)
-      raise ArgumentError, 'Must have a label to find or create an organization.' unless hash[:label]
-      
-      orgs = Lna::Organization.where(hash) #probably throws errors too
-      if orgs.count == 1
-        return orgs.first
-      elsif orgs.count == 0
-        if hash.key? :code
-          orgs = Lna::Organization.where(code: hash[:code])
-          if orgs.count > 1
-            raise "There are two organizations with #{hash[:code]} as their code."
-          elsif orgs.count == 1
-            # Trigger a change event here because data has changed.
-            return orgs.first
-          end
-        end
-        # If did not find the organization by code, create a new one.
-        org = Lna::Organization.create!(hash) do |o|
-          o.begin_date = Date.today
-        end
-        value = hash[:code] ? "#{hash[:label]}(#{hash[:code]})" : hash[:label]
-        log_warning(NEW_ORG, value)
-        return org
-      else
-        raise "More than one organization matched the fields: #{hash.to_s}."
-      end
-    end
+    end    
     
     # Removes :primary and :org keys from membership hash.
     def clean_mem_hash(hash)

@@ -3,8 +3,7 @@ module Load
     # Keys for warnings hash.
     SENT_EMAIL = 'sent email'
     
-    attr_reader :errors, :warnings, :time_started, :title
-    attr_accessor :verbose, :throw_errors, :emails
+    attr_reader :title, :errors, :warnings, :time_started, :error_notices, :all_notices
 
     # Initializer for all classes that are batch loading records into the LNA.  Emails are read
     # in from environmental variables. @all_notices email list is populated from
@@ -111,6 +110,44 @@ module Load
 
     def add_to_hash(hash, k, v)
       hash.key?(k) ? hash[k] << v : hash[k] = [v]
+    end
+
+    # Find organization based on hash given. Will only throw errors if multiple organizations
+    # are found.
+    # @example Usage
+    #   org = { label: 'Library', code: 'LIB' }
+    #   find_organization(org)
+    #
+    # @param hash [Hash] information used to look up organization
+    # @return [Lna::Organization|Lna::Organization::Historic] if one organization is found
+    # @return [ArgumentError] if more than one organization is found
+    # @return [nil] if no organization is found
+    def find_organization(hash)
+      raise 'Hash cannot be empty.' if hash.empty? # If hash is empty it will return all the orgs.
+      orgs = Lna::Organization.where(hash)
+      orgs = Lna::Organization::Historic.where(hash) if orgs.count.zero?
+
+      case orgs.count
+      when 1
+        orgs.first
+      when 0
+        nil
+      else
+        raise ArgumentError, "more than one organization with the values #{hash.to_s} was found"
+      end
+    end
+
+    # Finds organization based on hash given. Will throw an error if exactly one organization
+    # is not found.
+    #
+    # @param hash [Hash] information used to look up organization
+    # @return [Lna::Organization|Lna::Organization::Historic] if one organization is found
+    # @return [ArgumentError] if exactly one organization is not found.
+    def find_organization!(hash)
+      unless result = find_organization(hash)
+        raise ArgumentError, "organization with the values #{hash.to_s} could not be found"
+      end
+      result
     end
   end
 end
