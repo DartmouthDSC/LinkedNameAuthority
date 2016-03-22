@@ -3,18 +3,18 @@ source 'https://rubygems.org'
 gem 'rails', '4.2.4'
 
 # Hydra dependencies
-# Once the hydra gem is updated we should go back to using that.
-# gem 'hydra', '9.1.0.rc1'
-gem 'active-fedora', '~> 9.9.0'
+gem 'active-fedora',
+    github: 'projecthydra/active_fedora',
+    ref:    'e1391fb0dd4108923b02a3dfb344a19dd971a6f8'
 gem 'active-triples', '~> 0.7.4'
 # gem 'blacklight', '~> 5.16'
 gem 'hydra-head', '~> 9.8.0'
-gem 'ldp', '~> 0.4.1'
+gem 'ldp', '~> 0.5.0'
 gem 'nokogiri', '~> 1.6.7'
 gem 'nom-xml', '~> 0.5.1'
 gem 'om', '~> 3.1.0'
 gem 'rsolr', '~> 1.0.13'
-gem 'solrizer', '~> 3.3.0'
+gem 'solrizer', '~> 3.4.0'
 
 gem 'airborne'
 gem 'devise'
@@ -47,7 +47,7 @@ end
 
 group :development do
   gem 'byebug'  # Call 'byebug' anywhere in the code to stop to get a debugger console.
-  gem 'web-console'
+  gem 'web-console', '2.3.0' # Can remove this once we go to ruby 2.2.2
   gem 'ruby-debug-passenger'
 end
 
