@@ -3,11 +3,11 @@
 [![Build Status](https://travis-ci.org/DartmouthDSC/LinkedNameAuthority.svg?branch=develop)](https://travis-ci.org/DartmouthDSC/LinkedNameAuthority)
 [![Coverage Status](https://coveralls.io/repos/github/DartmouthDSC/LinkedNameAuthority/badge.svg?branch=develop)](https://coveralls.io/github/DartmouthDSC/LinkedNameAuthority?branch=develop)
 
-Dartmouth Linked Name Authority Server
+# Dartmouth Linked Name Authority Server
 
-Install notes:
+##Install notes
 
-The Oracle client requires setting environment variables in .bash_profile. Add this to that file before running bundle install:
+1. The Oracle client requires setting environment variables in .bash_profile. Add this to that file before running bundle install:
 
     # Oracle Definitions.
     export ORACLE_BASE=/usr/lib/oracle
@@ -16,11 +16,32 @@ The Oracle client requires setting environment variables in .bash_profile. Add t
     export LD_LIBRARY_PATH=/usr/lib/oracle/12.1/client64/lib:$LD_LIBRARY_PATH
     export PATH=/usr/lib/oracle/12.1/client64/bin:$PATH
 
-Once everything is installed, sync the db and load data using:
+2. Install all gem dependencies:
+   `bundle install`
 
-    rake db:migrate
-    rake import:oracle_faculty
+3. Once everything is installed, sync the db:
+    `rake db:migrate`
 
-Note: If you would like notifications about the import set the following environmental variable in
-.env.development to your preferred email. You might need to create a new file.
-`IMPORTER_EMAIL_NOTICES={your email}`  
+4. Set the following environmental variables in `.env` (You may need to create a new file):
+   ```
+   # Email list used by loaders to send email notifications about warnings and errors.
+   # Optional
+   LOADER_NOTICES=me@example.com
+
+   # Email list used by loaders to send email notifications about errors.
+   # Required
+   LOADER_ERROR_NOTICES=me@example.com,me.too@examples.com
+
+   # Email to send cron errors
+   # Optional
+   # CRON_EMAIL_NOTICES=me@example.com
+
+   # Credentials for Elements
+   # Required
+
+   # Credentials for Oracle.
+   # Required
+   ```
+
+5. Load organizations, people and documents:
+   `rake load:all`
