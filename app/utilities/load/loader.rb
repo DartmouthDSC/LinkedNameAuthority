@@ -112,8 +112,9 @@ module Load
       hash.key?(k) ? hash[k] << v : hash[k] = [v]
     end
 
-    # Find organization based on hash given. Will only throw errors if multiple organizations
-    # are found.
+    # Find organization based on hash given. Makes sure that the organization fields match when
+    # compared. Will only throw errors if multiple organizations are found.
+    #
     # @example Usage
     #   org = { label: 'Library', code: 'LIB' }
     #   find_organization(org)
@@ -126,6 +127,19 @@ module Load
       raise 'Hash cannot be empty.' if hash.empty? # If hash is empty it will return all the orgs.
       orgs = Lna::Organization.where(hash)
       orgs = Lna::Organization::Historic.where(hash) if orgs.count.zero?
+
+      # Try to find an exact match, because self.where uses solr to search and solr will return
+      # a document if any part of the field matches.
+      orgs = orgs.select do |org|
+        match = true
+        hash.each do |k, v|
+          if k == :end_date || k == :begin_date
+            v = Date.parse(v)
+          end
+          match = false && break if org.send(k) != v
+        end
+        match
+      end
 
       case orgs.count
       when 1

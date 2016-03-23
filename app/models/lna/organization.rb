@@ -22,7 +22,10 @@ module Lna
           label:      self.label,
           code:       self.code,
           alt_label:  self.alt_label,
+          purpose:    self.purpose,
+          hinman_box: self.hinman_box,
           begin_date: self.begin_date.to_s
+          
         }
 
       only = options[:only]      
@@ -61,19 +64,13 @@ module Lna
     # active organization.
     def self.convert_to_historic(active, end_date = Date.today, changed_by = nil)
       raise 'Cannot convert because organization still has accounts' if active.accounts.count > 0
+
+      attrs = active.attributes.slice(:membership, :people, :resulted_from, :code, :alt_label,
+                                      :label, :begin_date, :purpose, :hinman_box)
       
-      serialization = active.json_serialization
-      
-      historic = Lna::Organization::Historic.create! do |h|
-        h.memberships = active.memberships
-        h.people = active.people
-        h.resulted_from = active.resulted_from
-        h.identifier = active.identifier
-        h.alt_label = active.alt_label
-        h.label = active.label
-        h.begin_date = active.begin_date
+      historic = Lna::Organization::Historic.create!(attrs) do |h|
+        h.historic_placement = active.json_serialization
         h.end_date = end_date
-        h.historic_placement = serialization
         h.changed_by = changed_by
       end
 

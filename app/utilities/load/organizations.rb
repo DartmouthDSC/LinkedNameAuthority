@@ -26,14 +26,22 @@ module Load
     # 
     def self.from_hr
       batch_load(HR_ORG_LOADER_TITLE) do |loader|
-        # Loading organization in order from highest to lowest in the hierarchy.
+        # Loading organization in order from highest to lowest in the hierarchy, without
+        # an end date.
         Oracle::Organization::ORDERED_ORG_TYPES.reverse.each do |org_type|
-          Oracle::Organization.find_by(org_type: org_type) do |org| # date last modified.
-            hash = org.to_hash
-            hash.delete(:end_date)
+          Oracle::Organization.where(org_type: org_type).each do |org| # date last modified.
+            hash = org.to_hash.except(:end_date)
             loader.into_lna(hash)
           end
         end
+
+        # Loading organizations that have an end date set.
+        Oracle::Organization::ORDERED_ORG_TYPES.each do |org_type|
+          Oracle::Organization.where(org_type: org_type).where.not(org_end_date: nil).order(:org_end_date).each do |org|
+            hash = org.to_hash.except(:super_organization)
+            loader.into_lna(hash)
+          end
+        end        
       end
     end
 
@@ -51,65 +59,73 @@ module Load
     #      :end_date, then the organization is updated with all the information in the hash
     #      except for the :end_date. The new active organization created is then converted to a
     #      historic organization, using the :end_date given.
-    #  3. If after these other searches an organization is not found, then a new organization is
-    #     created.
+    #   3. If after these other searches an organization is not found, then a new organization is
+    #      created.
     #
     # @example Example of hash
     #   lna_hash = { 
     #                label: 'Library',
     #                alt_label: ['DLC'],
     #                code:  'LIB',
+    #                purpose: 'SUBDIV',
     #                start_date: '01-01-2001',
     #                super_organization: { label: 'Provost' }
     #              }
     #
     # @param hash [Hash] hash containing organization info
-    # @return [Lna::Organization] organization that was created or updated
-    def into_lna(hash = {})
+    # @return [Lna::Organization|Lna::Organization::Historic] organization that was found,
+    #   created or updated
+    def into_lna(hash)
       raise ArgumentError, 'Must have a label to find or create an organization.' unless hash[:label]
+      if hash[:end_date] && hash[:super_organization]
+        raise ArgumentError, 'Historic organization cannot be created with a super organization.'
+      end
 
-      # If the organization could not be found, attempt to find it by searching differently. If
-      # it still cannot be found create a new one.
-      unless org = find_organization(hash)
+      super_hash = hash.delete(:super_organization) if hash.key?(:super_organization)
 
-        # Search without end date.
-        hash.delete(:end_date)
-        if org = find_organization(hash)
-          # convert organization from active to historic
+      # Return if organization found.
+      if org = find_organization(hash)
+        return org
+      end
+
+      # Try to find the organization again, this time searching without :end_date.
+      if org = find_organization(hash.except(:end_date))
+        # Convert organization from active to historic because an end date was set since the last
+        # time it was loaded.
+        if Date.parse(hash[:end_date]) <= Date.today
+          return Lna::Organization.convert_to_historic(org, hash[:end_date])
         end
-        
-        # Trigger a change event if the data has changed.
-        if hash.key? :code
-          if org = find_organization({ code: hash[:code] })
-            return org
-          end
-        end
+      end
 
-        # Trigger a change event if end_date was set and end_date is today or before today
-        
+      # Try to find the organization again, this time searching by :code.
+      if hash[:code]
+        if org = find_organization({ code: hash[:code] })
+          # trigger change event and return new org
+          puts "Trigger Change Event"
+          return org
+        end
+      end
+
+      # Create a new organization.
+      # If end date is set a historic organization needs to be created, otherwise an
+      # active organization should be created.
+      if hash[:end_date]
+        org = Lna::Organization::Historic.create!(hash)
+      else
         # Find super organization, if one is given.
-        if hash.key(:super_organization)
-          super_hash = hash.delete(:super_organization)
+        if super_hash && !super_hash.empty?
           unless super_org = find_organization(super_hash)
             raise ArgumentError, "Could not find super organization with fields #{super_hash.to_s}"
           end
         end
 
-        # If end date is set a historic organization needs to be created, otherwise an
-        # active organization should be created.
-        if hash.key(:end_date) && hash[:end_date]
-          org = Lna::Organization.create!(hash) do |o|
-            o.super_organizations << super_org if super_org
-          end
-        else
-          hash.delete(:end_date)
-          org = Lna::Organization::Historic.create!(hash)
+        org = Lna::Organization.create!(hash) do |o|
+          o.super_organizations << super_org if super_org
         end
-        
-        value = hash[:code] ? "#{hash[:label]}(#{hash[:code]})" : hash[:label]
-        log_warning(NEW_ORG, value)
       end
-      org
+      
+      value = hash[:code] ? "#{hash[:label]}(#{hash[:code]})" : hash[:label]
+      log_warning(NEW_ORG, value)
     end    
   end
 end

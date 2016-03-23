@@ -53,6 +53,7 @@ module Lna
       end
  
       def self.where(values)
+        values = values.clone
         # Change keys for dates and convert date string to a solr friendly format. 
         [:begin_date, :end_date].each do |key|
           if values.key?(key) && values[key].is_a?(String)
