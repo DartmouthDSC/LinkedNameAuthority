@@ -1,6 +1,6 @@
 module Load
   class People < Loader
-    HR_FACULTY_LOADER_TITLE = 'People from HR faculty view'
+    HR_FACULTY_LOADER = 'People from HR faculty view'
     
     # Keys for warnings hash.
     NEW_ORG = 'new organization'
@@ -10,7 +10,7 @@ module Load
     CHANGE_PRIMARY_ORG = 'changes primary org'
     
     def self.from_hr_faculty_view
-      batch_load(HR_FACULTY_IMPORT_TITLE) do |loader|
+      batch_load(HR_FACULTY_LOADER) do |loader|
         Oracle::Faculty.find_each do |person|
           loader.into_lna(person.to_hash)
         end
@@ -41,6 +41,7 @@ module Load
     #
     # @param hash [Hash] hash containing person, account and membership info
     # @return [Lna::Person] person that was created or updated
+    # @return [nil] if there was a problem creating of updating the person
     def into_lna(hash = {})
       begin
         if hash.key?(:netid) && hash[:netid]
@@ -50,11 +51,15 @@ module Load
         end
       rescue NotImplementedError, ArgumentError => e
         log_error(e, hash.to_s)
+        raise e if throw_errors
+        return nil
       rescue => e
         value = (hash[:person] && hash[:person][:full_name]) ?
                   "#{hash[:person][:full_name]}(#{hash[:netid]})" :
                   hash[:netid]
         log_error(e, value)
+        raise e if throw_errors
+        return nil
       end  
     end
     
@@ -123,7 +128,7 @@ module Load
         log_warning(NEW_PERSON, "#{person.full_name}(#{netid})")
         
         # Make account and set as account for person.
-        accnt = Lna::Account.create!(account_hash) do |a|
+        accnt = Lna::Account.create!(dart_account_hash(netid)) do |a|
           a.account_holder = person
         end
         log_warning(NEW_ACCOUNT, "#{accnt.title} account for #{person.full_name}(#{netid})")
@@ -139,17 +144,21 @@ module Load
         
         person.save
       end
-      person  
+      person
     end
 
+    def dart_account_hash(netid)
+      { account_name: netid }.merge(Lna::Account::DART_PROPERTIES)
+    end
+    
     # Find dartmouth account with the matching netid.
     #
     # @param netid [String] netid to lookup
     # @return [nil] if no matching account was found
     # @return [Lna::Account] if one matching account was found
     def find_dart_account(netid)
-      account_hash = { account_name: netid }.merge(Lna::Account::DART_PROPERTIES)
-      accounts = Lna::Account.where(account_hash)
+      hash = dart_account_hash(netid)
+      accounts = Lna::Account.where(hash)
 
       case accounts.count
       when 0

@@ -2,14 +2,20 @@ require 'rails_helper'
 
 RSpec.describe Load::People do
   before :context do
-    @import = Load::People.new(title: 'Test Person Load')
+    ENV["LOADER_ERROR_NOTICES"] = "me@example.com"
+    FactoryGirl.create(:thayer)
+    @load = Load::People.new('People from Test Data', throw_errors: true)
+  end
+
+  after :context do
+    ENV["LOADER_ERROR_NOTICES"] = nil
   end
   
   describe '#into_lna' do
     context 'creates new person' do 
       before :context do
         @hash = FactoryGirl.create(:lna_hash)
-        @person = @import.into_lna(@hash)
+        @person = @load.into_lna(@hash)
       end
     
       after :context do
@@ -61,7 +67,7 @@ RSpec.describe Load::People do
 
     context 'changes to a person\'s infomation' do
       before :example do
-        @original = @import.into_lna(FactoryGirl.create(:lna_hash))
+        @original = @load.into_lna(FactoryGirl.create(:lna_hash))
       end
 
       after :example do

@@ -3,7 +3,8 @@ module Load
     # Keys for warnings hash.
     SENT_EMAIL = 'sent email'
     
-    attr_reader :title, :errors, :warnings, :time_started, :error_notices, :all_notices
+    attr_reader :title, :throw_errors, :errors, :warnings, :time_started, :error_notices,
+                :all_notices
 
     # Initializer for all classes that are batch loading records into the LNA.  Emails are read
     # in from environmental variables. @all_notices email list is populated from
@@ -12,8 +13,11 @@ module Load
     # warnings and errors to email out.
     #
     # @param title [String]
-    def initialize(title)
+    # @param throw_errors [Boolean] should be used by subclasses to decide whether or not to
+    #   raise errors
+    def initialize(title, throw_errors: false)
       @title = title
+      @throw_errors = throw_errors
       @errors = {}
       @warnings = {}
       @time_started = Time.now
@@ -27,19 +31,19 @@ module Load
 
     # Creates a new loader and runs the block given. Used to load a set of records. At the
     # end of executing the block given the load in logged in the Import table and an email is
-    # sent out. Without a block this method virtually does nothing.
-    def self.batch_load(*args)
+    # sent out. Without a block this method does nothing.
+    def self.batch_load(title)
       if block_given?
         begin
-          loader = new(*args)
+          loader = new(title)
           yield(loader)
           begin
             loader.send_email
-          rescue StandardError => e
+          rescue => e
             loader.log_error(e, "error while sending email")
           end
           loader.add_to_import_table
-        rescue StandardError => e
+        rescue => e
           Rails.logger.tagged('LOADER') {
             Rails.logger.error("ERROR: #{e}\n\t#{e.backtrace.join("\n\t")}")
           }

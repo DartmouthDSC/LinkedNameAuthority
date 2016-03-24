@@ -123,9 +123,9 @@ module Load
           o.super_organizations << super_org if super_org
         end
       end
-      
+
       value = hash[:code] ? "#{hash[:label]}(#{hash[:code]})" : hash[:label]
       log_warning(NEW_ORG, value)
-    end    
+    end
   end
 end
