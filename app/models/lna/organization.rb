@@ -64,10 +64,10 @@ module Lna
     # active organization.
     def self.convert_to_historic(active, end_date = Date.today, changed_by = nil)
       raise 'Cannot convert because organization still has accounts' if active.accounts.count > 0
-
-      attrs = active.attributes.slice(:membership, :people, :resulted_from, :code, :alt_label,
-                                      :label, :begin_date, :purpose, :hinman_box)
       
+      attrs = active.attributes.slice('memberships', 'people', 'resulted_from', 'code',
+                                      'alt_label', 'label', 'begin_date', 'purpose', 'hinman_box')
+      puts attrs
       historic = Lna::Organization::Historic.create!(attrs) do |h|
         h.historic_placement = active.json_serialization
         h.end_date = end_date
