@@ -45,7 +45,7 @@ module Load
     def into_lna(hash = {})
       begin
         if hash.key?(:netid) && hash[:netid]
-          into_lna_by_netid(hash[:netid], hash)
+          into_lna_by_netid!(hash[:netid], hash)
         else
           raise NotImplementedError, 'Can only import if netid is present.'
         end
@@ -73,7 +73,8 @@ module Load
     # @param netid [String] Dartmouth identifier
     # @param hash [Hash] hash containing person, account and membership info
     # @return [Lna::Person] person that was created or updated
-    def into_lna_by_netid(netid, hash = {})
+    # @return [Exception] if there a problem creating or updating person
+    def into_lna_by_netid!(netid, hash = {})
       # Argument checking.
       if !hash[:person] && !hash[:membership]
         raise ArgumentError, 'Must have a :person or :membership key in hash.'
@@ -187,9 +188,7 @@ module Load
     
     # Removes :primary and :org keys from membership hash.
     def clean_mem_hash(hash)
-      mem_hash = hash.clone
-      mem_hash.delete_if { |key, value| [:org, :primary].include?(key) }
-      mem_hash
+      hash.except(:org, :primary)
     end
   end
 end

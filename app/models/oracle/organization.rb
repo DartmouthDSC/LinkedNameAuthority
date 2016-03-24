@@ -65,10 +65,7 @@ module Oracle
         super_organization: (super_org) ? { label: super_org } : nil,
         begin_date:         self.org_begin_date.to_s,
         end_date:           self.org_end_date.to_s,
-#        update_date:        self.last_system_update,
       }
     end
-
   end
-
 end

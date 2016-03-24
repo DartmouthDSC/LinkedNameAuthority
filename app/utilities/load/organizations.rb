@@ -45,6 +45,19 @@ module Load
       end
     end
 
+    #
+    #
+    # @return [Lna::Organization|Lna::Organization::Historic] if an organization is found,
+    #   created or updated.
+    # @return [nil] if theres a problem creating or updating the organization.
+    def into_lna(hash)
+      into_lna!(hash)
+    rescue => e
+      log_error(e, hash.to_s)
+      raise e if throw_errors
+      return nil
+    end
+    
     # Creates or updates Lna objects for the organization described by the given hash.
     #
     # Tries to find an organization that matches the hash exactly. If an organization can be found
@@ -75,7 +88,8 @@ module Load
     # @param hash [Hash] hash containing organization info
     # @return [Lna::Organization|Lna::Organization::Historic] organization that was found,
     #   created or updated
-    def into_lna(hash)
+    # @return [Exception] if there are any problems creating or updating the organizations
+    def into_lna!(hash)
       raise ArgumentError, 'Must have a label to find or create an organization.' unless hash[:label]
       if hash[:end_date] && hash[:super_organization]
         raise ArgumentError, 'Historic organization cannot be created with a super organization.'
