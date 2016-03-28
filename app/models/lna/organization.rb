@@ -63,6 +63,9 @@ module Lna
     # Converts given active organization to a historic organization and deletes
     # active organization.
     #
+    # All fields except accounts, sub_organizations, and super_organizations are moved over to
+    # the historic organization. Changed_by is set, if a change event is passed in. 
+    #
     # @param [Lna::Organization] active
     # @param [Date] end_date
     # @param [Lna::Organization::ChangeEvent] changed_by
@@ -89,12 +92,15 @@ module Lna
     # date given. Date and description are ignored if a change event is already present.
     #
     # If old is an active organization then:
-    #   - all accounts are destroyed
-    #   - all sub organizations and super organizations are........
-    #   - memberships that do not have an end date will be migrated to the new organization
-    #   - memberships that do have an end date will be move to the historic organization
-    #   - people that do not have any active memberships will move to the historic organization
-    #   - people have active organization will be moved to the new organization
+    #   - all accounts are migreated to the new organization
+    #   - all sub organizations and super organizations are copied over to the new organizations
+    #   - memberships
+    #       - that do not have an end date will be migrated to the new organization
+    #       - that do have an end date will be move to the historic organization
+    #   - people
+    #       - that do not have any active memberships will move to the historic organization
+    #       - that have an active membership related to old will be moved to the new organization
+    #       - otherwise, person will be moved to the organization of the first active membership
     #   - change_by is set
     #
     # If old is a historic organization then:
@@ -108,7 +114,7 @@ module Lna
     def self.trigger_change_event(old, new, description: nil, date: Date.today)
       if old.changed_by && new.resulted_from
         unless old.changed_by == new.resulted_from
-          raise ArgumentError, 'Change events set for orgs need to be the same'
+          raise ArgumentError, 'old.changed_by and new.resulted_from events must be the same'
         end
       end
       
@@ -119,25 +125,47 @@ module Lna
                      else
                        Lna::Organization::ChangeEvent.new(
                          description: description,
-                         at_time: date
+                         at_time:     date
                        )
                      end
 
       # If old is an active organization it needs to be converted to a historic organization.
       if old.instance_of? Lna::Organization
-        # Migrate memberships that have not ended from old -> new. TODO
-        new.membership = old.memberships
-        new.save!
 
-        # Migrate people from old -> new
-        # TODO: If people only have an ended memberships and one of those memberships is related
-        # to the new organization, then, they should not be moved?
-        new.people = old.people
-        new.save!
-        #suborgs need to move?
+        # Migrate people from old -> new, if there's an active membership still related to org. If
+        # there are no active memberships, the person stays with the historic org. Otherwise it is
+        # moved to one of the orgs for which it still has an active membership.
+        old.people.each do |person|
+          active_mems_orgs = person.memberships.select(&:active?).map(&:organization)
+          
+          next if active_mems_orgs.count.zero?
+
+          person.primary_org = (active_mems_orgs.include? old) ?
+                                 new : active_mems_orgs.first
+          person.save!
+        end
+        new.reload!
+        old.reload!
         
-        # Delete accounts from old
-        old.accounts.destroy_all
+        # Migrate memberships that have not ended from old -> new.
+        old.memberships.each do |mem|
+          if mem.active?
+            mem.organization = new
+            mem.save!
+          end
+        end
+        old.reload!
+        new.reload!
+        
+        # Copy sub_organizations and super_organization from old -> new.
+        new.super_organizations.concat(old.super_organizations)
+        new.sub_organization.contact(old.sub_organizations)
+        new.reload!
+        
+        # Migrate accounts from old -> new.
+        new.accounts = old.accounts
+        new.reload!
+        old.reload!
         
         # Make old historic.
         old_historic = convert_to_historic(old, date, change_event)
