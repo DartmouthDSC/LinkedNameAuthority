@@ -20,7 +20,7 @@ RSpec.describe "Organizations API", type: :request, https: true do
     end
 
     it 'returns identifier' do
-      expect_json('@graph.0', :'org:identifier' => @org.code)
+      expect_json('@graph.0', :'org:identifier' => @org.hr_id)
     end
     
     it 'returns sub organizations' do
@@ -36,7 +36,7 @@ RSpec.describe "Organizations API", type: :request, https: true do
     end
 
     it 'returns purpose' do
-      expect_json('@graph.0', :'org:purpose' => @org.purpose)
+      expect_json('@graph.0', :'org:purpose' => @org.kind)
     end
 
     it 'returns hinman box' do

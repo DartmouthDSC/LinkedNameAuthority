@@ -20,9 +20,9 @@ module Lna
       hash =
         {
           label:      self.label,
-          code:       self.code,
+          hr_id:      self.hr_id,
           alt_label:  self.alt_label,
-          purpose:    self.purpose,
+          kind:       self.kind,
           hinman_box: self.hinman_box,
           begin_date: self.begin_date.to_s
           
@@ -62,12 +62,16 @@ module Lna
     
     # Converts given active organization to a historic organization and deletes
     # active organization.
+    #
+    # @param [Lna::Organization] active
+    # @param [Date] end_date
+    # @param [Lna::Organization::ChangeEvent] changed_by
     def self.convert_to_historic(active, end_date = Date.today, changed_by = nil)
       raise 'Cannot convert because organization still has accounts' if active.accounts.count > 0
       
-      attrs = active.attributes.slice('memberships', 'people', 'resulted_from', 'code',
-                                      'alt_label', 'label', 'begin_date', 'purpose', 'hinman_box')
-      puts attrs
+      attrs = active.attributes.slice('memberships', 'people', 'resulted_from', 'hr_id',
+                                      'alt_label', 'label', 'begin_date', 'kind', 'hinman_box')
+
       historic = Lna::Organization::Historic.create!(attrs) do |h|
         h.historic_placement = active.json_serialization
         h.end_date = end_date
@@ -76,6 +80,77 @@ module Lna
 
       active.destroy
       historic
+    end
+
+    # Link two organizations through a change event.
+    #
+    # If the old organization has a changed by event or if the new organization has a result from
+    # event, use that change event. Otherwise create a new one based using the description and
+    # date given. Date and description are ignored if a change event is already present.
+    #
+    # If old is an active organization then:
+    #   - all accounts are destroyed
+    #   - all sub organizations and super organizations are........
+    #   - memberships that do not have an end date will be migrated to the new organization
+    #   - memberships that do have an end date will be move to the historic organization
+    #   - people that do not have any active memberships will move to the historic organization
+    #   - people have active organization will be moved to the new organization
+    #   - change_by is set
+    #
+    # If old is a historic organization then:
+    #   - change_by is set
+    #
+    # @param [Lna::Organization::Historic|Lna::Organization] old
+    # @param [Lna::Organization] new
+    # @param [String] description
+    # @param [Date] date
+    # @return [Lna::Organization::ChangeEvent]
+    def self.trigger_change_event(old, new, description: nil, date: Date.today)
+      if old.changed_by && new.resulted_from
+        unless old.changed_by == new.resulted_from
+          raise ArgumentError, 'Change events set for orgs need to be the same'
+        end
+      end
+      
+      change_event = if old.changed_by
+                       old.changed_by
+                     elsif new.resulted_from
+                       new.resulted_from
+                     else
+                       Lna::Organization::ChangeEvent.new(
+                         description: description,
+                         at_time: date
+                       )
+                     end
+
+      # If old is an active organization it needs to be converted to a historic organization.
+      if old.instance_of? Lna::Organization
+        # Migrate memberships that have not ended from old -> new. TODO
+        new.membership = old.memberships
+        new.save!
+
+        # Migrate people from old -> new
+        # TODO: If people only have an ended memberships and one of those memberships is related
+        # to the new organization, then, they should not be moved?
+        new.people = old.people
+        new.save!
+        #suborgs need to move?
+        
+        # Delete accounts from old
+        old.accounts.destroy_all
+        
+        # Make old historic.
+        old_historic = convert_to_historic(old, date, change_event)
+      else
+        old.changed_by = change_event
+      end
+      
+      # Set change event in new.
+      new.resulted_from = change_event
+      new.save!
+      change_event.save!
+      
+      change_event
     end
   end
 end

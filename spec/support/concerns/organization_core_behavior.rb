@@ -1,5 +1,4 @@
 RSpec.shared_examples_for 'organization_core_behavior' do |factory|
-
   before :context do
     @org = FactoryGirl.create(factory)
   end
@@ -21,24 +20,24 @@ RSpec.shared_examples_for 'organization_core_behavior' do |factory|
       expect(subject.label).to eql 'Thayer School of Engineering'
     end
   
-    it 'sets alt_label' do
+    it 'sets alt label' do
       expect(subject.alt_label).to match_array(['Engineering School', 'Thayer'])
     end
     
-    it 'sets code' do 
-      expect(subject.code).to start_with 'THAY'
+    it 'sets hr id' do 
+      expect(subject.hr_id).to eql '1234'
     end
     
-    it 'sets begin_date' do
+    it 'sets begin date' do
       expect(subject.begin_date).to be_an_instance_of Date
     end
 
-    it 'sets purpose' do
-      expect(subject.purpose).to eql 'SCH'
+    it 'sets kind' do
+      expect(subject.kind).to eql 'SCH'
     end
 
     it 'sets hinman box' do
-      expect(subject.hinman_box).to eql '0000'
+      expect(subject.hinman_box).to start_with '1'
     end
   end
 
@@ -79,7 +78,7 @@ RSpec.shared_examples_for 'organization_core_behavior' do |factory|
   
   describe '#resulted_from' do
     before :context do
-      @change_event = FactoryGirl.create(:code_change, resulting_organizations: [@org])
+      @change_event = FactoryGirl.create(:hb_change, resulting_organizations: [@org])
       @org.reload
     end
 

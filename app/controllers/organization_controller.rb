@@ -2,12 +2,12 @@ class OrganizationController < CrudController
   before_action :convert_sub_and_super_org_ids, only: [:create, :update]
   
   PARAM_TO_MODEL = {
-    'org:identifier'       => 'code',
+    'org:identifier'       => 'hr_id',
     'skos:pref_label'      => 'label',
     'skos:alt_label'       => 'alt_label',
     'owltime:hasBeginning' => 'begin_date',
     'vcard:postal-box'     => 'hinman_box',
-    'org:purpose'          => 'purpose'
+    'org:purpose'          => 'kind'
   }.freeze
 
   # GET /organization/:id

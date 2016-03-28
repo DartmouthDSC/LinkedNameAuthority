@@ -24,6 +24,7 @@ RSpec.describe "Organization API", type: :request, https: true do
 
       context 'response body' do
         it 'contains three children in @graph' do
+          expect_json_sizes(:@graph => 3)
         end
         
         it 'contains @id' do
@@ -31,7 +32,7 @@ RSpec.describe "Organization API", type: :request, https: true do
         end
         
         it 'contains identifier' do
-          expect_json('@graph.0', :'org:identifier' => @org.code)
+          expect_json('@graph.0', :'org:identifier' => @org.hr_id)
         end
         
         it 'contains sub organization' do
@@ -53,7 +54,7 @@ RSpec.describe "Organization API", type: :request, https: true do
         end
 
         it 'contains purpose' do
-          expect_json('@graph.0', :'org:purpose' => @org.purpose)
+          expect_json('@graph.0', :'org:purpose' => @org.kind)
         end
 
         it 'contains hinman box' do
@@ -65,7 +66,7 @@ RSpec.describe "Organization API", type: :request, https: true do
     describe 'for historic organization' do
       include_context 'successful request'
       before :context do 
-        event = FactoryGirl.create(:code_change)
+        event = FactoryGirl.create(:hb_change)
         @old_org = event.original_organizations.first
         @old_org_id = FedoraID.shorten(@old_org.id)
 
@@ -84,7 +85,7 @@ RSpec.describe "Organization API", type: :request, https: true do
         it 'contains change by node in graph' do
           expect_json('@graph.1', :@type => 'org:ChangeEvent')
           expect_json('@graph.1',
-                      :'org:originalOrganization' => [organization_url(id: @old_org_id)])
+                      :'org:originalOrganization' => [organization_url(@old_org_id)])
         end
       end
     end
@@ -118,7 +119,7 @@ RSpec.describe "Organization API", type: :request, https: true do
         before :context do
           @count = Lna::Organization.count
           body = {
-            'org:identifier'       => 'its',
+            'org:identifier'       => '0021',
             'skos:pref_label'      => 'Dartmouth Information Technology Services',
             'skos:alt_label'       => ['ITS'],
             'owltime:hasBeginning' => '2013-06-01',
@@ -183,7 +184,7 @@ RSpec.describe "Organization API", type: :request, https: true do
         
         before :context do
           body = {
-            'org:identifier'       => 'LIBR',
+            'org:identifier'       => '0022',
             'skos:pref_label'      => 'Dartmouth College Library',
             'skos:alt_label'       => ['Library'],
             'owltime:hasBeginning' => '1974-01-01',
@@ -198,11 +199,11 @@ RSpec.describe "Organization API", type: :request, https: true do
         end
         
         it 'updates code in fedora store' do
-          expect(@org.code).to eq 'LIBR'
+          expect(@org.hr_id).to eq '0022'
         end
         
         it 'response body contains updated code' do
-          expect_json(:'org:identifier' => 'LIBR')
+          expect_json(:'org:identifier' => '0022')
         end
       end
     end

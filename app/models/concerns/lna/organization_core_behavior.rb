@@ -25,7 +25,7 @@ module Lna
         index.as :multiple_stored_searchable
       end
 
-      property :code, predicate: ::RDF::Vocab::ORG.identifier, multiple: false do |index|
+      property :hr_id, predicate: ::RDF::Vocab::ORG.identifier, multiple: false do |index|
         index.as :stored_searchable
       end
 
@@ -34,7 +34,7 @@ module Lna
         index.as :stored_searchable
       end
 
-      property :purpose, predicate: ::RDF::Vocab::ORG.purpose, multiple: false do |index|
+      property :kind, predicate: ::RDF::Vocab::ORG.purpose, multiple: false do |index|
         index.as :stored_searchable
       end
 
