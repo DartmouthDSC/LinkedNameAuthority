@@ -57,10 +57,9 @@ module Oracle
       
       {
         label:              self.organization,
-#        org_id:             self.organization_id,
-        alt_label:          [self.org_long_name],
-        code:               self.org_short_code,
-        purpose:            self.org_type,
+        hr_id:              self.organization_id,
+        alt_label:          [self.org_long_name, self.org_short_code],
+        kind:               self.org_type,
         hinman_box:         self.hb,
         super_organization: (super_org) ? { label: super_org } : nil,
         begin_date:         self.org_begin_date.to_s,
