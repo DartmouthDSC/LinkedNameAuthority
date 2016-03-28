@@ -66,7 +66,7 @@ module Load
     #      removing the :end_date key does return a result, then an end date was set and the
     #      organization should be converted to a historic organization only if the end_date is on
     #      or before Date.today.
-    #   2. The organization is looked up by :code. If looking up by :code returns a result than
+    #   2. The organization is looked up by :hr_id. If looking up by :hr_id returns a result than
     #      some of the information in the hash was changed/updated, therefore a change event
     #      should be triggered. If an active organization is returned and the hash contains an
     #      :end_date, then the organization is updated with all the information in the hash
@@ -111,9 +111,9 @@ module Load
         end
       end
 
-      # Try to find the organization again, this time searching by :code.
-      if hash[:code]
-        if org = find_organization({ code: hash[:code] })
+      # Try to find the organization again, this time searching by :hr_id.
+      if hash[:hr_id]
+        if org = find_organization({ hr_id: hash[:hr_id] })
           # trigger change event and return new org
           puts "Trigger Change Event"
           return org
