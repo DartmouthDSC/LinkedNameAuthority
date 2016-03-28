@@ -14,7 +14,7 @@ module Lna
     validates :organization,
               type: { valid_types: [Lna::Organization, Lna::Organization::Historic] }
 
-    validates :end_date, date: { on_or_after: :begin_date }, if: :ended?
+    validates :end_date, date: { on_or_after: :begin_date }, if: :end_date_set?
     
     property :title, predicate: ::RDF::Vocab::VCARD.title, multiple: false do |index|
       index.as :stored_searchable
@@ -64,12 +64,16 @@ module Lna
       date_setter('end_date', d)
     end
 
-    def ended?
+    def end_date_set?
       end_date != nil
+    end
+    
+    def ended?
+      end_date != nil && Date.today >= end_date
     end
 
     def active?
-      end_date == nil
+      end_date == nil || end_date > Date.today
     end
   end
 end
