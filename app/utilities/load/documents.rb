@@ -101,7 +101,7 @@ module Load
       log_error(e, hash.to_s)
       raise e if throw_errors
       return nil
-    rescue
+    rescue => e
       value = (hash[:elements_id]) ?
                 "Elements id: #{hash[:elements_id]}" :
                 "#{hash[:document][:title]} for #{hash[:netid]}"

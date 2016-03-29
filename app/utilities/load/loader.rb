@@ -12,7 +12,7 @@ module Load
     # ENV['LOADER_ERROR_NOTICES']. This class logs warnings and errors, it also keeps a hash of
     # warnings and errors to email out.
     #
-    # @param title [String]
+    # @param title [String] name of loader
     # @param throw_errors [Boolean] should be used by subclasses to decide whether or not to
     #   raise errors
     def initialize(title, throw_errors: false)
@@ -125,7 +125,9 @@ module Load
     #   org = { label: 'Library', code: 'LIB' }
     #   find_organization(org)
     #
-    # @param hash [Hash] information used to look up organization
+    # @private
+    #
+    # @param (see #find_organization!)
     # @return [Lna::Organization|Lna::Organization::Historic] if one organization is found
     # @return [ArgumentError] if more than one organization is found
     # @return [nil] if no organization is found
@@ -162,6 +164,8 @@ module Load
     # Finds organization based on hash given. Will throw an error if exactly one organization
     # is not found.
     #
+    # @private
+    #
     # @param hash [Hash] information used to look up organization
     # @return [Lna::Organization|Lna::Organization::Historic] if one organization is found
     # @return [ArgumentError] if exactly one organization is not found.
@@ -174,13 +178,15 @@ module Load
 
     # Find person with the matching netid.
     #
+    # @private
+    # 
     # @param netid [String] netid to lookup
     # @return [nil] if no matching person was found
     # @return [Lna::Person] if one matching person was found
     def find_person_by_netid(netid)
       if account = find_dart_account(netid)
         acnt_holder = account.account_holder
-        raise "Netid is associated with a #{acnt_holder.class}." unless person.is_a?(Lna::Person)
+        raise "Netid is associated with a #{acnt_holder.class}." unless acnt_holder.is_a?(Lna::Person)
         acnt_holder
       else
         nil

@@ -13,7 +13,6 @@ module Load
     # end date. Then, loading all the organization that have an end_date ordered by end_date
     # (from earliest -> latest) and lowest in hierarchy to highest. In the second load :end_date
     # is not removed.
-    # 
     def self.from_hr
       batch_load(HR_ORG_LOADER) do |loader|
         # Loading organization in order from highest to lowest in the hierarchy, without
@@ -35,10 +34,10 @@ module Load
       end
     end
 
-    # Creates or updates Lna objects for the organization described by the Hash. This method
-    # will catch any errors. Errors are raised if throw_errors is true, otherwise it returns
-    # nil.
+    # Creates or updates the organization described by the hash. This method will catch any
+    # errors. Errors are raised if throw_errors is true, otherwise it returns nil.
     #
+    # @param (see #into_lna!)
     # @return [Lna::Organization|Lna::Organization::Historic] if an organization is found,
     #   created or updated.
     # @return [nil] if theres a problem creating or updating the organization.
@@ -49,10 +48,12 @@ module Load
       raise e if throw_errors
       return nil
     end
+
+    private
     
     # Creates or updates Lna objects for the organization described by the given hash.
     #
-    # Tries to find an organization that matches the hash exactly. If an organization can be found
+    # Tries to find an organization that matches the hash. If an organization can be found
     # a new organization is not created. If an organization cannot be found:
     #   1. The :end_date key is removed from the hash and the organization is looked for again. If
     #      removing the :end_date key does return a result, then an end date was set and the
@@ -76,6 +77,8 @@ module Load
     #                start_date: '01-01-2001',
     #                super_organization: { label: 'Provost' }
     #              }
+    #
+    # @private
     #
     # @param hash [Hash] hash containing organization info
     # @return [Lna::Organization|Lna::Organization::Historic] organization that was found,
@@ -109,6 +112,7 @@ module Load
       if hash[:hr_id]
         if org = find_organization({ hr_id: hash[:hr_id] })
           # Trigger change event and return new org.
+          # if end_date is set and an active organization is returned (follow instructions above).
           puts "Trigger Change Event"
           log_warning(CHANGE_EVENT_TRIGGERED, "#{hash[:label]}(#{hash[:hr_id]})")
           return org
