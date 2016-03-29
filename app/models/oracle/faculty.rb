@@ -1,8 +1,5 @@
 module Oracle
-  class Faculty < ActiveRecord::Base
-
-    establish_connection("oracle_#{Rails.env}".to_sym)
-
+  class Faculty < OracleDatabase
     self.table_name = 'DARTHR.DC_HR_ERIS_FACULTY_V'
     self.primary_key = 'username'
 
@@ -21,7 +18,7 @@ module Oracle
 ##  DEPARTMENT_CODE    VARCHAR2(4000 CHAR)
 ##  PRIMARYGROUPDESCRIPTOR     VARCHAR2(4000 CHAR)
 
-#   Return a hash in a connonical form for the LNA ImportController.
+#   Return a hash in a connonical form for the Lna Person Loader.
     def to_hash
       
       unless (self.username)
@@ -66,8 +63,8 @@ module Oracle
                                    :primary => true,
                                    :title   => self.position,
                                    :org     => {
-                                                 :label => self.department,
-                                                 :code  => self.department_code,
+                                                 :label     => self.department,
+                                                 :alt_label => [self.department_code],
                                                }
                                  },
                :prop_id       => self.proprietary_id,

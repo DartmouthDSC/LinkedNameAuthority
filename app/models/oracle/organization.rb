@@ -1,8 +1,5 @@
 module Oracle
-  class Organization < ActiveRecord::Base
-
-    establish_connection("oracle_#{Rails.env}".to_sym)
-
+  class Organization < OracleDatabase
     # Org types ordered from lowest to highest in the hierarchy.
     ORDERED_ORG_TYPES = [ 'SUBUNIT', 'UNIT', 'DEPT', 'SUBDIV', 'ACAD DIV', 'SCH', 'DIV'].freeze
 
@@ -29,7 +26,7 @@ module Oracle
 ##  ORGANIZATION_ID	NOT NULL NUMBER(15)
 
 
-    # Return a hash in a connonical form for the Organization Loader.
+    # Return a hash in a connonical form for the Lna Organization Loader.
     def to_hash
       unless (self.organization)
         raise ArgumentError.new("#{self.organization_id}: No Organization (#{self})")
@@ -57,14 +54,26 @@ module Oracle
       
       {
         label:              self.organization,
-        hr_id:              self.organization_id,
-        alt_label:          [self.org_long_name, self.org_short_code],
+        hr_id:              self.organization_id.to_s,
+        alt_label:          [self.org_long_name, self.org_short_code].uniq,
         kind:               self.org_type,
         hinman_box:         self.hb,
         super_organization: (super_org) ? { label: super_org } : nil,
         begin_date:         self.org_begin_date.to_s,
         end_date:           self.org_end_date.to_s,
       }
+    end
+
+    def self.find_by_type(type)
+      where(org_type: type)
+    end
+
+    # Queries for recenly ended organization by org type. Results are returned in ascending
+    # date order.
+    def self.find_ended_orgs_by_type(type)
+      find_by_type(type)
+        .where.not(org_end_date: nil)
+        .order(:org_end_date)
     end
   end
 end

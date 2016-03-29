@@ -1,6 +1,6 @@
 module Load
   class People < Loader
-    HR_FACULTY_LOADER = 'People from HR faculty view'
+    HR_FACULTY = 'People from HR faculty view'
     
     # Keys for warnings hash.
     NEW_ORG = 'new organization'
@@ -10,7 +10,7 @@ module Load
     CHANGE_PRIMARY_ORG = 'changes primary org'
     
     def self.from_hr_faculty_view
-      batch_load(HR_FACULTY_LOADER) do |loader|
+      batch_load(HR_FACULTY) do |loader|
         Oracle::Faculty.find_each do |person|
           loader.into_lna(person.to_hash)
         end
@@ -34,7 +34,7 @@ module Load
     #                              org: {
     #                                     label: 'Library',
     #                                     alt_label: ['DLC']
-    #                                     code:  'LIB'
+    #                                     hr_id:  '0021'
     #                                    }
     #                            },
     #               }
@@ -42,31 +42,30 @@ module Load
     # @param hash [Hash] hash containing person, account and membership info
     # @return [Lna::Person] person that was created or updated
     # @return [nil] if there was a problem creating of updating the person
-    def into_lna(hash = {})
-      begin
-        if hash.key?(:netid) && hash[:netid]
-          into_lna_by_netid!(hash[:netid], hash)
-        else
-          raise NotImplementedError, 'Can only import if netid is present.'
-        end
-      rescue NotImplementedError, ArgumentError => e
-        log_error(e, hash.to_s)
-        raise e if throw_errors
-        return nil
-      rescue => e
-        value = (hash[:person] && hash[:person][:full_name]) ?
-                  "#{hash[:person][:full_name]}(#{hash[:netid]})" :
-                  hash[:netid]
-        log_error(e, value)
-        raise e if throw_errors
-        return nil
-      end  
+    def into_lna(hash)
+      if hash.key?(:netid) && hash[:netid]
+        into_lna_by_netid!(hash[:netid], hash)
+      else
+        raise NotImplementedError, 'Can only import if netid is present.'
+      end
+    rescue NotImplementedError, ArgumentError => e
+      log_error(e, hash.to_s)
+      raise e if throw_errors
+      return nil
+    rescue => e
+      value = (hash[:person] && hash[:person][:full_name]) ?
+                "#{hash[:person][:full_name]}(#{hash[:netid]})" :
+                hash[:netid]
+      log_error(e, value)
+      raise e if throw_errors
+      return nil
     end
     
     private
     
-    # Creates or updates Lna objects for the person that has the given netid. Importing people
-    # will not create organizations. Any organizations used should already by present.
+    # Creates or updates Lna objects for the person that has the given netid. Can create account,
+    # membership and person objects. Importing people will not create organizations; any
+    # organizations used should already by present.
     #
     # @private
     #
@@ -74,7 +73,7 @@ module Load
     # @param hash [Hash] hash containing person, account and membership info
     # @return [Lna::Person] person that was created or updated
     # @return [Exception] if there a problem creating or updating person
-    def into_lna_by_netid!(netid, hash = {})
+    def into_lna_by_netid!(netid, hash)
       # Argument checking.
       if !hash[:person] && !hash[:membership]
         raise ArgumentError, 'Must have a :person or :membership key in hash.'
@@ -143,48 +142,10 @@ module Load
         end
         log_warning(NEW_MEM, "'#{mem.title}' for #{person.full_name}(#{netid})")
         
-        person.save
+        person.save!
       end
       person
     end
-
-    def dart_account_hash(netid)
-      { account_name: netid }.merge(Lna::Account::DART_PROPERTIES)
-    end
-    
-    # Find dartmouth account with the matching netid.
-    #
-    # @param netid [String] netid to lookup
-    # @return [nil] if no matching account was found
-    # @return [Lna::Account] if one matching account was found
-    def find_dart_account(netid)
-      hash = dart_account_hash(netid)
-      accounts = Lna::Account.where(hash)
-
-      case accounts.count
-      when 0
-        nil
-      when 1
-        accounts.first
-      else
-        raise ArgumentError, "More than one account has this netid."
-      end
-    end
-
-    # Find person with the matching netid.
-    #
-    # @param netid [String] netid to lookup
-    # @return [nil] if no matching person was found
-    # @return [Lna::Person] if one matching person was found
-    def find_person_by_netid(netid)
-      if account = find_dart_account(netid)
-        acnt_holder = account.account_holder
-        raise "Netid is associated with a #{acnt_holder.class}." unless person.is_a?(Lna::Person)
-        acnt_holder
-      else
-        nil
-      end
-    end    
     
     # Removes :primary and :org keys from membership hash.
     def clean_mem_hash(hash)

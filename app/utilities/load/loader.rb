@@ -117,7 +117,9 @@ module Load
     end
 
     # Find organization based on hash given. Makes sure that the organization fields match when
-    # compared. Will only throw errors if multiple organizations are found.
+    # compared. Will only throw errors if multiple organizations are found. Prioritizes finding
+    # active organizations. If no active organization if found, then historical organization
+    # are queried.
     #
     # @example Usage
     #   org = { label: 'Library', code: 'LIB' }
@@ -131,18 +133,20 @@ module Load
       raise 'Hash cannot be empty.' if hash.empty? # If hash is empty it will return all the orgs.
       orgs = Lna::Organization.where(hash)
       orgs = Lna::Organization::Historic.where(hash) if orgs.count.zero?
-
+      
       # Try to find an exact match, because self.where uses solr to search and solr will return
-      # a document if any part of the field matches.
+      # a document if any part of the field matches. Alt_labels are treated a bit differently,
+      # all the alt labels given by the hash should be included in the object's alt_label array,
+      # but the arrays may not be exact.
       orgs = orgs.select do |org|
-        match = true
-        hash.each do |k, v|
-          if k == :end_date || k == :begin_date
-            v = Date.parse(v)
+        hash.all? do |k, v|
+          if k == :alt_label
+            v.all? { |i| org.alt_label.include? i }
+          else
+            v = Date.parse(v) if [:begin_date, :end_date].include? k
+            org.send(k) == v
           end
-          match = false && break if org.send(k) != v
         end
-        match
       end
 
       case orgs.count
@@ -166,6 +170,44 @@ module Load
         raise ArgumentError, "organization with the values #{hash.to_s} could not be found"
       end
       result
+    end
+
+    # Find person with the matching netid.
+    #
+    # @param netid [String] netid to lookup
+    # @return [nil] if no matching person was found
+    # @return [Lna::Person] if one matching person was found
+    def find_person_by_netid(netid)
+      if account = find_dart_account(netid)
+        acnt_holder = account.account_holder
+        raise "Netid is associated with a #{acnt_holder.class}." unless person.is_a?(Lna::Person)
+        acnt_holder
+      else
+        nil
+      end
+    end
+
+    # Find dartmouth account with the matching netid.
+    #
+    # @param netid [String] netid to lookup
+    # @return [nil] if no matching account was found
+    # @return [Lna::Account] if one matching account was found
+    def find_dart_account(netid)
+      hash = dart_account_hash(netid)
+      accounts = Lna::Account.where(hash)
+
+      case accounts.count
+      when 0
+        nil
+      when 1
+        accounts.first
+      else
+        raise ArgumentError, "More than one account for #{netid}."
+      end
+    end
+
+    def dart_account_hash(netid)
+      { account_name: netid }.merge(Lna::Account::DART_PROPERTIES)
     end
   end
 end

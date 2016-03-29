@@ -1,22 +1,12 @@
 module Load
   class Organizations < Loader
-    HR_ORG_LOADER_TITLE = 'Organizations from HR Org view'
+    HR_ORG_LOADER = 'Organizations from HR Org view'
 
     # Keys for warnings hash.
     NEW_ORG = 'new organization'
     NEW_HISTORIC_ORG = 'new historic organization'
+    CHANGE_EVENT_TRIGGERED = 'change event triggered'
     
-    ##  ORG_TYPE  COUNT(ORG_TYPE)
-    ##  -------------------------
-    ##  TPP       2   [ IGNORE THESE; THEY'LL BE REMOVED FROM THE VIEW ]
-    ##  SCH       4
-    ##  DIV       5
-    ##  ACAD DIV  7
-    ##  SUBDIV    13
-    ##  SUBUNIT   99
-    ##  DEPT      217
-    ##  UNIT      348
-
     # Loading organizations from hr table.
     #
     # First, loading all the organization changed since the last time the load was done without an
@@ -25,19 +15,19 @@ module Load
     # is not removed.
     # 
     def self.from_hr
-      batch_load(HR_ORG_LOADER_TITLE) do |loader|
+      batch_load(HR_ORG_LOADER) do |loader|
         # Loading organization in order from highest to lowest in the hierarchy, without
         # an end date.
-        Oracle::Organization::ORDERED_ORG_TYPES.reverse.each do |org_type|
-          Oracle::Organization.where(org_type: org_type).each do |org| # date last modified.
+        Oracle::Organization::ORDERED_ORG_TYPES.reverse.each do |type|
+          Oracle::Organization.find_by_type(type).each do |org| # date last modified.
             hash = org.to_hash.except(:end_date)
             loader.into_lna(hash)
           end
         end
 
         # Loading organizations that have an end date set.
-        Oracle::Organization::ORDERED_ORG_TYPES.each do |org_type|
-          Oracle::Organization.where(org_type: org_type).where.not(org_end_date: nil).order(:org_end_date).each do |org|
+        Oracle::Organization::ORDERED_ORG_TYPES.each do |type|
+          Oracle::Organization.find_ended_orgs_by_type(type).each do |org|
             hash = org.to_hash.except(:super_organization)
             loader.into_lna(hash)
           end
@@ -45,7 +35,9 @@ module Load
       end
     end
 
-    #
+    # Creates or updates Lna objects for the organization described by the Hash. This method
+    # will catch any errors. Errors are raised if throw_errors is true, otherwise it returns
+    # nil.
     #
     # @return [Lna::Organization|Lna::Organization::Historic] if an organization is found,
     #   created or updated.
@@ -79,8 +71,8 @@ module Load
     #   lna_hash = { 
     #                label: 'Library',
     #                alt_label: ['DLC'],
-    #                code:  'LIB',
-    #                purpose: 'SUBDIV',
+    #                hr_id: '1234',
+    #                kind: 'SUBDIV',
     #                start_date: '01-01-2001',
     #                super_organization: { label: 'Provost' }
     #              }
@@ -95,7 +87,7 @@ module Load
         raise ArgumentError, 'Historic organization cannot be created with a super organization.'
       end
 
-      super_hash = hash.delete(:super_organization) if hash.key?(:super_organization)
+      super_hash = hash.delete(:super_organization)
 
       # Return if organization found.
       if org = find_organization(hash)
@@ -107,15 +99,18 @@ module Load
         # Convert organization from active to historic because an end date was set since the last
         # time it was loaded.
         if Date.parse(hash[:end_date]) <= Date.today
-          return Lna::Organization.convert_to_historic(org, hash[:end_date])
+          org = Lna::Organization.convert_to_historic(org, hash[:end_date])
+          log_warning(NEW_HISTORIC_ORG, "#{hash[:label]}")
         end
+        return org
       end
 
       # Try to find the organization again, this time searching by :hr_id.
       if hash[:hr_id]
         if org = find_organization({ hr_id: hash[:hr_id] })
-          # trigger change event and return new org
+          # Trigger change event and return new org.
           puts "Trigger Change Event"
+          log_warning(CHANGE_EVENT_TRIGGERED, "#{hash[:label]}(#{hash[:hr_id]})")
           return org
         end
       end
@@ -138,7 +133,7 @@ module Load
         end
       end
 
-      value = hash[:code] ? "#{hash[:label]}(#{hash[:code]})" : hash[:label]
+      value = hash[:hr_code] ? "#{hash[:label]}(#{hash[:hr_id]})" : hash[:label]
       log_warning(NEW_ORG, value)
     end
   end
