@@ -16,7 +16,6 @@ gem 'om', '~> 3.1.0'
 gem 'rsolr', '~> 1.0.13'
 gem 'solrizer', '~> 3.4.0'
 
-gem 'airborne'
 gem 'devise'
 gem 'dotenv-rails'
 gem 'jbuilder', '~> 2.0'
@@ -39,6 +38,8 @@ gem 'sass-rails', '~> 5.0' # Use SCSS for stylesheets
 gem 'uglifier', '>= 1.3.0' # Use Uglifier as compressor for JavaScript assets
 
 group :development, :test, :ci do
+  gem 'airborne'
+  gem 'byebug'  # Call 'byebug' anywhere in the code to stop to get a debugger console.
   gem 'factory_girl_rails'
   gem 'pry-nav'
   gem 'rspec-rails'
@@ -46,7 +47,6 @@ group :development, :test, :ci do
 end
 
 group :development do
-  gem 'byebug'  # Call 'byebug' anywhere in the code to stop to get a debugger console.
   gem 'web-console', '2.3.0' # Can remove this once we go to ruby 2.2.2
   gem 'ruby-debug-passenger'
 end
