@@ -2,13 +2,16 @@ require 'rails_helper'
 
 RSpec.describe Load::People do
   before :context do
-    ENV["LOADER_ERROR_NOTICES"] = "me@example.com"
+    @cached_error_notices = ENV['LOADER_ERROR_NOTICES']
+    ENV['LOADER_ERROR_NOTICES'] = 'me@example.com'
+
     FactoryGirl.create(:thayer)
-    @load = Load::People.new('People from Test Data', throw_errors: true)
+    FactoryGirl.create(:thayer, label: 'Computer Science', hr_id: '5678')
+    @load = Load::People.new("People from Test Data", throw_errors: true) #use let?
   end
 
   after :context do
-    ENV["LOADER_ERROR_NOTICES"] = nil
+    ENV['LOADER_ERROR_NOTICES'] = @cached_error_notices
   end
   
   describe '#into_lna' do
@@ -19,27 +22,17 @@ RSpec.describe Load::People do
       end
     
       after :context do
-        id = @person.primary_org.id
         @person.destroy # Destroy person and any attached objects.
-        Lna::Organization.find(id).destroy
       end
       
       subject { @person }
       
       it { is_expected.to be_an_instance_of Lna::Person }
+
+      its(:full_name)   { is_expected.to eq @hash[:person][:full_name] }
+      its(:given_name)  { is_expected.to eq @hash[:person][:given_name] }
+      its(:family_name) { is_expected.to eq @hash[:person][:family_name] }
       
-      it 'sets full name' do
-        expect(subject.full_name).to eql @hash[:person][:full_name]
-      end
-
-      it 'sets given name' do
-        expect(subject.given_name).to eql @hash[:person][:given_name]
-      end
-
-      it 'sets family name' do
-        expect(subject.family_name).to eql @hash[:person][:family_name]
-      end
-        
       it 'sets account with netid' do
         acct = Lna::Account.where(title: 'Dartmouth',
                                   account_name: @hash[:netid]).first
@@ -47,21 +40,21 @@ RSpec.describe Load::People do
       end
 
       it 'sets primary organization' do
-        expect(subject.primary_org.code).to eql @hash[:membership][:org][:code]
+        expect(subject.primary_org.hr_id).to eql @hash[:membership][:org][:hr_id]
         expect(subject.primary_org.label).to eql @hash[:membership][:org][:label]
       end
       
       it 'sets membership with title' do
         mems = subject.memberships.to_a.select do |m|
           m.title == @hash[:membership][:title]
-          m.organization.code == @hash[:membership][:org][:code]
+          m.organization.hr_id == @hash[:membership][:org][:hr_id]
           m.organization.label == @hash[:membership][:org][:label]
         end
         expect(mems.count).to be 1
       end
       
       it 'sets membership organization' do
-        expect(subject.memberships.first.organization.code).to eql @hash[:membership][:org][:code]
+        expect(subject.memberships.first.organization.hr_id).to eql @hash[:membership][:org][:hr_id]
       end
     end
 
@@ -71,14 +64,12 @@ RSpec.describe Load::People do
       end
 
       after :example do
-        id = @original.primary_org.id
         @original.destroy
-        Lna::Organization.find(id).destroy
       end
       
       it 'updates full name' do
-        p = { full_name: 'Jane A. Doe' }
-        updated = @import.into_lna(FactoryGirl.create(:lna_hash, person: p))
+        p = { full_name: 'Jane Doe' }
+        updated = @load.into_lna(FactoryGirl.create(:lna_hash, person: p))
         expect(updated.id).to eql @original.id
         expect(updated.full_name).to eql p[:full_name]
       end
@@ -86,19 +77,17 @@ RSpec.describe Load::People do
 
     context 'adding new primary membership' do
       before :context do
-        @original = @import.into_lna(FactoryGirl.create(:lna_hash))
+        @original = @load.into_lna(FactoryGirl.create(:lna_hash))
         m = { primary: true,
               title: 'Associate Professor',
               org: { label: 'Computer Science',
-                     code: 'COSC'  }            }
-        @updated = @import.into_lna(FactoryGirl.create(:lna_hash, membership: m))
+                     hr_id: '5678'  }            }
+        @updated = @load.into_lna(FactoryGirl.create(:lna_hash, membership: m))
         @updated.reload
       end
 
       after :context do
-        ids = @updated.memberships.map { |x| x.organization.id }
         @updated.destroy
-        ids.each { |i| Lna::Organization.find(i).destroy }
       end
 
       subject { @updated }
@@ -108,7 +97,7 @@ RSpec.describe Load::People do
       end
 
       it 'updates primary org' do
-        expect(subject.primary_org.code).to eql 'COSC'
+        expect(subject.primary_org.hr_id).to eql '5678'
       end
       
       it 'number of memberships increased' do
@@ -128,18 +117,16 @@ RSpec.describe Load::People do
    
     context 'adding new membership' do
       before :context do
-        @import.into_lna(FactoryGirl.create(:lna_hash))
+        @load.into_lna(FactoryGirl.create(:lna_hash))
         m = { title: 'Associate Professor',
               org: { label: 'Computer Science',
-                     code: 'COSC' }              }
-        @updated = @import.into_lna(FactoryGirl.create(:lna_hash, membership: m))
+                     hr_id: '5678' }              }
+        @updated = @load.into_lna(FactoryGirl.create(:lna_hash, membership: m))
         @updated.reload
       end
 
       after :context do
-        ids = @updated.memberships.map { |x| x.organization.id }
         @updated.destroy
-        ids.uniq.each { |i| Lna::Organization.find(i).destroy }
       end
 
       subject { @updated }
@@ -153,20 +140,20 @@ RSpec.describe Load::People do
         expect(m.count).to eql 1
       end
 
-      it 'creates new organization for membership' do
+      it 'sets correct organization for membership' do
         m = subject.memberships.to_a.select { |x| x.title == 'Associate Professor' }
-        expect(m.first.organization.code).to eql 'COSC'
+        expect(m.first.organization.hr_id).to eql '5678'
       end
         
       it 'does not change the primary organization' do
-        expect(subject.primary_org.code).to_not eql 'COSC'
+        expect(subject.primary_org.hr_id).to_not eql '5678'
       end
       
       it 'uses existing organization for membership' do
         m = { title: 'Department Chair',
               org: { label: 'Thayer School of Engineering',
-                     code: 'THAY' }                        }
-        @import.into_lna(FactoryGirl.create(:lna_hash, membership: m))
+                     hr_id: '1234' }                        }
+        @load.into_lna(FactoryGirl.create(:lna_hash, membership: m))
         subject.reload
         mem = subject.memberships.map { |x| x.organization.id }
         expect(mem.count).to eql 3
@@ -176,16 +163,14 @@ RSpec.describe Load::People do
 
     context 'updating memberships' do
       before :context do
-        @import.into_lna(FactoryGirl.create(:lna_hash))
+        @load.into_lna(FactoryGirl.create(:lna_hash))
         hash = FactoryGirl.create(:lna_hash)
         hash[:membership][:email] = 'jane.doe@dartmouth.edu'
-        @updated = @import.into_lna(hash)
+        @updated = @load.into_lna(hash)
       end
       
       after :context do
-        id = @updated.primary_org.id
         @updated.destroy
-        Lna::Organization.find(id).destroy
       end
 
       subject { @updated }
@@ -202,40 +187,40 @@ RSpec.describe Load::People do
     context 'throws errors when' do
       it 'netid is missing' do
         hash = FactoryGirl.create(:lna_hash, netid: nil)
-        expect { @import.into_lna(hash) }.to raise_error NotImplementedError
+        expect { @load.into_lna(hash) }.to raise_error NotImplementedError
       end
       
       it 'new person is added without primary membership' do
         m = { title: 'Professor', org: { label: 'Anthropology', code: 'ANTH' } }
         hash = FactoryGirl.create(:lna_hash, membership: m)
-        expect { @import.into_lna(hash) }.to raise_error ArgumentError
+        expect { @load.into_lna(hash) }.to raise_error ArgumentError
       end
 
       it 'new person is added without person hash' do
         hash = FactoryGirl.create(:lna_hash, person: nil)
-        expect { @import.into_lna(hash) }.to raise_error ArgumentError
+        expect { @load.into_lna(hash) }.to raise_error ArgumentError
       end
 
       it 'there is no membership or person' do
         hash = FactoryGirl.create(:lna_hash, membership: nil, person: nil)
-        expect { @import.into_lna(hash) }.to raise_error ArgumentError
+        expect { @load.into_lna(hash) }.to raise_error ArgumentError
       end
 
       it 'membership does not have a org' do
         hash = FactoryGirl.create(:lna_hash, membership: { title: 'Professor' })
-        expect { @import.into_lna(hash) }.to raise_error ArgumentError
+        expect { @load.into_lna(hash) }.to raise_error ArgumentError
       end
 
       it 'org does not have a label' do
         hash = FactoryGirl.create(:lna_hash)
         hash[:membership][:org][:label] = nil
-        expect { @import.into_lna(hash) }.to raise_error ArgumentError
+        expect { @load.into_lna(hash) }.to raise_error ArgumentError
       end
 
       it 'person does not have a name' do
         hash = FactoryGirl.create(:lna_hash)
         hash[:person][:full_name] = nil
-        expect { @import.into_lna(hash) }.to raise_error ActiveFedora::RecordInvalid
+        expect { @load.into_lna(hash) }.to raise_error ActiveFedora::RecordInvalid
       end
     end
   end

@@ -141,7 +141,7 @@ module Load
           m.begin_date = Date.today
         end
         log_warning(NEW_MEM, "'#{mem.title}' for #{person.full_name}(#{netid})")
-        
+
         person.save!
       end
       person
