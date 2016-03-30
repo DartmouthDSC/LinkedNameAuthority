@@ -42,6 +42,7 @@ group :development, :test, :ci do
   gem 'byebug'  # Call 'byebug' anywhere in the code to stop to get a debugger console.
   gem 'factory_girl_rails'
   gem 'pry-nav'
+  gem 'rspec-its'
   gem 'rspec-rails'
   gem 'spring'  # Spring speeds up development.
 end
