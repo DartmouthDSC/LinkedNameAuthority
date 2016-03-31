@@ -53,10 +53,10 @@ module Load
     end
 
     # Adds a row to the Import table with basic details about the load that just completed.
-    # this method should only be called once the load is complete. 
+    # This method should only be called once the load is complete. 
     def add_to_import_table
-      status = warnings.map { |k, v| [v.count, k].join(' ') } unless warnings.empty?
-      status << "#{errors.count} #{'error'.pluralize(errors.count)}"
+      status = ["#{errors.count} #{'error'.pluralize(errors.count)}"]
+      status.concat(warnings.map { |k, v| "#{v.count}  #{k}" }) unless warnings.empty?
       
       Import.create! do |i|
         i.load = title

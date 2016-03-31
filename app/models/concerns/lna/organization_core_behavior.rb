@@ -5,7 +5,7 @@ module Lna
     include Lna::DateHelper
     
     included do
-      has_many :people, class_name: 'Lna::Person', dependent: :restrict,
+      has_many :people, class_name: 'Lna::Person', dependent: :restrict_with_exception,
                inverse_of: :primary_org, as: :primary_org
       has_many :memberships, class_name: 'Lna::Membership', dependent: :destroy,
                inverse_of: :organization
