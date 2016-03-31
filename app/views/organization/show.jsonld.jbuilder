@@ -1,6 +1,6 @@
 json.prettify!
 
-vocabs = [:org, :skos, :owltime, :foaf]
+vocabs = [:org, :skos, :owltime, :foaf, :vcard]
 vocabs.concat([:dc, :prov]) if @change_events
 
 json.partial! 'shared/context', vocabs: vocabs

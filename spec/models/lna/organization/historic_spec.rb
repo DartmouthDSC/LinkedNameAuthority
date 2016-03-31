@@ -36,7 +36,7 @@ RSpec.describe Lna::Organization::Historic, type: :model do
     before :context do
       @old_thayer = FactoryGirl.create(:old_thayer)
       @new_thayer = FactoryGirl.create(:thayer)
-      @change_event = FactoryGirl.create(:code_change, resulting_organizations: [@new_thayer],
+      @change_event = FactoryGirl.create(:hb_change, resulting_organizations: [@new_thayer],
                                          original_organizations: [@old_thayer])
     end
 

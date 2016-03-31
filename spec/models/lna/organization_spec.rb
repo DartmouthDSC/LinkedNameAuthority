@@ -111,8 +111,8 @@ RSpec.describe Lna::Organization, type: :model do
 
   describe '#serialize' do
     before :context do
-      @sub_org = FactoryGirl.create(:thayer, label: 'Thayer Career Services', code: 'CRE')
-      @super_org = FactoryGirl.create(:thayer, label: 'Office of the President', code: 'PREZ')
+      @sub_org = FactoryGirl.create(:thayer, label: 'Thayer Career Services', hr_id: '0020')
+      @super_org = FactoryGirl.create(:thayer, label: 'Office of the President', hr_id: '0001')
       @org = FactoryGirl.create(:thayer)
       @org.super_organizations << @super_org
       @org.sub_organizations << @sub_org
@@ -127,7 +127,7 @@ RSpec.describe Lna::Organization, type: :model do
 
     it 'hash contains organization attributes' do
       expect(subject[:label]).to eql 'Thayer School of Engineering'
-      expect(subject[:code]).to eql 'THAY'
+      expect(subject[:hr_id]).to eql '1234'
       expect(subject[:alt_label]).to be_instance_of Array
       expect(subject[:alt_label]).to match_array(['Engineering School', 'Thayer'])
       expect(subject[:begin_date]).to eql '2000-01-01'

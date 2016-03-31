@@ -12,4 +12,12 @@ FactoryGirl.define do
       association :account_holder, factory: :thayer
     end
   end
+
+  factory :netid, class: Lna::Account do
+    title                    'Dartmouth'
+    account_name             'd00000a'
+    account_service_homepage 'dartdm.dartmouth.edu'
+    
+    association :account_holder, factory: :jane
+  end
 end
