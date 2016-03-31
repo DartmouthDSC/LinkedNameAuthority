@@ -2,15 +2,57 @@ require 'rails_helper'
 
 RSpec.describe Load::Loader do
   before :context do
+    @cached_error_notices = ENV['LOADER_ERROR_NOTICES']
     ENV['LOADER_ERROR_NOTICES'] = 'me@example.com'
     @loader = Load::Loader.new('Test Loader', throw_errors: true)
   end
 
   after :context do
-    # reset environmental variable
+    ENV['LOADER_ERROR_NOTICES'] = @cached_error_notices
   end
   
   subject { @loader }
+
+  describe '#add_to_import_table' do
+    before :context do
+      Import.destroy_all
+      @loader.instance_eval{ add_to_import_table }
+    end
+    
+    it 'adds row to table' do
+      expect(Import.count).to eq 1
+    end
+
+    describe 'row' do
+      subject { Import.first }
+      its(:status) { is_expected.to eq '0 errors' }
+      its(:load) { is_expected.to eq 'Test Loader' }
+      its(:time_started) { is_expected.to be_within(5).of Time.now }
+    end
+  end
+
+  describe '#log_warning' do
+    it 'adds to hash' do
+      subject.instance_eval{ log_warning('TEST WARNING', 'about no one') }
+      hash = { 'TEST WARNING' => ['about no one'] }
+      expect(subject.warnings).to eq hash
+    end
+  end
+
+  describe '#log_error' do
+    it 'adds to hash' do
+      subject.instance_eval{
+        log_error(ArgumentError.new('missing lots of variables'), 'testing error')
+      }
+      hash = { 'missing lots of variables' => ['testing error'] }
+      expect(subject.errors).to eq hash
+    end
+    
+    it 'raises exception if throws_error is true' #maybe
+  end
+
+  describe '#send_email'
+  
 
   describe '#find_organization' do
     before :context do
