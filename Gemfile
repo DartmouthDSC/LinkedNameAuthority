@@ -3,10 +3,10 @@ source 'https://rubygems.org'
 gem 'rails', '4.2.4'
 
 # Hydra dependencies
-gem 'active-fedora', '~> 9.10.4'
-# gem 'active-fedora',
-#     github: 'projecthydra/active_fedora',
-#     ref:    'e1391fb0dd4108923b02a3dfb344a19dd971a6f8'
+gem 'active-fedora',
+    github: 'projecthydra/active_fedora',
+    ref:    '080e185bc4f4b690ffebb71ca3c78bc10c658f37'
+#'e1391fb0dd4108923b02a3dfb344a19dd971a6f8' 
 gem 'active-triples', '~> 0.7.4'
 # gem 'blacklight', '~> 5.16'
 gem 'hydra-head', '~> 9.8.0'

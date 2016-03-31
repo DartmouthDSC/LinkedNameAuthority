@@ -1,3 +1,21 @@
+GIT
+  remote: git://github.com/projecthydra/active_fedora.git
+  revision: 080e185bc4f4b690ffebb71ca3c78bc10c658f37
+  ref: 080e185bc4f4b690ffebb71ca3c78bc10c658f37
+  specs:
+    active-fedora (9.11.0.alpha)
+      active-triples (~> 0.7.1)
+      activemodel (>= 4.2, < 6)
+      activesupport (>= 4.2.4, < 6)
+      deprecation
+      ldp (~> 0.5.0)
+      linkeddata
+      nom-xml (>= 0.5.1)
+      om (~> 3.1)
+      rdf-rdfxml (~> 1.1)
+      rsolr (~> 1.0, >= 1.0.10)
+      solrizer (~> 3.4)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -20,18 +38,6 @@ GEM
       erubis (~> 2.7.0)
       rails-dom-testing (~> 1.0, >= 1.0.5)
       rails-html-sanitizer (~> 1.0, >= 1.0.2)
-    active-fedora (9.10.4)
-      active-triples (~> 0.7.1)
-      activemodel (>= 4.2, < 6)
-      activesupport (>= 4.2.4, < 6)
-      deprecation
-      ldp (~> 0.5.0)
-      linkeddata
-      nom-xml (>= 0.5.1)
-      om (~> 3.1)
-      rdf-rdfxml (~> 1.1)
-      rsolr (~> 1.0, >= 1.0.10)
-      solrizer (~> 3.4)
     active-triples (0.7.5)
       activemodel (>= 3.0.0)
       activesupport (>= 3.0.0)
@@ -442,7 +448,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  active-fedora (~> 9.10.4)
+  active-fedora!
   active-triples (~> 0.7.4)
   activerecord-oracle_enhanced-adapter (~> 1.6.0)
   airborne
