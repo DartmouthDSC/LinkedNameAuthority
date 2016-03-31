@@ -107,6 +107,12 @@ RSpec.describe Lna::Organization, type: :model do
       expect(subject.super_organizations.size).to eql 2
       expect(subject.super_organizations).to include pres
     end
+
+    it 'super organization added has an updated solr document' do
+      # check that the super organization has the new sub organization in its solr document.
+      provost = Lna::Organization.load_instance_from_solr(@provost.id)
+      expect(provost.sub_organizations).to include @thayer
+    end
   end
 
   describe '#serialize' do

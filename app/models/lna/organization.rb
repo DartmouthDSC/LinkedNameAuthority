@@ -5,11 +5,18 @@ module Lna
     has_many :accounts, class_name: 'Lna::Account', dependent: :destroy,
              as: :account_holder, inverse_of: :account_holder
     has_many :sub_organizations, class_name: 'Lna::Organization',
-             as: :super_organizations, inverse_of: :super_organizations
+                            as: :super_organizations, inverse_of: :super_organizations
 
     has_and_belongs_to_many :super_organizations, class_name: 'Lna::Organization',
-                            predicate: ::RDF::Vocab::ORG.subOrganizationOf
+                            predicate: ::RDF::Vocab::ORG.subOrganizationOf,
+                            after_add: :reindex_sub, after_remove: :reindex_sub
 
+    # Because has many associations are not usually indexed into solr, reindex the super
+    # organization when its added or removed. That way the solr document includes the relationship.
+    def reindex_sub(r)
+      r.update_index
+    end  
+    
     # Serializes organization, as per our needs, only supers of supers and subs of subs are
     # serialized. By not placing this limitation this method would infinitly recurse.
     #
@@ -24,8 +31,7 @@ module Lna
           alt_label:  self.alt_label,
           kind:       self.kind,
           hinman_box: self.hinman_box,
-          begin_date: self.begin_date.to_s
-          
+          begin_date: self.begin_date.to_s      
         }
 
       only = options[:only]      
@@ -81,7 +87,13 @@ module Lna
         h.changed_by = changed_by
       end
 
+      # Remove all related objects and destroy active.
+      active.sub_organizations = []
+      active.super_organizations = []
+      active.resulted_from = nil
+      active.save!
       active.destroy
+      
       historic
     end
 
