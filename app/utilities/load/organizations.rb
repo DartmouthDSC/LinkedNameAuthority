@@ -125,20 +125,21 @@ module Load
       if hash[:end_date]
         org = Lna::Organization::Historic.create!(hash)
       else
-        # Find super organization, if one is given.
+        org = Lna::Organization.create!(hash)
+        # Find super organization and set it, if one is given.
         if super_hash && !super_hash.empty?
-          unless super_org = find_organization(super_hash)
+          if super_org = find_organization(super_hash)
+            org.super_organizations << super_org
+            org.save!
+          else
             raise ArgumentError, "Could not find super organization with fields #{super_hash.to_s}"
           end
-        end
-
-        org = Lna::Organization.create!(hash) do |o|
-          o.super_organizations << super_org if super_org
         end
       end
 
       value = hash[:hr_code] ? "#{hash[:label]}(#{hash[:hr_id]})" : hash[:label]
       log_warning(NEW_ORG, value)
+      org
     end
   end
 end

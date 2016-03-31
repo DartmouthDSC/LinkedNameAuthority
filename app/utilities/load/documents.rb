@@ -6,7 +6,7 @@ module Load
 
     # Keys for warnings hash.
     NEW_DOCUMENT = 'new document'
-    PERSON_RECORD_NOT_FOUND = 'person records not found'
+    PERSON_RECORD_NOT_FOUND = 'person record not found'
     
     # Import latest newly created publication records from Elements. If a document is already
     # present in the LNA, it is NOT updated.
