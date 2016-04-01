@@ -24,6 +24,14 @@ module Lna
       def end_date=(d)
         date_setter('end_date', d)
       end
+
+      def active?
+        false
+      end
+
+      def historic?
+        true
+      end
     end
   end
 end

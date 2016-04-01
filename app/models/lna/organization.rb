@@ -16,6 +16,14 @@ module Lna
     def reindex_sub(r)
       r.update_index
     end  
+
+    def active?
+      true
+    end
+
+    def historic?
+      false
+    end
     
     # Serializes organization, as per our needs, only supers of supers and subs of subs are
     # serialized. By not placing this limitation this method would infinitly recurse.

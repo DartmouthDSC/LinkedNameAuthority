@@ -122,7 +122,7 @@ module Load
     # are queried.
     #
     # @example Usage
-    #   org = { label: 'Library', code: 'LIB' }
+    #   org = { label: 'Library', code: 'LIB', super_organization_id: 'organization_id_1' }
     #   find_organization(org)
     #
     # @private
@@ -133,8 +133,11 @@ module Load
     # @return [nil] if no organization is found
     def find_organization(hash)
       raise 'Hash cannot be empty.' if hash.empty? # If hash is empty it will return all the orgs.
-      orgs = Lna::Organization.where(hash)
-      orgs = Lna::Organization::Historic.where(hash) if orgs.count.zero?
+
+      search_hash = hash.except(:super_organization_id)
+      
+      orgs = Lna::Organization.where(search_hash)
+      orgs = Lna::Organization::Historic.where(search_hash) if orgs.count.zero?
       
       # Try to find an exact match, because self.where uses solr to search and solr will return
       # a document if any part of the field matches. Alt_labels are treated a bit differently,
@@ -144,6 +147,8 @@ module Load
         hash.all? do |k, v|
           if k == :alt_label
             v.all? { |i| org.alt_label.include? i }
+          elsif k == :super_organization_id
+            org.super_organizations.includes? ActiveFedora::Base.find(v)
           else
             v = Date.parse(v) if [:begin_date, :end_date].include? k
             org.send(k) == v
