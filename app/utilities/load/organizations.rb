@@ -3,9 +3,11 @@ module Load
     HR_ORG_LOADER = 'Organizations from HR Org view'
 
     # Keys for warnings hash.
-    NEW_ORG = 'new organization'
-    NEW_HISTORIC_ORG = 'new historic organization'
-    CHANGE_EVENT_TRIGGERED = 'change event triggered'
+    NEW_ORG            = 'new organization'
+    NEW_HISTORIC_ORG   = 'new historic organization'
+    PREF_LABEL_UPDATED = 'pref label updated'
+    SUPER_ORG_UPDATED  = 'super org updated'
+    RECORD_UPDATED     = 'record updated'
     
     # Loading organizations from hr table.
     #
@@ -60,13 +62,21 @@ module Load
     #      organization should be converted to a historic organization only if the end_date is on
     #      or before Date.today.
     #   2. The organization is looked up by :hr_id. If looking up by :hr_id returns a result than
-    #      some of the information in the hash was changed/updated, therefore a change event
-    #      should be triggered. If an active organization is returned and the hash contains an
-    #      :end_date, then the organization is updated with all the information in the hash
-    #      except for the :end_date. The new active organization created is then converted to a
-    #      historic organization, using the :end_date given.
+    #      some of the information in the hash was changed/updated.
+    #         - If :label was changed, add the old label to alt_label, and update the :label
+    #         - If there are new alt_labels add them to alt_labels
+    #         - If these's a new super organization, the old one is replaced.
+    #         - For all other changes, they can just be updated.
+    #         - If the hash contains an end_date and the org returned is active, after making all
+    #           other changes, convert the organization to historic
     #   3. If after these other searches an organization is not found, then a new organization is
     #      created.
+    #
+    #
+    # @note This code assumes that each organization only has one super organization. If it
+    #   becomes apparent that we need to add the ability to load multiple super organizations
+    #   for each organization. Then the code that updates super organizations will have to
+    #   be revisted.
     #
     # @example Example of hash
     #   lna_hash = { 
@@ -74,7 +84,9 @@ module Load
     #                alt_label: ['DLC'],
     #                hr_id: '1234',
     #                kind: 'SUBDIV',
+    #                hinman_box: '0000'
     #                start_date: '01-01-2001',
+    #                end_date: nil,
     #                super_organization: { label: 'Provost' }
     #              }
     #
@@ -90,7 +102,12 @@ module Load
         raise ArgumentError, 'Historic organization cannot be created with a super organization.'
       end
 
-      super_hash = hash.delete(:super_organization)
+      # Find super organization.
+      super_org = nil
+      if super_hash = hash.delete(:super_organization)
+        super_org = find_organization!(super_hash)
+        hash[:super_organization_id] = super_org.id
+      end
 
       # Return if organization found.
       if org = find_organization(hash)
@@ -103,18 +120,46 @@ module Load
         # time it was loaded.
         if Date.parse(hash[:end_date]) <= Date.today
           org = Lna::Organization.convert_to_historic(org, hash[:end_date])
-          log_warning(NEW_HISTORIC_ORG, "#{hash[:label]}")
+          log_warning(NEW_HISTORIC_ORG, hash[:label])
         end
         return org
       end
 
-      # Try to find the organization again, this time searching by :hr_id.
+      # Try to find the organization again, this time searching by :hr_id. If found update record
+      # as described above.
       if hash[:hr_id]
         if org = find_organization({ hr_id: hash[:hr_id] })
-          # Trigger change event and return new org.
-          # if end_date is set and an active organization is returned (follow instructions above).
-          puts "Trigger Change Event"
-          log_warning(CHANGE_EVENT_TRIGGERED, "#{hash[:label]}(#{hash[:hr_id]})")
+          if org.label != hash[:label]
+            log_warning(PREF_LABEL_UPDATED, "#{org.label} => #{hash[:label]}")
+            org.alt_label << org.label
+            org.label = hash[:label]
+          end
+
+          hash[:alt_label].each do |i|
+            unless hash.alt_label.includes? i
+              hash.alt_label << i
+            end
+          end
+
+          if super_org && (org.super_organizations.size >= 1)
+            org.super_organizations = [super_org]
+            log_warning(SUPER_ORG_UPDATED, "#{org.label}(#{org.hr_id})")
+          else
+            raise 'org has more than one super and could not determine which one to delete'
+          end
+
+          org.update(hash.except(:label, :alt_label, :super_organization_id, :end_date))
+          log_warning(RECORD_UPDATED, "#{org.label}(#{org.hr_id})")
+
+          org.save!
+          
+          # If end_date is set and an active organization is returned, convert the organization
+          if hash[:end_date] && (Date.parse(hash[:end_date]) <= Date.today) && org.active?
+            org = Lna::Organization.convert_to_historic(org, hash[:end_date])
+            log_warning(NEW_HISTORIC_ORG, hash[:label])
+          end
+
+          puts "Update in Org #{org[:label]}"
           return org
         end
       end
@@ -122,18 +167,15 @@ module Load
       # Create a new organization.
       # If end date is set a historic organization needs to be created, otherwise an
       # active organization should be created.
+      hash.delete(:super_organization_id)
       if hash[:end_date]
         org = Lna::Organization::Historic.create!(hash)
       else
         org = Lna::Organization.create!(hash)
-        # Find super organization and set it, if one is given.
-        if super_hash && !super_hash.empty?
-          if super_org = find_organization(super_hash)
-            org.super_organizations << super_org
-            org.save!
-          else
-            raise ArgumentError, "Could not find super organization with fields #{super_hash.to_s}"
-          end
+        # If super organization was found, set it. 
+        if super_org
+          org.super_organizations << super_org
+          org.save!
         end
       end
 
