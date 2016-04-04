@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  factory :lna_hash, class: Hash do
+  factory :person_hash, class: Hash do
     netid           'd00000k'  
     person          { { full_name:  'Jane Doe',
                         given_name:  'Jane',
@@ -14,5 +14,19 @@ FactoryGirl.define do
     
     initialize_with { attributes }
     to_create       {}
+  end
+
+  factory :org_hash, class: Hash do
+    label              'Library'
+    alt_label          ['DLC', 'LIB']
+    hr_id              '1234'
+    kind               'SUBDIV'
+    hinman_box         '0000'
+    begin_date         '01-01-2001'
+    end_date           nil
+    super_organization { { label: 'Office of the Provost' } }
+
+    initialize_with    { attributes }
+    to_create          {}
   end
 end

@@ -1,4 +1,5 @@
 module Load
+  class ObjectNotFoundError < ActiveFedora::ObjectNotFoundError; end
   class Loader
     # Keys for warnings hash.
     SENT_EMAIL = 'sent email'
@@ -87,7 +88,9 @@ module Load
     def log_error(e, v)
       Rails.logger.tagged('LOADER') {
         Rails.logger.tagged(title.upcase) {
-          Rails.logger.error("ERROR: #{e}\n\t#{e.backtrace.join("\n\t")}")
+          message = "ERROR: #{e}"
+          message << "\n\t#{e.backtrace.join("\n\t")}" if e.backtrace
+          Rails.logger.error(message)
         }
       }
       add_to_hash(@errors, e.message.to_s, v)
@@ -101,8 +104,7 @@ module Load
       emails = emails.concat(@error_notices).uniq unless @errors.empty?
 
       LoaderMailer.output_email(title, emails, output).deliver_now
-      t = Time.now
-      log_warning(SENT_EMAIL, "to #{emails.join(', ')} on #{t.strftime('%c')}")
+      log_warning(SENT_EMAIL, "to #{emails.join(', ')} on #{Time.now.strftime('%c')}")
     end
 
     # Combine errors and warnings hash into one.
@@ -117,12 +119,12 @@ module Load
     end
 
     # Find organization based on hash given. Makes sure that the organization fields match when
-    # compared. Will only throw errors if multiple organizations are found. Prioritizes finding
+    # compared. Will throw errors if multiple organizations are found. Prioritizes finding
     # active organizations. If no active organization if found, then historical organization
     # are queried.
     #
     # @example Usage
-    #   org = { label: 'Library', code: 'LIB', super_organization_id: 'organization_id_1' }
+    #   org = { label: 'Library', code: 'LIB', super_organization_id: 'org_1' }
     #   find_organization(org)
     #
     # @private
@@ -132,13 +134,22 @@ module Load
     # @return [ArgumentError] if more than one organization is found
     # @return [nil] if no organization is found
     def find_organization(hash)
-      raise 'Hash cannot be empty.' if hash.empty? # If hash is empty it will return all the orgs.
+      # If hash is empty it will return all the orgs.
+      raise ArgumentError, 'Hash cannot be empty.' if hash.empty?
 
-      search_hash = hash.except(:super_organization_id)
-      
-      orgs = Lna::Organization.where(search_hash)
-      orgs = Lna::Organization::Historic.where(search_hash) if orgs.count.zero?
-      
+      # Remove super organization and any nil values. Doing a lookup with nil values will
+      # return unexpected results.
+      search_hash = hash.compact.except(:super_organization_id)
+
+      raise ArgumentError, 'Hash cannot only contain super org id' if search_hash.empty?
+
+      begin
+        orgs = Lna::Organization.where(search_hash)
+        orgs = Lna::Organization::Historic.where(search_hash) if orgs.count.zero?
+      rescue RSolr::Error::Http => e
+       raise ArgumentError, "Organization look up failed. Invalid key in #{search_hash}"
+      end
+        
       # Try to find an exact match, because self.where uses solr to search and solr will return
       # a document if any part of the field matches. Alt_labels are treated a bit differently,
       # all the alt labels given by the hash should be included in the object's alt_label array,
@@ -148,7 +159,7 @@ module Load
           if k == :alt_label
             v.all? { |i| org.alt_label.include? i }
           elsif k == :super_organization_id
-            org.super_organizations.includes? ActiveFedora::Base.find(v)
+            org.super_organization_ids.include? v
           else
             v = Date.parse(v) if [:begin_date, :end_date].include? k
             org.send(k) == v
@@ -176,7 +187,7 @@ module Load
     # @return [ArgumentError] if exactly one organization is not found.
     def find_organization!(hash)
       unless result = find_organization(hash)
-        raise ArgumentError, "organization with the values #{hash.to_s} could not be found"
+        raise ObjectNotFoundError, "organization with the values #{hash.to_s} could not be found"
       end
       result
     end

@@ -17,7 +17,7 @@ RSpec.describe Load::People do
   describe '#into_lna' do
     context 'creates new person' do 
       before :context do
-        @hash = FactoryGirl.create(:lna_hash)
+        @hash = FactoryGirl.create(:person_hash)
         @person = @load.into_lna(@hash)
       end
     
@@ -60,7 +60,7 @@ RSpec.describe Load::People do
 
     context 'changes to a person\'s infomation' do
       before :example do
-        @original = @load.into_lna(FactoryGirl.create(:lna_hash))
+        @original = @load.into_lna(FactoryGirl.create(:person_hash))
       end
 
       after :example do
@@ -69,7 +69,7 @@ RSpec.describe Load::People do
       
       it 'updates full name' do
         p = { full_name: 'Jane Doe' }
-        updated = @load.into_lna(FactoryGirl.create(:lna_hash, person: p))
+        updated = @load.into_lna(FactoryGirl.create(:person_hash, person: p))
         expect(updated.id).to eql @original.id
         expect(updated.full_name).to eql p[:full_name]
       end
@@ -77,12 +77,12 @@ RSpec.describe Load::People do
 
     context 'adding new primary membership' do
       before :context do
-        @original = @load.into_lna(FactoryGirl.create(:lna_hash))
+        @original = @load.into_lna(FactoryGirl.create(:person_hash))
         m = { primary: true,
               title: 'Associate Professor',
               org: { label: 'Computer Science',
                      hr_id: '5678'  }            }
-        @updated = @load.into_lna(FactoryGirl.create(:lna_hash, membership: m))
+        @updated = @load.into_lna(FactoryGirl.create(:person_hash, membership: m))
         @updated.reload
       end
 
@@ -117,11 +117,11 @@ RSpec.describe Load::People do
    
     context 'adding new membership' do
       before :context do
-        @load.into_lna(FactoryGirl.create(:lna_hash))
+        @load.into_lna(FactoryGirl.create(:person_hash))
         m = { title: 'Associate Professor',
               org: { label: 'Computer Science',
                      hr_id: '5678' }              }
-        @updated = @load.into_lna(FactoryGirl.create(:lna_hash, membership: m))
+        @updated = @load.into_lna(FactoryGirl.create(:person_hash, membership: m))
         @updated.reload
       end
 
@@ -153,7 +153,7 @@ RSpec.describe Load::People do
         m = { title: 'Department Chair',
               org: { label: 'Thayer School of Engineering',
                      hr_id: '1234' }                        }
-        @load.into_lna(FactoryGirl.create(:lna_hash, membership: m))
+        @load.into_lna(FactoryGirl.create(:person_hash, membership: m))
         subject.reload
         mem = subject.memberships.map { |x| x.organization.id }
         expect(mem.count).to eql 3
@@ -163,8 +163,8 @@ RSpec.describe Load::People do
 
     context 'updating memberships' do
       before :context do
-        @load.into_lna(FactoryGirl.create(:lna_hash))
-        hash = FactoryGirl.create(:lna_hash)
+        @load.into_lna(FactoryGirl.create(:person_hash))
+        hash = FactoryGirl.create(:person_hash)
         hash[:membership][:email] = 'jane.doe@dartmouth.edu'
         @updated = @load.into_lna(hash)
       end
@@ -186,39 +186,39 @@ RSpec.describe Load::People do
     
     context 'throws errors when' do
       it 'netid is missing' do
-        hash = FactoryGirl.create(:lna_hash, netid: nil)
+        hash = FactoryGirl.create(:person_hash, netid: nil)
         expect { @load.into_lna(hash) }.to raise_error NotImplementedError
       end
       
       it 'new person is added without primary membership' do
         m = { title: 'Professor', org: { label: 'Anthropology', code: 'ANTH' } }
-        hash = FactoryGirl.create(:lna_hash, membership: m)
+        hash = FactoryGirl.create(:person_hash, membership: m)
         expect { @load.into_lna(hash) }.to raise_error ArgumentError
       end
 
       it 'new person is added without person hash' do
-        hash = FactoryGirl.create(:lna_hash, person: nil)
+        hash = FactoryGirl.create(:person_hash, person: nil)
         expect { @load.into_lna(hash) }.to raise_error ArgumentError
       end
 
       it 'there is no membership or person' do
-        hash = FactoryGirl.create(:lna_hash, membership: nil, person: nil)
+        hash = FactoryGirl.create(:person_hash, membership: nil, person: nil)
         expect { @load.into_lna(hash) }.to raise_error ArgumentError
       end
 
       it 'membership does not have a org' do
-        hash = FactoryGirl.create(:lna_hash, membership: { title: 'Professor' })
+        hash = FactoryGirl.create(:person_hash, membership: { title: 'Professor' })
         expect { @load.into_lna(hash) }.to raise_error ArgumentError
       end
 
       it 'org does not have a label' do
-        hash = FactoryGirl.create(:lna_hash)
+        hash = FactoryGirl.create(:person_hash)
         hash[:membership][:org][:label] = nil
         expect { @load.into_lna(hash) }.to raise_error ArgumentError
       end
 
       it 'person does not have a name' do
-        hash = FactoryGirl.create(:lna_hash)
+        hash = FactoryGirl.create(:person_hash)
         hash[:person][:full_name] = nil
         expect { @load.into_lna(hash) }.to raise_error ActiveFedora::RecordInvalid
       end
