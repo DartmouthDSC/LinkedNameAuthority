@@ -129,18 +129,18 @@ RSpec.describe Lna::Organization::ChangeEvent, type: :model do
     end
   end
 
-  context '.trigger_change_event' do
-    before :context do
-      thayer = FactoryGirl.create(:thayer)
-      @active = Lna::Organization::ChangeEvent.trigger_change_event(
-        thayer, 'hb change', { hb: '0020' }
-      )
-    end
+  # context '.trigger_change_event' do
+  #   before :context do
+  #     thayer = FactoryGirl.create(:thayer)
+  #     @active = Lna::Organization::ChangeEvent.trigger_change_event(
+  #       thayer, 'hb change', { hb: '0020' }
+  #     )
+  #   end
 
-    subject { @active }
+  #   subject { @active }
 
-    it 'active organization has change_by event' do
-      expect(@active.resulted_from.description).to eql 'hb change'
-    end
-  end
+  #   it 'active organization has change_by event' do
+  #     expect(@active.resulted_from.description).to eql 'hb change'
+  #   end
+  # end
 end
