@@ -37,7 +37,7 @@ module Load
     end
 
     # Creates or updates the organization described by the hash. This method will catch any
-    # errors. Errors are raised if throw_errors is true, otherwise it returns nil.
+    # errors.
     #
     # @param (see #into_lna!)
     # @return [Lna::Organization|Lna::Organization::Historic] if an organization is found,
@@ -47,11 +47,8 @@ module Load
       into_lna!(hash)
     rescue => e
       log_error(e, hash.to_s)
-      raise e if throw_errors
       return nil
     end
-
-    private
     
     # Creates or updates Lna objects for the organization described by the given hash.
     #
@@ -89,8 +86,6 @@ module Load
     #                end_date: nil,
     #                super_organization: { label: 'Provost' }
     #              }
-    #
-    # @private
     #
     # @param hash [Hash] hash containing organization info
     # @return [Lna::Organization|Lna::Organization::Historic] organization that was found,

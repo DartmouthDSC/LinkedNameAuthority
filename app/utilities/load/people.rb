@@ -50,24 +50,18 @@ module Load
       end
     rescue NotImplementedError, ArgumentError => e
       log_error(e, hash.to_s)
-      raise e if throw_errors
       return nil
     rescue => e
       value = (hash[:person] && hash[:person][:full_name]) ?
                 "#{hash[:person][:full_name]}(#{hash[:netid]})" :
                 hash[:netid]
       log_error(e, value)
-      raise e if throw_errors
       return nil
     end
-    
-    private
     
     # Creates or updates Lna objects for the person that has the given netid. Can create account,
     # membership and person objects. Importing people will not create organizations; any
     # organizations used should already by present.
-    #
-    # @private
     #
     # @param netid [String] Dartmouth identifier
     # @param hash [Hash] hash containing person, account and membership info
@@ -75,7 +69,9 @@ module Load
     # @return [Exception] if there a problem creating or updating person
     def into_lna_by_netid!(netid, hash)
       # Argument checking.
-      if !hash[:person] && !hash[:membership]
+      if netid.nil?
+        raise ArgumentError, "Netid cannot be nil"
+      elsif !hash[:person] && !hash[:membership]
         raise ArgumentError, 'Must have a :person or :membership key in hash.'
       elsif hash[:membership] && !hash[:membership][:org]
         raise ArgumentError, 'Membership must have an organization.'
@@ -146,6 +142,8 @@ module Load
       end
       person
     end
+
+    private
     
     # Removes :primary and :org keys from membership hash.
     def clean_mem_hash(hash)
