@@ -69,7 +69,9 @@ module Load
     # @return [Exception] if there a problem creating or updating person
     def into_lna_by_netid!(netid, hash)
       # Argument checking.
-      if !hash[:person] && !hash[:membership]
+      if netid.nil?
+        raise ArgumentError, "Netid cannot be nil"
+      elsif !hash[:person] && !hash[:membership]
         raise ArgumentError, 'Must have a :person or :membership key in hash.'
       elsif hash[:membership] && !hash[:membership][:org]
         raise ArgumentError, 'Membership must have an organization.'

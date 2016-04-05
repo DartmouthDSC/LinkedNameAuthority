@@ -19,7 +19,7 @@ RSpec.describe Load::Organizations do
     context 'when a new active organization is created' do
       before :context do
         @hash = FactoryGirl.create(:org_hash)
-        @org = @load.into_lna!(hash)
+        @org = @load.into_lna!(@hash)
       end
 
       after :context do
@@ -76,7 +76,7 @@ RSpec.describe Load::Organizations do
         @hash = FactoryGirl.create(:org_hash, label: 'Dartmouth College Library',
                                    alt_label: ['LIBR'], hinman_box: '6025',
                                    super_organization: { label: 'Office of the President' })
-        @org = @load.instance_eval { into_lna!(@hash) }
+        @org = @load.into_lna!(@hash)
         @org.reload
       end
 

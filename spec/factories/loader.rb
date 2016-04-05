@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :person_hash, class: Hash do
-    netid           'd00000k'  
+#    netid           'd00000k'  
     person          { {
                         full_name:  'Jane Doe',
                         given_name:  'Jane',

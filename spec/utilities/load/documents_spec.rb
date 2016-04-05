@@ -1,19 +1,30 @@
 require 'rails_helper'
 
 RSpec.describe Load::Documents do
-  before :context do
+  before :all do
     @cached_error_notices = ENV['LOADER_ERROR_NOTICED']
     ENV['LOADER_ERROR_NOTICES'] = 'me@example.com'
-
-    @person = FactoryGirl.create(:netid).account_holder
-    @load = Load::Documents.new('Documents from Test Data')
   end
 
-  after :context do
+  after :all do
     ENV['LOADER_ERROR_NOTICES'] = @cached_error_notices
   end
 
+  describe '#into_lna' do
+    let(:load) { Load::Documents.new('Documents from Test Data') }
+    
+    it 'logs error when netid missing' do  
+      load.into_lna(FactoryGirl.create(:doc_hash))
+      expect(load.errors.count).to eq 1
+    end
+  end
+
   describe '#into_lna_by_netid!' do
+    before :context do
+      @person = FactoryGirl.create(:netid).account_holder
+      @load = Load::Documents.new('Documents from Test Data')
+    end
+    
     describe 'when document does not exists' do
       before :context do
         @hash = FactoryGirl.create(:doc_hash)
@@ -82,15 +93,11 @@ RSpec.describe Load::Documents do
     end                          
                               
     describe 'throws error' do 
-      it 'when netid missing' do
-        expect {
-          @load.into_lna_by_netid!(nil, FactoryGirl.create(:doc_hash))
-        }.to raise_error NotImplementedError
-      end
-
       it 'when required fields are missing' do
         hash = FactoryGirl.create(:doc_hash, title: nil)
-        expect { @load.into_lna_by_netid!('d00000a', hash) }.to raise_error ActiveFedora::RecordInvalid
+        expect {
+          @load.into_lna_by_netid!('d00000a', hash)
+        }.to raise_error ActiveFedora::RecordInvalid
       end
       
       it 'when document hash is missing' do
