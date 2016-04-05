@@ -1,24 +1,26 @@
 require 'rails_helper'
 
 RSpec.describe Load::People do
+  let!(:netid) { 'd00000k' }
+  
   before :context do
     @cached_error_notices = ENV['LOADER_ERROR_NOTICES']
     ENV['LOADER_ERROR_NOTICES'] = 'me@example.com'
 
     FactoryGirl.create(:thayer)
     FactoryGirl.create(:thayer, label: 'Computer Science', hr_id: '5678')
-    @load = Load::People.new("People from Test Data", throw_errors: true) #use let?
+    @load = Load::People.new("People from Test Data")
   end
 
   after :context do
     ENV['LOADER_ERROR_NOTICES'] = @cached_error_notices
   end
   
-  describe '#into_lna' do
+  describe '#into_lna_by_netid!' do
     context 'creates new person' do 
       before :context do
         @hash = FactoryGirl.create(:person_hash)
-        @person = @load.into_lna(@hash)
+        @person = @load.into_lna_by_netid!(netid, @hash)
       end
     
       after :context do
@@ -60,7 +62,7 @@ RSpec.describe Load::People do
 
     context 'changes to a person\'s infomation' do
       before :example do
-        @original = @load.into_lna(FactoryGirl.create(:person_hash))
+        @original = @load.into_lna(netid, FactoryGirl.create(:person_hash))
       end
 
       after :example do

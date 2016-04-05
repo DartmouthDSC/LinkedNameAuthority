@@ -31,7 +31,6 @@ module Load
           users = Symplectic::Elements::Users.get_all(modified_since: last_import)
         rescue StandardError => e
           load.log_error(e, 'while retrieving users.')
-          raise e if throw_errors
           break
         end
                        
@@ -42,8 +41,6 @@ module Load
             id = (user.proprietary_id) ?
                    "Proprietary id: #{user.proprietary_id}" : "Elements id: #{user.id}"
             load.log_errors(e, id)
-            raise e if throw_errors
-#            next
           ensure
             next unless publications # If there aren't any modified publications, skip.
           end
@@ -67,7 +64,6 @@ module Load
               load.into_lna(hash)
             rescue StandardError => e
               load.log_error(e,"Elements document #{publication.id} for #{user.proprietary_id}")
-              raise e if throw_errors
               next
             end
           end
@@ -100,14 +96,12 @@ module Load
       end
     rescue NotImplementedError, ArgumentError => e
       log_error(e, hash.to_s)
-      raise e if throw_errors
       return nil
     rescue => e
       value = (hash[:elements_id]) ?
                 "Elements id: #{hash[:elements_id]}" :
                 "#{hash[:document][:title]} for #{hash[:netid]}"
       log_error(e, value)
-      raise e if throw_errors
       return nil
     end
     

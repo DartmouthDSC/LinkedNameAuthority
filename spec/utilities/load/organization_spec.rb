@@ -8,18 +8,18 @@ RSpec.describe Load::Organizations do
     @provost = FactoryGirl.create(:provost)
     @president = FactoryGirl.create(:provost, label: 'Office of the President',
                                     alt_label: ['President'])
-    @load = Load::Organizations.new('Organization from Test Data', throw_errors: true)
+    @load = Load::Organizations.new('Organization from Test Data')
   end
 
   after :context do
     ENV['LOADER_ERROR_NOTICES'] = @cached_error_notices
   end
 
-  describe '#into_lna' do
+  describe '#into_lna!' do
     context 'when a new active organization is created' do
       before :context do
         @hash = FactoryGirl.create(:org_hash)
-        @org = @load.into_lna(@hash)
+        @org = @load.into_lna!(hash)
       end
 
       after :context do
@@ -44,14 +44,14 @@ RSpec.describe Load::Organizations do
       end
 
       it 'returns same organization when added again' do
-        expect(@load.into_lna(@hash)).to eq subject
+        expect(@load.into_lna!(@hash)).to eq subject
       end
     end
 
     context 'when a new historic organization is created' do
       before :context do
         @hash = FactoryGirl.create(:org_hash, super_organization: nil, end_date: '31-12-2010')
-        @org = @load.into_lna(@hash)
+        @org = @load.into_lna!(@hash)
       end
 
       after :context do
@@ -72,11 +72,11 @@ RSpec.describe Load::Organizations do
     
     context 'when an organization\'s label, alt_label, hb and super organization is updated' do
       before :context do
-        @load.into_lna(FactoryGirl.create(:org_hash))
+        @load.into_lna!(FactoryGirl.create(:org_hash))
         @hash = FactoryGirl.create(:org_hash, label: 'Dartmouth College Library',
                                    alt_label: ['LIBR'], hinman_box: '6025',
                                    super_organization: { label: 'Office of the President' })
-        @org = @load.into_lna(@hash)
+        @org = @load.instance_eval { into_lna!(@hash) }
         @org.reload
       end
 
@@ -113,10 +113,10 @@ RSpec.describe Load::Organizations do
 
     context 'when an active organization\'s alt label and end date is updated' do
       before :context do
-        @load.into_lna(FactoryGirl.create(:org_hash))
+        @load.into_lna!(FactoryGirl.create(:org_hash))
         hash = FactoryGirl.create(:org_hash, end_date: '31-12-2010', alt_label: ['Library'],
                                   super_organization: nil)
-        @org = @load.into_lna(hash)
+        @org = @load.into_lna!(hash)
       end
 
       after :context do
@@ -140,10 +140,9 @@ RSpec.describe Load::Organizations do
 
     context 'when an organization is ended' do
       before :context do
-        @load.into_lna(FactoryGirl.create(:org_hash))
-        @org = @load.into_lna(FactoryGirl.create(:org_hash, end_date: '31-12-2010',
-                                                 super_organization: nil))
-        
+        @load.into_lna!(FactoryGirl.create(:org_hash))
+        @org = @load.into_lna!(FactoryGirl.create(:org_hash, end_date: '31-12-2010',
+                                                  super_organization: nil))
       end
 
       after :context do
@@ -164,32 +163,32 @@ RSpec.describe Load::Organizations do
     context 'throws errors' do
       it 'when hash is missing label' do
         expect {
-          @load.into_lna(FactoryGirl.create(:org_hash, label: nil))
+          @load.into_lna!(FactoryGirl.create(:org_hash, label: nil))
         }.to raise_error ArgumentError
       end
       
       it 'when hash is missing information when creating new org' do
         expect {
-          @load.into_lna(FactoryGirl.create(:org_hash, begin_date: nil))
+          @load.into_lna!(FactoryGirl.create(:org_hash, begin_date: nil))
         }.to raise_error ActiveFedora::RecordInvalid
       end
       
       it 'when super organization and end date are in hash' do
         expect {
-          @load.into_lna(FactoryGirl.create(:org_hash, end_date: '31-12-2010'))
+          @load.into_lna!(FactoryGirl.create(:org_hash, end_date: '31-12-2010'))
         }.to raise_error ArgumentError
       end
       
       it 'when super organization is not valid' do
         expect {
-          @load.into_lna(FactoryGirl.create(:org_hash,
-                                            super_organization: { label: 'Unicorn Academy' }))
+          @load.into_lna!(FactoryGirl.create(:org_hash,
+                                             super_organization: { label: 'Unicorn Academy' }))
         }.to raise_error Load::ObjectNotFoundError
       end
       
       it 'when hash keys are invalid' do # try to create organization with incorrect keys
         expect {
-          @load.into_lna(FactoryGirl.create(:org_hash, rank: 'MAGICAL'))
+          @load.into_lna!(FactoryGirl.create(:org_hash, rank: 'MAGICAL'))
         }.to raise_error ArgumentError
       end
     end
