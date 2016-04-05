@@ -16,7 +16,7 @@ RSpec.describe Load::Loader do
   describe '#add_to_import_table' do
     before :context do
       Import.destroy_all
-      @loader.instance_eval{ add_to_import_table }
+      @loader.add_to_import_table
     end
     
     it 'adds row to table' do
@@ -33,7 +33,7 @@ RSpec.describe Load::Loader do
 
   describe '#log_warning' do
     it 'adds to hash' do
-      subject.instance_eval{ log_warning('TEST WARNING', 'about no one') }
+      subject.log_warning('TEST WARNING', 'about no one')
       hash = { 'TEST WARNING' => ['about no one'] }
       expect(subject.warnings).to eq hash
     end
@@ -41,13 +41,11 @@ RSpec.describe Load::Loader do
 
   describe '#log_error' do
     it 'adds to hash' do
-      subject.instance_eval{
-        log_error(ArgumentError.new('missing lots of variables'), 'testing error')
-      }
-      hash = { 'missing lots of variables' => ['testing error'] }
+      subject.log_error(ArgumentError.new('missing lots of variables'), 'testing error')
+      hash =  { 'missing lots of variables' => ['testing error'] }
       expect(subject.errors).to eq hash
     end
-    
+
     it 'raises exception if throws_error is true' #maybe
   end
 
@@ -59,11 +57,40 @@ RSpec.describe Load::Loader do
       @library = FactoryGirl.create(:library, alt_label: ['Library', 'LIB', 'DLC'])
     end
     
-    it 'returns nil if organization was not found' do
-      expect(subject.instance_eval{ find_organization({ label: 'The Best Library'}) }).to be nil
+    it 'returns organization if super organization matches' do
+      hash = {
+        label: 'Dartmouth College Library',
+        alt_label: ['LIB'],
+        super_organization_id: @library.super_organizations.first.id
+      }
+      expect(subject.instance_eval{ find_organization(hash) }).to eq @library
+    end
+    
+    context 'returns nil' do 
+      it 'when  organization was not found' do
+        expect(subject.instance_eval{ find_organization({ label: 'The Best Library'}) }).to be nil
+      end
+      
+      it 'when super organization id not valid' do
+        hash = {
+          label: 'Dartmouth College Library',
+          alt_label: ['LIB'],
+          super_organization_id: 'not-a-valid-id'
+        }
+        expect(subject.instance_eval{ find_organization(hash) }).to be nil
+      end
+      
+      it 'when super organization id does not match' do
+        hash = {
+          label: 'Dartmouth College Library',
+          alt_label: ['LIB'],
+          super_organization_id: @library.sub_organizations.first.id
+        }
+        expect(subject.instance_eval{ find_organization(hash) }).to be nil
+      end
     end
 
-    describe 'returns organization if found' do
+    context 'returns organization if found' do
       it 'by alt_label' do
         expect(subject.instance_eval{
                  find_organization({ alt_label: ['Library']})
@@ -83,12 +110,32 @@ RSpec.describe Load::Loader do
       end
     end
 
-    it 'throws error if more than one matching organization was found.' do
-      lib = FactoryGirl.create(:library)
-      expect {
-        subject.instance_eval{ find_organization({ label: 'Dartmouth College Library' }) }
-      }.to raise_error ArgumentError
-      lib.destroy
+    describe 'throws error' do
+      it 'when more than one matching organization was found' do
+        lib = FactoryGirl.create(:library)
+        expect {
+          subject.instance_eval{ find_organization({ label: 'Dartmouth College Library' }) }
+        }.to raise_error ArgumentError
+        lib.destroy
+      end
+
+      it 'when hash is empty' do
+        expect {
+          subject.instance_eval { find_organization({}) }
+        }.to raise_error ArgumentError
+      end
+          
+      it 'when only super organization id is provided' do
+        expect {
+          subject.instance_eval { find_organization({ super_organization_id: 'blah' }) }
+        }.to raise_error ArgumentError
+      end
+
+      it 'when an invalid key is passed in' do
+        expect {
+          subject.instance_eval { find_organization({ super_id: '123' }) }
+        }.to raise_error ArgumentError
+      end
     end
   end
 
@@ -96,7 +143,7 @@ RSpec.describe Load::Loader do
     it 'throws errors if organization could not be found' do
       expect {
         subject.instance_eval{ find_organization!({ label: 'The Unicorn Society' }) }
-      }.to raise_error ArgumentError
+      }.to raise_error Load::ObjectNotFoundError
     end
   end
 

@@ -128,30 +128,31 @@ module Load
       # Try to find the organization again, this time searching by :hr_id. If found update record
       # as described above.
       if hash[:hr_id]
-        if org = find_organization({ hr_id: hash[:hr_id] })
-          if org.label != hash[:label]
+        if org = find_organization(hash.slice(:hr_id))
+          if hash[:label] && org.label != hash[:label]
             log_warning(PREF_LABEL_UPDATED, "#{org.label} => #{hash[:label]}")
-            org.alt_label << org.label
+            org.alt_label += [org.label]
             org.label = hash[:label]
           end
 
-          hash[:alt_label].each do |i|
-            unless hash.alt_label.includes? i
-              hash.alt_label << i
+          if hash[:alt_label] && !hash[:alt_label].empty?
+            alt = hash[:alt_label].reject { |i| org.alt_label.include? i }
+            org.alt_label += alt
+          end
+
+          if super_org
+            if org.super_organizations.size >= 1
+              org.super_organizations = [super_org]
+              log_warning(SUPER_ORG_UPDATED, "#{org.label}(#{org.hr_id})")
+            else
+              raise 'org has more than one super and could not determine which one to delete'
             end
           end
 
-          if super_org && (org.super_organizations.size >= 1)
-            org.super_organizations = [super_org]
-            log_warning(SUPER_ORG_UPDATED, "#{org.label}(#{org.hr_id})")
-          else
-            raise 'org has more than one super and could not determine which one to delete'
-          end
-
+          org.save!
+          
           org.update(hash.except(:label, :alt_label, :super_organization_id, :end_date))
           log_warning(RECORD_UPDATED, "#{org.label}(#{org.hr_id})")
-
-          org.save!
           
           # If end_date is set and an active organization is returned, convert the organization
           if hash[:end_date] && (Date.parse(hash[:end_date]) <= Date.today) && org.active?
@@ -168,6 +169,7 @@ module Load
       # If end date is set a historic organization needs to be created, otherwise an
       # active organization should be created.
       hash.delete(:super_organization_id)
+      hash.compact! # Remove any nil valued keys.
       if hash[:end_date]
         org = Lna::Organization::Historic.create!(hash)
       else
