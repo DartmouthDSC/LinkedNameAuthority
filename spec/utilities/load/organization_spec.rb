@@ -15,9 +15,7 @@ RSpec.describe Load::Organizations do
     ENV['LOADER_ERROR_NOTICES'] = @cached_error_notices
   end
 
-  describe '#into_lna'
-
-  describe '#into_lna!' do
+  describe '#into_lna' do
     context 'when a new active organization is created' do
       before :context do
         @hash = FactoryGirl.create(:org_hash)

@@ -26,8 +26,6 @@ module Load
         begin
           # Get the last import.
           i = Import.last_successful_import(load.title)
-#          i = Import.where(load: ELEMENTS_LOADER,
-#                           success: true).order(time_started: :asc).first
           last_import = (i) ? i.time_started : nil
           
           users = Symplectic::Elements::Users.get_all(modified_since: last_import)
@@ -91,6 +89,9 @@ module Load
     #                          },
     #              }
     #
+    # @param hash [Hash]
+    # @return [Lna::Collection::Document] if new document created
+    # @return [nil] if new document was not created
     def into_lna(hash)
       if hash[:netid]
         into_lna_by_netid!(hash[:netid], hash[:document])
@@ -121,6 +122,8 @@ module Load
     # @param [String] netid person's netid
     # @param [Hash] hash document properties
     def into_lna_by_netid!(netid, hash)
+      raise ArgumentError, 'document hash cannot be nil' unless hash
+      
       # Check if user exists.
       unless person = find_person_by_netid(netid)
         log_warning(PERSON_RECORD_NOT_FOUND, netid)
@@ -131,7 +134,7 @@ module Load
 
       # If there's an elements id, check to see if there's already a document with that id.
       # If there is, don't add it again.
-      return if Lna::Collection::Document.where(elements_id: hash[:elements_id]).count > 0
+      return nil if Lna::Collection::Document.where(elements_id: hash[:elements_id]).count > 0
 
       d = Lna::Collection::Document.create!(hash) do |doc|
         doc.collection = collection
@@ -140,6 +143,7 @@ module Load
       warning_text = (d.elements_id) ?
                        "elements id #{d.elements_id}" : "title #{d.title}"
       log_warning(NEW_DOCUMENT, "for #{netid} with the #{warning_text}")
+      d
     end
   end
 end
