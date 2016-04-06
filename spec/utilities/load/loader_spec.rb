@@ -4,7 +4,7 @@ RSpec.describe Load::Loader do
   before :context do
     @cached_error_notices = ENV['LOADER_ERROR_NOTICES']
     ENV['LOADER_ERROR_NOTICES'] = 'me@example.com'
-    @loader = Load::Loader.new('Test Loader', throw_errors: true)
+    @loader = Load::Loader.new('Test Loader')
   end
 
   after :context do
