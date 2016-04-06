@@ -1,4 +1,4 @@
-development:
+development: &dev
   admin:
     - d31309k@dartmouth.edu       # Carla M. Galarza
     - d28584r@dartmouth.edu       # Eric J. Bivona
@@ -24,3 +24,4 @@ test: &test
     - patron1@example.com
     - leland_himself@example.com
 ci: *test
+qa: *dev
