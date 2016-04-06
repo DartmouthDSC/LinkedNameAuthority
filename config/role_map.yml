@@ -1,9 +1,9 @@
-development:
+development: &dev
   admin:
     - d31309k@dartmouth.edu       # Carla M. Galarza
     - d28584r@dartmouth.edu       # Eric J. Bivona
     - d31157g@dartmouth.edu       # Paul L. Merchant Jr.
-  thayer_manager:
+  editors:
     - d31309k@dartmouth.edu
   archivist:
     - archivist1@example.com
@@ -24,3 +24,7 @@ test: &test
     - patron1@example.com
     - leland_himself@example.com
 ci: *test
+production:
+  admin:
+    - me@dartmouth.edu
+qa: *dev
