@@ -2,7 +2,8 @@
 development:
   url: http://localhost:8983/solr/lna_dev
 test: &test
-  url: <%= "http://127.0.0.1:#{ENV['TEST_JETTY_PORT'] || 8983}/solr/lna_test" %>
+  url: http://localhost:8983/solr/lna_test
 ci: *test
-production:
-  url: http://your.production.server:8080/bl_solr/core0
+production: &prod
+  url: http://localhost:8983/solr/lna_prod
+qa: *prod
