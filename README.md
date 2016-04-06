@@ -18,6 +18,7 @@
     ```
    bundle install
    ```
+   Note: If running in *production* use `bundle install --without development test ci`
 
 3. Once everything is installed, sync the db:
     ```
