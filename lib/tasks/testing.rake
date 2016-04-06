@@ -1,10 +1,11 @@
-require 'rspec/core/rake_task'
-require 'fcrepo_wrapper'
-require 'solr_wrapper'
 
 # Rake task taken from Hydra-PCDM.
 desc "Sets up Fedora + Solr and runs specs"
 task ci: :environment do
+  require 'rspec/core/rake_task'
+  require 'fcrepo_wrapper'
+  require 'solr_wrapper'
+  
   solr_params = { version: '5.3.1', verbose: true, managed: true }
   fedora_params = { version: '4.3.0', verbose: true, managed: true }
   SolrWrapper.wrap(solr_params) do |solr|
