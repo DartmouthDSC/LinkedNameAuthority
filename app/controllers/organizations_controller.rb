@@ -28,7 +28,6 @@ class OrganizationsController < ApiController
 
     # identifier exact match, pref_label and alt_label fuzzy(but not solr fuzzy)
     query_map = {
-      'org:identifier'        => "code_tesi:\"#{params['org:identifier']}\"",
       'skos:pref_label'       => "label_tesi:\"#{params['skos:pref_label']}\"",
       'skos:alt_label'        => "alt_label_tesim:\"#{params['skos:alt_label']}\"",
       'org:subOrganizationOf' => "{!join from=id to=subOrganizationOf_tesim}label_tesi:\"#{params['org:subOrganizationOf']}"

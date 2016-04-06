@@ -50,7 +50,7 @@ RSpec.describe "Organizations API", type: :request, https: true do
 
   describe 'POST organizations/' do
     before :context do
-      body = { 'org:identifier' => 'its' }
+      body = { 'skos:pref_label' => 'Computer Science Department' }
       post organizations_path, body.to_json, {
              'ACCEPT' => 'application/ld+json',
              'CONTENT_TYPE' => 'application/ld+json'
