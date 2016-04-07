@@ -40,12 +40,10 @@ oracle_development: &oracle_dev
   <<: *oracle_default
   database: lib_dev
 
-oracle_test:
-  <<: *oracle_default
-  database: lib_dev
+oracle_test: *oracle_dev
   
-oracle_production:
+oracle_production: &oracle_prod
   <<: *oracle_default
   database: library
 
-oracle_qa: *oracle_dev
+oracle_qa: *oracle_prod
