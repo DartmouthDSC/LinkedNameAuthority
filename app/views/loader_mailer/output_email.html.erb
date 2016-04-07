@@ -7,6 +7,9 @@
 	<% if @title %>
 	  <h2><%= @title %></h2>
 	<% end %>
+	<p><strong>Server:</strong> <%= ENV['HOSTNAME'] %></p>
+
+	<br/>
 	
 	<% @output.each do |name, notices| %>
 	  <% if notices.empty? %>
