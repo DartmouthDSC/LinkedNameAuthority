@@ -6,9 +6,7 @@ gem 'rails', '4.2.4'
 gem 'active-fedora',
     github: 'projecthydra/active_fedora',
     ref:    '080e185bc4f4b690ffebb71ca3c78bc10c658f37'
-#'e1391fb0dd4108923b02a3dfb344a19dd971a6f8' 
 gem 'active-triples', '~> 0.7.4'
-# gem 'blacklight', '~> 5.16'
 gem 'hydra-head', '~> 9.8.0'
 gem 'ldp', '~> 0.5.0'
 gem 'nokogiri', '~> 1.6.7'
@@ -22,16 +20,15 @@ gem 'dotenv-rails'
 gem 'jbuilder', '~> 2.0'
 gem 'omniauth-cas'
 gem 'rdf-vocab'
+gem 'sqlite3' # used for ActiveRecord
 gem 'turbolinks' # Turbolinks makes following links in your web application faster.
 gem 'therubyracer', platforms: :ruby # Embed the V8 JavaScript interpreter into Ruby
 gem 'whenever' # Used to run cron jobs.
 
-# Database gems
 group :oracle do 
   gem 'activerecord-oracle_enhanced-adapter', '~> 1.6.0'
   gem 'ruby-oci8' # Oracle
 end
-gem 'sqlite3' # used for ActiveRecord
 
 # Asset Pipeline
 # gem 'jquery-rails' # Use jquery as the JavaScript library
@@ -49,8 +46,9 @@ group :development, :test, :ci do
 end
 
 group :development do
-  gem 'web-console', '2.3.0' # Can remove this once we go to ruby 2.2.2
+  gem 'capistrano-rails', '~> 1.1'
   gem 'ruby-debug-passenger'
+  gem 'web-console', '2.3.0' # Can remove this once we go to ruby 2.2.2
 end
 
 group :ci do
