@@ -92,15 +92,15 @@ RSpec.describe Load::Documents do
       expect(@load.warnings[Load::Documents::PERSON_RECORD_NOT_FOUND]).to include 'd12345l'
     end                          
                               
-    describe 'throws error' do 
-      it 'when required fields are missing' do
+    describe 'throws error when' do 
+      it 'required fields are missing' do
         hash = FactoryGirl.create(:doc_hash, title: nil)
         expect {
           @load.into_lna_by_netid!('d00000a', hash)
         }.to raise_error ActiveFedora::RecordInvalid
       end
       
-      it 'when document hash is missing' do
+      it 'document hash is missing' do
         expect {
           @load.into_lna_by_netid!('d00000a', nil)
         }.to raise_error ArgumentError

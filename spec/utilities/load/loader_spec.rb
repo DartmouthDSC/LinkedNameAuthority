@@ -45,8 +45,6 @@ RSpec.describe Load::Loader do
       hash =  { 'missing lots of variables' => ['testing error'] }
       expect(subject.errors).to eq hash
     end
-
-    it 'raises exception if throws_error is true' #maybe
   end
 
   describe '#send_email'
@@ -55,6 +53,7 @@ RSpec.describe Load::Loader do
   describe '#find_organization' do
     before :context do
       @library = FactoryGirl.create(:library, alt_label: ['Library', 'LIB', 'DLC'])
+      @old_thayer = FactoryGirl.create(:old_thayer)
     end
     
     it 'returns organization if super organization matches' do
@@ -107,6 +106,15 @@ RSpec.describe Load::Loader do
         expect(subject.instance_eval{
                  find_organization({ begin_date: '1974-01-01' })
                }).to eq @library
+      end
+    end
+
+    describe 'returns historic organization if found' do
+      it 'ignores super organization passed in hash' do
+        expect(subject.instance_eval {
+                 find_organization({ label: 'Thayer School of Engineering',
+                                     super_organization_id: 'not-valid-id' })
+                                  }).to eq @old_thayer
       end
     end
 

@@ -135,7 +135,8 @@ module Load
 
       # Remove super organization and any nil values. Doing a lookup with nil values will
       # return unexpected results.
-      search_hash = hash.compact.except(:super_organization_id)
+      hash.compact!
+      search_hash = hash.except(:super_organization_id)
 
       raise ArgumentError, 'Hash cannot only contain super org id' if search_hash.empty?
 
@@ -149,13 +150,18 @@ module Load
       # Try to find an exact match, because self.where uses solr to search and solr will return
       # a document if any part of the field matches. Alt_labels are treated a bit differently,
       # all the alt labels given by the hash should be included in the object's alt_label array,
-      # but the arrays may not be exact.
+      # but the arrays may not be exact. Super organization ids are only compared if the
+      # organization is active.
       orgs = orgs.select do |org|
         hash.all? do |k, v|
           if k == :alt_label
             v.all? { |i| org.alt_label.include? i }
           elsif k == :super_organization_id
-            org.super_organization_ids.include? v
+            if org.active?
+              org.super_organization_ids.include? v
+            else
+              true
+            end
           else
             v = Date.parse(v) if [:begin_date, :end_date].include? k
             org.send(k) == v

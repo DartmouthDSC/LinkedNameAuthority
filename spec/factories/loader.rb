@@ -1,6 +1,5 @@
 FactoryGirl.define do
   factory :person_hash, class: Hash do
-#    netid           'd00000k'  
     person          { {
                         full_name:  'Jane Doe',
                         given_name:  'Jane',
@@ -21,12 +20,12 @@ FactoryGirl.define do
   end
 
   factory :org_hash, class: Hash do
-    label              'Library'
-    alt_label          ['DLC', 'LIB']
-    hr_id              '1234'
+    label              'Dartmouth College Library'
+    alt_label          ['Library']
+    hr_id              '5678'
     kind               'SUBDIV'
-    hinman_box         '0000'
-    begin_date         '01-01-2001'
+    hinman_box         '6025'
+    begin_date         '01-01-1974'
     end_date           nil
     super_organization { { label: 'Office of the Provost' } }
 

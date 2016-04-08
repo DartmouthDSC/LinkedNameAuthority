@@ -225,8 +225,8 @@ RSpec.describe Load::People do
         expect { @load.into_lna_by_netid!(netid, hash) }.to raise_error ArgumentError
       end
 
-      it 'org does not have a label' do
-        hash[:membership][:org][:label] = nil
+      it 'org does not exist' do
+        hash[:membership][:org][:label] = 'Unicorn Teachings' 
         expect { @load.into_lna_by_netid!(netid, hash) }.to raise_error Load::ObjectNotFoundError
       end
 

@@ -43,8 +43,8 @@ module Load
     # @return [Lna::Person] person that was created or updated
     # @return [nil] if there was a problem creating of updating the person
     def into_lna(hash)
-      if hash.key?(:netid) && hash[:netid]
-        into_lna_by_netid!(hash[:netid], hash)
+      if hash[:netid]
+        into_lna_by_netid!(hash[:netid], hash.except(:netid))
       else
         raise NotImplementedError, 'Can only import if netid is present.'
       end
