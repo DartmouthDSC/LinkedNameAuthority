@@ -3,8 +3,8 @@ class OrganizationController < CrudController
   
   PARAM_TO_MODEL = {
     'org:identifier'         => 'code',
-    'skos:pref_label'        => 'label',
-    'skos:alt_label'         => 'alt_label',
+    'skos:prefLabel'        => 'label',
+    'skos:altLabel'         => 'alt_label',
     'owltime:hasBeginning'   => 'begin_date',
   }.freeze
   # historic organization don't have sub and super or accounts
@@ -78,8 +78,8 @@ class OrganizationController < CrudController
   private
 
   def organization_params
-    params.permit('id', 'org:identifier', 'skos:pref_label', 'owltime:hasBeginning', 
-                  'lna:historicPlacement', 'owltime:hasEnd', 'authenticity_token', 'skos:alt_label' => [],
+    params.permit('id', 'org:identifier', 'skos:prefLabel', 'owltime:hasBeginning', 
+                  'lna:historicPlacement', 'owltime:hasEnd', 'authenticity_token', 'skos:altLabel' => [],
                   'org:hasSubOrganization' => [], 'org:subOrganizationOf' => [])
   end
     

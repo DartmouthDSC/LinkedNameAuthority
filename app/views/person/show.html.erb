@@ -24,7 +24,7 @@
                     </ul>
                     <button title="add affiliation" id="newAffiliation" data-toggle="modal" data-target="#newAffiliationModal"><span class="add"></span>Add New Affiliation</button>
                 </div>
-                <div class="work">
+                <div class="works">
                 <h1>Works</h1>                    
                     <ul class="iconList">
                         <li><span class='spinner'></span></li>
@@ -40,9 +40,11 @@
         </section>
         <section id="modals">
         <%= render "shared/modals/new_work" %>
+        <%= render "shared/modals/new_affiliation" %>
         </section>        
 		<script>
         $(document).ready(function(){
             $().LNAGateway().loadPerson(LNA.loadPerson, "<%= @short_id %>");
+            $().LNAGateway().loadPersonWorks(LNA.loadPersonWorks, "<%= @short_id %>");
         });
         </script>

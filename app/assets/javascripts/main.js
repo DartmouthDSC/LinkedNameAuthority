@@ -1,3 +1,6 @@
+//main.js handles rendering for the LNA web interface
+//Interactions with the LNA API are handled in jquery.lnagateway.js
+
 LNA = {
 	'constants': {
 		//Translates org dc:title to CSS classes
@@ -27,15 +30,15 @@ LNA = {
 		});
 	},
 	'loadPerson': function(data, textStatus, xhr){
-		var dataArray = $().LNAGateway().readLD.person(data);
-		console.log(dataArray);
-		//clear all spinners
-		$('.spinner').parent().remove();
+		var dataArray = $().LNAGateway().readLD.person(data);		
 
 		//render person data
 		$('.sidebar h1').text(dataArray.person['foaf:name']);
 		$('.crumbHere').children().first().text(dataArray.person['foaf:name']);
 		if(dataArray.person['foaf:image'] != '') $('.sidebar img').attr('src', dataArray.person['foaf:image']);
+
+		//clear all spinners
+		$('.sidebar .spinner, .affiliations .spinner').parent().remove();
 
 		//render affiliations
 		$.each(dataArray.memberships, function(k, v){ LNA.fillMembership($('.affiliations .iconList'), v) });
@@ -45,6 +48,16 @@ LNA = {
 
 		LNA.activateModals();
 	},
+	'loadPersonWorks': function(data, textStatus, xhr){
+		var dataArray = $().LNAGateway().readLD.personWorks(data);	
+
+		//clear all spinners
+		$('.works .spinner').parent().remove();
+
+		$.each(dataArray, function(k, v){ LNA.fillPersonWorks($('.works .iconList'), v) });
+
+		LNA.activateModals();
+	},	
 
 	//Fill functions fill in templates/partials based on passed data
 	'fillAccount': function(parent, data){
@@ -71,8 +84,30 @@ LNA = {
 		viewButton.click(function(e){ LNA.openLink(e, data['org:organization'])});
 		editButton.attr('title', 'edit '+ data['orgLabel'] + ' affiliation');
 		editButton.children('.helpText').text('edit '+ data['orgLabel'] + ' affiliation');
+		editButton.click(function(e){ LNA.editAffiliation(e, data['org:organization'])});
 		parent.prepend(node);
-	},	
+	},
+	//tk
+	'fillPersonWorks': function(parent, data){
+		var node = $('#templates .work').clone();
+		var title = node.find('.itemTitle').first();
+		var authorList = node.find('.itemAuthors').first();
+		var editButton = node.find('.edit').first();
+		var viewButton = node.find('.view').first();
+
+		var date = data['dc:date'].substr(0,4);
+		var authors = data['bibo:authorsList'].join(', ');
+
+		title.text(data['dc:title'] + ' (' + date + ')');
+		authorList.text(authors);
+
+		parent.prepend(node);
+	},		
+
+	//edit functions load data into edit modals, open the modal, and set the save handler
+	editAffilication: function(e, org){
+		// var editForm = $('#modals ')
+	},
 
 	//helpers
 	'openLink': function(e, link){
@@ -108,10 +143,47 @@ LNA = {
 			'defaultText': ''
 		});
 	},
+	'activateWidgets': function(){
+		$('.dateBehavior').datepicker({
+			'dateFormat': 'yy-mm-dd'
+		});
+	},
+	'activateAutocompletes': function(){
+		$('.autocompleteBehavior').each(function(i, field){
+			$(field).autocomplete({
+				'minLength': 3,
+				'delay': 100,
+				'source': LNA.autocompletes[$(field).data('autocomplete-type')].source,
+				'select': LNA.autocompletes[$(field).data('autocomplete-type')].select
+			});
+		});
+	},
+
+	//Autocompletes need specific instructions on setting values, so this is an index of those
+	'autocompletes': {
+		'org': {
+			'source': function(request, response){
+				$().LNAGateway().findOrgs(function(data){
+					var orgArray = $().LNAGateway().readLD.orgs(data);
+					var newArray = $.map(orgArray, function(item){ return {'label': item['skos:prefLabel'], 'value': item['@id']}});
+					response(newArray)
+					return newArray;
+				}, this.element[0].value) 
+			},
+			'select': function(e, ui){
+				e.preventDefault();
+				$(this).val(ui.item.label);
+				$(this).parents('form').children('input[name="org:organization"]').val(ui.item.value);
+			}
+		}
+	},
+
 	'init': function(){
 		LNA.activateTags();
 		LNA.activateModals();
 		LNA.activateControls();
+		LNA.activateWidgets();
+		LNA.activateAutocompletes();
 	}
 }
 

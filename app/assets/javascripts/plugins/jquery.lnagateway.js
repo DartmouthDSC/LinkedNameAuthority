@@ -48,11 +48,18 @@
 	    	'listPersons':{'method': 'GET', 'path': 'persons/', 'template': {}
 	    				},
 			'loadPerson': {'method': 'GET', 'path': 'person/', 'template': {}
-	    				},	    				
+	    				},
+			'loadPersonWorks': {'method': 'GET', 'path': 'person/', 'template': {}
+	    				},
+	    	'findOrgs':   {'method': 'POST', 'path': 'organizations/', 'template':{
+	    				  'skos:prefLabel': '',
+	    				  'skos:altLabel': '',
+	    				  'org:subOrganizationOf': ''}
+	    				},
 			'newOrg':     {'method': 'POST', 'path': 'organization/', 'template': {
 	                      "org:identifier": null,
-	                      "skos:pref_label": null,
-	                      "skos:alt_label": [],
+	                      "skos:prefLabel": null,
+	                      "skos:altLabel": [],
 	                      "owltime:hasBeginning": null,
 	                      "owltime:hasEnd": ""}
 	                    },
@@ -61,6 +68,7 @@
 	        			  'bibo:authorsList[]': null,
 	        			  'dc:abstract': null,
 	        			  'bibo:doi': '',
+	        			  'dc:date': '',
 	        			  'bibo:uri[]': [],
 	        			  'bibo:volume': '',
 	        			  'bibo:pages': '',
@@ -70,13 +78,23 @@
 	        			  'dc:subject[]': [],
 	        			  'dc:bibliographicCitation': '',
 	        			  'dc:creator': null}
-	        			}
-	        
+	        			},
+	        'newAffiliation': {'method': 'POST', 'path': 'person/', 'template':{
+	        			  'org:organization': null,
+	        			  'vcard:email': '',
+	        			  'vcard:title': '',
+	        			  'vcard:street-address': '',
+	        			  'vcard:pobox': '',
+	        			  'vcard:postal-code': '',
+	        			  'vcard:localtiy': '',
+	        			  'vcard:country-name': '',
+	        			  'owltime:hasBeginning': null,
+	        			  'owltime:hadEnd': ''}
+	        			}	        
 	    };
 	};
 
   	Plugin.prototype = {
-
     	'init': function(opt){
 	        var handle = this;
 	        $.extend(this.options, opt);
@@ -103,6 +121,19 @@
 	    'loadPerson': function(callback, uid){
 	    	if(typeof uid === "undefined") return false;
 	    	this.submitQuery('loadPerson', {}, callback, uid);
+	    },
+
+	    'loadPersonWorks': function(callback, uid){
+	    	if(typeof uid === "undefined") return false;
+	    	this.submitQuery('loadPerson', {}, callback, uid + '/works');
+	    },
+
+	    //Search queries
+	    'findOrgs': function(callback, term, page){
+	    	if(typeof term === "undefined") return false;
+	    	if(typeof page === "undefined") page = 1;
+	    	var searchTerm = {'skos:prefLabel': term}
+	    	this.submitQuery('findOrgs', searchTerm, callback, page);
 	    },	    
 
 	    //extendForm is called on all forms that have data-lna-query set on init
@@ -174,8 +205,6 @@
       			});
       		} 		
 
-      		console.log(data)
-
       		//validate and errors
       		var fail = false;
       		$.each(data, function(k,v){
@@ -192,11 +221,9 @@
     	},
 
     	'submitQuery': function(query, formData, fn, opt){
-    		console.log(formData)
     		if(typeof fn === "undefined" || fn == null) fn = function(){ return false };
     		if(typeof opt === "undefined") opt = '';
 	     	var queryData = this.queries[query];
-	     	console.log(queryData.method)
     	 	$.ajax({
 	    	    "url": this.options.baseURL + queryData.path + opt,
 	        	"method": queryData.method,
@@ -243,7 +270,13 @@
 	    		});
 
 	    		return data;
-	    	}	    	
+	    	},
+    		'personWorks': function(xhrData){
+	    		return xhrData['@graph'];
+	    	},
+	    	'orgs': function(xhrData){
+	    		return xhrData['@graph'];
+	    	}	    		    	
     	},
 
     	//Utility function to parse link headers

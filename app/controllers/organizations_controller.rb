@@ -23,11 +23,11 @@ class OrganizationsController < ApiController
   def search
     page = params['page']
 
-    # identifier exact match, pref_label and alt_label fuzzy(but not solr fuzzy)
+    # identifier exact match, prefLabel and altLabel fuzzy(but not solr fuzzy)
     query_map = {
       'org:identifier'        => "code_tesi:\"#{params['org:identifier']}\"",
-      'skos:pref_label'       => "label_tesi:\"#{params['skos:pref_label']}\"",
-      'skos:alt_label'        => "alt_label_tesim:\"#{params['skos:alt_label']}\"",
+      'skos:prefLabel'       => "label_tesi:\"#{params['skos:prefLabel']}\"",
+      'skos:altLabel'        => "alt_label_tesim:\"#{params['skos:altLabel']}\"",
       'org:subOrganizationOf' => "{!join from=id to=subOrganizationOf_tesim}label_tesi:\"#{params['org:subOrganizationOf']}"
     }
     search_query = query_map.select{ |f, _| params[f] }.values.join(" AND ")
