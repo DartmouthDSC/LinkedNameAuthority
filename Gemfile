@@ -47,6 +47,7 @@ end
 
 group :development do
   gem 'capistrano-rails', '~> 1.1'
+  gem 'capistrano-rvm'
   gem 'ruby-debug-passenger'
   gem 'web-console', '2.3.0' # Can remove this once we go to ruby 2.2.2
 end
