@@ -1,3 +1,5 @@
+require 'active_fedora/errors'
+
 module Load
   class ObjectNotFoundError < ActiveFedora::ObjectNotFoundError; end
   class Loader
