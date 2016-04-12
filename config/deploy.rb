@@ -21,28 +21,33 @@ set :deploy_to, '/usr/local/dac/LinkedNameAuthority'
 # Default value for :pty is false
 # set :pty, true
 
-set :linked_files, fetch(:linked_files, []).push('.env')
+set :linked_files, fetch(:linked_files, []).push('.env', 'db/production.sqlite3')
 
 set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets',
                                                'public/system')
 
-# Default value for default_env is {}
 set :default_env, {
-      'LD_LIBRARY_PATH' => '/usr/lib/oracle/12.1/client64/lib:$LD_LIBRARY_PATH'
+      'LD_LIBRARY_PATH' => '/usr/lib/oracle/12.1/client64/lib:$LD_LIBRARY_PATH',
+      'ORACLE_HOME'     => '/usr/lib/oracle/12.1/client64',
+      'NLS_LANG'        => 'AMERICAN_AMERICA.WE8ISO8859P1'
     }
 
-# Default value for keep_releases is 5
 set :keep_releases, 5
 
-namespace :deploy do
+set :bundle_without, %w{development test ci}.join(' ')
 
-  after :restart, :clear_cache do
-    on roles(:web), in: :groups, limit: 3, wait: 10 do
-      # Here we can do anything such as:
-      # within release_path do
-      #   execute :rake, 'cache:clear'
-      # end
+namespace :deploy do
+  after :finished, "deploy:write_crontab"
+#  after :finished, "deploy:restart_apache"
+
+#  after :finished, "deploy:load_data"
+  after :finished, :load_all do
+    on roles(:app) do 
+      with rails_env: fetch(:rails_env) do
+        within release_path do 
+          execute :rake, 'load:all'
+        end
+      end
     end
   end
-
 end
