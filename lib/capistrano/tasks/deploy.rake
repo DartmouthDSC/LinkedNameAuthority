@@ -1,5 +1,4 @@
 # Custom Capistrano Tasks
-
 namespace :deploy do 
   desc 'Write Cron Tab'
   task :write_crontab do

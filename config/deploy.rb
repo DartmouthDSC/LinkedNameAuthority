@@ -38,9 +38,8 @@ set :bundle_without, %w{development test ci}.join(' ')
 
 namespace :deploy do
   after :finished, "deploy:write_crontab"
-#  after :finished, "deploy:restart_apache"
-
-#  after :finished, "deploy:load_data"
+  #  after :finished, "deploy:restart_apache"
+  
   after :finished, :load_all do
     on roles(:app) do 
       with rails_env: fetch(:rails_env) do
