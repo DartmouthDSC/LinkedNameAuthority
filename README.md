@@ -40,7 +40,7 @@
    whenever -w
    ```
    
-   **Note:** This will write the crontab under the current user running this command. If you would like the commands in the crontab to run in a different environment than `development`, either use the `--set` flag avaliable in whenever or set the rails environment before running the command `RAILS_ENV=qa whenever -w`.
+   **Note:** This will write the crontab under the current user running this command. If you would like the commands in the crontab to run in a different environment than `development`, either use the `--set` flag avaliable in `whenever` or set the rails environment before running the command `RAILS_ENV=qa whenever -w`.
    
 ## Deploying to QA
 1. If this is the first time deploying to qa, **on qa.dac**
