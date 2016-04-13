@@ -5,9 +5,6 @@
 
 server 'qa.dac.dartmouth.edu', user: 'dsc', roles: %w{app db web}
 
-set :branch, 'develop'
-
-
 # role-based syntax
 # ==================
 
@@ -28,7 +25,7 @@ set :branch, 'develop'
 # For available Capistrano configuration variables see the documentation page.
 # http://capistranorb.com/documentation/getting-started/configuration/
 # Feel free to add new variables to customise your setup.
-
+set :branch, 'develop'
 
 # Custom SSH Options
 # ==================
