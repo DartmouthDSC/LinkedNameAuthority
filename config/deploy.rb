@@ -37,16 +37,6 @@ set :keep_releases, 5
 set :bundle_without, %w{development test ci}.join(' ')
 
 namespace :deploy do
+  after :finished, "deploy:restart_apache"
   after :finished, "deploy:write_crontab"
-  #  after :finished, "deploy:restart_apache"
-  
-  after :finished, :load_all do
-    on roles(:app) do 
-      with rails_env: fetch(:rails_env) do
-        within release_path do 
-          execute :rake, 'load:all'
-        end
-      end
-    end
-  end
 end

@@ -10,12 +10,11 @@ namespace :deploy do
       end
     end
   end
-  
-  
+    
   desc 'Restart Apache'
   task :restart_apache do
     on roles(:app, :web) do
-      execute 'sudo service httpd restart'
+      execute 'sudo /sbin/service httpd restart'
     end
   end
 
