@@ -57,7 +57,7 @@
 
 3. If this is the first time deploying to qa, and you would like to load all the data without waiting for the cron job run:
    ```
-   bundle exec cap deploy:load_data
+   bundle exec cap qa deploy:load_data
    ```
 
 ##Environment Variables
