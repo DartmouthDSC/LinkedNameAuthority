@@ -28,7 +28,7 @@ class OrganizationsController < ApiController
 
     # identifier exact match, pref_label and alt_label fuzzy(but not solr fuzzy)
     query_map = {
-      'skos:pref_label'       => "label_tesi:\"#{params['skos:pref_label']}\"",
+      'skos:pref_label'       => complexphrase('label_tesi', params['skos:pref_label']),
       'skos:alt_label'        => "alt_label_tesim:\"#{params['skos:alt_label']}\"",
       'org:subOrganizationOf' => "{!join from=id to=subOrganizationOf_tesim}label_tesi:\"#{params['org:subOrganizationOf']}"
     }
@@ -47,5 +47,12 @@ class OrganizationsController < ApiController
       response.headers['Link'] = link_headers(result['response']['numFound'], MAX_ROWS, page)
       f.jsonld { render :search, content_type: 'application/ld+json' }
     end
+  end
+
+  private
+
+  def complexphrase(field, phrase)
+    phrase = "\"#{phrase}\"" if phrase.match(/\s/)
+    "{!complexphrase inOrder=false}#{field}:#{phrase}"
   end
 end
