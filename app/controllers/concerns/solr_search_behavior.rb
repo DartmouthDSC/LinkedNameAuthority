@@ -199,7 +199,7 @@ module SolrSearchBehavior
     q = '*:*' if q.blank?
     q = field_query(q) if q.is_a? Array
     
-    args[:fq] = model_filter(model),
+    args[:fq] = model_filter(model)
     args[:q] = q
     args[:rows] = rows if rows
     args[:sort] = sort if sort
