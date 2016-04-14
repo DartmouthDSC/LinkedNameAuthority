@@ -1,5 +1,5 @@
 class LoaderMailer < ApplicationMailer
-  default from: 'dac.developers@cloud.dartmouth.edu'
+  default from: 'DAC.Developers@dartmouth.edu'
   
   # Send email out with output from oracle import into LNA.
   #
