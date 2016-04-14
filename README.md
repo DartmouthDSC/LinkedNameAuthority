@@ -44,9 +44,9 @@
    
 ## Deploying to QA
 1. If this is the first time deploying to qa, **on qa.dac**
-   - Create an empty folder at `/usr/local/dac/LinkedNameAuthority/shared` and `usr/local/dac/LinkedNameAuthority/shared/db`.
-   - Create a file called `.env` in `/usr/local/dac/LinkedNameAuthority/shared` with necessary environment variables. See 'Environment Variables' section below for a list of required variables.
-   - [may not have to do this] Create an empty file at `/usr/local/dac/LinkedNameAuthority/db/production.sqlite3
+   - Create an empty folder at `/opt/deploy/LinkedNameAuthority/shared` and `/opt/deploy/LinkedNameAuthority/shared/db`.
+   - Create a file called `.env` in `/opt/deploy/LinkedNameAuthority/shared` with necessary environment variables. See 'Environment Variables' section below for a list of required variables.
+   - Create an empty file at `/opt/deploy/LinkedNameAuthority/db/production.sqlite3`
 
 2. From your **development machine** run:
     ```
