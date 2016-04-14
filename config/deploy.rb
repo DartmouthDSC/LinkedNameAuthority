@@ -7,7 +7,7 @@ set :repo_url, 'git@github.com:DartmouthDSC/LinkedNameAuthority.git'
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
-set :deploy_to, '/usr/local/dac/LinkedNameAuthority'
+set :deploy_to, "/opt/deploy/#{fetch(:application)}"
 
 # Default value for :scm is :git
 # set :scm, :git
