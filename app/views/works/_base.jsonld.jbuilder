@@ -1,3 +1,5 @@
+json.prettify!
+
 json.partial! 'shared/context', vocabs: [:dc, :bibo]
 
 json.set! '@id', request.original_url
