@@ -52,6 +52,7 @@ class OrganizationsController < ApiController
   private
 
   def complexphrase(field, phrase)
+    return unless phrase
     phrase = "\"#{phrase}\"" if phrase.match(/\s/)
     "{!complexphrase inOrder=false}#{field}:#{phrase}"
   end
