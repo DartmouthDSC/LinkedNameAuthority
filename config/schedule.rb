@@ -15,6 +15,6 @@ set :environment, "#{Rails.env}"
 set :output, lambda { "2>&1 >> #{CRON_LOG} | tee --append  #{CRON_LOG}" }
 
 # Run oracle-faculty load once a day.
-every 1.day, :at => '3:00 am' do
+every 1.day, :at => '10:00 am' do
   rake "load:all"
 end
