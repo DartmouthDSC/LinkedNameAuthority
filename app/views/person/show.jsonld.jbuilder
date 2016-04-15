@@ -5,7 +5,7 @@ vocabs.concat([:vcard, :owltime]) if @memberships
 vocabs << :dc unless @accounts.empty?
 json.partial! 'shared/context', vocabs: vocabs
 
-json.set! 'foaf:primaryTopic', request.original_url
+json.set! 'foaf:primaryTopic', person_url(FedoraID.shorten(@person['id']))
 
 json.partial! 'shared/generated_at'
 json.partial! 'shared/success'

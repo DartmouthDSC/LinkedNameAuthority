@@ -1,7 +1,9 @@
+json.prettify!
+
 json.partial! 'shared/context', vocabs: [:bibo, :dc, :foaf, :ali]
 json.set! '@type', 'bibo:Document'
 json.partial! 'shared/success'
-json.set! 'foaf:primaryTopic', request.original_url
+json.set! 'foaf:primaryTopic', work_url(FedoraID.shorten(@work['id']))
 
 free_to_read_ids = []; license_ref_ids = []
 

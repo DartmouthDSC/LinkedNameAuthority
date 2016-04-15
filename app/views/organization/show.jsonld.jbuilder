@@ -5,7 +5,7 @@ vocabs.concat([:dc, :prov]) if @change_events
 
 json.partial! 'shared/context', vocabs: vocabs
 json.partial! 'shared/success'
-json.set! 'foaf:primaryTopic', request.original_url
+json.set! 'foaf:primaryTopic', organization_url(FedoraID.shorten(@organization['id']))
 
 json.set! '@graph' do 
   json.child! {
