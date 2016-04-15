@@ -64,8 +64,15 @@ module Oracle
       }
     end
 
-    def self.find_by_type(type)
-      where(org_type: type)
+    # @param type [String]
+    # @param last_modified [Time] 
+    def self.find_by_type(type, last_modified = nil)
+      r = where(org_type: type)
+      if last_modified
+        raise 'last_modified date must be a Time object' unless last_modified.is_a? Time
+        r = r.where('last_system_update > ?', last_modified)
+      end
+      r
     end
 
     # Queries for recenly ended organization by org type. Results are returned in ascending

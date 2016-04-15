@@ -15,6 +15,8 @@ module Load
           loader.into_lna(person.to_hash)
         end
       end
+    rescue => e
+      log_error(e, "Error loading #{HR_FACULTY} in Oracle")
     end
     
     # Creates or updates Lna objects for the person described by the given hash.

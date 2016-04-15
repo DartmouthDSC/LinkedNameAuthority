@@ -55,7 +55,7 @@ module Load
     # This method should only be called once the load is complete. 
     def add_to_import_table
       status = ["#{errors.count} #{'error'.pluralize(errors.count)}"]
-      status.concat(warnings.map { |k, v| "#{v.count}  #{k}" }) unless warnings.empty?
+      status.concat(warnings.map { |k, v| "#{v.count} #{k}" }) unless warnings.empty?
       
       Import.create! do |i|
         i.load = title

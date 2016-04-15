@@ -16,13 +16,16 @@ module Load
     # First, loading all the organization changed since the last time the load was done without an
     # end date. Then, loading all the organization that have an end_date ordered by end_date
     # (from earliest -> latest) and lowest in hierarchy to highest. In the second load :end_date
-    # is not removed.
+    # is not removed, and its not filtered by date last modified.
     def self.from_hr
       batch_load(HR_ORG_LOADER) do |loader|
+        i = Import.last_successful_import(loader.title)
+        last_import = (i) ? i.time_started : nil
+
         # Loading organization in order from highest to lowest in the hierarchy, without
         # an end date.
         Oracle::Organization::ORDERED_ORG_TYPES.reverse.each do |type|
-          Oracle::Organization.find_by_type(type).each do |org| # date last modified.
+          Oracle::Organization.find_by_type(type, last_import).each do |org|
             loader.into_lna(org.to_hash.except(:end_date))
           end
         end
@@ -32,8 +35,10 @@ module Load
           Oracle::Organization.find_ended_orgs_by_type(type).each do |org|
             loader.into_lna(org.to_hash.except(:super_organization))
           end
-        end        
+        end
       end
+    rescue => e
+      log_error(e, "Error loading #{HR_ORG_LOADER} in Oracle")
     end
 
     # Creates or updates the organization described by the hash. This method will catch any
