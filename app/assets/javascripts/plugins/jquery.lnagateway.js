@@ -36,17 +36,10 @@
 	     *
 	     */
 	    this.queries = {
-	     	'newPerson':  {'method': 'POST', 'path': 'person/', 'template': {
-	                      "foaf:name": null,
-	                      "foaf:givenName": null,
-	                      "foaf:familyName": null,
-	                      "foaf:title": "",
-	                      "foaf:mbox": null,
-	                      "foaf:homepage": "",
-	                      "org:reportsTo": ""}
-	                    },
 	    	'listPersons':{'method': 'GET', 'path': 'persons/', 'template': {}
 	    				},
+	    	'listOrgs':{'method': 'GET', 'path': 'organizations/', 'template': {}
+	    				},	    				
 			'loadPerson': {'method': 'GET', 'path': 'person/', 'template': {}
 	    				},
 			'loadPersonWorks': {'method': 'GET', 'path': 'person/', 'template': {}
@@ -63,6 +56,15 @@
 	                      "owltime:hasBeginning": null,
 	                      "owltime:hasEnd": ""}
 	                    },
+	     	'newPerson':  {'method': 'POST', 'path': 'person/', 'template': {
+	                      "foaf:name": null,
+	                      "foaf:givenName": null,
+	                      "foaf:familyName": null,
+	                      "foaf:title": "",
+	                      "foaf:mbox": null,
+	                      "foaf:homepage": "",
+	                      "org:reportsTo": ""}
+	                    },	                    
 	        'newWork': 	  {'method': 'POST', 'path': 'work/', 'template': {
 	        			  'dc:title': null,
 	        			  'bibo:authorsList[]': null,
@@ -118,6 +120,11 @@
 
 	    //Queries associated with forms are mostly handled using extendForm below.
 	    //Reading is handled with convenience functions
+	    'listOrgs': function(callback, page){
+	    	if(typeof page === "undefined") page = 1;
+	    	this.submitQuery('listOrgs', {}, callback, page);
+	    },
+
 	    'listPersons': function(callback, page){
 	    	if(typeof page === "undefined") page = 1;
 	    	this.submitQuery('listPersons', {}, callback, page);

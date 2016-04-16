@@ -4,16 +4,16 @@ class OrganizationsController < ApiController
 
   # GET /organizations
   def index
-    page = params['page']
+    @page = params['page']
 
     parameters = { rows: MAX_ROWS, sort: 'label_ssi asc' }
     
-    @organizations = search_for_active_organizations(**parameters, parents: true, page: page)
+    @organizations = search_for_active_organizations(**parameters, parents: true, page: @page)
 
-    next_page = search_for_active_organizations(**parameters, page: page + 1).count != 0
+    next_page = search_for_active_organizations(**parameters, page: @page + 1).count != 0
 
     respond_to do |format|
-      response.headers['Link'] = link_headers('organizations/', page, next_page)
+      response.headers['Link'] = link_headers('organizations/', @page, next_page)
       format.jsonld { render :index, content_type: 'application/ld+json' }
       format.html
     end

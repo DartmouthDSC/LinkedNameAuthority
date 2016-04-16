@@ -19,7 +19,7 @@ LNA = {
 		],
 		'fuzzySearch' : '~2'
 	},
-	//this function is a callback for LNAGateway.listPersons
+	//this set of functions are callbacks for LNAGateway.*()
 	'loadPersonCards': function(data, textStatus, xhr){
 		var dataArray = $().LNAGateway().readLD.persons(data);
 		var links = $().LNAGateway().parseLink(xhr.getResponseHeader('link'));
@@ -39,6 +39,24 @@ LNA = {
 			$('main').append(node);
 		});
 	},
+	'loadOrgCards': function(data, textStatus, xhr){
+		var dataArray = $().LNAGateway().readLD.orgs(data);
+		var links = $().LNAGateway().parseLink(xhr.getResponseHeader('link'));
+		$(dataArray).each(function(i, org){
+			var node = $('#templates .org').clone();
+			node.find('h1').text(org['skos:prefLabel']);
+			node.attr('href', org['@id']);
+			if(org['skos:altLabel'].length > 0){
+				node.find('p[property="altLabels"]').text(org['skos:altLabel'].join(', '));
+			} 
+			if(org['owltime:hasEnd'] != '') {
+				node.find('p[name="dateRange"]').text(org['owltime:hasBeginning'].substr(0,4)+'-'+org['owltime:hasEnd'].substr(0,4));
+			} else {
+				node.find('p[name="dateRange"]').text(org['owltime:hasBeginning'].substr(0,4)+'-');
+			}
+			$('main').append(node);
+		});
+	},	
 	'loadPerson': function(data, textStatus, xhr){
 		var dataArray = $().LNAGateway().readLD.person(data);		
 
