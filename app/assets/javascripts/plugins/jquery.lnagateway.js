@@ -90,7 +90,12 @@
 	        			  'vcard:country-name': '',
 	        			  'owltime:hasBeginning': null,
 	        			  'owltime:hadEnd': ''}
-	        			}	        
+	        			},
+	        'newAccount': {'method': 'POST', 'path': 'person/', 'template':{
+	        			  'dc:title': null,
+	        			  'foaf:accountName': null,
+	        			  'foaf:accountServiceHomepage': ''}
+	        			}
 	    };
 	};
 

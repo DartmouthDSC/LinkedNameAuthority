@@ -11,7 +11,7 @@
                     <h1></h1>
                     <div><span class="spinner"></span></div>
                     <ul class="iconList">
-                        <li class="add"><button href="#">Add ID</button></li>
+                        <li class="add"><button title="add account" id="newAccount" data-toggle="modal" data-target="#newAccountModal">Add ID</button></li>
                     </ul>
                 </div>
             </section>
@@ -41,6 +41,7 @@
         <section id="modals">
         <%= render "shared/modals/new_work" %>
         <%= render "shared/modals/new_affiliation" %>
+        <%= render "shared/modals/new_account" %>
         </section>        
 		<script>
         $(document).ready(function(){

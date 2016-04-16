@@ -39,7 +39,7 @@ Rails.application.routes.draw do
        page: /\d+/
 
   # Works Collection
-  get '/works(/:page)', to: 'works#index', page: /\d+/
+  get '/works(/:page)', to: 'works#index', page: /\d+/, as: :works
   post '/works(/:page)', to: 'works#search', page: /\d+/
 
   # Work

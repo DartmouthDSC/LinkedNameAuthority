@@ -5,10 +5,70 @@
         <!--[if lt IE 8]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-            <div style="width: 100%">
-                <button type="button" class="menuButton" data-toggle="modal" data-target="#newPersonModal">Add a new Person to LNA</button>
-                <button type="button" class="menuButton" data-toggle="modal" data-target="#newOrgModal">Add a new Organization to LNA</button>
+            <div class="cards">
+                <div class="sectionCard">
+                    <h1>ORGANIZATIONS</h1>
+                    <div>
+                        <div class="roundButton">
+                            <div class="roundButtonCircle">
+                                <%= link_to(organizations_path, class: "roundButton") do%><i class="fa fa-2x fa-list" aria-hidden="true"></i><br />Browse<% end %>
+                            </div>
+                        </div>
+                        <div class="roundButton" data-toggle="modal" data-target="#findOrgModal">
+                            <div class="roundButtonCircle">
+                                <roundButton class="roundButton"><i class="fa fa-2x fa-search" aria-hidden="true"></i><br />Find</roundButton>
+                            </div>
+                        </div>
+                        <div class="roundButton" data-toggle="modal" data-target="#newOrgModal">
+                            <div class="roundButtonCircle">
+                                <roundButton class="roundButton"><i class="fa fa-2x fa-plus" aria-hidden="true"></i><br />Add</roundButton>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sectionCard">
+                    <h1>PEOPLE</h1>
+                    <div>
+                        <div class="roundButton">
+                            <div class="roundButtonCircle">
+                                <%= link_to(persons_path, class: "roundButton") do%><i class="fa fa-2x fa-list" aria-hidden="true"></i><br />Browse<% end %>
+                            </div>
+                        </div>
+                        <div class="roundButton" data-toggle="modal" data-target="#findPersonModal">
+                            <div class="roundButtonCircle">
+                                <roundButton class="roundButton"><i class="fa fa-2x fa-search" aria-hidden="true"></i><br />Find</roundButton>
+                            </div>
+                        </div>
+                        <div class="roundButton" data-toggle="modal" data-target="#newPersonModal">
+                            <div class="roundButtonCircle">
+                                <roundButton class="roundButton"><i class="fa fa-2x fa-plus" aria-hidden="true"></i><br />Add</roundButton>
+                            </div>
+                        </div>
+                    </div>                    
+                </div>
+                <div class="sectionCard">
+                    <h1>WORKS</h1>
+                    <div>
+                        <div class="roundButton">
+                            <div class="roundButtonCircle">
+                                <%= link_to(works_path, class: "roundButton") do%><i class="fa fa-2x fa-list" aria-hidden="true"></i><br />Browse<% end %>
+                            </div>
+                        </div>
+                        <div class="roundButton" data-toggle="modal" data-target="#findWorksModal">
+                            <div class="roundButtonCircle">
+                                <roundButton class="roundButton"><i class="fa fa-2x fa-search" aria-hidden="true"></i><br />Find</roundButton>
+                            </div>
+                        </div>
+                        <div class="roundButton" data-toggle="modal" data-target="#newWorkModal">
+                            <div class="roundButtonCircle">
+                                <roundButton class="roundButton"><i class="fa fa-2x fa-plus" aria-hidden="true"></i><br />Add</roundButton>
+                            </div>
+                        </div>
+                    </div>                    
+                </div>
+
             </div>
+
         </main>
 		<%= render "shared/modals/new_person" %>
         <%= render "shared/modals/new_organization" %>
