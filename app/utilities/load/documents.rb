@@ -2,11 +2,11 @@ require 'symplectic/elements/users'
 
 module Load
   class Documents < Loader
-    ELEMENTS_IMPORT_TITLE = 'Documents from Elements'
+    ELEMENTS_LOADER = 'Documents from Elements'
 
     # Keys for warnings hash.
     NEW_DOCUMENT = 'new document'
-    PERSON_RECORD_NOT_FOUND = 'person records not found'
+    PERSON_RECORD_NOT_FOUND = 'person record not found'
     
     # Import latest newly created publication records from Elements. If a document is already
     # present in the LNA, it is NOT updated.
@@ -22,30 +22,25 @@ module Load
     #          2. If there isn't a publication record create a new record and attach it to the
     #             user, otherwise continue to the next publication.
     def self.from_elements
-      # Get the last import.
-      i = Import.where(load: ELEMENTS_IMPORT_TITLE, success: true).order(time_started: :asc).first
-      last_import = (i) ? i.time_started : nil
-      # puts last_import.class.name # is Time, will throw errors in very near future.
-
-      batch_load(title: ELEMENTS_IMPORT_TITLE, verbose: true, throw_errors: false) do |load|
+      batch_load(ELEMENTS_LOADER) do |load|
         begin
+          # Get the last import.
+          i = Import.last_successful_import(load.title)
+          last_import = (i) ? i.time_started : nil
+          
           users = Symplectic::Elements::Users.get_all(modified_since: last_import)
-        rescue Exception => e
-          load.add_to_errors(e.message, 'while retrieving users.')
-          (load.throw_errors) ? raise : break
+        rescue StandardError => e
+          load.log_error(e, 'while retrieving users.')
+          break
         end
                        
         users.each do |user|
           begin
-            puts user.proprietary_id
             publications = user.publications(modified_since: last_import)
           rescue StandardError => e
-            if user.propritary_id
-              load.add_to_errors(e.message, user.proprietary_id)
-            else
-              load.add_to_errors(e.message, "Elements id: #{user.id}")
-            end
-            (load.throw_errors) ? raise : next
+            id = (user.proprietary_id) ?
+                   "Proprietary id: #{user.proprietary_id}" : "Elements id: #{user.id}"
+            load.log_errors(e, id)
           ensure
             next unless publications # If there aren't any modified publications, skip.
           end
@@ -68,18 +63,18 @@ module Load
 
               load.into_lna(hash)
             rescue StandardError => e
-              load.add_to_errors(e.message,
-                            "Elements document #{publication.id} for #{user.proprietary_id}")
-              (load.throw_errors) ? raise : next
+              load.log_error(e,"Elements document #{publication.id} for #{user.proprietary_id}")
+              next
             end
           end
         end
-        puts load.errors
-        byebug
       end
     end
-    
-    # Creates Lna object for the document describe by the given hash
+
+
+    # Creates the document described by the given hash. If a netid is given this document is
+    # associated with the corresponding person. At this point only ingesting documents by
+    # netid is supported.
     #
     # @example Example of hash
     #   lna_hash = { netid: 'd00000k',
@@ -89,38 +84,60 @@ module Load
     #                            author_list: ['John Doe', 'Jane Doe']
     #                          },
     #              }
-    #                 
-    def into_lna(hash = {})
-      # Check if user currently exists.
-      acnts = Lna::Account.where(title: Lna::Account::DART_PROPERTIES[:title],
-                                 account_name: hash[:netid])
+    #
+    # @param hash [Hash]
+    # @return [Lna::Collection::Document] if new document created
+    # @return [nil] if new document was not created
+    def into_lna(hash)
+      if hash[:netid]
+        into_lna_by_netid!(hash[:netid], hash[:document])
+      else
+        raise NotImplementedError, 'Can only import document is netid is present.'
+      end
+    rescue NotImplementedError, ArgumentError => e
+      log_error(e, hash.to_s)
+      return nil
+    rescue => e
+      value = (hash[:elements_id]) ?
+                "Elements id: #{hash[:elements_id]}" :
+                "#{hash[:document][:title]} for #{hash[:netid]}"
+      log_error(e, value)
+      return nil
+    end
+    
+    # Creates the document described and associates it with the corresponding person.
+    #
+    # @example Example of hash
+    #   lna_hash = {
+    #                title: 'The Best Article Ever',
+    #                elements_id: '1234',
+    #                author_list: ['John Doe', 'Jane Doe']
+    #              }
+    # @param [String] netid person's netid
+    # @param [Hash] hash document properties
+    def into_lna_by_netid!(netid, hash)
+      raise ArgumentError, 'document hash cannot be nil' unless hash
       
-      if acnts.count.zero?  # Could not find Person.
-        add_to_warnings(PERSON_RECORD_NOT_FOUND, hash[:netid])
+      # Check if user exists.
+      unless person = find_person_by_netid(netid)
+        log_warning(PERSON_RECORD_NOT_FOUND, netid)
         return
-      elsif acnts.count > 1
-        raise "More than one account for #{hash[:netid]}" 
       end
 
-      collection = acnts.first.account_holder.collections.first
+      collection = person.collections.first
 
       # If there's an elements id, check to see if there's already a document with that id.
       # If there is, don't add it again.
-      if e_id = hash[:document][:elements_id]
-        if Lna::Collection::Document.where(elements_id: e_id).count > 0
-          return
-        end
-      end
+      return nil if Lna::Collection::Document.where(elements_id: hash[:elements_id]).count > 0
 
-      d = Lna::Collection::Document.create!(hash[:document]) do |doc|
+      d = Lna::Collection::Document.create!(hash) do |doc|
         doc.collection = collection
       end
       
       warning_text = (d.elements_id) ?
-                       "elements id #{d.elements_id}" :
-                       "title #{d.title}"
-      add_to_warnings(NEW_DOCUMENT,
-                      "for #{hash[:netid]} with the #{warning_text}")
+                       "elements id #{d.elements_id}" : "title #{d.title}"
+      log_warning(NEW_DOCUMENT, "for #{netid} with the #{warning_text}")
+      d
     end
   end
 end

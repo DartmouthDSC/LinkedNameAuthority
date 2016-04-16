@@ -1,4 +1,4 @@
-json.partial! 'shared/context', vocabs: [:skos, :org, :owltime]
+json.partial! 'shared/context', vocabs: [:skos, :org, :owltime, :vcard]
 
 json.partial! 'shared/success'
 

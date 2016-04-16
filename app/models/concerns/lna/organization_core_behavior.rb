@@ -5,7 +5,7 @@ module Lna
     include Lna::DateHelper
     
     included do
-      has_many :people, class_name: 'Lna::Person', dependent: :restrict,
+      has_many :people, class_name: 'Lna::Person', dependent: :restrict_with_exception,
                inverse_of: :primary_org, as: :primary_org
       has_many :memberships, class_name: 'Lna::Membership', dependent: :destroy,
                inverse_of: :organization
@@ -25,12 +25,20 @@ module Lna
         index.as :multiple_stored_searchable
       end
 
-      property :code, predicate: ::RDF::Vocab::ORG.identifier, multiple: false do |index|
+      property :hr_id, predicate: ::RDF::Vocab::ORG.identifier, multiple: false do |index|
         index.as :stored_searchable
       end
 
       property :begin_date, predicate: Vocabs::OwlTime.hasBeginning, multiple: false do |index|
         index.type :date
+        index.as :stored_searchable
+      end
+
+      property :kind, predicate: ::RDF::Vocab::ORG.purpose, multiple: false do |index|
+        index.as :stored_searchable
+      end
+
+      property :hinman_box, predicate: ::RDF::Vocab::VCARD['postal-code'], multiple: false do |index|
         index.as :stored_searchable
       end
 
@@ -43,6 +51,23 @@ module Lna
         Solrizer.set_field(solr_doc, 'label', label, :stored_sortable)
         solr_doc
       end
+ 
+      def self.where(values)
+        values = values.clone
+        # Change keys for dates and convert date string to a solr friendly format. 
+        [:begin_date, :end_date].each do |key|
+          if values.key?(key) && values[key].is_a?(String)
+            date = values.delete(key)
+            values[key.to_s.concat('_dtsi').to_sym] = Date.parse(date).strftime('%FT%TZ')
+          end
+        end
+        
+        # Change key for alt_label.
+        values[:alt_label_tesim] = values.delete(:alt_label) if values.key?(:alt_label)
+        
+        super(values)
+      end
     end
   end
 end
+

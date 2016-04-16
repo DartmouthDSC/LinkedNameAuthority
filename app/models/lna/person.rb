@@ -57,7 +57,7 @@ module Lna
     #
     # @example Usage
     #   m = { title: 'Programmer/Analyst',
-    #         org: { code: 'Lib' }
+    #         org: { label: 'Library' }
     #       }
     #   person.matching_membership(m)
     #
@@ -68,7 +68,7 @@ module Lna
     def matching_membership(hash)
       matching = self.memberships.to_a.select do |m|
         m.title.casecmp(hash[:title]).zero? &&
-          m.organization.code.casecmp(hash[:org][:code]).zero?
+          m.organization.label.casecmp(hash[:org][:label]).zero?
       end
       raise 'More than one membership was a match for the given hash.' if matching.count > 1
       return matching.count == 1 ? matching.first : false

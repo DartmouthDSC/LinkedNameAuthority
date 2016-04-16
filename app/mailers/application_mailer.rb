@@ -1,4 +1,4 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: "dac.developers@cloud.dartmouth.edu"
+  default from: "DAC.Developers@dartmouth.edu"
   layout 'mailer'
 end

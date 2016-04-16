@@ -20,7 +20,7 @@ RSpec.describe "Organizations API", type: :request, https: true do
     end
 
     it 'returns identifier' do
-      expect_json('@graph.0', :'org:identifier' => @org.code)
+      expect_json('@graph.0', :'org:identifier' => @org.hr_id)
     end
     
     it 'returns sub organizations' do
@@ -31,18 +31,26 @@ RSpec.describe "Organizations API", type: :request, https: true do
       expect_json('@graph.0', :'skos:prefLabel' => @org.label)
     end
     
-    it 'return alt label' do
+    it 'returns alt label' do
       expect_json('@graph.0', :'skos:altLabel' => @org.alt_label)
     end
 
+    it 'returns purpose' do
+      expect_json('@graph.0', :'org:purpose' => @org.kind)
+    end
+
+    it 'returns hinman box' do
+      expect_json('@graph.0', :'vcard:postal-box' => @org.hinman_box)
+    end
+
     it 'includes link headers' do
-      expect_header('Link', "<#{organizations_url(page: 1)}>; rel=\"first\"")
+      expect_header('Link', "<#{organizations_url(page: 1)}>; rel=\"first\", <#{organizations_url(page: 1)}>; rel=\"last\"")
     end
   end
 
   describe 'POST organizations/' do
     before :context do
-      body = { 'org:identifier' => 'its' }
+      body = { 'skos:pref_label' => 'Computer Science Department' }
       post organizations_path, body.to_json, {
              'ACCEPT' => 'application/ld+json',
              'CONTENT_TYPE' => 'application/ld+json'
@@ -55,6 +63,10 @@ RSpec.describe "Organizations API", type: :request, https: true do
 
     it 'searches a different identifier and returns 0 results' do
       expect_json_sizes(:@graph => 0)
+    end
+
+    it 'includes link headers' do
+      expect_header('Link', "<#{organizations_url(page: 1)}>; rel=\"first\", <#{organizations_url(page: 1)}>; rel=\"last\"")
     end
   end
 end
