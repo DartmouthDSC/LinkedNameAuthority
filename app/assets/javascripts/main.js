@@ -17,7 +17,7 @@ LNA = {
 		     'accountRoot': 'http://orcid.org/'}
 		    //tk add more accounts
 		],
-		'fuzzySearch' : '~2'
+		'fuzzySearch' : ''
 	},
 	//this set of functions are callbacks for LNAGateway.*()
 	'loadPersonCards': function(data, textStatus, xhr){
@@ -57,6 +57,24 @@ LNA = {
 			$('main').append(node);
 		});
 	},	
+
+	'loadWorkCards': function(data, textStatus, xhr){
+		var dataArray = $().LNAGateway().readLD.works(data);
+		var links = $().LNAGateway().parseLink(xhr.getResponseHeader('link'));
+		$(dataArray).each(function(i, work){
+			var node = $('#templates .work').clone();
+			node.find('h1').text(work['dc:title']);
+			node.attr('href', work['@id']);
+			if(work['bibo:authorsList'].length > 0){
+				node.find('p[property="authors"]').text(work['bibo:authorsList'].join(', '));
+			} 
+			if(work['dc:date'] != '') {
+				node.find('p[name="date"]').text(work['dc:date'].substr(0,4));
+			}
+			$('main').append(node);
+		});
+	},	
+
 	'loadPerson': function(data, textStatus, xhr){
 		var dataArray = $().LNAGateway().readLD.person(data);		
 
@@ -115,7 +133,7 @@ LNA = {
 		editButton.click(function(e){ LNA.editAffiliation(e, data['org:organization'])});
 		parent.prepend(node);
 	},
-	//tk
+
 	'fillPersonWorks': function(parent, data){
 		var node = $('#templates .work').clone();
 		var title = node.find('.itemTitle').first();

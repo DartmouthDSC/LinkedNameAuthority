@@ -4,19 +4,20 @@ class WorksController < ApiController
   
   # GET works(/:page) or GET works/:start_date(/:page)
   def index
-    page = params[:page]
+    @page = params[:page]
 
     result = search_for_works(
       start_date: params[:start_date] || nil,
       rows: MAX_ROWS,
       sort: 'date_dtsi desc, author_list_ssi asc',
-      page: page,
+      page: @page,
       raw: true)
     @works = result['response']['docs']
     
     respond_to do |f|
-      response.headers['Link'] = link_headers(result['response']['numFound'], MAX_ROWS, page)
+      response.headers['Link'] = link_headers(result['response']['numFound'], MAX_ROWS, @page)
       f.jsonld { render :index, content_type: 'application/ld+json' }
+      f.html
     end
   end
 

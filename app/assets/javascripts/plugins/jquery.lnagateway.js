@@ -39,7 +39,9 @@
 	    	'listPersons':{'method': 'GET', 'path': 'persons/', 'template': {}
 	    				},
 	    	'listOrgs':{'method': 'GET', 'path': 'organizations/', 'template': {}
-	    				},	    				
+	    				},	    
+	    	'listWorks':{'method': 'GET', 'path': 'works/', 'template': {}
+	    				},	    								
 			'loadPerson': {'method': 'GET', 'path': 'person/', 'template': {}
 	    				},
 			'loadPersonWorks': {'method': 'GET', 'path': 'person/', 'template': {}
@@ -129,6 +131,11 @@
 	    	if(typeof page === "undefined") page = 1;
 	    	this.submitQuery('listPersons', {}, callback, page);
 	    },
+
+	    'listWorks': function(callback, page){
+	    	if(typeof page === "undefined") page = 1;
+	    	this.submitQuery('listWorks', {}, callback, page);
+	    },	    
 
 	    'loadPerson': function(callback, uid){
 	    	if(typeof uid === "undefined") return false;
@@ -286,6 +293,9 @@
     		'personWorks': function(xhrData){
 	    		return xhrData['@graph'];
 	    	},
+    		'works': function(xhrData){
+	    		return xhrData['@graph'];
+	    	},	    	
 	    	'orgs': function(xhrData){
 	    		return xhrData['@graph'];
 	    	}	    		    	
