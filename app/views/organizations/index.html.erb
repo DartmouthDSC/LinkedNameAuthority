@@ -9,7 +9,6 @@
         <section id="templates">
         <%= render "shared/templates/cards_organization" %>
         </section>
-        <%= render "shared/modals/search" %>
         <script>
         $(document).ready(function(){
             $().LNAGateway().listOrgs(LNA.loadOrgCards, <%= @page %>);

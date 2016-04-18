@@ -31,7 +31,8 @@ class PersonsController < ApiController
       'foaf:name'       => "full_name_tesi:\"#{params['foaf:name']}\"",
       'foaf:givenName'  => "given_name_ssi:\"#{params['foaf:givenName']}\"",
       'foaf:familyName' => "family_name_ssi:\"#{params['foaf:familyName']}\"",
-      'org:member'      => "({!join from=id to=reportsTo_ssim}label_tesi:\"#{params['org:member']}\")"
+      # 'org:member'      => "({!join from=id to=reportsTo_ssim}label_tesi:\"#{params['org:member']}\")"
+      # 'org:member'      => "reportsTo_ssim:\"#{organization_url(params['org:member'])}\""
     }
     search_query = query_map.select { |f, _| params[f] }.values.join(" AND ")
     

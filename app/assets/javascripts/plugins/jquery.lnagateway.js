@@ -44,12 +44,26 @@
 	    				},	    								
 			'loadPerson': {'method': 'GET', 'path': 'person/', 'template': {}
 	    				},
+			'loadOrg': 	{'method': 'GET', 'path': 'organization/', 'template': {}
+	    				},	    				
 			'loadPersonWorks': {'method': 'GET', 'path': 'person/', 'template': {}
 	    				},
 	    	'findOrgs':   {'method': 'POST', 'path': 'organizations/', 'template':{
 	    				  'skos:prefLabel': '',
 	    				  'skos:altLabel': '',
 	    				  'org:subOrganizationOf': ''}
+	    				},
+	    	'findOrgPersons': {'method': 'POST', 'path': 'persons/', 'template':{
+	    				  'foaf:name': '',
+	    				  'foaf:givenName': '',
+	    				  'foaf:familyName': '',
+	    				  'org:member': ''}
+	    				},	
+	    	'findPersons': {'method': 'POST', 'path': 'persons/', 'template':{
+	    				  'foaf:name': '',
+	    				  'foaf:givenName': '',
+	    				  'foaf:familyName': '',
+	    				  'org:member': ''}
 	    				},
 			'newOrg':     {'method': 'POST', 'path': 'organization/', 'template': {
 	                      "org:identifier": null,
@@ -141,7 +155,10 @@
 	    	if(typeof uid === "undefined") return false;
 	    	this.submitQuery('loadPerson', {}, callback, uid);
 	    },
-
+	    'loadOrg': function(callback, uid){
+	    	if(typeof uid === "undefined") return false;
+	    	this.submitQuery('loadOrg', {}, callback, uid);
+	    },	
 	    'loadPersonWorks': function(callback, uid){
 	    	if(typeof uid === "undefined") return false;
 	    	this.submitQuery('loadPerson', {}, callback, uid + '/works');
@@ -153,7 +170,19 @@
 	    	if(typeof page === "undefined") page = 1;
 	    	var searchTerm = {'skos:prefLabel': term}
 	    	this.submitQuery('findOrgs', searchTerm, callback, page);
-	    },	    
+	    },
+	    'findOrgPersons': function(callback, uid, page){
+	    	if(typeof uid === "undefined") return false;
+	    	if(typeof page === "undefined") page = 1;
+	    	var searchTerm = {'org:member': uid};
+	    	this.submitQuery('findOrgPersons', searchTerm, callback, page);
+	    }, 
+	    'findPersons': function(callback, term, page){
+	    	if(typeof term === "undefined") return false;
+	    	if(typeof page === "undefined") page = 1;
+	    	var searchTerm = {'foaf:name': term};
+	    	this.submitQuery('findPersons', searchTerm, callback, page);
+	    }, 	    
 
 	    //extendForm is called on all forms that have data-lna-query set on init
 	    //it can also be run manually.
@@ -290,6 +319,9 @@
 
 	    		return data;
 	    	},
+	    	'org': function(xhrData){
+	    		return xhrData;
+	    	},
     		'personWorks': function(xhrData){
 	    		return xhrData['@graph'];
 	    	},
@@ -298,7 +330,8 @@
 	    	},	    	
 	    	'orgs': function(xhrData){
 	    		return xhrData['@graph'];
-	    	}	    		    	
+	    	}
+
     	},
 
     	//Utility function to parse link headers

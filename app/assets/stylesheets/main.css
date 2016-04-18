@@ -568,20 +568,20 @@ footer{
     list-style: none;
     font-size: .8em;
 }
-.details{
+.details, .record{
     display: flex;
     flex-direction: column;
     /*text-align: center;*/
     flex: 1 1 30em;
     margin-left: 1em;
 }
-.details div{
+.details div, .record div{
     border: 1px solid black;
     padding: 1em;
     margin-bottom: 1em;
     box-shadow: 0 .2em .2em rgba(0,0,0,.5);
 }
-.details div h1{
+.details div h1, .record div h1{
     font-size: 1.2em;
     font-weight: 600;
     margin: 0;
@@ -671,7 +671,7 @@ a.fa{
     background-size: 1.7em;
     background-repeat: no-repeat;
 }
-.details button, .iconList button{
+.details button, .iconList button, .record button{
     display: flex;
     align-items: center;
     margin-bottom: .2em;
@@ -680,6 +680,10 @@ a.fa{
     outline: 0;
     color: inherit;
     padding: .2em;
+}
+.record button{
+    display: block;
+    float: right;
 }
 .details div > button, .sidebar li > button{
     display: flex;
@@ -696,7 +700,7 @@ a.fa{
     margin-left: -.2em;
 }
 
-.details button:hover, .details button:focus{
+.details button:hover, .details button:focus, .record button:hover, .record button:focus{
     margin-top: -.1em;
     box-shadow: 0 .1em .1em rgba(0,0,0,.5);
     margin-bottom: .3em;

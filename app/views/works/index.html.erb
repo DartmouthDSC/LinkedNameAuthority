@@ -9,7 +9,6 @@
         <section id="templates">
         <%= render "shared/templates/cards_work" %>
         </section>
-        <%= render "shared/modals/search" %>
         <script>
         $(document).ready(function(){
             $().LNAGateway().listWorks(LNA.loadWorkCards, <%= @page %>);

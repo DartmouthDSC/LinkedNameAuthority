@@ -75,6 +75,43 @@ LNA = {
 		});
 	},	
 
+	'loadOrg': function(data, textStatus, xhr){
+		var dataArray = $().LNAGateway().readLD.org(data);		
+
+		//render org record
+		$('.crumbHere').children().first().text(dataArray['org:prefLabel']);
+		$('.record h3').text(dataArray['org:prefLabel']);
+		$('.orgAltLabels').text(dataArray['org:altLabel'].join(', '));
+		$('.orgParent').text(dataArray['org:subOrganizationOf']);
+		if(dataArray['owltime:hasEnd'] != ''){
+			$('.dateRange').text(dataArray['owltime:hasBeginning'] + '-' + dataArray['owltime:hasEnd'] );	
+		} else {
+			$('.dateRange').text(dataArray['owltime:hasBeginning']);
+		}
+		$('.dateRange').text(dataArray['org:subOrganizationOf']);
+
+		//clear all spinners
+		$('.sidebar .spinner, .affiliations .spinner').parent().remove();
+
+		//render OnlineAccounts
+		$.each(dataArray.accounts, function(k, v){ LNA.fillAccount($('.record .iconList'), v) });
+
+		LNA.activateModals();
+	},
+
+	'loadOrgPersons': function(data, textStatus, xhr){
+		var dataArray = $().LNAGateway().readLD.persons(data);		
+
+		//clear all spinners
+		$('.sidebar .spinner, .affiliations .spinner').parent().remove();
+
+		//render Person list
+		console.log(data);
+		$.each(dataArray.persons, function(k, v){ LNA.fillPersons($('.details .iconList'), v) });
+
+		LNA.activateModals();
+	},	
+
 	'loadPerson': function(data, textStatus, xhr){
 		var dataArray = $().LNAGateway().readLD.person(data);		
 
@@ -149,6 +186,19 @@ LNA = {
 
 		parent.prepend(node);
 	},		
+
+	'fillPersons': function(parent, data){
+		var node = $('#templates .person').clone();
+		node.find('h1').text(person['foaf:givenName']+' '+person['foaf:familyName']);
+		// node.attr('href', person['@id']);
+		if(person['foaf:title']!=''){
+			node.find('p[property="title"]').text(person['foaf:title']+', '+person['orgLabel']);
+		} else {
+			node.find('p[property="title"]').text(person['orgLabel']);
+		}
+		// node.children('p[name="dateRange"]').text(person['foaf:title']);
+		$(parent).append(node);
+	},
 
 	//edit functions load data into edit modals, open the modal, and set the save handler
 	editAffilication: function(e, org){

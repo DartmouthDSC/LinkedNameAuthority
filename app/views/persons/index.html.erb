@@ -9,7 +9,6 @@
         <section id="templates">
         <%= render "shared/templates/cards_person" %>
         </section>
-        <%= render "shared/modals/search" %>
         <script>
         $(document).ready(function(){
             $().LNAGateway().listPersons(LNA.loadPersonCards, <%= @page %>);

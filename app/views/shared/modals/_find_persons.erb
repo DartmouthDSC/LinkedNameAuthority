@@ -1,0 +1,13 @@
+<div class="modal fade findPersonsModal formModal" id="findPersonsModal" tabindex="-1" role="dialog" aria-labelledby="findPersonsModal" title="Find People">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form data-lna-query="findPersons" class="formSingleColumn">
+          <label>Name</label><input name="foaf:name"></input>
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+          <button type="submit" title="submit">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

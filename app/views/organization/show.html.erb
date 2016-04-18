@@ -1,0 +1,44 @@
+		<nav class="centered breadcrumbs" role="navigation">
+            <%= link_to(root_path, class: "crumbContinue") do %><span>Home</span><% end %><%= link_to(organizations_path, class: "crumbContinue") do %><span>Organization</span><% end %><a href="#" class="crumbHere crumbStop"><span>Loading...</span></a>
+        </nav>
+        <main class="centered content">
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+            <section class="record">
+                <div class="orgData">
+                    <h1>Organization <button class="fa fa-pencil fa-lg view" title="edit organization" data-toggle="modal" data-target="#editOrganizationModal"><span class="helpText">edit this organization</span></button></h1>
+                    <h3></h3>
+                    <p class="orgAltLabels"></p>
+                    <p class="orgPurpose"></p>
+                    <p class="orgDateRange"></p>
+                    <p class="orgParent"></p>
+                    <ul class="iconList">
+                    </ul>
+
+<!--                     <ul class="iconList">
+                        <li><span class='spinner'></span></li>
+                    </ul>
+                    <button title="add affiliation" id="newAffiliation" data-toggle="modal" data-target="#newAffiliationModal"><span class="add"></span>Add New Affiliation</button> -->
+                </div>
+                <div class="orgPersons">
+                <h1>Related Primary Appointments</h1>                    
+                    <ul class="iconList">
+                        <li><span class='spinner'></span></li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+        <section id="templates">
+        <%= render "shared/templates/lists_person" %>
+        <%= render "shared/templates/lists_account" %>
+        </section>
+        <section id="modals">
+        <%= render "shared/modals/new_account" %>
+        </section>        
+		<script>
+        $(document).ready(function(){
+            // $().LNAGateway().loadOrg(LNA.loadOrg, "<%= @short_id %>");
+            $().LNAGateway().findOrgPersons(LNA.loadOrgPersons, "<%= @short_id %>");
+        });
+        </script>
