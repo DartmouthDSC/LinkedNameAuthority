@@ -667,7 +667,7 @@ a.fa{
 .details li span, .related li span {
     flex: 1 1 10em;
 }
-.details .iconList p span. , .related p span{
+.details .iconList p span, .related p span{
     flex: 1 1 auto;
 }
 .details li button:first-of-type{
