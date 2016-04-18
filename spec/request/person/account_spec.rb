@@ -76,27 +76,34 @@ RSpec.describe "Person/Account API", type: :request, https: true do
         post "/person/dfklajdlfkjasldfj/account", { format: :jsonld }
         expect_status :not_found
       end
-    end
 
-    describe 'adds second account' do
-      include_examples 'successful POST request'
-      
-      before :context do    
-        body = {
-          'dc:title'                    => 'Second Orcid',
-          'foaf:accountName'            => 'http://orcid.org/0000-0000-0000-0000',
-          'foaf:accountServiceHomepage' => 'http://orcid.org/'
+      describe 'adds second account' do
+        include_examples 'successful POST request'
+        
+        before :context do    
+          body = {
+            'dc:title'                    => 'Second Orcid',
+            'foaf:accountName'            => 'http://orcid.org/1111-1111-1111-1111',
+            'foaf:accountServiceHomepage' => 'http://orcid.org/'
           }
-        post @path, body.to_json, {
-          'ACCEPT'       => 'application/ld+json',
-          'CONTENT_TYPE' => 'application/ld+json'
-        }
-        @acnt = @jane.accounts.first
+          post @path, body.to_json, {
+            'ACCEPT'       => 'application/ld+json',
+            'CONTENT_TYPE' => 'application/ld+json'
+          }
+          @jane.accounts.reload
+          @acnt = @jane.accounts.select { |a| a.title == 'Second Orcid' }.first
           @id = FedoraID.shorten(@acnt.id)
+        end
+
+        after :context do
+          @acnt.destroy
+        end
+        
+        it 'increases number of accounts' do
+          expect(@jane.accounts.count).to be 2
+        end
       end
-      
     end
-    
   end
 
   describe 'PUT person/:person_id/account/:id' do
