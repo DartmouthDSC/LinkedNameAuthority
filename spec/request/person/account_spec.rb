@@ -77,6 +77,26 @@ RSpec.describe "Person/Account API", type: :request, https: true do
         expect_status :not_found
       end
     end
+
+    describe 'adds second account' do
+      include_examples 'successful POST request'
+      
+      before :context do    
+        body = {
+          'dc:title'                    => 'Second Orcid',
+          'foaf:accountName'            => 'http://orcid.org/0000-0000-0000-0000',
+          'foaf:accountServiceHomepage' => 'http://orcid.org/'
+          }
+        post @path, body.to_json, {
+          'ACCEPT'       => 'application/ld+json',
+          'CONTENT_TYPE' => 'application/ld+json'
+        }
+        @acnt = @jane.accounts.first
+          @id = FedoraID.shorten(@acnt.id)
+      end
+      
+    end
+    
   end
 
   describe 'PUT person/:person_id/account/:id' do

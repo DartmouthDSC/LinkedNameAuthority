@@ -28,8 +28,8 @@ class OrganizationsController < ApiController
 
     # identifier exact match, pref_label and alt_label fuzzy(but not solr fuzzy)
     query_map = {
-      'skos:pref_label'       => complexphrase_query('label_tesi', params['skos:pref_label']),
-      'skos:alt_label'        => field_query('alt_label_tesim', params['skos:alt_label']),
+      'skos:prefLabel'       => complexphrase_query('label_tesi', params['skos:prefLabel']),
+      'skos:altLabel'        => field_query('alt_label_tesim', params['skos:altLabel']),
       'org:subOrganizationOf' => join_query('id', 'subOrganizationOf_ssim', 'label_tesi',
                                       params['org:subOrganizationOf'])
     }
