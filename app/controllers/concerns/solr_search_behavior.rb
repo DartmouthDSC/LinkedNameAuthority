@@ -68,8 +68,8 @@ module SolrSearchBehavior
     results
   end
   
-  # Searches Solr for a Lna::Person with the given id. If there isn't only one result the
-  # not_found method is called.
+  # Searches Solr for a Lna::Person with the given id.
+  # If an id is given, and there are no results the not_found method is called.
   #
   # @param (see #search_with_model_filter)
   # if a query is given it will override the id query
@@ -119,6 +119,7 @@ module SolrSearchBehavior
   #
   # if query is given id and collection id are ignored.
   def search_for_works(id: nil, collection_id: nil, start_date: nil, q: nil, **args)
+    raise ':q cannot be used in conjunction with :id or :collection_id' if (id || collection_id) && q
     if q == nil
       q = []
       q << ['id', id] if id
@@ -127,7 +128,7 @@ module SolrSearchBehavior
     
     if start_date
       date = Date.parse(start_date.to_s).strftime('%FT%TZ')
-      q = field_query(q) if q.is_a? Array
+      q = ActiveFedora::SolrQueryBuilder.construct_query(q) if q.is_a? Array
       q << " AND" unless q.blank?
       q << " date_dtsi:[#{date} TO *]"
     end
@@ -147,37 +148,23 @@ module SolrSearchBehavior
   # Search for active organization only.
   #
   # @param parents [Boolean] if true returns parent organizations
-  def search_for_active_organizations(parents: false, **args)
-    search_for_organizations(parents: parents, historic: false, **args)
+  def search_for_active_organizations(**args)
+    search_for_organizations(historic: false, **args)
   end
 
-  # Searches through both historic and active organizations.
-  #
+  # Searches through both historic and active organizations. If an id is given only one
+  # result is returned.
   #
   # @param historic [Boolean] if true includes historic organizations otherwise doesn't
-  # @param parents [Boolean] if true returns parent organizations
-  def search_for_organizations(id: nil, parents: false, historic: true, **args)
+  def search_for_organizations(id: nil, historic: true, q: nil, **args)
+    raise ArgumentError, ':id parameter cannot be used in conjunction with :q' if id && q
+    
     models = [Lna::Organization]
     models << Lna::Organization::Historic if historic
 
-    q = (id) ? [['id', id]] : nil
+    q = [['id', id]] if id
     
-    solr_response = search_with_model_filter(models, q: q, only_one: id != nil, **args)
-    results = (args[:raw]) ? solr_response['response']['docs'] : solr_response
-    
-    if parents
-      ids = results.map { |p| p['id'] }
-      parent_ids = results.map { |p| p['subOrganizationOf_ssim'] }.flatten.uniq
-      parent_ids = parent_ids.reject { |p| ids.include?(p) } # make sure parents aren't in the results already
-      results = results + search_for_ids(parent_ids)
-    end
-
-    if args[:raw]
-      solr_response['response']['docs'] = results
-      solr_response
-    else
-      results
-    end
+    search_with_model_filter(models, q: q, only_one: id != nil, **args)
   end
   
   # Search solr with a model filter. This method allows for many solr parameters that are passed
@@ -197,7 +184,7 @@ module SolrSearchBehavior
     raise ArgumentError, 'Cannot calculate start param without rows.' if page && !rows
     
     q = '*:*' if q.blank?
-    q = field_query(q) if q.is_a? Array
+    q = ActiveFedora::SolrQueryBuilder.construct_query(q) if q.is_a? Array
     
     args[:fq] = model_filter(model)
     args[:q] = q
@@ -228,9 +215,12 @@ module SolrSearchBehavior
   # @param field_array [Array<Array<String, String>>]
   # @param join_with [String]
   # @return [String] 
-  def field_query(field_array, join_with = " AND ")
-    field_array.map { |i| "#{i[0]}:#{solr_escape(i[1])}" }.join(join_with)
-  end
+  # def field_query(field_array, join_with = " AND ")
+  #   field_array.map { |i| "#{i[0]}:#{solr_escape(i[1])}" }.join(join_with)
+  # end
+  # def field_query(*args)
+  #   ActiveFedora::SolrQueryBuilder.construct_query(*args)
+  # end
 
   # Method taken from ActiveFedora::SolrQueryBuilder.
   #
@@ -238,5 +228,26 @@ module SolrSearchBehavior
   #
   def solr_escape(terms)
     RSolr.solr_escape(terms).gsub(/\s+/, "\\ ")
+  end
+
+  # Create query using field parser. Equivalent to Lucene's field:"value" query.
+  # Inspired from ActiveFedora::SolrQueryBuilder.field_query.
+  def field_query(field, value)
+    "_query_:\"{!field f=#{field}}#{value}\""
+  end
+  
+  # Create query using complexphrase parser. This allows users to search with wildcard (*) and
+  # fuzzy (~) special characters.
+  def complexphrase_query(field, phrase)
+    return unless phrase
+    # if phrase is an empty string phrase should equal '""'
+    # currently, throws errors if string is empty
+    phrase = "\\\"#{phrase}\\\"" if phrase.match(/\s/)
+    "_query_:\"{!complexphrase inOrder=false}#{field}:#{phrase}\""
+  end
+
+  # Create query using join parser, similar to sql join.
+  def join_query(from, to, field, value)
+    "_query_:\"{!join from=#{from} to=#{to}}#{field}:\\\"#{value}\\\"\""
   end
 end

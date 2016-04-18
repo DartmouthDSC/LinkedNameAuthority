@@ -28,8 +28,8 @@ class WorksController < ApiController
     query_map = {
       'bibo:authorList' => "author_list_tesim:(#{params['bibo:authorList']})",
       'bibo:doi'        => "doi_tesi:\"#{params['bibo:doi']}\"",
-      'dc:title'        => "{!complexphrase}title_tesi:\"#{params['dc:title']}\"",
-      'bibo:abstract'   => "abstract_ss:\"#{params['bibo:abstract']}\"",
+      'dc:title'        => complexphrase_query('title_tesi', params['dc:title']),
+      'bibo:abstract'   => field_query('abstract_ss', params['bibo:abstract']),
       'org:member'      => "(({!join from=hasMember_ssim to=creator_id_ssi}{!join from=id to=Organization_ssim}label_tesi:\"#{params['org:member']}\") OR ({!join from=id to=creator_id_ssi}{!join from=id to=reportsTo_ssim}label_tesi:\"#{params['org:member']}\"))"
     }
     search_query = query_map.select{ |f, _| params[f] }.values.join(" AND ")

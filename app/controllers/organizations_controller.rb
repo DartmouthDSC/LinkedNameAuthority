@@ -9,11 +9,11 @@ class OrganizationsController < ApiController
     result = search_for_active_organizations(
       rows: MAX_ROWS,
       sort: 'label_ssi asc',
-      parents: true,
       page: page,
       raw: true
     )
     @organizations = result['response']['docs']
+    @organizations += parent_organizations(@organizations)
 
     respond_to do |format|
       response.headers['Link'] = link_headers(result['response']['numFound'], MAX_ROWS, page)
@@ -28,20 +28,20 @@ class OrganizationsController < ApiController
 
     # identifier exact match, pref_label and alt_label fuzzy(but not solr fuzzy)
     query_map = {
-      'skos:pref_label'       => complexphrase('label_tesi', params['skos:pref_label']),
-      'skos:alt_label'        => "alt_label_tesim:\"#{params['skos:alt_label']}\"",
-      'org:subOrganizationOf' => "{!join from=id to=subOrganizationOf_tesim}label_tesi:\"#{params['org:subOrganizationOf']}"
+      'skos:pref_label'       => complexphrase_query('label_tesi', params['skos:pref_label']),
+      'skos:alt_label'        => field_query('alt_label_tesim', params['skos:alt_label']),
+      'org:subOrganizationOf' => join_query('id', 'subOrganizationOf_ssim', 'label_tesi',
+                                      params['org:subOrganizationOf'])
     }
-    search_query = query_map.select{ |f, _| params[f] }.values.join(" AND ")
-    
+
     result = search_for_organizations(
       rows: MAX_ROWS,
-      q: search_query,
-      parents: true,
+      q: query_map.select{ |f, _| params[f] }.values.join(" AND "),
       page: page,
       raw: true
     )
     @organizations = result['response']['docs']
+    @organizations += parent_organizations(@organizations)
 
     respond_to do |f|
       response.headers['Link'] = link_headers(result['response']['numFound'], MAX_ROWS, page)
@@ -51,9 +51,10 @@ class OrganizationsController < ApiController
 
   private
 
-  def complexphrase(field, phrase)
-    return unless phrase
-    phrase = "\"#{phrase}\"" if phrase.match(/\s/)
-    "{!complexphrase inOrder=false}#{field}:#{phrase}"
+  # Returns parent organization that are not already part of the organizations listed.
+  def parent_organizations(orgs)
+    ids = orgs.map { |o| o['id'] }
+    parents = orgs.map{ |p| p['subOrganizationOf_ssim'] }.flatten.uniq.reject{ |p| ids.include?(p) }
+    search_for_ids(parents)
   end
 end
