@@ -1,8 +1,4 @@
-<li class="person" id="personList" vocab="http://xmlns.com/foaf/0.1/" typeof="Person">
-    <%= image_tag "unknownPerson.svg" %>
-    <div>
-    	<h1 property="name"></h1>
-    	<p property="title"></p>
-    	<p name="dateRange"></p>
-    </div>
-</a>
+<li class="person" vocab="http://xmlns.com/foaf/0.1/" typeof="Person">
+    <p property="name"></p>
+	<button class="fa fa-external-link-square fa-lg edit" title="view article" data-toggle="modal" data-target="#viewArticleModal"><span class="helpText">view this work</span></button>
+</li>

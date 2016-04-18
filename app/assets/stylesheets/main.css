@@ -502,6 +502,14 @@ footer{
     margin-right: auto;
     margin-bottom: 1em;
 }
+.sectionCard div.roundButton:hover{
+    margin-top: -.2em;
+    margin-bottom: 1.2em;
+}
+.sectionCard .roundButtonCircle:hover{
+    box-shadow: 0 .3em .3em rgba(0,0,0,.5);
+}
+
 .sectionCard .roundButtonCircle{
     width: 100%;
     height:0;
@@ -513,12 +521,9 @@ footer{
     overflow:hidden;
     
     background: #4679BD; 
-    box-shadow: 0 0 3px gray;
+    box-shadow: 0 .1em .1em rgba(0,0,0,.5);
 }
 
-.sectionCard .roundButtonCircle:hover{
-    background:#30588e;
-}
 .sectionCard i{
     margin-bottom: .1em;
 }
@@ -562,7 +567,7 @@ footer{
     font-size: 1.2em;
     font-weight: 600;
 }
-.sidebar ul, .details div ul{
+.sidebar ul, .details div ul, .record div ul{
     text-align: left;
     padding: 0;
     list-style: none;
@@ -593,20 +598,20 @@ footer{
     z-index: 1;
     display: inline-block;
 }
-.details div ul{
+.details div ul, .related ul{
     display: block;
-    font-size: 1em;
+    font-size: 1em !important; 
     border-left: .15em solid #5D4F3B;
     margin: 0 0 0 .75em;
     padding-top: .5em;
     z-index: 0;
 
 }
-.details div ul li{
+.details div ul li, .related ul li{
     padding-left: 0;
     /*align-items: center;*/
 }
-.details div ul li::before{
+.details div ul li::before , .related ul li::before{
     display: inline-block;
     width: 2.4em;
     flex: 0 0 auto;
@@ -614,6 +619,10 @@ footer{
     height: .6em;
     content: " ";
     border-bottom: .15em solid #5D4F3B;
+}
+.related ul li img{
+    max-height: 4em;
+    max-width: 4em;
 }
 
 #templates{
@@ -649,16 +658,16 @@ a.fa{
     flex-direction: column;
     margin: 0 0 .7em 0;
 }
-.details li {
+.details li, .related li {
     align-items: flex-start;
 }
-.details li:hover{
+.details li:hover, .related li:hover{
     background-color: rgba(210,218,214,.4);
 }
-.details li span {
+.details li span, .related li span {
     flex: 1 1 10em;
 }
-.details .iconList p span{
+.details .iconList p span. , .related p span{
     flex: 1 1 auto;
 }
 .details li button:first-of-type{

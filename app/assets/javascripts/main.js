@@ -76,25 +76,24 @@ LNA = {
 	},	
 
 	'loadOrg': function(data, textStatus, xhr){
-		var dataArray = $().LNAGateway().readLD.org(data);		
+		var dataArray = $().LNAGateway().readLD.org(data);	
 
 		//render org record
-		$('.crumbHere').children().first().text(dataArray['org:prefLabel']);
-		$('.record h3').text(dataArray['org:prefLabel']);
-		$('.orgAltLabels').text(dataArray['org:altLabel'].join(', '));
-		$('.orgParent').text(dataArray['org:subOrganizationOf']);
-		if(dataArray['owltime:hasEnd'] != ''){
-			$('.dateRange').text(dataArray['owltime:hasBeginning'] + '-' + dataArray['owltime:hasEnd'] );	
+		$('.crumbHere').children().first().text(dataArray.org['skos:prefLabel']);
+		$('.record h3').text(dataArray.org['skos:prefLabel']);
+		$('.orgAltLabels').text(dataArray.org['skos:altLabel'].join(', '));
+		$('.orgParent').text(dataArray.org['org:subOrganizationOf']);
+		if(dataArray.org['owltime:hasEnd'] != ''){
+			$('.orgDateRange').text(dataArray.org['owltime:hasBeginning'].substr(0,4) + '-' + dataArray.org['owltime:hasEnd'].substr(0,4) );	
 		} else {
-			$('.dateRange').text(dataArray['owltime:hasBeginning']);
+			$('.orgDateRange').text(dataArray.org['owltime:hasBeginning'].substr(0,4) + '-Present');
 		}
-		$('.dateRange').text(dataArray['org:subOrganizationOf']);
 
 		//clear all spinners
 		$('.sidebar .spinner, .affiliations .spinner').parent().remove();
 
 		//render OnlineAccounts
-		$.each(dataArray.accounts, function(k, v){ LNA.fillAccount($('.record .iconList'), v) });
+		$.each(dataArray.accounts, function(k, v){ LNA.fillAccount($('.orgData .iconList'), v) });
 
 		LNA.activateModals();
 	},
@@ -103,11 +102,10 @@ LNA = {
 		var dataArray = $().LNAGateway().readLD.persons(data);		
 
 		//clear all spinners
-		$('.sidebar .spinner, .affiliations .spinner').parent().remove();
+		$('.related .spinner').parent().remove();
 
 		//render Person list
-		console.log(data);
-		$.each(dataArray.persons, function(k, v){ LNA.fillPersons($('.details .iconList'), v) });
+		$.each(dataArray.persons, function(k, v){ LNA.fillPersons($('.related .iconList'), v) });
 
 		LNA.activateModals();
 	},	
@@ -189,14 +187,9 @@ LNA = {
 
 	'fillPersons': function(parent, data){
 		var node = $('#templates .person').clone();
-		node.find('h1').text(person['foaf:givenName']+' '+person['foaf:familyName']);
-		// node.attr('href', person['@id']);
-		if(person['foaf:title']!=''){
-			node.find('p[property="title"]').text(person['foaf:title']+', '+person['orgLabel']);
-		} else {
-			node.find('p[property="title"]').text(person['orgLabel']);
-		}
-		// node.children('p[name="dateRange"]').text(person['foaf:title']);
+		node.find('[property="name"]').text(data['foaf:givenName']+' '+data['foaf:familyName']);
+		node.find('button').click(function(e){ LNA.openLink(e, data['@id']) });
+
 		$(parent).append(node);
 	},
 

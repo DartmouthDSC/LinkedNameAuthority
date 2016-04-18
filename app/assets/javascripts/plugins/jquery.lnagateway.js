@@ -182,6 +182,7 @@
 	    	if(typeof page === "undefined") page = 1;
 	    	var searchTerm = {'foaf:name': term};
 	    	this.submitQuery('findPersons', searchTerm, callback, page);
+	    	return false;
 	    }, 	    
 
 	    //extendForm is called on all forms that have data-lna-query set on init
@@ -320,7 +321,12 @@
 	    		return data;
 	    	},
 	    	'org': function(xhrData){
-	    		return xhrData;
+	    		var data = {'org': {}, 'accounts': []};
+	    		$.each(xhrData['@graph'], function(i, v){
+	    			if(v['@type']=='org:Organization') data.org = v;
+	    			if(v['@type']=='foaf:OnlineAccount') data.accounts.push(v)
+	    		});
+	    		return data;
 	    	},
     		'personWorks': function(xhrData){
 	    		return xhrData['@graph'];

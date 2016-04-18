@@ -15,13 +15,8 @@
                     <p class="orgParent"></p>
                     <ul class="iconList">
                     </ul>
-
-<!--                     <ul class="iconList">
-                        <li><span class='spinner'></span></li>
-                    </ul>
-                    <button title="add affiliation" id="newAffiliation" data-toggle="modal" data-target="#newAffiliationModal"><span class="add"></span>Add New Affiliation</button> -->
                 </div>
-                <div class="orgPersons">
+                <div class="related">
                 <h1>Related Primary Appointments</h1>                    
                     <ul class="iconList">
                         <li><span class='spinner'></span></li>
@@ -30,15 +25,15 @@
             </section>
         </main>
         <section id="templates">
-        <%= render "shared/templates/lists_person" %>
-        <%= render "shared/templates/lists_account" %>
+            <%= render "shared/templates/lists_person" %>
+            <%= render "shared/templates/lists_account" %>
         </section>
         <section id="modals">
-        <%= render "shared/modals/new_account" %>
+            <%= render "shared/modals/new_account" %>
         </section>        
 		<script>
         $(document).ready(function(){
-            // $().LNAGateway().loadOrg(LNA.loadOrg, "<%= @short_id %>");
+            $().LNAGateway().loadOrg(LNA.loadOrg, "<%= @short_id %>");
             $().LNAGateway().findOrgPersons(LNA.loadOrgPersons, "<%= @short_id %>");
         });
         </script>
