@@ -19,7 +19,7 @@
 	var Plugin = function (options){
 	    //defaults
 	    this.defaults = {
-	      'baseURL': 'https://jb.dac.dartmouth.edu/lna/',    //trailing slash required
+	      'baseURL': _base_url,    							 //defined in config or elsewhere, trailing slash required. In view, for LNA
 	      'lnaVersion': '0.2.0',
 	      'authenticity_token': true                         //whether or not to add auth token field to all queries
 	    };
