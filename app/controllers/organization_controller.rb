@@ -3,8 +3,8 @@ class OrganizationController < CrudController
   
   PARAM_TO_MODEL = {
     'org:identifier'       => 'hr_id',
-    'skos:pref_label'      => 'label',
-    'skos:alt_label'       => 'alt_label',
+    'skos:prefLabel'      => 'label',
+    'skos:altLabel'       => 'alt_label',
     'owltime:hasBeginning' => 'begin_date',
     'vcard:postal-box'     => 'hinman_box',
     'org:purpose'          => 'kind'
@@ -79,9 +79,9 @@ class OrganizationController < CrudController
   private
 
   def organization_params
-    params.permit('id', 'org:identifier', 'skos:pref_label', 'owltime:hasBeginning', 
+    params.permit('id', 'org:identifier', 'skos:prefLabel', 'owltime:hasBeginning', 
                   'lna:historicPlacement', 'owltime:hasEnd', 'vcard:postal-box',
-                  'org:purpose', 'authenticity_token', 'skos:alt_label' => [],
+                  'org:purpose', 'authenticity_token', 'skos:altLabel' => [],
                   'org:hasSubOrganization' => [], 'org:subOrganizationOf' => [])
   end
     

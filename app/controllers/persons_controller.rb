@@ -9,7 +9,7 @@ class PersonsController < ApiController
     result = search_for_persons(
       rows: MAX_ROWS,
       sort: 'family_name_ssi asc, given_name_ssi asc',
-      raw: true,
+      docs_only: false,
       page: @page
     )
     @persons = result['response']['docs']
@@ -28,18 +28,19 @@ class PersonsController < ApiController
 
     # Search query for each field in this search
     query_map = {
-      'foaf:name'       => "full_name_tesi:\"#{params['foaf:name']}\"",
-      'foaf:givenName'  => "given_name_ssi:\"#{params['foaf:givenName']}\"",
-      'foaf:familyName' => "family_name_ssi:\"#{params['foaf:familyName']}\"",
-      'org:member'      => "({!join from=id to=reportsTo_ssim}label_tesi:\"#{params['org:member']}\")"
+      'foaf:name'       => complexphrase_query('full_name_tesi', params['foaf:name']),
+      'foaf:givenName'  => field_query('given_name_tesi', params['foaf:givenName']),
+      'foaf:familyName' => field_query('family_name_tesi', params['foaf:familyName']),
+      'org:member'      => join_query('id', 'reportsTo_ssim', 'label_tesi', params['org:member'])
+      # of if org:member matches the uri, have to see if the uri is a uri and if it is get the if out otherwise don't do anything to the string
+#      'org:member'      => "({!join from=id to=reportsTo_ssim}label_tesi:\"#{params['org:member']}\")"
     }
-    search_query = query_map.select { |f, _| params[f] }.values.join(" AND ")
     
     result = search_for_persons(
       rows: MAX_ROWS,
-      q: search_query,
+      q: query_map.select { |f, _| params[f] }.values.join(" AND "),
       page: page,
-      raw: true
+      docs_only: false
     )
     @persons = result['response']['docs']
     @organizations = get_primary_orgs(@persons)

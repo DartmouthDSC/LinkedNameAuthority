@@ -10,7 +10,7 @@ class OrganizationsController < ApiController
       rows: MAX_ROWS,
       sort: 'label_ssi asc',
       page: page,
-      raw: true
+      docs_only: false
     )
     @organizations = result['response']['docs']
     @organizations += parent_organizations(@organizations)
@@ -38,7 +38,7 @@ class OrganizationsController < ApiController
       rows: MAX_ROWS,
       q: query_map.select{ |f, _| params[f] }.values.join(" AND "),
       page: page,
-      raw: true
+      docs_only: false
     )
     @organizations = result['response']['docs']
     @organizations += parent_organizations(@organizations)

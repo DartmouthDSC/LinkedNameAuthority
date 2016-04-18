@@ -24,11 +24,11 @@ module Lna
     end
 
     property :given_name, predicate: ::RDF::Vocab::FOAF.givenName, multiple: false do |index|
-      index.as :stored_sortable
+      index.as :stored_searchable
     end
     
     property :family_name, predicate: ::RDF::Vocab::FOAF.familyName, multiple: false do |index|
-      index.as :stored_sortable
+      index.as :stored_searchable
     end
     
     property :title, predicate: ::RDF::Vocab::FOAF.title, multiple: false do |index|
@@ -79,12 +79,14 @@ module Lna
       self.mbox_sha1sum = (e.nil?) ? nil : Digest::SHA1.hexdigest(e)
     end
 
-    def to_solr
-      solr_doc = super
-      if collections.size > 0
-        Solrizer.set_field(solr_doc, 'collection_id', collections.first.id, :stored_sortable)
+    def to_solr(solr_doc={})
+      super.tap do |solr_doc|
+        if collections.size > 0
+          Solrizer.set_field(solr_doc, 'collection_id', collections.first.id, :stored_sortable)
+          Solrizer.set_field(solr_doc, 'given_name', given_name, :stored_sortable)
+          Solrizer.set_field(solr_doc, 'family_name', family_name, :stored_sortable)
+        end
       end
-      solr_doc
     end
     
     private

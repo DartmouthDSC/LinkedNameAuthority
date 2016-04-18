@@ -11,19 +11,29 @@ module SolrSearchBehavior
   #
   # @param params [Hash] parameters to be given to Solr API
   # @param only_one [Boolean] flag to limit results to only one
+  # @param docs_only [Boolean] flag to send entire response or just documents
   # @return [Hash, RSolr::Response::PaginatedDocSet] document(s) returned by search
-  def solr_search(params, only_one = false)
-    raise 'only_one flag cannot be used in cujunction with raw param' if params[:raw] && only_one
-    
-    logger.debug("Solr params: #{params.to_s}")
-    results = ActiveFedora::SolrService.query(params[:q], params)
+  def solr_search(params, only_one = false, docs_only = true)
+    result = ActiveFedora::SolrService.get(params[:q], params)
+    logger.debug("Solr params: #{result['responseHeader']['params']}")
 
-    if only_one && results.count == 1
-      results.first
+    docs = result['response']['docs']
+
+    if only_one && docs.count == 1
+      if docs_only
+        docs.first
+      else
+        result['response']['docs'] = result['response']['docs'].first
+        result
+      end
     elsif only_one
       not_found
     else
-      results
+      if docs_only
+        docs
+      else
+        result
+      end
     end
   end
 
@@ -68,17 +78,26 @@ module SolrSearchBehavior
     results
   end
   
-  # Searches Solr for a Lna::Person with the given id.
-  # If an id is given, and there are no results the not_found method is called.
+  # Searches Solr for a Lna::Person with the given id or query. Cannot pass in both a query and
+  # and id. If an id is given, only one result is returned. If there are no results the not_found
+  # method is called.
   #
+  # @param id [String] id of person searching for
   # @param (see #search_with_model_filter)
-  # if a query is given it will override the id query
   def search_for_persons(id: nil, q: nil, **args)
-    q = (id) ? [['id', id]] : q
-    search_with_model_filter(Lna::Person, q: q, only_one: id != nil, **args)
+    raise ':q parameter cannot be used in conjunction with :id' if id && q
+
+    if id
+      q = [['id', id]]
+      args[:only_one] = true
+    end
+
+    args[:q] = q
+    
+    search_with_model_filter(Lna::Person, **args)
   end
   
-  # Search for account(s). If id is given only one result is returned. If only a person_id
+  # Search for account(s). If id or orcid is given only one result is returned. If only a person_id
   # is given then all the accounts for that person are returned.
   #
   # @param id [String]
@@ -90,8 +109,10 @@ module SolrSearchBehavior
     q << ['id', id] if id
     q << ['title_tesi', 'ORCID'] if orcid
 
-    only_one = orcid || ( id != nil )
-    search_with_model_filter(Lna::Account, q: q, only_one: only_one, **args)
+    args[:q] = q
+    args[:only_one] = orcid || id
+    
+    search_with_model_filter(Lna::Account, **args)
   end
 
   # Searches for an account of the person given that has a "ORCID" as its title.
@@ -102,22 +123,29 @@ module SolrSearchBehavior
     search_for_accounts(account_holder_id: person_id, orcid: true)
   end
 
-  # Search for a memberships based on id and/or person_id.
+  # Search for a memberships based on id and/or person_id. If an id is passed in only one result
+  # will be retuned.
   # 
   # @param id [String]
   # @param person_id [String]
   def search_for_memberships(id: nil, person_id: nil, **args)
     q = []
     q << [ 'hasMember_ssim', person_id ] if person_id
-    q << [ 'id', id ] if id
+
+    if id
+      q << [ 'id', id ]
+      args[:only_one] = true
+    end
+
+    args[:q] = q
     
-    search_with_model_filter(Lna::Membership, q: q, only_one: id != nil, **args)
+    search_with_model_filter(Lna::Membership, **args)
   end
 
-  # Search for a works based on id, collection id, start_date or any combination.
+  # Search for a works based on id, collection id, start_date or any combination. If an id
+  # is passed in only one result will be returned.
   # 
   #
-  # if query is given id and collection id are ignored.
   def search_for_works(id: nil, collection_id: nil, start_date: nil, q: nil, **args)
     raise ':q cannot be used in conjunction with :id or :collection_id' if (id || collection_id) && q
     if q == nil
@@ -132,17 +160,26 @@ module SolrSearchBehavior
       q << " AND" unless q.blank?
       q << " date_dtsi:[#{date} TO *]"
     end
+
+    args[:only_one] = true if id
+    args[:q] = q
     
-    search_with_model_filter(Lna::Collection::Document, q: q, only_one: id != nil, **args)
+    search_with_model_filter(Lna::Collection::Document, **args)
   end
 
   def search_for_licenses(id: nil, document_id: nil, **args)
     q = []
-    q << ['id', id] if id
     q << ['license_ref_ssim', document_id] if document_id
 
+    if id
+      q << ['id', id]
+      args[:only_one] = true
+    end
+
+    args[:q] = q
+    
     search_with_model_filter([Lna::Collection::FreeToRead, Lna::Collection::LicenseReference],
-                             q: q, only_one: id != nil, **args)
+                             **args)
   end
 
   # Search for active organization only.
@@ -162,9 +199,14 @@ module SolrSearchBehavior
     models = [Lna::Organization]
     models << Lna::Organization::Historic if historic
 
-    q = [['id', id]] if id
+    if id
+      q = [['id', id]]
+      args[:only_one] = true
+    end
+
+    args[:q] = q
     
-    search_with_model_filter(models, q: q, only_one: id != nil, **args)
+    search_with_model_filter(models, **args)
   end
   
   # Search solr with a model filter. This method allows for many solr parameters that are passed
@@ -180,7 +222,7 @@ module SolrSearchBehavior
   # @param sort [String, nil]  sort solr parameter 
   # @param page [Integer, nil] page of results to be displayed.
   def search_with_model_filter(model, q: nil, only_one: false, rows: DEFAULT_MAX_ROWS, sort: nil,
-                               page: nil, **args)
+                               page: nil, docs_only: true, **args)
     raise ArgumentError, 'Cannot calculate start param without rows.' if page && !rows
     
     q = '*:*' if q.blank?
@@ -192,7 +234,7 @@ module SolrSearchBehavior
     args[:sort] = sort if sort
     args[:start] = (rows * (page - 1)) + 1 if (rows && page && page > 1)
     
-    solr_search(args, only_one)
+    solr_search(args, only_one, docs_only)
   end
 
   private
@@ -207,20 +249,6 @@ module SolrSearchBehavior
     class_name = [class_name] unless class_name.is_a? Array
     class_name.map { |c| "has_model_ssim:\"#{c.to_s}\"" }.join(' ')
   end
-
-  # 
-  #
-  # @private
-  #
-  # @param field_array [Array<Array<String, String>>]
-  # @param join_with [String]
-  # @return [String] 
-  # def field_query(field_array, join_with = " AND ")
-  #   field_array.map { |i| "#{i[0]}:#{solr_escape(i[1])}" }.join(join_with)
-  # end
-  # def field_query(*args)
-  #   ActiveFedora::SolrQueryBuilder.construct_query(*args)
-  # end
 
   # Method taken from ActiveFedora::SolrQueryBuilder.
   #
