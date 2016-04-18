@@ -36,7 +36,7 @@ class OrganizationsController < ApiController
 
     result = search_for_organizations(
       rows: MAX_ROWS,
-      q: query_map.select{ |f, _| params[f] }.values.join(" AND "),
+      q: query_map.select{ |f, _| !params[f].blank? }.values.join(" AND "),
       page: page,
       docs_only: false
     )

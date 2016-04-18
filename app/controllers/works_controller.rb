@@ -37,7 +37,7 @@ class WorksController < ApiController
     result = search_for_works(
       start_date: params[:start_date] || nil,
       rows:       MAX_ROWS,
-      q:          query_map.select{ |f, _| params[f] }.values.join(" AND "),
+      q:          query_map.select{ |f, _| !params[f].blank? }.values.join(" AND "),
       page:       page,
       docs_only:  false
     )

@@ -33,13 +33,12 @@ class PersonsController < ApiController
       'foaf:familyName' => field_query('family_name_tesi', params['foaf:familyName']),
       'org:member'      => join_query('id', 'reportsTo_ssim', 'label_tesi', params['org:member'])
       # of if org:member matches the uri, have to see if the uri is a uri and if it is get the if out otherwise don't do anything to the string
-#      'org:member'      => "({!join from=id to=reportsTo_ssim}label_tesi:\"#{params['org:member']}\")"
     }
     
     result = search_for_persons(
-      rows: MAX_ROWS,
-      q: query_map.select { |f, _| params[f] }.values.join(" AND "),
-      page: page,
+      rows:      MAX_ROWS,
+      q:         query_map.select { |f, _| !params[f].blank? }.values.join(" AND "),
+      page:      page,
       docs_only: false
     )
     @persons = result['response']['docs']
