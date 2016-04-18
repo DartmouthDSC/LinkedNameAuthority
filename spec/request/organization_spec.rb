@@ -4,6 +4,7 @@ require 'airborne'
 RSpec.describe "Organization API", type: :request, https: true do
   before :all do
     @org = FactoryGirl.create(:library)
+    FactoryGirl.create(:orcid_for_org, account_holder: @org)
   end
 
   shared_context 'get organization id' do
@@ -24,7 +25,7 @@ RSpec.describe "Organization API", type: :request, https: true do
 
       context 'response body' do
         it 'contains three children in @graph' do
-          expect_json_sizes(:@graph => 3)
+          expect_json_sizes(:@graph => 4)
         end
         
         it 'contains @id' do
@@ -59,6 +60,11 @@ RSpec.describe "Organization API", type: :request, https: true do
 
         it 'contains hinman box' do
           expect_json('@graph.0', :'vcard:postal-box' => @org.hinman_box)
+        end
+
+        it 'contains account' do
+          expect_json('@graph.0', :'foaf:account' =>
+                                   ['#' + FedoraID.shorten(@org.accounts.first.id)])
         end
       end
     end
