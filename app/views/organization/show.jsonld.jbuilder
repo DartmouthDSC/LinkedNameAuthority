@@ -23,7 +23,7 @@ json.set! '@graph' do
   end
 
   json.array! @accounts do |account|
-    json.partial! 'person/account/account', account: account
+    json.partial! 'account/account', account: account
   end
                             
   json.array! @change_events do |event|
