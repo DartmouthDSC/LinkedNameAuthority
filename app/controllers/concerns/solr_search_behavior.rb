@@ -16,7 +16,7 @@ module SolrSearchBehavior
   def solr_search(params, only_one = false, docs_only = true)
     result = ActiveFedora::SolrService.get(params[:q], params)
     logger.debug("Solr params: #{result['responseHeader']['params']}")
-
+    
     docs = result['response']['docs']
 
     if only_one && docs.count == 1
@@ -29,11 +29,7 @@ module SolrSearchBehavior
     elsif only_one
       not_found
     else
-      if docs_only
-        docs
-      else
-        result
-      end
+      (docs_only) ? docs : result
     end
   end
 
@@ -73,9 +69,7 @@ module SolrSearchBehavior
   def search_for_ids(ids)
     query = ActiveFedora::SolrQueryBuilder.construct_query_for_ids(ids)
     logger.debug("Solr ids query: #{query}")
-    results = ActiveFedora::SolrService.query(query, rows: DEFAULT_MAX_ROWS)
-    logger.debug(results.inspect)
-    results
+    ActiveFedora::SolrService.query(query, rows: DEFAULT_MAX_ROWS)
   end
   
   # Searches Solr for a Lna::Person with the given id or query. Cannot pass in both a query and
@@ -260,20 +254,26 @@ module SolrSearchBehavior
 
   # Create query using field parser. Equivalent to Lucene's field:"value" query.
   # Inspired from ActiveFedora::SolrQueryBuilder.field_query.
+  #
+  # @param field [String] solr field
+  # @param phrase [String] search phrase
   def field_query(field, value)
     "_query_:\"{!field f=#{field}}#{value}\""
   end
   
-  # Create query using complexphrase parser. This allows users to search with wildcard (*) and
-  # fuzzy (~) special characters.
-  def complexphrase_query(field, phrase)
-    return unless phrase
-    # if phrase is an empty string phrase should equal '""'
-    # currently, throws errors if string is empty
-    phrase = "\\\"#{phrase}\\\"" if phrase.match(/\s/)
-    "_query_:\"{!complexphrase inOrder=false}#{field}:#{phrase}\""
+  # Creates queries using the lucene parser. This allows users to search with wildcard(*) and
+  # fuzzy (~) special characters. Words in phrases are ANDed or ORed depending on the value of
+  # operation given.
+  #
+  # @param field [String] solr field
+  # @param phrase [String] search term
+  # @param op [String] operation to be used when combining words, can be OR or AND
+  def grouping_query(field, phrase, op = 'AND')
+    raise 'op must be AND or OR' unless ['AND', 'OR'].include? op
+    
+    "_query_:\"{!lucene q.op=#{op}}#{field}:(#{phrase})\""
   end
-
+  
   # Create query using join parser, similar to sql join.
   def join_query(from, to, field, value)
     "_query_:\"{!join from=#{from} to=#{to}}#{field}:\\\"#{value}\\\"\""

@@ -67,6 +67,19 @@ class ApiController < ActionController::Base
       params[p] = FedoraID.lengthen(params[p]) if params[p].present?
     end
   end
+
+  # Converts the uri given to a full fedora id, if its a valid organization uri. This
+  # method is not responsible for checking that the organization is present in the fedora
+  # store. If the uri is not a valid organization uri the same uri is returned, unchanged.
+  def org_uri_to_fedora_id(uri)
+    if uri
+      if match = %r{^#{Regexp.escape(root_url)}organization/([a-zA-Z0-9-]+$)}.match(uri)
+        params['org:organization'] = FedoraID.lengthen(match[1])
+      else
+        uri
+      end
+    end
+  end  
   
   def link_headers(total, rows, page)
     links = { first: 1, last: total.fdiv(rows).ceil }

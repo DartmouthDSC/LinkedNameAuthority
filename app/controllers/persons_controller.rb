@@ -1,6 +1,7 @@
 class PersonsController < ApiController
   skip_before_action :verify_authenticity_token, only: [:index, :search]
   before_action :default_to_first_page, only: [:index, :search]
+  before_action :convert_org_to_fedora_id, only: :search
 
   # GET /persons
   def index
@@ -28,11 +29,10 @@ class PersonsController < ApiController
 
     # Search query for each field in this search
     query_map = {
-      'foaf:name'       => complexphrase_query('full_name_tesi', params['foaf:name']),
-      'foaf:givenName'  => field_query('given_name_tesi', params['foaf:givenName']),
-      'foaf:familyName' => field_query('family_name_tesi', params['foaf:familyName']),
-      'org:member'      => join_query('id', 'reportsTo_ssim', 'label_tesi', params['org:member'])
-      # of if org:member matches the uri, have to see if the uri is a uri and if it is get the if out otherwise don't do anything to the string
+      'foaf:name'       => grouping_query('full_name_tesi', params['foaf:name']),
+      'foaf:givenName'  => grouping_query('given_name_tesi', params['foaf:givenName']),
+      'foaf:familyName' => grouping_query('family_name_tesi', params['foaf:familyName']),
+      'org:member'      => "(#{join_query('id', 'reportsTo_ssim', 'label_tesi', params['org:member'])} OR #{field_query('reportsTo_ssim', params['org:member'])})"
     }
     
     result = search_for_persons(
@@ -56,5 +56,9 @@ class PersonsController < ApiController
   def get_primary_orgs(persons)
     org_ids = persons.map { |p| p['reportsTo_ssim'].first }
     search_for_ids(org_ids.uniq)
+  end
+
+  def convert_org_to_fedora_id
+    params['org:member'] = org_uri_to_fedora_id(params['org:member'])
   end
 end
