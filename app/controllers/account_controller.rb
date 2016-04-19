@@ -12,7 +12,7 @@ class AccountController < CrudController
     acnt_holder = (@request_path == 'person') ?
                     search_for_persons(id: params[:person_id]) :
                     search_for_organizations(id: params[:organization_id])
-                                   
+
     # Create account.
     attributes = params_to_attributes(account_params, account_holder_id: acnt_holder['id'])
     a = Lna::Account.new(attributes)
@@ -63,6 +63,6 @@ class AccountController < CrudController
 
   # get whether the request is for a person or an organization
   def get_request_path
-    @request_path = request.path.split('/')[1]
+    @request_path = request.original_url.gsub(root_url, '').split('/')[0]
   end
 end
