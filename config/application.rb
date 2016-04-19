@@ -29,5 +29,8 @@ module HydraTest
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
+
+    # Adding Vary header to ensure correct content type headers are used.
+    config.action_dispatch.default_headers.merge!('Vary' => 'Content-Type')
   end
 end
