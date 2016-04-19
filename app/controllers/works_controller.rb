@@ -9,9 +9,10 @@ class WorksController < ApiController
     result = search_for_works(
       start_date: params[:start_date] || nil,
       rows: MAX_ROWS,
-      sort: 'date_dtsi desc, author_list_ssi asc',
+      sort: 'date_dtsi desc',
       page: page,
-      raw: true)
+      docs_only: false
+    )
     @works = result['response']['docs']
     
     respond_to do |f|
@@ -26,20 +27,19 @@ class WorksController < ApiController
 
     # TO DO: Search needs to be tested more throughly.
     query_map = {
-      'bibo:authorList' => "author_list_tesim:(#{params['bibo:authorList']})",
-      'bibo:doi'        => "doi_tesi:\"#{params['bibo:doi']}\"",
-      'dc:title'        => "{!complexphrase}title_tesi:\"#{params['dc:title']}\"",
-      'bibo:abstract'   => "abstract_ss:\"#{params['bibo:abstract']}\"",
+      'bibo:authorList' => complexphrase_query('author_list_tesim', params['bibo:authorList']),
+      'bibo:doi'        => field_query('doi_tesi', params['bibo:doi']),
+      'dc:title'        => complexphrase_query('title_tesi', params['dc:title']),
+      'bibo:abstract'   => field_query('abstract_tesi', params['bibo:abstract']),
       'org:member'      => "(({!join from=hasMember_ssim to=creator_id_ssi}{!join from=id to=Organization_ssim}label_tesi:\"#{params['org:member']}\") OR ({!join from=id to=creator_id_ssi}{!join from=id to=reportsTo_ssim}label_tesi:\"#{params['org:member']}\"))"
     }
-    search_query = query_map.select{ |f, _| params[f] }.values.join(" AND ")
     
     result = search_for_works(
       start_date: params[:start_date] || nil,
-      rows: MAX_ROWS,
-      q: search_query,
-      page: page,
-      raw: true
+      rows:       MAX_ROWS,
+      q:          query_map.select{ |f, _| !params[f].blank? }.values.join(" AND "),
+      page:       page,
+      docs_only:  false
     )
 
     @works = result['response']['docs']

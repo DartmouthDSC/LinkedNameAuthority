@@ -46,10 +46,10 @@ module Lna
         date_setter('begin_date', d)
       end
 
-      def to_solr
-        solr_doc = super
-        Solrizer.set_field(solr_doc, 'label', label, :stored_sortable)
-        solr_doc
+      def to_solr(solr_doc={})
+        super.tap do |solr_doc|
+          Solrizer.set_field(solr_doc, 'label', label, :stored_sortable)
+        end
       end
  
       def self.where(values)
