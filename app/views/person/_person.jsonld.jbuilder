@@ -3,11 +3,7 @@
 
 json.set! '@id', person_url(id: FedoraID.shorten(person['id']))
 json.set! '@type', 'foaf:Person'
-
-if full
-  json.set! 'foaf:name', person['full_name_tesi']
-end
-
+json.set! 'foaf:name', person['full_name_tesi']
 json.set! 'foaf:givenName', person['given_name_tesi']
 json.set! 'foaf:familyName', person['family_name_tesi']
 json.set! 'foaf:title', person['title_ss'] || ''
