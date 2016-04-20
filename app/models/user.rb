@@ -5,15 +5,12 @@ class User < ActiveRecord::Base
   # Connects this user object to Role-management behaviors. 
   include Hydra::RoleManagement::UserRoles
 
-  # Connects this user object to Blacklights Bookmarks.
-  # include Blacklight::User
+  validates_presence_of :name, :netid
+  validates_uniqueness_of :netid # If we support more providers, this will have to be removed.
+  validates_uniqueness_of :uid, allow_nil: true
 
-  validates :name, :netid, :provider, :realm,  presence: true
-  validates :uid, :netid, uniqueness: true
-
-  # Removed default devise modules except for trackable and added the
-  # omniauthable module.
-  devise :trackable, :omniauthable, :omniauth_providers => [:cas]
+  # Removed default devise modules except for trackable and added the omniauthable module.
+  devise :trackable, :omniauthable, omniauth_providers: [:cas]
 
   # Method added by Blacklight; Blacklight uses #to_s on your user class to get
   # a user-displayable login/identifier for the account.
@@ -21,17 +18,25 @@ class User < ActiveRecord::Base
     name
   end
 
-  # User created or updated based on CAS information provided by Dartmouth Authentication.
   def self.from_omniauth(auth)
-    # If user is already in database update fields, otherwise initialize a new
-    # record with the given information.
-    user = User.find_or_initialize_by(provider: auth.provider, netid: auth.extra.netid)
-    user.realm = auth.extra.user.split(/@/)[1].downcase
-    user.name = auth.info.name
-    user.affil = auth.extra.affil
-    user.uid = "#{user.netid}@#{user.realm}"
-    user.save
+    # User created or updated based on CAS information provided by Dartmouth Authentication.
+    if auth.provider.eql?(:cas)
+      user = User.find_by(provider: auth.provider, netid: auth.extra.netid) ||
+             User.find_or_initialize_by(netid: auth.extra.netid) unless user
+
+      user.provider = auth.provider
+      user.realm    = auth.extra.user.split(/@/)[1].downcase
+      user.name     = auth.info.name
+      user.affil    = auth.extra.affil
+      user.uid      = "#{user.netid}@#{user.realm}"
+      user.save
+    else
+      raise NotImplementedError, 'Currently, only CAS authentication is provided.'
+    end
     user
   end
 
+  def netid=(netid)
+    super(netid.downcase)
+  end
 end
