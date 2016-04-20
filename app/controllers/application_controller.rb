@@ -5,9 +5,9 @@ class ApplicationController < ActionController::Base
     params[resource] &&= send(method) if respond_to?(method, true)
   end
   # Adds a few additional behaviors into the application controller
-  include Blacklight::Controller
+  # include Blacklight::Controller
   include Hydra::Controller::ControllerBehavior
-  layout 'blacklight'
+  layout 'lna'
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -20,7 +20,19 @@ class ApplicationController < ActionController::Base
     new_user_session_path
   end
 
+  def index()
+  
+  end
+
   def after_sign_out_path_for(resource_or_scope)
-    "https://login.dartmouth.edu/logout.php?app=#{I18n.t 'blacklight.application_name'}&url=#{root_url}"
+    "https://login.dartmouth.edu/logout.php?app=LNA&url=#{root_url}"
+  end
+
+  def after_sign_in_path_for(resource)
+    request.env['omniauth.origin'] || stored_location_for(resource) || root_path
+  end
+
+  def not_found
+    raise ActionController::RoutingError.new('Not Found')
   end
 end

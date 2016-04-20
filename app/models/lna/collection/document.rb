@@ -2,6 +2,9 @@ module Lna
   class Collection
     class Document < ActiveFedora::Base
       include DateHelper
+
+      has_many :license_refs, class_name: 'Lna::Collection::LicenseReference', dependent: :destroy
+      has_many :free_to_read_refs, class_name: 'Lna::Collection::FreeToRead', dependent: :destroy
       
       # is reviewed by many documents
       has_many :reviews, class_name: 'Lna::Collection::Document', dependent: :destroy,
@@ -11,7 +14,7 @@ module Lna
       belongs_to :review_of, class_name: 'Lna::Collection::Document',
                  predicate: ::RDF::Vocab::BIBO.reviewOf
       
-      belongs_to :collection, class_name: 'Lna::Collection', predicate: ::RDF::DC.isPartOf
+      belongs_to :collection, class_name: 'Lna::Collection', predicate: ::RDF::Vocab::DC.isPartOf
 
       # Assures that a document is part of a collection or a review of a document, but not both.
       validate :part_of_collection_or_review_of
@@ -20,19 +23,20 @@ module Lna
             
       type ::RDF::Vocab::BIBO.Document
       
-      property :author_list, predicate: ::RDF::Vocab::BIBO.authorList, multiple: false do |index|
+      property :author_list, predicate: ::RDF::Vocab::BIBO.authorList, multiple: true do |index|
+        index.as :multiple_stored_searchable
+      end
+      
+      property :publisher, predicate: ::RDF::Vocab::DC.publisher, multiple: false do |index|
+        index.as :displayable
+      end
+      
+      property :date, predicate: ::RDF::Vocab::DC.date, multiple: false do |index|
+        index.type :date
         index.as :stored_searchable
       end
       
-      property :publisher, predicate: ::RDF::DC.publisher, multiple: false do |index|
-        index.as :displayable
-      end
-      
-      property :date, predicate: ::RDF::DC.date, multiple: false do |index|
-        index.as :displayable
-      end
-      
-      property :title, predicate: ::RDF::DC.title, multiple: false do |index|
+      property :title, predicate: ::RDF::Vocab::DC.title, multiple: false do |index|
         index.as :stored_searchable
       end
       
@@ -61,17 +65,43 @@ module Lna
       end
       
       property :canonical_uri, predicate: ::RDF::Vocab::BIBO.uri do |index|
-        index.as :displayable
+        index.as :multiple_displayable
       end
 
       property :doi, predicate: ::RDF::Vocab::BIBO.doi, multiple: false do |index|
         index.as :stored_searchable
       end
 
+      property :abstract, predicate: ::RDF::Vocab::BIBO.abstract, multiple: false do |index|
+        index.as :stored_searchable
+      end
+
+      property :bibliographic_citation, predicate: ::RDF::Vocab::DC.bibliographicCitation,
+               multiple: false do |index|
+        index.as :displayable
+      end
+
+      property :elements_id, predicate: Vocabs::LNA.elementsID, multiple: false do |index|
+        index.as :stored_searchable
+      end
+      
       def date=(d)
+        if d.is_a? String
+          if match = /(^\d{4}$)/.match(d)
+            d = "01-01-#{match[1]}"
+          end
+        end
         date_setter('date', d)
       end
 
+      def to_solr(solr_doc={})
+        super.tap do |solr_doc|
+          # Needed for sorting by author list.
+          Solrizer.set_field(solr_doc, 'author_list', author_list, :stored_sortable)
+          Solrizer.set_field(solr_doc, 'creator_id', collection.person.id, :stored_sortable) if collection
+        end
+      end
+      
       private
 
       # Document must be part of a collection or be a review of a document.

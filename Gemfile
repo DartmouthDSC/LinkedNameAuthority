@@ -1,71 +1,58 @@
 source 'https://rubygems.org'
 
-# Main hydra gem.
-gem 'hydra', '9.1.0.rc1'
-
-# Hydra Role Mangement gem.
-gem 'hydra-role-management'
-
-# Oracle gem.
-gem 'ruby-oci8'
-gem 'activerecord-oracle_enhanced-adapter', '~> 1.6.0'
-
-gem 'rdf-vocab'
-
-# Used to run cron jobs.
-gem 'whenever'
-
-# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.4'
-# Use sqlite3 as the database for Active Record
-gem 'sqlite3'
-# Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0'
-# Use Uglifier as compressor for JavaScript assets
-gem 'uglifier', '>= 1.3.0'
-# Use CoffeeScript for .coffee assets and views
-gem 'coffee-rails', '~> 4.1.0'
-# See https://github.com/sstephenson/execjs#readme for more supported runtimes
- gem 'therubyracer', platforms: :ruby
 
-# Use jquery as the JavaScript library
-gem 'jquery-rails'
-# Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
-gem 'turbolinks'
-# Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
+# Hydra dependencies
+gem 'active-fedora', '~> 9.12.0'
+gem 'active-triples', '~> 0.7.4'
+gem 'hydra-head', '~> 9.10.0'
+gem 'ldp', '~> 0.5.0'
+gem 'nokogiri', '~> 1.6.7'
+gem 'nom-xml', '~> 0.5.1'
+gem 'om', '~> 3.1.0'
+gem 'rsolr', '~> 1.0.13'
+gem 'solrizer', '~> 3.4.0'
+
+gem 'devise'
+gem 'dotenv-rails'
+gem 'hydra-role-management'
 gem 'jbuilder', '~> 2.0'
-# bundle exec rake doc:rails generates the API under doc/api.
-gem 'sdoc', '~> 0.4.0', group: :doc
+gem 'omniauth-cas'
+gem 'rdf-vocab'
+gem 'sqlite3' # used for ActiveRecord
+gem 'turbolinks' # Turbolinks makes following links in your web application faster.
+gem 'therubyracer', platforms: :ruby # Embed the V8 JavaScript interpreter into Ruby
+gem 'whenever' # Used to run cron jobs.
 
-# Use ActiveModel has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
-
-# Use Unicorn as the app server
-# gem 'unicorn'
-
-# Use Capistrano for deployment
-# gem 'capistrano-rails', group: :development
-
-group :development, :test do
-  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug'
-
-  # Access an IRB console on exception pages or by using <%= console %> in views
-  gem 'web-console', '~> 2.0'
-
-  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-  gem 'spring'
+group :oracle do 
+  gem 'activerecord-oracle_enhanced-adapter', '~> 1.6.0'
+  gem 'ruby-oci8' # Oracle
 end
 
+# Asset Pipeline
+# gem 'jquery-rails' # Use jquery as the JavaScript library
+gem 'sass-rails', '~> 5.0' # Use SCSS for stylesheets
+gem 'uglifier', '>= 1.3.0' # Use Uglifier as compressor for JavaScript assets
 
-gem 'rsolr', '~> 1.0.6'
-gem 'devise'
-gem 'omniauth-cas'
-
-group :development, :test do
-  gem 'rspec-rails'
+group :development, :test, :ci do
+  gem 'airborne'
+  gem 'byebug'  # Call 'byebug' anywhere in the code to stop to get a debugger console.
   gem 'factory_girl_rails'
-  gem 'dotenv-rails'
-# gem 'jettywrapper' # Remove because we aren't using hydra-jetty
   gem 'pry-nav'
+  gem 'rspec-its'
+  gem 'rspec-rails'
+  gem 'spring'  # Spring speeds up development.
+end
+
+group :development do
+  gem 'capistrano-rails', '~> 1.1'
+  gem 'capistrano-rvm'
+  gem 'ruby-debug-passenger'
+  gem 'web-console', '2.3.0' # Can remove this once we go to ruby 2.2.2
+end
+
+group :ci do
+  gem 'coveralls', require: false
+  gem 'fcrepo_wrapper', '~> 0.2.1'
+  gem 'solr_wrapper', '~> 0.5.0'
 end

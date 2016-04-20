@@ -2,25 +2,25 @@ require 'rails_helper'
 
 RSpec.describe Lna::Organization::ChangeEvent, type: :model do
   it 'has a valid factory' do
-    code_change = FactoryGirl.create(:code_change)
-    expect(code_change).to be_truthy
-    code_change.resulting_organizations.destroy_all
-    code_change.original_organizations.destroy_all
-    code_change.destroy
+    hb_change = FactoryGirl.create(:hb_change)
+    expect(hb_change).to be_truthy
+    hb_change.resulting_organizations.destroy_all
+    hb_change.original_organizations.destroy_all
+    hb_change.destroy
   end
 
   context '.create' do
     before :context do
-      @code_change = FactoryGirl.create(:code_change)
+      @hb_change = FactoryGirl.create(:hb_change)
     end
 
     after :context do
-      @code_change.resulting_organizations.destroy_all
-      @code_change.original_organizations.destroy_all
-      @code_change.destroy
+      @hb_change.resulting_organizations.destroy_all
+      @hb_change.original_organizations.destroy_all
+      @hb_change.destroy
     end
     
-    subject { @code_change }
+    subject { @hb_change }
 
     it { is_expected.to be_instance_of Lna::Organization::ChangeEvent }
     it { is_expected.to be_an ActiveFedora::Base }
@@ -31,22 +31,22 @@ RSpec.describe Lna::Organization::ChangeEvent, type: :model do
     end
     
     it 'sets description' do
-      expect(subject.description).to eql 'Organization code change.'
+      expect(subject.description).to eql 'Hinman box change.'
     end
   end
 
   context '#original_organizations' do
     before :context do
-      @code_change = FactoryGirl.create(:code_change)
+      @hb_change = FactoryGirl.create(:hb_change)
     end
 
     after :context do
-      @code_change.resulting_organizations.destroy_all
-      @code_change.original_organizations.destroy_all
-      @code_change.destroy
+      @hb_change.resulting_organizations.destroy_all
+      @hb_change.original_organizations.destroy_all
+      @hb_change.destroy
     end
     
-    subject { @code_change }
+    subject { @hb_change }
     
     it 'has original organizations' do  
       expect(subject.original_organizations.count).to eql 1
@@ -61,17 +61,17 @@ RSpec.describe Lna::Organization::ChangeEvent, type: :model do
 
   context '#resulting_organizations' do    
     before :context do
-      @code_change = FactoryGirl.create(:code_change)
-      @code_change.reload
+      @hb_change = FactoryGirl.create(:hb_change)
+      @hb_change.reload
     end
 
     after :context do
-      @code_change.resulting_organizations.destroy_all
-      @code_change.original_organizations.destroy_all
-      @code_change.destroy
+      @hb_change.resulting_organizations.destroy_all
+      @hb_change.original_organizations.destroy_all
+      @hb_change.destroy
     end
     
-    subject { @code_change }
+    subject { @hb_change }
     
     it 'has one resulting organizations' do
       expect(subject.resulting_organizations.count).to eql 1
@@ -96,16 +96,16 @@ RSpec.describe Lna::Organization::ChangeEvent, type: :model do
   
   context 'validations' do
     before :example do
-      @code_change = FactoryGirl.create(:code_change)
+      @hb_change = FactoryGirl.create(:hb_change)
     end
 
     after :example do
-      @code_change.resulting_organizations.destroy_all
-      @code_change.original_organizations.destroy_all
-      @code_change.destroy
+      @hb_change.resulting_organizations.destroy_all
+      @hb_change.original_organizations.destroy_all
+      @hb_change.destroy
     end
     
-    subject { @code_change }
+    subject { @hb_change }
 
     it 'assures time is set' do
       subject.at_time = nil
@@ -129,18 +129,18 @@ RSpec.describe Lna::Organization::ChangeEvent, type: :model do
     end
   end
 
-  context '.trigger_change_event' do
-    before :context do
-      thayer = FactoryGirl.create(:thayer)
-      @active = Lna::Organization::ChangeEvent.trigger_change_event(
-        thayer, 'code change', { code: 'THAYER' }
-      )
-    end
+  # context '.trigger_change_event' do
+  #   before :context do
+  #     thayer = FactoryGirl.create(:thayer)
+  #     @active = Lna::Organization::ChangeEvent.trigger_change_event(
+  #       thayer, 'hb change', { hb: '0020' }
+  #     )
+  #   end
 
-    subject { @active }
+  #   subject { @active }
 
-    it 'active organization has change_by event' do
-      expect(@active.resulted_from.description).to eql 'code change'
-    end
-  end
+  #   it 'active organization has change_by event' do
+  #     expect(@active.resulted_from.description).to eql 'hb change'
+  #   end
+  # end
 end

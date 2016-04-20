@@ -16,7 +16,41 @@
 # users commonly want.
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
-RSpec.configure do |config|
+
+require 'active_fedora/cleaner'
+require 'coveralls'
+
+# Adding Coveralls.
+Coveralls.wear!
+
+RSpec.configure do |config|  
+  # Cleaning Fedora and Solr before each context. Removing the need to
+  # continuously delete objects.
+  config.before(:context) do
+    ActiveFedora::Cleaner.clean!
+    User.destroy_all
+  end
+  
+  # Forces HTTPS requests.
+  config.before(:context, https: true) do
+    https!
+  end
+
+  # Authenticates User
+  config.before(:context, authenticated: true) do
+    OmniAuth.config.test_mode = true
+    Rails.application.env_config['devise.mapping'] = Devise.mappings[:user]
+    Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:cas]
+    OmniAuth.config.mock_auth[:cas] = FactoryGirl.create(:omniauth_hash)
+    get_via_redirect '/sign_in'
+  end
+
+  # Signs User out
+  config.after(:context, authenticated: true) do
+    get '/sign_out'
+  end
+
+  
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.

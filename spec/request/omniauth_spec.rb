@@ -5,6 +5,7 @@ RSpec.describe 'OmniAuth integration', :type => :request do
     OmniAuth.config.test_mode = true
     Rails.application.env_config['devise.mapping'] = Devise.mappings[:user]
     Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:cas]
+    https!
   end
 
   before :each do
@@ -20,7 +21,7 @@ RSpec.describe 'OmniAuth integration', :type => :request do
     jane = FactoryGirl.create(:omniauth_hash)
     OmniAuth.config.mock_auth[:cas] = jane
     get_via_redirect '/users/auth/cas'
-    expect(response.body).to include(I18n.t 'devise.omniauth_callbacks.success', name: jane.info.name)
+    expect(response.body).to include(jane.info.name)
   end
 
   context 'when user logs out' do
@@ -38,7 +39,7 @@ RSpec.describe 'OmniAuth integration', :type => :request do
 
     it 'does terminate session' do
       get '/'
-      expect(response.body).to include(I18n.t 'devise.sessions.signed_out')
+      expect(response.body).to include("Log In")
      end  
   end
   

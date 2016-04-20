@@ -3,13 +3,17 @@ development:
   password: fedoraAdmin
   url: http://127.0.0.1:8080/fedora/rest
   base_path: /lna-dev
-test:
+test: &test
   user: fedoraAdmin
   password: fedoraAdmin
   url: http://localhost:8080/fedora/rest
   base_path: /lna-test
-production:
+ci:
+  <<: *test
+  url: http://localhost:8080/rest
+production: &prod
   user: fedoraAdmin
   password: fedoraAdmin
   url: http://127.0.0.1:8080/fedora/rest
   base_path: /lna-prod
+qa: *prod

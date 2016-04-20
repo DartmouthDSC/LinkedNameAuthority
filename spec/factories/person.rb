@@ -5,8 +5,7 @@ FactoryGirl.define do
     family_name   'Doe'
     title         'Dr.'
     image         'http://ld.dartmouth.edu/api/person/F12345F/img'
-    mbox          'mailto:jane.a.doe@dartmouth.edu'
-    mbox_sha1sum  'kjflakjfldjskflaskjfdsfdfadfsdfdf'
+    mbox          'jane.a.doe@dartmouth.edu'
     homepage      ['http://janeadoe.dartmouth.edu']
     association   :primary_org, factory: :thayer
   end

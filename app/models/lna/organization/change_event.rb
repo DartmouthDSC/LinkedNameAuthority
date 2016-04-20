@@ -11,12 +11,12 @@ module Lna
       validates_presence_of :resulting_organizations, :original_organizations,
                             :at_time, :description
   
-      property :at_time, predicate: ::RDF::PROV.atTime, multiple: false do |index|
+      property :at_time, predicate: ::RDF::Vocab::PROV.atTime, multiple: false do |index|
         index.type :date
         index.as :displayable
       end
       
-      property :description, predicate: ::RDF::DC.description, multiple: false do |index|
+      property :description, predicate: ::RDF::Vocab::DC.description, multiple: false do |index|
         index.as :displayable
       end
       
@@ -24,6 +24,18 @@ module Lna
         date_setter('at_time', d)
       end
 
+      def to_solr
+        super.tap do |solr_doc|
+          unless self.resulting_organizations.size.zero?
+            solr_doc['resultingOrganization_ssim'] = self.resulting_organization_ids
+          end
+          
+          unless self.original_organizations.size.zero?
+            solr_doc['originalOrganization_ssim'] = self.original_organization_ids
+          end
+        end
+      end
+      
       def self.trigger_change_event(active, description, update, end_date = Date.today)
         # active must be a Lna::Organization
         raise ArgumentError, 'first parameter must be a Lna::Organization' unless active.is_a?(Lna::Organization)

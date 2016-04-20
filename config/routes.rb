@@ -1,8 +1,7 @@
 Rails.application.routes.draw do
-  root to: "catalog#index"
-  blacklight_for :catalog
+  root to: "application#index"
 
-  devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
+  devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
 
   mount Hydra::RoleManagement::Engine => '/'
               
@@ -10,59 +9,63 @@ Rails.application.routes.draw do
     get 'sign_in', to: 'users/sessions#new', as: :new_user_session
     get 'sign_out', to: 'users/sessions#destroy', as: :destroy_user_session
   end
+
+  # Routing update only to PUT
+  concern :updateable do
+    put :update, on: :member
+  end
+
+  # Collections
+  constraints page: /\d+/ do 
+    # Persons Collection
+    get '/persons(/:page)', to: 'persons#index', as: :persons
+    post '/persons(/:page)', to: 'persons#search'
+    
+    # Organizations
+    get '/organizations(/:page)', to: 'organizations#index', as: :organizations
+    post '/organizations(/:page)', to: 'organizations#search'
+    
+    # Works
+    get '/works(/:page)', to: 'works#index', as: :works
+    post '/works(/:page)', to: 'works#search'
+
+    # Recent Works Collections convenience function
+    constraints start_date:  /\d{4}-\d{2}-\d{2}/ do 
+      get '/works/:start_date(/:page)', to: 'works#index'
+      post '/works/:start_date(/:page)', to:'works#search'
+    end
+  end
   
-  # The priority is based upon order of creation: first created -> highest priority.
-  # See how all your routes lay out with "rake routes".
+  # Person, Person Accounts, Person Memberships, Person ORCID account
+  resources :person, only: [:show, :create, :destroy], concerns: :updateable do
+    resources :account, only: [:create, :destroy], concerns: :updateable
+    get :orcid, to: 'person/account#orcid'
 
-  # You can have the root of your site routed with "root"
-  # root 'welcome#index'
+    resources :membership, only: [:create, :destroy], controller: 'person/membership',
+              concerns: :updateable
 
-  # Example of regular route:
-  #   get 'products/:id' => 'catalog#view'
+    # Person's Works Collection
+    get '/works(/:start_date)', to: 'person/works#index', as: :works,
+        constraints: { start_date: /\d{4}-\d{2}-\d{2}/ }
+  end
 
-  # Example of named route that can be invoked with purchase_url(id: product.id)
-  #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
+  # Work, Work License
+  resources :work, only: [:show, :create, :destroy], concerns: :updateable do
+    resources :license, only: [:create, :destroy], controller: 'work/license',
+              concerns: :updateable
+  end
 
-  # Example resource route (maps HTTP verbs to controller actions automatically):
-  #   resources :products
+  # Organization, Organization Account
+  resources :organization, only: [:show, :create, :destroy], concerns: :updateable do
+    resources :account, only: [:create, :destroy], concerns: :updateable
+  end
 
-  # Example resource route with options:
-  #   resources :products do
-  #     member do
-  #       get 'short'
-  #       post 'toggle'
-  #     end
-  #
-  #     collection do
-  #       get 'sold'
-  #     end
-  #   end
+  # Change Events
 
-  # Example resource route with sub-resources:
-  #   resources :products do
-  #     resources :comments, :sales
-  #     resource :seller
-  #   end
-
-  # Example resource route with more complex sub-resources:
-  #   resources :products do
-  #     resources :comments
-  #     resources :sales do
-  #       get 'recent', on: :collection
-  #     end
-  #   end
-
-  # Example resource route with concerns:
-  #   concern :toggleable do
-  #     post 'toggle'
-  #   end
-  #   resources :posts, concerns: :toggleable
-  #   resources :photos, concerns: :toggleable
-
-  # Example resource route within a namespace:
-  #   namespace :admin do
-  #     # Directs /admin/products/* to Admin::ProductsController
-  #     # (app/controllers/admin/products_controller.rb)
-  #     resources :products
-  #   end
+  # Redirects for html requests.
+  constraints format: 'html' do
+    get '/person', to: redirect('persons')
+    get '/work', to: redirect('works')
+    get '/organization', to: redirect('organizations')
+  end
 end

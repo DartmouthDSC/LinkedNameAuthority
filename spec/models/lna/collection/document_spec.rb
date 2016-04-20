@@ -1,15 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Lna::Collection::Document, type: :model do
-  it 'has valid factory' do
-    article = FactoryGirl.create(:article)
-    expect(article).to be_truthy
-    id = article.collection.person.primary_org.id
-    article.collection.person.destroy
-    Lna::Organization.find(id).destroy
-  end
-
-  describe '.create' do
+  shared_context 'create test article' do
     before :context do
       @article = FactoryGirl.create(:article)
     end
@@ -21,6 +13,18 @@ RSpec.describe Lna::Collection::Document, type: :model do
     end
 
     subject { @article }
+  end
+
+  it 'has valid factory' do
+    article = FactoryGirl.create(:article)
+    expect(article).to be_truthy
+    id = article.collection.person.primary_org.id
+    article.collection.person.destroy
+    Lna::Organization.find(id).destroy
+  end
+
+  describe '.create' do
+    include_context 'create test article'
 
     it { is_expected.to be_instance_of Lna::Collection::Document }
     it { is_expected.to be_a ActiveFedora::Base }
@@ -32,9 +36,13 @@ RSpec.describe Lna::Collection::Document, type: :model do
     it 'is persisted' do
       expect(subject.persisted?).to be_truthy
     end
+
+    it 'sets elements id' do
+      expect(subject.elements_id).to eql '1234'
+    end
     
     it 'sets author_list' do
-      expect(subject.author_list).to eql 'Doe, Jane'
+      expect(subject.author_list).to eql ['Doe, Jane']
     end
     
     it 'sets publisher' do
@@ -58,45 +66,46 @@ RSpec.describe Lna::Collection::Document, type: :model do
       expect(subject.page_end).to eql '32'
     end
     
-    it 'pages' do
+    it 'sets pages' do
       expect(subject.pages).to eql '18'
     end
     
-    it 'volume' do
+    it 'sets volume' do
       expect(subject.volume).to eql '1'
     end
     
-    it 'issue' do
+    it 'sets issue' do
       expect(subject.issue).to eql '24'
     end
     
-    it 'number' do
+    it 'sets number' do
       expect(subject.number).to eql '3'
     end
     
-    it 'canonical_uri' do
+    it 'sets canonical_uri' do
       expect(subject.canonical_uri).to eql ['http://example.com/newenglandpress/article/14']
     end
     
-    it 'doi' do
+    it 'sets doi' do
       expect(subject.doi).to eql 'http://dx.doi.org/19.1409/ddlp.1490'
+    end
+
+    it 'sets abstract' do
+      expect(subject.abstract).to eql 'Lorem ipsum...'
+    end
+
+    it 'sets bibliographic citation' do
+      expect(subject.bibliographic_citation).to eql 'other citation...'
     end
   end
 
   describe '#reviews' do
+    include_context 'create test article'
+    
     before :context do
-      @article = FactoryGirl.create(:article)
       @review_one = FactoryGirl.create(:review, review_of: @article)
       @article.save
     end
-
-    after :context do
-      id = @article.collection.person.primary_org.id
-      @article.collection.person.destroy
-      Lna::Organization.find(id).destroy
-    end
-
-    subject { @article }
     
     it 'can have one review' do
       expect(subject.reviews.size).to be 1
@@ -116,18 +125,11 @@ RSpec.describe Lna::Collection::Document, type: :model do
   end
 
   describe '#review_of' do
+    include_context 'create test article'
+    
     before :context do
-      @article = FactoryGirl.create(:article)
       @review = FactoryGirl.create(:review, review_of: @article)
     end
-
-    after :context do
-      id = @article.collection.person.primary_org.id
-      @article.collection.person.destroy
-      Lna::Organization.find(id).destroy
-    end
-
-    subject { @article }
     
     it 'can be a review of another document' do
       expect(@review.review_of).to eql subject
@@ -140,19 +142,47 @@ RSpec.describe Lna::Collection::Document, type: :model do
     end
   end
 
-  describe '#collection' do
-    before :example do
-      @article = FactoryGirl.create(:article)
+  describe '#free_to_read_refs' do
+    include_context 'create test article'
+
+    before :context do
+      @open_access = FactoryGirl.create(:unrestricted_access, document: @article)
     end
 
-    after :example do
-      id = @article.collection.person.primary_org.id
-      @article.collection.person.destroy
-      Lna::Organization.find(id).destroy
+    it 'can have free to read reference' do
+      expect(subject.free_to_read_refs.count).to eq 1
+      expect(subject.free_to_read_refs.first).to eq @open_access
     end
     
+    it 'can have multiple free to read references' do
+      FactoryGirl.create(:unrestricted_access, document: @article)
+      expect(subject.free_to_read_refs.count).to eq 2
+    end
+  end
+
+  describe '#license_refs' do
+    include_context 'create test article'
+
+    before :context do
+      @license = FactoryGirl.create(:license, document: @article)
+    end
+    
+    it 'can have license references' do
+      expect(subject.license_refs.count).to eq 1
+      expect(subject.license_refs.first).to eq @license
+    end
+    
+    it 'can have multiple license references' do
+      FactoryGirl.create(:license, document: @article)
+      expect(subject.license_refs.count).to eq 2
+    end
+  end
+  
+  describe '#collection' do
+    include_context 'create test article'
+    
     it 'is part of a collection' do
-      expect(@article.collection).to be_instance_of Lna::Collection
+      expect(subject.collection).to be_instance_of Lna::Collection
     end
   end
   

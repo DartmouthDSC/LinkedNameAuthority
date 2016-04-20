@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Oracle::Faculty, type: :model do
+RSpec.describe Oracle::Faculty, type: :model, oracle: true do
 
 # Scott Drysdale
   let(:testNetidAS)    { 'd19125j'.upcase }

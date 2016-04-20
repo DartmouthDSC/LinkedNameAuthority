@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'concerns/lna/organization_core_behavior_spec'
 
 RSpec.describe Lna::Organization::Historic, type: :model do
   it 'has a valid factory' do
@@ -28,15 +27,16 @@ RSpec.describe Lna::Organization::Historic, type: :model do
       expect(subject.end_date.to_s).to eql '2000-01-01'
     end
 
-    it 'sets historic placement'
-    
+    it 'sets historic placement' do
+      expect(subject.historic_placement).to eql '{}'
+    end
   end
 
   context '#changed_by' do
     before :context do
       @old_thayer = FactoryGirl.create(:old_thayer)
       @new_thayer = FactoryGirl.create(:thayer)
-      @change_event = FactoryGirl.create(:code_change, resulting_organizations: [@new_thayer],
+      @change_event = FactoryGirl.create(:hb_change, resulting_organizations: [@new_thayer],
                                          original_organizations: [@old_thayer])
     end
 

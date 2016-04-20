@@ -16,27 +16,34 @@ development:
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
-test:
+test: &test
   <<: *default
   database: db/test.sqlite3
 
-production:
+ci: *test
+  
+production: &prod
   <<: *default
   database: db/production.sqlite3
+
+qa: *prod
+
+
+# Oracle database connections
 
 oracle_default: &oracle_default
   adapter: oracle_enhanced
   username: <%= ENV['LNA_ORACLE_USERNAME'] %>
   password: <%= ENV['LNA_ORACLE_PASSWORD'] %>
 
-oracle_development:
+oracle_development: &oracle_dev
   <<: *oracle_default
   database: lib_dev
 
-oracle_test:
-  <<: *oracle_default
-  database: lib_dev
-
-oracle_production:
+oracle_test: *oracle_dev
+  
+oracle_production: &oracle_prod
   <<: *oracle_default
   database: library
+
+oracle_qa: *oracle_prod

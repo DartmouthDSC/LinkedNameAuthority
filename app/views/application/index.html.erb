@@ -1,0 +1,15 @@
+        <nav class="centered breadcrumbs" role="navigation">
+			<%= link_to(root_path, class: "crumbStop crumbHere") do %><span>Home</span><% end %>
+        </nav>
+        <main class="centered content">
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+            <div style="width: 100%">
+                <button type="button" class="menuButton" data-toggle="modal" data-target="#newPersonModal">Add a new Person to LNA</button>
+                <button type="button" class="menuButton" data-toggle="modal" data-target="#newOrgModal">Add a new Organization to LNA</button>
+            </div>
+        </main>
+		<%= render "shared/modals/new_person" %>
+        <%= render "shared/modals/new_organization" %>
+        <%= render "shared/modals/search" %>

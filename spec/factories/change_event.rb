@@ -1,7 +1,7 @@
 FactoryGirl.define do
-  factory :code_change, class: Lna::Organization::ChangeEvent do
+  factory :hb_change, class: Lna::Organization::ChangeEvent do
     at_time     '2000-01-01'
-    description 'Organization code change.'
+    description 'Hinman box change.'
 
     after(:build) do |event|
       if event.original_organizations.size == 0
@@ -11,6 +11,10 @@ FactoryGirl.define do
       if event.resulting_organizations.size == 0
         event.resulting_organizations << FactoryGirl.create(:thayer, resulted_from: event)
       end
+    end
+
+    after(:create) do |event|
+      event.reload
     end
   end
 end

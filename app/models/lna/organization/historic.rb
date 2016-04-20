@@ -12,7 +12,9 @@ module Lna
       validates_presence_of :end_date
       
       # Serialization of sub and super organizations.
-      property :historic_placement, multiple: false, predicate: Vocabs::LNA.historicPlacement
+      property :historic_placement, multiple: false, predicate: Vocabs::LNA.historicPlacement do |index|
+        index.as :displayable
+      end
 
       property :end_date, predicate: Vocabs::OwlTime.hasEnd, multiple: false do |index|
         index.type :date
@@ -21,6 +23,14 @@ module Lna
 
       def end_date=(d)
         date_setter('end_date', d)
+      end
+
+      def active?
+        false
+      end
+
+      def historic?
+        true
       end
     end
   end

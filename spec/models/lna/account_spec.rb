@@ -26,15 +26,11 @@ RSpec.describe Lna::Account, type: :model do
     it { is_expected.to be_kind_of ActiveFedora::Base }
     
     it 'sets title' do
-      expect(subject.title).to eql 'Orcid'
+      expect(subject.title).to eql 'ORCID'
     end
-    
-    it 'sets online account' do
-      expect(subject.online_account).to eql 'http://orcid.org/0000-000-0000'
-    end
-    
+        
     it 'sets account name' do
-      expect(subject.account_name).to eql '0000-000-0000'
+      expect(subject.account_name).to eql 'http://orcid.org/0000-000-0000'
     end
     
     it 'sets account service homepage' do
@@ -88,11 +84,6 @@ RSpec.describe Lna::Account, type: :model do
       expect(subject.save).to be false
     end
       
-    it 'assure online account is set' do
-      subject.online_account = nil
-      expect(subject.save).to be false
-    end
-    
     it 'assure account name is set' do
       subject.account_name = nil
       expect(subject.save).to be false

@@ -1,0 +1,12 @@
+/*
+ * This is a manifest file that'll be compiled into lna, which will include all the files
+ * listed below. Replaces application.css in LNA templates
+ *
+ *= require_self
+ */
+
+//= require font-awesome.min.css
+//= require jquery-ui.css
+//= require jquery-ui.structure.css
+//= require jquery-ui.theme.css
+//= require main.css
