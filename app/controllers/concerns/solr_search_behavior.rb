@@ -6,17 +6,16 @@ module SolrSearchBehavior
 
   DEFAULT_MAX_ROWS = 100000.freeze
   
-  # Hits Solr API with parameters given. Returns an array of results. This method allows the
-  # most flexibility because all parameters can be used (or ommited).
+  # Hits Solr API with parameters given. Returns an array of results or a hash with the entire
+  # response. This method allows the most flexibility because all parameters can be used
+  # (or ommited). It also provides some two flags to customize the output.
   #
   # @param params [Hash] parameters to be given to Solr API
   # @param only_one [Boolean] flag to limit results to only one
   # @param docs_only [Boolean] flag to send entire response or just documents
   # @return [Hash, RSolr::Response::PaginatedDocSet] document(s) returned by search
   def solr_search(params, only_one = false, docs_only = true)
-    result = ActiveFedora::SolrService.get(params[:q], params)
-    logger.debug("Solr params: #{result['responseHeader']['params']}")
-    
+    result = solr_get(params[:q], params)
     docs = result['response']['docs']
 
     if only_one && docs.count == 1
@@ -38,12 +37,12 @@ module SolrSearchBehavior
   #
   # @param id [String] full fedora id used for lookup
   def search_for_id!(id)
-    query = ActiveFedora::SolrQueryBuilder.construct_query_for_ids([id])
-    results = ActiveFedora::SolrService.query(query)
-
-    case results.count
+    result = solr_get(ActiveFedora::SolrQueryBuilder.construct_query_for_ids([id]))
+    docs = result['response']['docs']
+    
+    case docs.count
     when 1
-      results.first
+      docs.first
     when 0
       raise_error 'No results for the id given.'
     else
@@ -67,9 +66,11 @@ module SolrSearchBehavior
   #
   # @param ids [Array<String>] list of full fedora ids
   def search_for_ids(ids)
-    query = ActiveFedora::SolrQueryBuilder.construct_query_for_ids(ids)
-    logger.debug("Solr ids query: #{query}")
-    ActiveFedora::SolrService.query(query, rows: DEFAULT_MAX_ROWS)
+    result = solr_get(
+      ActiveFedora::SolrQueryBuilder.construct_query_for_ids(ids),
+      rows: DEFAULT_MAX_ROWS
+    )
+    result['response']['docs']
   end
   
   # Searches Solr for a Lna::Person with the given id or query. Cannot pass in both a query and
@@ -210,11 +211,12 @@ module SolrSearchBehavior
   #
   # @param model [Class, Array<Class>] model to be filtered by
   # @param q [String, Array] query to be passed to solr, if an array it gets convered to a string.
-  # @param only_one [Boolean] if true only one search result should be returned
+  # @param only_one [Boolean] flad to limit number of documents to one, default false
   # @param rows [Integer, nil] max number of results to be returned by solr, default is set
   #   to 100000
   # @param sort [String, nil]  sort solr parameter 
   # @param page [Integer, nil] page of results to be displayed.
+  # @param docs_only [Boolean] flag to limit response to only include documents, default true
   def search_with_model_filter(model, q: nil, only_one: false, rows: DEFAULT_MAX_ROWS, sort: nil,
                                page: nil, docs_only: true, **args)
     raise ArgumentError, 'Cannot calculate start param without rows.' if page && !rows
@@ -233,6 +235,13 @@ module SolrSearchBehavior
 
   private
 
+  # Uses ActiveFedora solr get method to query solr. Logs parameters received by solr.
+  def solr_get(query, args = {})
+    response = ActiveFedora::SolrService.get(query, args)
+    logger.debug("Solr params: #{response['responseHeader']['params']}")
+    response
+  end
+  
   # Generates model filter string to be used as the :fq solr parameter.
   #
   # @private
@@ -250,32 +259,5 @@ module SolrSearchBehavior
   #
   def solr_escape(terms)
     RSolr.solr_escape(terms).gsub(/\s+/, "\\ ")
-  end
-
-  # Create query using field parser. Equivalent to Lucene's field:"value" query.
-  # Inspired from ActiveFedora::SolrQueryBuilder.field_query.
-  #
-  # @param field [String] solr field
-  # @param phrase [String] search phrase
-  def field_query(field, value)
-    "_query_:\"{!field f=#{field}}#{value}\""
-  end
-  
-  # Creates queries using the lucene parser. This allows users to search with wildcard(*) and
-  # fuzzy (~) special characters. Words in phrases are ANDed or ORed depending on the value of
-  # operation given.
-  #
-  # @param field [String] solr field
-  # @param phrase [String] search term
-  # @param op [String] operation to be used when combining words, can be OR or AND
-  def grouping_query(field, phrase, op = 'AND')
-    raise 'op must be AND or OR' unless ['AND', 'OR'].include? op
-    
-    "_query_:\"{!lucene q.op=#{op}}#{field}:(#{phrase})\""
-  end
-  
-  # Create query using join parser, similar to sql join.
-  def join_query(from, to, field, value)
-    "_query_:\"{!join from=#{from} to=#{to}}#{field}:\\\"#{value}\\\"\""
-  end
+  end  
 end

@@ -1,6 +1,4 @@
-class PersonsController < ApiController
-  skip_before_action :verify_authenticity_token, only: [:index, :search]
-  before_action :default_to_first_page, only: [:index, :search]
+class PersonsController < CollectionController
   before_action :convert_org_to_fedora_id, only: :search
 
   # GET /persons

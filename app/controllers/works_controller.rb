@@ -1,6 +1,4 @@
-class WorksController < ApiController
-  skip_before_action :verify_authenticity_token, only: [:index, :search]
-  before_action :default_to_first_page, only: [:index, :search]
+class WorksController < CollectionController
   
   # GET works(/:page) or GET works/:start_date(/:page)
   def index

@@ -1,6 +1,4 @@
-class OrganizationsController < ApiController
-  skip_before_action :verify_authenticity_token, only: [:index, :search]
-  before_action :default_to_first_page, only: [:index, :search]
+class OrganizationsController < CollectionController
   before_action :convert_super_org_to_fedora_id, only: :search
 
   # GET /organizations
