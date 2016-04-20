@@ -24,18 +24,25 @@ class CrudController < ApiController
     end
   end
 
-  private
+  # Helper method to map parameters send in request of body to model attributes.
+  #
+  # @private
+  #
+  # @params params [Hash] parameters passed in by user
+  # @params put [boolean] true if used for a put request; all fields are required to contain an
+  #   empty string even if they aren't set.
+  # @params extra_params [Hash]
+  def params_to_attributes(params, put: false, **extra_params)
+    attributes = {}
+    attributes.merge!(extra_params) if extra_params
 
-  # Converts the uri given to a full fedora id, if its a valid organization uri. This
-  # method is not responsible for checking that the organization is present in the fedora
-  # store. If the uri is not a valid organization uri the same uri is returned, unchanged.
-  def org_uri_to_fedora_id(uri)
-    if uri
-      if match = %r{^#{Regexp.escape(root_url)}organization/([a-zA-Z0-9-]+$)}.match(uri)
-        params['org:organization'] = FedoraID.lengthen(match[1])
-      else
-        uri
+    self.class::PARAM_TO_MODEL.each do |f, v|
+      if put && !params[f]
+        attributes[v] = ''
+      elsif params[f]
+        attributes[v] = params[f]
       end
     end
+    attributes
   end
 end

@@ -1,6 +1,5 @@
-class OrganizationsController < ApiController
-  skip_before_action :verify_authenticity_token, only: [:index, :search]
-  before_action :default_to_first_page, only: [:index, :search]
+class OrganizationsController < CollectionController
+  before_action :convert_super_org_to_fedora_id, only: :search
 
   # GET /organizations
   def index
@@ -28,10 +27,9 @@ class OrganizationsController < ApiController
 
     # identifier exact match, pref_label and alt_label fuzzy(but not solr fuzzy)
     query_map = {
-      'skos:prefLabel'       => complexphrase_query('label_tesi', params['skos:prefLabel']),
-      'skos:altLabel'        => field_query('alt_label_tesim', params['skos:altLabel']),
-      'org:subOrganizationOf' => join_query('id', 'subOrganizationOf_ssim', 'label_tesi',
-                                      params['org:subOrganizationOf'])
+      'skos:prefLabel'        => grouping_query('label_tesi', params['skos:prefLabel']),
+      'skos:altLabel'         => grouping_query('alt_label_tesim', params['skos:altLabel']),
+      'org:subOrganizationOf' => "(#{join_query('id', 'subOrganizationOf_ssim', 'label_tesi', params['org:subOrganizationOf'])} OR #{field_query('subOrganizationOf_ssim', params['org:subOrganizationOf'])})"
     }
 
     result = search_for_organizations(
@@ -56,5 +54,10 @@ class OrganizationsController < ApiController
     ids = orgs.map { |o| o['id'] }
     parents = orgs.map{ |p| p['subOrganizationOf_ssim'] }.flatten.uniq.reject{ |p| ids.include?(p) }
     search_for_ids(parents)
+  end
+
+  def convert_super_org_to_fedora_id
+    params['org:subOrganizationOf'] =
+      org_uri_to_fedora_id(params['org:subOrganizationOf'])
   end
 end

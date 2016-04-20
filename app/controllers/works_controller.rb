@@ -1,6 +1,4 @@
-class WorksController < ApiController
-  skip_before_action :verify_authenticity_token, only: [:index, :search]
-  before_action :default_to_first_page, only: [:index, :search]
+class WorksController < CollectionController
   
   # GET works(/:page) or GET works/:start_date(/:page)
   def index
@@ -25,12 +23,11 @@ class WorksController < ApiController
   def search
     page = params[:page]
 
-    # TO DO: Search needs to be tested more throughly.
     query_map = {
-      'bibo:authorList' => complexphrase_query('author_list_tesim', params['bibo:authorList']),
+      'bibo:authorList' => grouping_query('author_list_tesim', params['bibo:authorList']),
       'bibo:doi'        => field_query('doi_tesi', params['bibo:doi']),
-      'dc:title'        => complexphrase_query('title_tesi', params['dc:title']),
-      'bibo:abstract'   => field_query('abstract_tesi', params['bibo:abstract']),
+      'dc:title'        => grouping_query('title_tesi', params['dc:title']),
+      'bibo:abstract'   => grouping_query('abstract_tesi', params['bibo:abstract']), #field query and
       'org:member'      => "(({!join from=hasMember_ssim to=creator_id_ssi}{!join from=id to=Organization_ssim}label_tesi:\"#{params['org:member']}\") OR ({!join from=id to=creator_id_ssi}{!join from=id to=reportsTo_ssim}label_tesi:\"#{params['org:member']}\"))"
     }
     

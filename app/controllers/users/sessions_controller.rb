@@ -3,7 +3,7 @@ class Users::SessionsController < Devise::SessionsController
 
   # GET /resource/sign_in
   def new
-    redirect_to user_omniauth_authorize_path(:cas)
+    redirect_to user_cas_omniauth_authorize_path
   end
 
   # POST /resource/sign_in
