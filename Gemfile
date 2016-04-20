@@ -17,6 +17,7 @@ gem 'devise'
 gem 'dotenv-rails'
 gem 'hydra-role-management'
 gem 'jbuilder', '~> 2.0'
+gem 'net-dnd', github: 'dartmouth-dltg/net-dnd'
 gem 'omniauth-cas'
 gem 'rdf-vocab'
 gem 'sqlite3' # used for ActiveRecord
