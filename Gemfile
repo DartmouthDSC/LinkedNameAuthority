@@ -3,11 +3,9 @@ source 'https://rubygems.org'
 gem 'rails', '4.2.4'
 
 # Hydra dependencies
-gem 'active-fedora',
-    github: 'projecthydra/active_fedora',
-    ref:    '080e185bc4f4b690ffebb71ca3c78bc10c658f37'
+gem 'active-fedora', '~> 9.12.0'
 gem 'active-triples', '~> 0.7.4'
-gem 'hydra-head', '~> 9.8.0'
+gem 'hydra-head', '~> 9.10.0'
 gem 'ldp', '~> 0.5.0'
 gem 'nokogiri', '~> 1.6.7'
 gem 'nom-xml', '~> 0.5.1'
