@@ -8,7 +8,7 @@ class WorkController < CrudController
       'bibo:pages'       => 'pages',
       'bibo:pageStart'   => 'page_start',
       'bibo:pageEnd'     => 'page_end',
-      'bibo:authorsList' => 'author_list',
+      'bibo:authorList'  => 'author_list',
       'dc:title'         => 'title',
       'dc:abstract'      => 'abstract',
       'dc:publisher'     => 'publisher',
@@ -88,6 +88,6 @@ class WorkController < CrudController
   def work_params
     params.permit('id', 'dc:creator', 'bibo:doi', 'bibo:volume', 'bibo:pages', 'bibo:pageStart',
                   'bibo:pageEnd', 'dc:title', 'dc:abstract', 'dc:publisher', 'dc:date',
-                  'dc:bibliographicCitation', 'authenticity_token', 'bibo:authorsList' => [], 'bibo:uri' => [])
+                  'dc:bibliographicCitation', 'authenticity_token', 'bibo:authorList' => [], 'bibo:uri' => [])
   end
 end
