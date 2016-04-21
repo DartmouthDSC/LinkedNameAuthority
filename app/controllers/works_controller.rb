@@ -22,7 +22,7 @@ class WorksController < CollectionController
 
   # POST works(/:page) or POST works/:start_date(/:page)
   def search
-    page = params[:page]
+    @page = params[:page]
 
     query_map = {
       'bibo:authorList' => grouping_query('author_list_tesim', params['bibo:authorList']),
@@ -36,14 +36,15 @@ class WorksController < CollectionController
       start_date: params[:start_date] || nil,
       rows:       MAX_ROWS,
       q:          query_map.select{ |f, _| !params[f].blank? }.values.join(" AND "),
-      page:       page,
+      page:       @page,
       docs_only:  false
     )
 
     @works = result['response']['docs']
     respond_to do |f|
-      response.headers['Link'] = link_headers(result['response']['numFound'], MAX_ROWS, page)
+      response.headers['Link'] = link_headers(result['response']['numFound'], MAX_ROWS, @page)
       f.jsonld { render :search, content_type: 'application/ld+json' }
+      f.html
     end
   end
 end

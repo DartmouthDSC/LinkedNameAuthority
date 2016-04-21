@@ -60,7 +60,7 @@ LNA = {
 
 	'loadWorkCards': function(data, textStatus, xhr){
 		var dataArray = $().LNAGateway().readLD.works(data);
-		var links = $().LNAGateway().parseLink(xhr.getResponseHeader('link'));
+		if(typeof xhr != "undefined") var links = $().LNAGateway().parseLink(xhr.getResponseHeader('link'));
 		$(dataArray).each(function(i, work){
 			var node = $('#templates .work').clone();
 			node.find('h1').text(work['dc:title']);

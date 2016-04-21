@@ -65,6 +65,13 @@
 	    				  'foaf:familyName': '',
 	    				  'org:member': ''}
 	    				},
+	    	'findWorks': {'method': 'POST', 'path': 'works/', 'template':{
+	    				  'bibo:authorList': '',
+	    				  'bibo:doi': '',
+	    				  'dc:title': '',
+	    				  'org:member': '',
+	    				  'dc:abstract': ''}
+	    				},	    				
 			'newOrg':     {'method': 'POST', 'path': 'organization/', 'template': {
 	                      "org:identifier": null,
 	                      "skos:prefLabel": null,
