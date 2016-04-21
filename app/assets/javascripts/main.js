@@ -318,6 +318,21 @@ LNA = {
 				$(this).val(ui.item.label);
 				$(this).parents('form').children('input[name="org:organization"]').val(ui.item.value);
 			}
+		},
+		'reportsTo': {
+			'source': function(request, response){
+				$().LNAGateway().findOrgs(function(data){
+					var orgArray = $().LNAGateway().readLD.orgs(data);
+					var newArray = $.map(orgArray, function(item){ return {'label': item['skos:prefLabel'], 'value': item['@id']}});
+					response(newArray)
+					return newArray;
+				}, this.element[0].value + LNA.constants.fuzzySearch) 
+			},
+			'select': function(e, ui){
+				e.preventDefault();
+				$(this).val(ui.item.label);
+				$(this).parents('form').children('input[name="org:reportsTo"]').val(ui.item.value);
+			}
 		}
 	},
 

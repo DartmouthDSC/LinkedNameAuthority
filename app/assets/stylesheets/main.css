@@ -395,6 +395,10 @@ footer{
     text-align: right;
     margin-right: .3em;
 }
+.formTwoColumn textarea{
+    width: 100%;
+    height: 4em;
+}
 .formTwoColumn button{
     margin: 1em 2em .4em;
 }
