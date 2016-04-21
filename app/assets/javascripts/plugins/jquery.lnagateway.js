@@ -90,7 +90,7 @@
 	                    },	                    
 	        'newWork': 	  {'method': 'POST', 'path': 'work/', 'template': {
 	        			  'dc:title': null,
-	        			  'bibo:authorsList[]': null,
+	        			  'bibo:authorList[]': null,
 	        			  'dc:abstract': null,
 	        			  'bibo:doi': '',
 	        			  'dc:date': '',
