@@ -10,17 +10,17 @@
           <div><label>Attributed To</label><input name="foaf:name" class="autocompleteBehavior" autocomplete="off" data-autocomplete-type="person"></input></div> 
           <%= hidden_field_tag "dc:creator" %>
           <% end %>              
-          <div><label>Author(s)</label><input name="bibo:authorList[]" class="tagBehavior"></input></div> 
+          <div><label>Author(s)</label><input name="bibo:authorList" class="tagBehavior"></input></div> 
           <div><label>Abstract</label><textarea name="dc:abstract"></textarea></div>
           <div><label>Date</label><input name="dc:date" class="dateBehavior"></input></div>    
           <div><label>DOI</label><input name="bibo:doi"></input></div> 
-          <div><label>URI(s)</label><input name="bibo:uri[]" class="tagBehavior"></input></div> 
+          <div><label>URI(s)</label><input name="bibo:uri" class="tagBehavior"></input></div> 
           <div><label>Vol</label><input name="bibo:volume"></input></div> 
           <div><label>Pages</label><input name="bibo:pages"></input></div> 
           <div><label>Start Page</label><input name="bibo:pageStart"></input></div> 
           <div><label>End Page</label><input name="bibo:pageEnd"></input></div> 
           <div><label>Publisher</label><input name="dc:publisher"></input></div> 
-          <div><label>Subject(s)</label><input name="dc:subject[]" class="tagBehavior"></input></div> 
+          <div><label>Subject(s)</label><input name="dc:subject" class="tagBehavior"></input></div> 
           <div><label>Citation</label><input name="dc:bibliographicCitation"></input></div> 
           <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
           <button type="submit" title="submit">Submit</button>
