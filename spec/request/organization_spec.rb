@@ -126,8 +126,8 @@ RSpec.describe "Organization API", type: :request, https: true do
           @count = Lna::Organization.count
           body = {
             'org:identifier'       => '0021',
-            'skos:pref_label'      => 'Dartmouth Information Technology Services',
-            'skos:alt_label'       => ['ITS'],
+            'skos:prefLabel'      => 'Dartmouth Information Technology Services',
+            'skos:altLabel'       => ['ITS'],
             'owltime:hasBeginning' => '2013-06-01',
             'vcard:postal-box'     => '0000',
             'org:purpose'          => 'SUBDIV'
@@ -191,8 +191,8 @@ RSpec.describe "Organization API", type: :request, https: true do
         before :context do
           body = {
             'org:identifier'       => '0022',
-            'skos:pref_label'      => 'Dartmouth College Library',
-            'skos:alt_label'       => ['Library'],
+            'skos:prefLabel'      => 'Dartmouth College Library',
+            'skos:altLabel'       => ['Library'],
             'owltime:hasBeginning' => '1974-01-01',
             'vcard:postal-box'     => '0000',
             'org:purpose'          => 'SUBDIV'

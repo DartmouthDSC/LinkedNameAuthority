@@ -1,6 +1,5 @@
-class PersonsController < ApiController
-  skip_before_action :verify_authenticity_token, only: [:index, :search]
-  before_action :default_to_first_page, only: [:index, :search]
+class PersonsController < CollectionController
+  before_action :convert_org_to_fedora_id, only: :search
 
   # GET /persons
   def index
@@ -9,7 +8,7 @@ class PersonsController < ApiController
     result = search_for_persons(
       rows: MAX_ROWS,
       sort: 'family_name_ssi asc, given_name_ssi asc',
-      raw: true,
+      docs_only: false,
       page: @page
     )
     @persons = result['response']['docs']
@@ -28,19 +27,17 @@ class PersonsController < ApiController
 
     # Search query for each field in this search
     query_map = {
-      'foaf:name'       => "full_name_tesi:\"#{params['foaf:name']}\"",
-      'foaf:givenName'  => "given_name_ssi:\"#{params['foaf:givenName']}\"",
-      'foaf:familyName' => "family_name_ssi:\"#{params['foaf:familyName']}\"",
-      # 'org:member'      => "({!join from=id to=reportsTo_ssim}label_tesi:\"#{params['org:member']}\")"
-      'org:member'      => "reportsTo_ssim:\"#{FedoraID.lengthen(params['org:member'])}\""
+      'foaf:name'       => grouping_query('full_name_tesi', params['foaf:name']),
+      'foaf:givenName'  => grouping_query('given_name_tesi', params['foaf:givenName']),
+      'foaf:familyName' => grouping_query('family_name_tesi', params['foaf:familyName']),
+      'org:member'      => "(#{join_query('id', 'reportsTo_ssim', 'label_tesi', params['org:member'])} OR #{field_query('reportsTo_ssim', params['org:member'])})"
     }
-    search_query = query_map.select { |f, _| params[f] }.values.join(" AND ")
     
     result = search_for_persons(
-      rows: MAX_ROWS,
-      q: search_query,
-      page: page,
-      raw: true
+      rows:      MAX_ROWS,
+      q:         query_map.select { |f, _| !params[f].blank? }.values.join(" AND "),
+      page:      page,
+      docs_only: false
     )
     @persons = result['response']['docs']
     @organizations = get_primary_orgs(@persons)
@@ -57,5 +54,9 @@ class PersonsController < ApiController
   def get_primary_orgs(persons)
     org_ids = persons.map { |p| p['reportsTo_ssim'].first }
     search_for_ids(org_ids.uniq)
+  end
+
+  def convert_org_to_fedora_id
+    params['org:member'] = org_uri_to_fedora_id(params['org:member'])
   end
 end

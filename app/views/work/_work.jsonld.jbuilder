@@ -6,7 +6,7 @@ json.set! '@id', work_url(id: FedoraID.shorten(work['id']))
 json.set! 'dc:title', work['title_tesi']
 json.set! 'bibo:authorsList', work['author_list_tesim'] || []
 json.set! 'dc:date', work['date_dtsi'] || ''
-json.set! 'dc:abstract', work['abstract_ss'] || ''
+json.set! 'dc:abstract', work['abstract_tesi'] || ''
 json.set! 'dc:isPartOf', "#{creator_uri}/works" 
 json.set! 'dc:creator', creator_uri
 

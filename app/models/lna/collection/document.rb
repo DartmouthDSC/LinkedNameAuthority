@@ -73,7 +73,7 @@ module Lna
       end
 
       property :abstract, predicate: ::RDF::Vocab::BIBO.abstract, multiple: false do |index|
-        index.as :displayable
+        index.as :stored_searchable
       end
 
       property :bibliographic_citation, predicate: ::RDF::Vocab::DC.bibliographicCitation,
@@ -94,12 +94,12 @@ module Lna
         date_setter('date', d)
       end
 
-      def to_solr
-        solr_doc = super
-        # Needed for sorting by author list.
-        Solrizer.set_field(solr_doc, 'author_list', author_list, :stored_sortable)
-        Solrizer.set_field(solr_doc, 'creator_id', collection.person.id, :stored_sortable) if collection
-        solr_doc
+      def to_solr(solr_doc={})
+        super.tap do |solr_doc|
+          # Needed for sorting by author list.
+          Solrizer.set_field(solr_doc, 'author_list', author_list, :stored_sortable)
+          Solrizer.set_field(solr_doc, 'creator_id', collection.person.id, :stored_sortable) if collection
+        end
       end
       
       private
