@@ -211,24 +211,24 @@
       
 
       		$formElement.submit(function(e){
-        	e.preventDefault();
+	        	e.preventDefault();
 
-        	var formData = handle.readForm(this);
+	        	var formData = handle.readForm(this);
 
-        	if(!formData) {
-        		console.log(handle.getErrors());    //tk do something useful with errors
-        		return false;
-       		}
+	        	if(!formData) {
+	        		console.log(handle.getErrors());    //tk do something useful with errors
+	        		return false;
+	       		}
 
-       		var opt = '';
-       		if($formElement.data('opt') !== "undefined") opt = $formElement.data('opt');
+	       		var opt = '';
+	       		if($formElement.data('opt') !== "undefined") opt = $formElement.data('opt');
 
-       		var ajax=true;
-       		if($formElement.data('no-ajax') !== "undefined") ajax = false;
+	       		var ajax=true;
+	       		if($formElement.data('no-ajax') !== "undefined") ajax = false;
 
-        	handle.submitQuery(query, formData, null, opt, ajax);
+	        	handle.submitQuery(query, formData, null, opt, ajax);
 
-        	return false;
+	        	return false;
 			});
     	},
 
