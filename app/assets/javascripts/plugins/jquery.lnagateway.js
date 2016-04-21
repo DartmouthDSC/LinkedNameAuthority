@@ -216,7 +216,10 @@
        		var opt = '';
        		if($formElement.data('opt') !== "undefined") opt = $formElement.data('opt');
 
-        	handle.submitQuery(query, formData, null, opt);
+       		var ajax=true;
+       		if($formElement.data('no-ajax') !== "undefined") ajax = false;
+
+        	handle.submitQuery(query, formData, null, opt, ajax);
 
         	return false;
 			});
@@ -269,18 +272,23 @@
       		return data;
     	},
 
-    	'submitQuery': function(query, formData, fn, opt){
+    	'submitQuery': function(query, formData, fn, opt, ajax){
     		if(typeof fn === "undefined" || fn == null) fn = function(){ return false };
     		if(typeof opt === "undefined") opt = '';
+    		if(typeof ajax === "undefined") ajax = true;
 	     	var queryData = this.queries[query];
-    	 	$.ajax({
-	    	    "url": this.options.baseURL + queryData.path + opt,
-	        	"method": queryData.method,
-		        "accepts": {"json": "application/ld+json"},
-		        "data": formData,
-		        "dataType": "json",
-		        "success": fn
-      		});
+    	 	if(ajax){
+	    	 		$.ajax({
+		    	    "url": this.options.baseURL + queryData.path + opt,
+		        	"method": queryData.method,
+			        "accepts": {"json": "application/ld+json"},
+			        "data": formData,
+			        "dataType": "json",
+			        "success": fn
+	      		});
+	    	} else {
+	      		$.form(this.options.baseURL + queryData.path + opt, formData, queryData.method).submit();
+	      	}
     	},
 
     	//Reads linked data graphs and turns them into more useful arrays

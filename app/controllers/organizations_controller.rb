@@ -23,7 +23,7 @@ class OrganizationsController < CollectionController
 
   # POST /organizations
   def search
-    page = params['page']
+    @page = params['page']
 
     # identifier exact match, prefLabel and altLabel fuzzy(but not solr fuzzy)
     query_map = {
@@ -35,15 +35,16 @@ class OrganizationsController < CollectionController
     result = search_for_organizations(
       rows: MAX_ROWS,
       q: query_map.select{ |f, _| !params[f].blank? }.values.join(" AND "),
-      page: page,
+      page: @page,
       docs_only: false
     )
     @organizations = result['response']['docs']
     @organizations += parent_organizations(@organizations)
 
     respond_to do |f|
-      response.headers['Link'] = link_headers(result['response']['numFound'], MAX_ROWS, page)
+      response.headers['Link'] = link_headers(result['response']['numFound'], MAX_ROWS, @page)
       f.jsonld { render :search, content_type: 'application/ld+json' }
+      f.html
     end
   end
 

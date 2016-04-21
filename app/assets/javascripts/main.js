@@ -22,7 +22,7 @@ LNA = {
 	//this set of functions are callbacks for LNAGateway.*()
 	'loadPersonCards': function(data, textStatus, xhr){
 		var dataArray = $().LNAGateway().readLD.persons(data);
-		var links = $().LNAGateway().parseLink(xhr.getResponseHeader('link'));
+		if(typeof xhr != "undefined") var links = $().LNAGateway().parseLink(xhr.getResponseHeader('link'));
 		$(dataArray.persons).each(function(i, person){
 			var node = $('#templates .person').clone();
 			node.find('h1').text(person['foaf:givenName']+' '+person['foaf:familyName']);
@@ -41,7 +41,7 @@ LNA = {
 	},
 	'loadOrgCards': function(data, textStatus, xhr){
 		var dataArray = $().LNAGateway().readLD.orgs(data);
-		var links = $().LNAGateway().parseLink(xhr.getResponseHeader('link'));
+		if(typeof xhr != "undefined") var links = $().LNAGateway().parseLink(xhr.getResponseHeader('link'));		
 		$(dataArray).each(function(i, org){
 			var node = $('#templates .org').clone();
 			node.find('h1').text(org['skos:prefLabel']);
