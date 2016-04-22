@@ -352,34 +352,38 @@ LNA = {
 	},
 
 	'init': function(){
-		LNA.activateTags();
+
 		LNA.activateModals();
+
+		//Create dialogs from modal form elements
+		if($('.formModal').size()>0){
+			$('.formModal').dialog({
+				autoOpen: false,
+				width: '80%',
+			    modal: true,
+			    show: {
+			    	effect: "drop",
+					duration: 300,
+					direction: "up"
+				},
+				hide: {
+					effect: "drop",
+					duration: 300,
+					direction: "up"
+				}
+			});
+		};
+
+		LNA.activateTags();
+
 		LNA.activateControls();
 		LNA.activateWidgets();
 		LNA.activateAutocompletes();
 		LNA.activateDropdowns();
 		LNA.activateOnChanges();
+		$().LNAGateway().extendForms();
 	}
 }
-
-//Create dialogs from modal form elements
-if($('.formModal').size()>0){
-	$('.formModal').dialog({
-		autoOpen: false,
-		width: '80%',
-	    modal: true,
-	    show: {
-	    	effect: "drop",
-			duration: 300,
-			direction: "up"
-		},
-		hide: {
-			effect: "drop",
-			duration: 300,
-			direction: "up"
-		}
-	});
-};
 
 LNA.init();
 

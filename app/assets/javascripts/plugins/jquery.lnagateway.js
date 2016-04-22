@@ -86,7 +86,7 @@
 	                      "foaf:title": "",
 	                      "foaf:mbox": null,
 	                      "foaf:homepage": "",
-	                      "org:reportsTo": ""}
+	                      "org:reportsTo": null}
 	                    },	                    
 	        'newWork': 	  {'method': 'POST', 'path': 'work/', 'template': {
 	        			  'dc:title': null,
@@ -126,8 +126,11 @@
 
   	Plugin.prototype = {
     	'init': function(opt){
-	        var handle = this;
 	        $.extend(this.options, opt);
+	    },
+
+	    'extendForms': function(){
+	    	var handle = this;
 	        var forms = $('form').filter(function(){return typeof $(this).data('lna-query') !== 'undefined'});
 	        forms.each(function(){ handle.extendForm(this) });
 	    },
@@ -230,6 +233,8 @@
 
 	        	return false;
 			});
+
+			$formElement.attr('data-ready', 'true');
     	},
 
     	'readForm': function(formElement){
