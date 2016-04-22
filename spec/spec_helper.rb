@@ -43,6 +43,10 @@ RSpec.configure do |config|
     Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:cas]
     OmniAuth.config.mock_auth[:cas] = FactoryGirl.create(:omniauth_hash)
     get_via_redirect '/sign_in'
+
+    # need to remove this
+    editor = Role.find_or_initialize_by(name: 'editor')
+    User.first.update(roles: [editor])
   end
 
   # Signs User out

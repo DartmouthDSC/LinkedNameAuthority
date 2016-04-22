@@ -1,6 +1,8 @@
 class CrudController < ApiController
   before_action :convert_to_full_fedora_id
   before_action :authenticate_user!, only: [:create, :update, :destroy]
+
+  rescue_from ActiveFedora::ObjectNotFoundError, with: :render_not_found
   
   # GET
   def show

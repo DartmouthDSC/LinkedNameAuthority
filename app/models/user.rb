@@ -22,7 +22,7 @@ class User < ActiveRecord::Base
     # User created or updated based on CAS information provided by Dartmouth Authentication.
     if auth.provider.eql?(:cas)
       user = User.find_by(provider: auth.provider, netid: auth.extra.netid) ||
-             User.find_or_initialize_by(netid: auth.extra.netid) unless user
+             User.find_or_initialize_by(netid: auth.extra.netid)
 
       user.provider = auth.provider
       user.realm    = auth.extra.user.split(/@/)[1].downcase
@@ -38,5 +38,9 @@ class User < ActiveRecord::Base
 
   def netid=(netid)
     super(netid.downcase)
+  end
+
+  def editor?
+    roles.where(name: 'editor').exists?
   end
 end
