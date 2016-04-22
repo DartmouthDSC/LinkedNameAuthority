@@ -28,4 +28,15 @@ namespace :deploy do
       end
     end
   end
+
+  desc 'Reindex all documents in Solr'
+  task :reindex do
+    on roles(:app) do
+      with rails_env: fetch(:rails_env) do
+        within release_path do
+          execute :rake, 'lna:reindex'
+        end
+      end
+    end
+  end
 end
