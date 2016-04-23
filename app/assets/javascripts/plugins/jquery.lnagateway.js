@@ -370,7 +370,6 @@
 			var parts = linkText.split(',');
 			var links = {};
 	
-
 			// Parse each part into a named link
 			$.each(parts, function(i, p) {
 				var section = p.split(';');
@@ -381,6 +380,12 @@
 				var name = section[1].replace(/rel="(.*)"/, '$1').trim();
 				links[name] = url;
 			});
+
+			links.total = 1;
+			links.current = 1;
+			if(links.last) links.total = parseInt(links.last.split('/').pop());
+			if(links.next) links.current = parseInt(links.next.split('/').pop()) - 1;
+			if(links.prev) links.current = parseInt(links.prev.split('/').pop()) + 1;
 
 			return links;
     	}

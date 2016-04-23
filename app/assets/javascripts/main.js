@@ -23,6 +23,7 @@ LNA = {
 	'loadPersonCards': function(data, textStatus, xhr){
 		var dataArray = $().LNAGateway().readLD.persons(data);
 		if(typeof xhr != "undefined") var links = $().LNAGateway().parseLink(xhr.getResponseHeader('link'));
+		LNA.fillPager(links);
 		$(dataArray.persons).each(function(i, person){
 			var node = $('#templates .person').clone();
 			node.find('h1').text(person['foaf:givenName']+' '+person['foaf:familyName']);
@@ -41,7 +42,8 @@ LNA = {
 	},
 	'loadOrgCards': function(data, textStatus, xhr){
 		var dataArray = $().LNAGateway().readLD.orgs(data);
-		if(typeof xhr != "undefined") var links = $().LNAGateway().parseLink(xhr.getResponseHeader('link'));		
+		if(typeof xhr != "undefined") var links = $().LNAGateway().parseLink(xhr.getResponseHeader('link'));	
+		LNA.fillPager(links);
 		$(dataArray).each(function(i, org){
 			var node = $('#templates .org').clone();
 			node.find('h1').text(org['skos:prefLabel']);
@@ -61,6 +63,7 @@ LNA = {
 	'loadWorkCards': function(data, textStatus, xhr){
 		var dataArray = $().LNAGateway().readLD.works(data);
 		if(typeof xhr != "undefined") var links = $().LNAGateway().parseLink(xhr.getResponseHeader('link'));
+		LNA.fillPager(links);
 		$(dataArray).each(function(i, work){
 			var node = $('#templates .work').clone();
 			node.find('h1').text(work['dc:title']);
@@ -191,6 +194,27 @@ LNA = {
 		node.find('button').click(function(e){ LNA.openLink(e, data['@id']) });
 
 		$(parent).append(node);
+	},
+
+	'fillPager': function(pageArray){
+		if(typeof pageArray == "undefined" || pageArray.total == 1) {
+			return true;
+		}
+		if(pageArray.current > 1) $('#firstPage').attr('href', pageArray.first);
+		else $('#firstPage').hide();
+
+		if(pageArray.current < pageArray.total) $('#lastPage').attr('href', pageArray.last);
+		else $('#lastPage').hide();
+
+		$('#currentPage').find('span').text(pageArray.current + ' of ' + pageArray.total);
+		
+		if(pageArray.prev && pageArray.first != pageArray.prev) $('#previousPage').attr('href', pageArray.prev)
+		else $('#previousPage').hide();
+		
+		if(pageArray.next && pageArray.next != pageArray.last) $('#nextPage').attr('href', pageArray.next);
+		else $('#nextPage').hide();
+
+		$('#pager').show();
 	},
 
 	//edit functions load data into edit modals, open the modal, and set the save handler
