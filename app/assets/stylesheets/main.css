@@ -736,13 +736,13 @@ a.fa{
 }
 
 /* pagination */
-#pager{
+.pager{
     margin: auto;
     display: none;
     text-align: center;
     margin-bottom: 1em;
 }
-#pager a{
+.pager a, .pager span{
     background-color: #95AFA2;
     display: inline-block;
     border-radius: 50%;
@@ -750,8 +750,13 @@ a.fa{
     min-width: 2em;
     color: white;
     line-height: 2em;
+    box-shadow: 0 .1em rgba(0,0,0,.6);
 }
-#currentPage span{
+.pager a:hover, .pager a:active{
+    box-shadow: 0 .2em rgba(0,0,0,.6);
+    margin-top: -.1em;
+}
+.currentPage span{
     display: block;
     padding-left: .5em;
     padding-right: .5em;
@@ -806,12 +811,12 @@ a.fa{
         height: 2em;
     }
 
-    .cards{
+    .cards, .cardContainer{
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
-        padding-left: 2em;
-        padding-right: 2em;
+        padding-left: 1em;
+        padding-right: 1em;
     }
     .card{
         flex: 0 1 100%;

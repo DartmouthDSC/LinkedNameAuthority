@@ -37,7 +37,7 @@ LNA = {
 				node.find('p[property="title"]').text(person['orgLabel']);
 			}
 			// node.children('p[name="dateRange"]').text(person['foaf:title']);
-			$('main').append(node);
+			$('.cardContainer').append(node);
 		});
 	},
 	'loadOrgCards': function(data, textStatus, xhr){
@@ -56,7 +56,7 @@ LNA = {
 			} else {
 				node.find('p[name="dateRange"]').text(org['owltime:hasBeginning'].substr(0,4)+'-');
 			}
-			$('main').append(node);
+			$('.cardContainer').append(node);
 		});
 	},	
 
@@ -74,7 +74,7 @@ LNA = {
 			if(work['dc:date'] != '') {
 				node.find('p[name="date"]').text(work['dc:date'].substr(0,4));
 			}
-			$('main').append(node);
+			$('.cardContainer').append(node);
 		});
 	},	
 
@@ -200,21 +200,21 @@ LNA = {
 		if(typeof pageArray == "undefined" || pageArray.total == 1) {
 			return true;
 		}
-		if(pageArray.current > 1) $('#firstPage').attr('href', pageArray.first);
-		else $('#firstPage').hide();
+		if(pageArray.current > 1) $('.firstPage').attr('href', pageArray.first);
+		else $('.firstPage').hide();
 
-		if(pageArray.current < pageArray.total) $('#lastPage').attr('href', pageArray.last);
-		else $('#lastPage').hide();
+		if(pageArray.current < pageArray.total) $('.lastPage').attr('href', pageArray.last);
+		else $('.lastPage').hide();
 
-		$('#currentPage').find('span').text(pageArray.current + ' of ' + pageArray.total);
+		$('.currentPage').find('span').text(pageArray.current + ' of ' + pageArray.total);
 		
-		if(pageArray.prev && pageArray.first != pageArray.prev) $('#previousPage').attr('href', pageArray.prev)
-		else $('#previousPage').hide();
+		if(pageArray.prev && pageArray.first != pageArray.prev) $('.previousPage').attr('href', pageArray.prev)
+		else $('.previousPage').hide();
 		
-		if(pageArray.next && pageArray.next != pageArray.last) $('#nextPage').attr('href', pageArray.next);
-		else $('#nextPage').hide();
+		if(pageArray.next && pageArray.next != pageArray.last) $('.nextPage').attr('href', pageArray.next);
+		else $('.nextPage').hide();
 
-		$('#pager').show();
+		$('.pager').show();
 	},
 
 	//edit functions load data into edit modals, open the modal, and set the save handler

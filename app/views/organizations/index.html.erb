@@ -3,11 +3,16 @@
         </nav>
 
         <main class="centered content cards">
-        <%= render "shared/controls" %>
         <!--[if lt IE 8]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
+        <![endif]-->        
+        <%= render "shared/controls" %>
+        <div class="cardContainer">
+
+        </div>
+        <%= render "shared/controls" %>
         </main>
+
         <section id="templates">
         <%= render "shared/templates/cards_organization" %>
         </section>
