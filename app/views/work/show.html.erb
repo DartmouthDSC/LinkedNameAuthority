@@ -1,0 +1,31 @@
+		<nav class="centered breadcrumbs" role="navigation">
+            <%= link_to(root_path, class: "crumbContinue") do %><span>Home</span><% end %><%= link_to(organizations_path, class: "crumbContinue") do %><span>Organization</span><% end %><a href="#" class="crumbHere crumbStop"><span>Loading...</span></a>
+        </nav>
+        <main class="centered content">
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+            <section class="record">
+                <div class="workData">
+                    <h1>Work <button class="fa fa-pencil fa-lg view" title="edit work" data-toggle="modal" data-target="#editWorkModal"><span class="helpText">edit this work</span></button></h1>
+                    <h3></h3>
+                    <p class="workCreator"></p>
+                    <p class="workAuthorList"></p>
+                    <p class="workDate"></p>
+                    <p class="workAbstract"></p>
+                    <ul class="iconList">
+                    </ul>
+                </div>
+            </section>
+        </main>
+        <section id="templates">
+
+        </section>
+        <section id="modals">
+
+        </section>        
+		<script>
+        $(document).ready(function(){
+            $().LNAGateway().loadWork(LNA.loadWork, "<%= @short_id %>");
+        });
+        </script>

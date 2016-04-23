@@ -45,7 +45,9 @@
 			'loadPerson': {'method': 'GET', 'path': 'person/', 'template': {}
 	    				},
 			'loadOrg': 	{'method': 'GET', 'path': 'organization/', 'template': {}
-	    				},	    				
+	    				},
+			'loadWork': {'method': 'GET', 'path': 'work/', 'template': {}
+	    				},	    				  				
 			'loadPersonWorks': {'method': 'GET', 'path': 'person/', 'template': {}
 	    				},
 	    	'findOrgs':   {'method': 'POST', 'path': 'organizations/', 'template':{
@@ -169,6 +171,10 @@
 	    	if(typeof uid === "undefined") return false;
 	    	this.submitQuery('loadOrg', {}, callback, uid);
 	    },	
+	    'loadWork': function(callback, uid){
+	    	if(typeof uid === "undefined") return false;
+	    	this.submitQuery('loadWork', {}, callback, uid);
+	    },		    
 	    'loadPersonWorks': function(callback, uid){
 	    	if(typeof uid === "undefined") return false;
 	    	this.submitQuery('loadPerson', {}, callback, uid + '/works');
@@ -346,6 +352,16 @@
 	    			if(v['@type']=='org:Organization') data.org = v;
 	    			if(v['@type']=='foaf:OnlineAccount') data.accounts.push(v)
 	    		});
+	    		return data;
+	    	},
+	    	'work': function(xhrData){
+	    		var data = {'person': [], 'work': []};
+
+	    		$.each(xhrData['@graph'], function(i, v){
+	    			if(v['@type']=='foaf:Person') data.person = v;
+					if(v['@type']=='bibo:Document') data.work = v;
+	    		});
+
 	    		return data;
 	    	},
     		'personWorks': function(xhrData){

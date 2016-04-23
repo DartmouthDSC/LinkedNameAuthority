@@ -14,7 +14,17 @@ LNA = {
 			 'value': 'orcid',
 		     'class': 'orcid',
 		     'homepage': 'http://orcid.org/',
-		     'accountRoot': 'http://orcid.org/'}
+		     'accountRoot': 'http://orcid.org/'},
+		    {'title': 'Academia.edu',
+			 'value': 'academia',
+		     'class': 'academia',
+		     'homepage': 'http://academia.edu/',
+		     'accountRoot': 'http://dartmouth.academia.edu/'},
+			{'title': 'Plum',
+			 'value': 'plum',
+		     'class': 'plum',
+		     'homepage': 'http://plu.mx/dartmouth/',
+		     'accountRoot': 'http://plu.mx/dartmouth/u/'}
 		    //tk add more accounts
 		],
 		'fuzzySearch' : ''
@@ -93,7 +103,7 @@ LNA = {
 		}
 
 		//clear all spinners
-		$('.sidebar .spinner, .affiliations .spinner').parent().remove();
+		$('main .spinner').parent().remove();
 
 		//render OnlineAccounts
 		$.each(dataArray.accounts, function(k, v){ LNA.fillAccount($('.orgData .iconList'), v) });
@@ -111,7 +121,26 @@ LNA = {
 		$.each(dataArray.persons, function(k, v){ LNA.fillPersons($('.related .iconList'), v) });
 
 		LNA.activateModals();
-	},	
+	},
+
+	'loadWork': function(data, textStatus, xhr){
+		var dataArray = $().LNAGateway().readLD.work(data);	
+
+		//render work record
+		var ellipsis = dataArray.work['dc:title'].length > 10 ? '...' : '';
+		$('.crumbHere').children().first().text(dataArray.work['dc:title'].slice(0,10)+ellipsis);
+		$('.record h3').text(dataArray.work['dc:title']);
+		$('.workCreator').text(dataArray.person['foaf:name']);
+		$('.workAuthorList').text(dataArray.work['bibo:authorList'].join(', '));
+		$('.workAbstract').text(dataArray.work['dc:abstract']);
+		$('.workPublisher').text(dataArray.work['dc:publisher']);
+		$('.workCitation').text(dataArray.work['dc:bibliographicCitation']);
+
+		//clear all spinners
+		$('main .spinner').parent().remove();
+
+		LNA.activateModals();
+	},
 
 	'loadPerson': function(data, textStatus, xhr){
 		var dataArray = $().LNAGateway().readLD.person(data);		
@@ -150,7 +179,7 @@ LNA = {
 		var iconClass = $.grep(LNA.constants.onlineAccounts, function(o){ return data['dc:title'] == o['title']});
 		if(iconClass.length > 0) node.addClass(iconClass[0].class);
 		button.attr('title', 'edit '+ data['dc:title'] + ' account');
-		button.text(data['foaf:accountName']);
+		button.text(data['foaf:accountName'].split('/').pop());
 		parent.prepend(node);
 	},
 	'fillMembership': function(parent, data){
