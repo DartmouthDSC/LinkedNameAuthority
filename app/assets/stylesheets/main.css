@@ -694,9 +694,9 @@ a.fa{
     color: inherit;
     padding: .2em;
 }
-.record button{
+.record button, .workData button{
     display: block;
-    float: right;
+    float: left;
 }
 .details div > button, .sidebar li > button{
     display: flex;
@@ -718,6 +718,12 @@ a.fa{
     box-shadow: 0 .1em .1em rgba(0,0,0,.5);
     margin-bottom: .3em;
     cursor: pointer;
+}
+.details h1{
+    width: 95%;
+}
+.details h1 button{
+    float: right;
 }
 .plum{
     background-image: url('icon_plum.svg');

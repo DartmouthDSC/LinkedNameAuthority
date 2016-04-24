@@ -1,0 +1,19 @@
+<div class="modal fade newLicenseModal formModal" id="newLicenseModal" tabindex="-1" role="dialog" aria-labelledby="newLicenseModal" title="Add an License for this Work to LNA">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form data-lna-query="newLicense" class="formTwoColumn" data-opt="<%= @short_id %>/license">
+          <div><label>Type</label><select name="template" class="dropdownBehavior changeBehavior" data-opt="onlineLicenses" data-onchange="prefillLicenses">
+            <option></option>
+          </select></div>          
+          <div><label>Title</label><input name="dc:title"></input></div>
+          <div><label>Start Date</label><input name="ali:start_date" class="dateBehavior"></input></div>
+          <div><label>End Date</label><input name="ali:end_date" class="dateBehavior"></input></div>
+          <div><label>License</label><input name="ali:uri"></input></div>
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+          <button type="submit" title="submit">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

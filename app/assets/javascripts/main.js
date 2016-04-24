@@ -25,9 +25,8 @@ LNA = {
 		     'class': 'plum',
 		     'homepage': 'http://plu.mx/dartmouth/',
 		     'accountRoot': 'http://plu.mx/dartmouth/u/'}
-		    //tk add more accounts
 		],
-		'fuzzySearch' : ''
+		'fuzzySearch' : ''		//Add ~2 or something here to make some searches fuzzy by default
 	},
 	//this set of functions are callbacks for LNAGateway.*()
 	'loadPersonCards': function(data, textStatus, xhr){
@@ -46,7 +45,6 @@ LNA = {
 			} else {
 				node.find('p[property="title"]').text(person['orgLabel']);
 			}
-			// node.children('p[name="dateRange"]').text(person['foaf:title']);
 			$('.cardContainer').append(node);
 		});
 	},
@@ -129,9 +127,12 @@ LNA = {
 		//render work record
 		var ellipsis = dataArray.work['dc:title'].length > 10 ? '...' : '';
 		$('.crumbHere').children().first().text(dataArray.work['dc:title'].slice(0,10)+ellipsis);
-		$('.record h3').text(dataArray.work['dc:title']);
+		$('h3').text(dataArray.work['dc:title']);
 		$('.workCreator').text(dataArray.person['foaf:name']);
+		$('.creator button').click(function(e){ LNA.openLink(e, dataArray.person['@id'])});
 		$('.workAuthorList').text(dataArray.work['bibo:authorList'].join(', '));
+		$('.workDate').text(dataArray.work['dc:date'].slice(0,10));
+		$('.workDOI').append($('<a>').attr('href', dataArray.work['bibo:doi']).text(dataArray.work['bibo:doi']));
 		$('.workAbstract').text(dataArray.work['dc:abstract']);
 		$('.workPublisher').text(dataArray.work['dc:publisher']);
 		$('.workCitation').text(dataArray.work['dc:bibliographicCitation']);
@@ -210,6 +211,7 @@ LNA = {
 
 		var date = data['dc:date'].substr(0,4);
 		var authors = data['bibo:authorList'].join(', ');
+		viewButton.click(function(e){ console.log('ok'); LNA.openLink(e, data['@id'])});
 
 		title.text(data['dc:title'] + ' (' + date + ')');
 		authorList.text(authors);
