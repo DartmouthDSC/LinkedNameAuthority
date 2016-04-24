@@ -26,6 +26,16 @@ LNA = {
 		     'homepage': 'http://plu.mx/dartmouth/',
 		     'accountRoot': 'http://plu.mx/dartmouth/u/'}
 		],
+		'licenses':[
+			{'title': 'Dartmouth OA (CC-BY-NC 2.0)', 
+			 'value': 'Dartmouth OA (CC-BY-NC 2.0)',
+			 'type': 'ali:license_ref',
+			 'uri': 'https://creativecommons.org/licenses/by-nc/2.0/'},
+			{'title': 'CC-BY 2.0', 
+			 'value': 'CC-BY 2.0', 
+			 'type': 'ali:license_ref',
+			 'uri': 'https://creativecommons.org/licenses/by/2.0/'}
+		],		
 		'fuzzySearch' : ''		//Add ~2 or something here to make some searches fuzzy by default
 	},
 	//this set of functions are callbacks for LNAGateway.*()
@@ -342,6 +352,15 @@ LNA = {
 			formNode.find('input[name="foaf:accountServiceHomepage"]').val(accountType[0].homepage);
 			formNode.find('input[name="accountID"]').val("");
 		},
+		'prefillLicenses': function(e){
+			var selected = $(e.target);
+			var formNode = selected.parents('form');
+			var licenseType = $.grep(LNA.constants.licenses, function(o){ return selected.val() == o['title']});
+
+			formNode.find('input[name="dc:title"]').val(licenseType[0].title);
+			formNode.find('input[name="ali:uri"]').val(licenseType[0].uri);
+			formNode.find('input[name="dc:description"]').filter('[value="'+licenseType[0].type+'"]').attr('checked', true);
+		},		
 		'mergeAccountName': function(e){
 			var selected = $(e.target);
 			var formNode = selected.parents('form');

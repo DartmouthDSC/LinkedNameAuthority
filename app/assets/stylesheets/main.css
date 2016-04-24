@@ -369,6 +369,12 @@ footer{
     margin: .1em auto;
 }
 
+input[type="radio"]{
+    display: inline-block;
+    width: auto;
+    margin: auto auto auto 1em;
+}
+
 .formSingleColumn label{
     margin-top: .4em;
 }

@@ -106,6 +106,13 @@
 	        			  'dc:bibliographicCitation': '',
 	        			  'dc:creator': null}
 	        			},
+	        'newLicense': {'method': 'POST', 'path': 'work/', 'template':{
+	        			  'dc:title': null,
+	        			  'dc:description': null,
+	        			  'ali:start_date': null,
+	        			  'ali:end_date': '',
+	        			  'ali:uri': ''}
+	        			},        			
 	        'newAffiliation': {'method': 'POST', 'path': 'person/', 'template':{
 	        			  'org:organization': null,
 	        			  'vcard:email': '',
@@ -230,10 +237,10 @@
 	       		}
 
 	       		var opt = '';
-	       		if($formElement.data('opt') !== "undefined") opt = $formElement.data('opt');
+	       		if(typeof $formElement.data('opt') != "undefined") opt = $formElement.data('opt');
 
 	       		var ajax=true;
-	       		if($formElement.data('no-ajax') !== "undefined") ajax = false;
+	       		if(typeof $formElement.data('no-ajax') != "undefined") ajax = false;
 
 	        	handle.submitQuery(query, formData, null, opt, ajax);
 
@@ -291,9 +298,9 @@
     	},
 
     	'submitQuery': function(query, formData, fn, opt, ajax){
-    		if(typeof fn === "undefined" || fn == null) fn = function(){ return false };
-    		if(typeof opt === "undefined") opt = '';
-    		if(typeof ajax === "undefined") ajax = true;
+    		if(typeof fn == "undefined" || fn == null) fn = function(){ return false };
+    		if(typeof opt == "undefined") opt = '';
+    		if(typeof ajax == "undefined") ajax = true;
 	     	var queryData = this.queries[query];
     	 	if(ajax){
 	    	 		$.ajax({

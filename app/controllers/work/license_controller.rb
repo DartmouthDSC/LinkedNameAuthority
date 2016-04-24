@@ -13,9 +13,9 @@ class Work::LicenseController < CrudController
     attributes = params_to_attributes(license_params, document_id: work['id'])
 
     case license_params['dc:description']
-    when 'license_ref'
+    when 'ali:license_ref'
       l = Lna::Collection::LicenseReference.new(attributes)
-    when 'free_to_read'
+    when 'ali:free_to_read'
       l = Lna::Collection::FreeToRead.new(attributes)
     else
       render_unprocessable_entity && return
@@ -29,6 +29,7 @@ class Work::LicenseController < CrudController
 
     respond_to do |f|
       f.jsonld { render :create, status: :created, location: location, content_type: 'application/ld+json' }
+      f.html {redirect_to work_path(FedoraID.shorten(work['id'])) }
     end
   end
 
