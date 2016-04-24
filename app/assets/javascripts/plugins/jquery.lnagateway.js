@@ -354,11 +354,20 @@
 	    		return data;
 	    	},
 	    	'org': function(xhrData){
-	    		var data = {'org': {}, 'accounts': []};
+	    		var data = {'org': {}, 'accounts': [], 'parent': {}, 'children': []};
 	    		$.each(xhrData['@graph'], function(i, v){
-	    			if(v['@type']=='org:Organization') data.org = v;
+	    			if(v['@type']=='org:Organization') {
+	    				if(xhrData['foaf:primaryTopic'] == v['@id']) data.org = v;
+	    			}
 	    			if(v['@type']=='foaf:OnlineAccount') data.accounts.push(v)
 	    		});
+	    		$.each(xhrData['@graph'], function(i, v){
+	    			if(v['@type']=='org:Organization') {
+	    				if(data.org['org:subOrganizationOf'] == v['@id']) data.parent = v;
+	    				else if(xhrData['foaf:primaryTopic'] != v['@id']) data.children.push(v);
+	    			}
+	    			if(v['@type']=='foaf:OnlineAccount') data.accounts.push(v)
+	    		});	    		
 	    		return data;
 	    	},
 	    	'work': function(xhrData){

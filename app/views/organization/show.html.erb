@@ -9,15 +9,32 @@
                 <div class="orgData">
                     <h1>Organization <button class="fa fa-pencil fa-lg view" title="edit organization" data-toggle="modal" data-target="#editOrganizationModal"><span class="helpText">edit this organization</span></button></h1>
                     <h3></h3>
-                    <p class="orgAltLabels"></p>
-                    <p class="orgPurpose"></p>
-                    <p class="orgDateRange"></p>
-                    <p class="orgParent"></p>
-                    <ul class="iconList">
-                    </ul>
+                    <p>
+                        <span class="title">Also Known As</span><br>
+                        <span class="orgAltLabels"></span>
+                    </p>
+                    <p>
+                        <span class="title">Purpose</span><br>
+                        <span class="orgPurpose"></span>
+                    </p>
+                    <p>
+                        <span class="title">Active</span><br>
+                        <span class="orgDateRange"></span>
+                    </p>
+                    <p class="parent">
+                        <span class="title">Suborganization Of</span><br>
+                        <button class="fa fa-external-link-square fa-lg view" title="view parent"><span class="helpText">view parent organization</span></button>
+                        <span class="orgParent"></span>
+                    </p>        
                 </div>
-                <div class="related">
-                <h1>Related Primary Appointments</h1>                    
+                <div class="related children">
+                    <h1>Suborganizations</h1>                    
+                    <ul class="iconList">
+                        <li><span class='spinner'></span></li>
+                    </ul>
+                </div>                
+                <div class="related members">
+                    <h1>Related Primary Appointments</h1>                    
                     <ul class="iconList">
                         <li><span class='spinner'></span></li>
                     </ul>
@@ -27,6 +44,7 @@
         <section id="templates">
             <%= render "shared/templates/lists_person" %>
             <%= render "shared/templates/lists_account" %>
+            <%= render "shared/templates/lists_suborganization" %>
         </section>
         <section id="modals">
             <%= render "shared/modals/new_account" %>
