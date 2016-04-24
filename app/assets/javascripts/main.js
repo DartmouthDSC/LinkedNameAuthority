@@ -103,6 +103,7 @@ LNA = {
 		$('.crumbHere').children().first().text(dataArray.org['skos:prefLabel']);
 		$('.record h3').text(dataArray.org['skos:prefLabel']);
 		$('.orgAltLabels').text(dataArray.org['skos:altLabel'].join(', '));
+		$('.orgPurpose').text(dataArray.org['org:purpose']);
 		if(typeof dataArray.parent['skos:prefLabel'] != "undefined"){
 			$('.orgParent').text(dataArray.parent['skos:prefLabel']);
 			$('.parent button').click(function(e){LNA.openLink(e, dataArray.parent['@id'])});
