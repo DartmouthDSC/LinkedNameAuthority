@@ -717,6 +717,7 @@ a.fa{
     color: inherit;
     padding: .2em;
     margin-left: -.2em;
+    text-align: left;
 }
 
 .details button:hover, .details button:focus, .record button:hover, .record button:focus{

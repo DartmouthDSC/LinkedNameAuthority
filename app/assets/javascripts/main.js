@@ -27,8 +27,8 @@ LNA = {
 		     'accountRoot': 'http://plu.mx/dartmouth/u/'}
 		],
 		'licenses':[
-			{'title': 'Dartmouth OA (CC-BY-NC 2.0)', 
-			 'value': 'Dartmouth OA (CC-BY-NC 2.0)',
+			{'title': 'Dartmouth OA', 
+			 'value': 'Dartmouth OA',
 			 'type': 'ali:license_ref',
 			 'uri': 'https://creativecommons.org/licenses/by-nc/2.0/'},
 			{'title': 'CC-BY 2.0', 
@@ -147,6 +147,9 @@ LNA = {
 		$('.workPublisher').text(dataArray.work['dc:publisher']);
 		$('.workCitation').text(dataArray.work['dc:bibliographicCitation']);
 
+		//render License list
+		$.each(dataArray.licenses, function(k, v){ LNA.fillLicense($('.sidebar .iconList'), v) });
+
 		//clear all spinners
 		$('main .spinner').parent().remove();
 
@@ -211,6 +214,13 @@ LNA = {
 		editButton.click(function(e){ LNA.editAffiliation(e, data['org:organization'])});
 		parent.prepend(node);
 	},
+	'fillLicense': function(parent, data){
+		var node = $('#templates .license').clone();
+		var button = node.children().first();
+		button.attr('title', 'edit '+ data['dc:title'] + ' account');
+		button.text(data['dc:title']);
+		parent.prepend(node);
+	},	
 
 	'fillPersonWorks': function(parent, data){
 		var node = $('#templates .work').clone();

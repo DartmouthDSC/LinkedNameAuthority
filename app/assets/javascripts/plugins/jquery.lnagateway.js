@@ -362,11 +362,12 @@
 	    		return data;
 	    	},
 	    	'work': function(xhrData){
-	    		var data = {'person': [], 'work': []};
+	    		var data = {'person': [], 'work': [], 'licenses': []};
 
 	    		$.each(xhrData['@graph'], function(i, v){
 	    			if(v['@type']=='foaf:Person') data.person = v;
 					if(v['@type']=='bibo:Document') data.work = v;
+					if(v['@type']=='dc:licenseDocument') data.licenses.push(v);
 	    		});
 
 	    		return data;
