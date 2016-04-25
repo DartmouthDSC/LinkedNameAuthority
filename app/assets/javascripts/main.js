@@ -30,11 +30,15 @@ LNA = {
 			{'title': 'Dartmouth OA', 
 			 'value': 'Dartmouth OA',
 			 'type': 'ali:license_ref',
-			 'uri': 'https://creativecommons.org/licenses/by-nc/2.0/'},
+			 'uri': 'https://creativecommons.org/licenses/by-nc/4.0/'},
 			{'title': 'CC-BY 2.0', 
 			 'value': 'CC-BY 2.0', 
 			 'type': 'ali:license_ref',
-			 'uri': 'https://creativecommons.org/licenses/by/2.0/'}
+			 'uri': 'https://creativecommons.org/licenses/by/2.0/'},
+			{'title': 'All Rights Reserved', 
+			 'value': 'All Rights Reserved', 
+			 'type': 'ali:license_ref',
+			 'uri': 'http://www.copyright.gov/title17/'}
 		],		
 		'fuzzySearch' : ''		//Add ~2 or something here to make some searches fuzzy by default
 	},
