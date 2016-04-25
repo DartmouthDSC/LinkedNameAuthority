@@ -33,6 +33,7 @@ class WorkController < CrudController
     # Create work
     attributes = params_to_attributes(work_params, collection_id: @person['collection_id_ssi'])
     w = Lna::Collection::Document.new(attributes)
+    authorize! :create, w
     render_unprocessable_entity && return unless w.save
 
     @work = search_for_id(w.id)
@@ -56,6 +57,7 @@ class WorkController < CrudController
     attributes = params_to_attributes(work_params, put: true,
                                       collection_id: @person['collection_id_ssi'] )
     w = Lna::Collection::Document.find(params[:id])
+    authorize! :update, w
     render_unprocessable_entity && return unless w.update(attributes)
     
     @work = search_for_id(params[:id])
@@ -69,6 +71,7 @@ class WorkController < CrudController
 
     # Delete account.
     w = Lna::Collection::Document.find(work['id'])
+    authorize! :destroy, w
     w.destroy
     render_unprocessable_entiry && return unless w.destroyed?
 
@@ -88,6 +91,7 @@ class WorkController < CrudController
   def work_params
     params.permit('id', 'dc:creator', 'bibo:doi', 'bibo:volume', 'bibo:pages', 'bibo:pageStart',
                   'bibo:pageEnd', 'dc:title', 'dc:abstract', 'dc:publisher', 'dc:date',
-                  'dc:bibliographicCitation', 'authenticity_token', 'bibo:authorsList' => [], 'bibo:uri' => [])
+                  'dc:bibliographicCitation', 'authenticity_token', 'bibo:authorsList' => [],
+                  'bibo:uri' => [])
   end
 end

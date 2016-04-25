@@ -3,6 +3,15 @@ class CrudController < ApiController
   before_action :authenticate_user!, only: [:create, :update, :destroy]
 
   rescue_from ActiveFedora::ObjectNotFoundError, with: :render_not_found
+
+  rescue_from CanCan::AccessDenied do |exception|
+    respond_to do |f|
+      f.jsonld { render json: { status: 'failure', error: 'forbidden'}.to_json,
+                        status: :forbidden, content_type: 'application/ld+json' }
+    end
+  end
+
+  # rescue_from ActiveFedora::RecordInvalid
   
   # GET
   def show

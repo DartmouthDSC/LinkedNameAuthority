@@ -19,12 +19,12 @@ RSpec.describe 'Work/License API', type: :request, https: true do
       @path = work_license_index_path(work_id: @work_id)
     end
 
-    include_examples 'requires authentication' do
+    include_examples 'requires authentication and authorization' do
       let(:path) { @path }
       let(:action) { 'post' }
     end
 
-    describe 'when authenticated', authenticated: true do
+    describe 'when authorized', authenticated: true, editor: true do
       include_examples 'throws error when fields missing' do
         let(:path) { @path }
         let(:action) { 'post' }
@@ -83,12 +83,12 @@ RSpec.describe 'Work/License API', type: :request, https: true do
   describe 'PUT work/:work_id/license/:id' do
     include_context 'get work id'
 
-    include_examples 'requires authentication' do
+    include_examples 'requires authentication and authorization' do
       let(:path) { @path }
       let(:action) { 'put' }
     end
 
-    describe 'when authenticated', authenticated: true do
+    describe 'when authorized', authenticated: true, editor: true do
       include_examples 'throws error when fields missing' do
         let(:path) { @path }
         let(:action) { 'put' }
@@ -128,12 +128,12 @@ RSpec.describe 'Work/License API', type: :request, https: true do
   describe 'DELETE work/:work_id/license/:id' do
     include_context 'get work id'
 
-    include_examples 'requires authentication' do
+    include_examples 'requires authentication and authorization' do
       let(:path) { @path }
       let(:action) { 'delete' }
     end
 
-    describe 'when authenticated', authenticated: true do
+    describe 'when authorized', authenticated: true, editor: true do
       describe 'succesfully deletes license' do
         include_examples 'successful request'
 

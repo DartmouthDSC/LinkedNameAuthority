@@ -15,8 +15,10 @@ class Work::LicenseController < CrudController
     case license_params['dc:description']
     when 'license_ref'
       l = Lna::Collection::LicenseReference.new(attributes)
+      authorize! :create, l
     when 'free_to_read'
       l = Lna::Collection::FreeToRead.new(attributes)
+      authorize! :create, l
     else
       render_unprocessable_entity && return
     end
@@ -39,6 +41,7 @@ class Work::LicenseController < CrudController
     # Update license.
     attributes = params_to_attributes(license_params, put: true, document_id: params[:work_id])
     l = ActiveFedora::Base.find(license['id'])
+    authorize! :update, l
     render_unprocessable_entity && return unless l.update(attributes)
 
     @license = search_for_id(params[:id])
@@ -52,6 +55,7 @@ class Work::LicenseController < CrudController
 
     # Delete License
     l = ActiveFedora::Base.find(license['id'])
+    authorize! :destroy, l
     l.destroy
     render_unprocessable_entiry && return unless l.destroyed?
 

@@ -19,11 +19,18 @@ RSpec.shared_examples 'successful request' do
 end
 
 
-RSpec.shared_examples 'requires authentication' do  
+RSpec.shared_examples 'requires authentication and authorization' do  
   describe 'when not authenticated' do
     it 'returns 401 status code' do
       send action, path, { format: :jsonld }
       expect(response).to have_http_status(:unauthorized)
+    end
+  end
+
+  describe 'when not authorized', authenticated: true do
+    it 'returns 403 status code' do
+      send action, path, { format: :jsonld }
+      expect(response).to have_http_status(:forbidden)
     end
   end
 end

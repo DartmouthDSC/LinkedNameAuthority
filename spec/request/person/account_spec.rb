@@ -16,12 +16,12 @@ RSpec.describe "Person/Account API", type: :request, https: true do
       @path = person_account_index_path(person_id: @person_id)
     end
     
-    include_examples 'requires authentication' do
+    include_examples 'requires authentication and authorization' do
       let(:path) { @path }
       let(:action) { 'post' }
     end
         
-    describe 'when authenticated', authenticated: true do
+    describe 'when authorized', authenticated: true, editor: true do
       include_examples 'throws error when fields missing' do
         let(:path) { @path }
         let(:action) { 'post' }
@@ -109,12 +109,12 @@ RSpec.describe "Person/Account API", type: :request, https: true do
   describe 'PUT person/:person_id/account/:id' do
     include_context 'get account id'
 
-    include_examples 'requires authentication' do
+    include_examples 'requires authentication and authorization' do
       let(:path) { @path }
       let(:action) { 'put' }
     end
     
-    describe 'when authenticated', authenticated: true do
+    describe 'when authorized', authenticated: true, editor: true do
       include_examples 'throws error when fields missing' do
         let(:path) { @path }
         let(:action) { 'put' }
@@ -168,12 +168,12 @@ RSpec.describe "Person/Account API", type: :request, https: true do
   describe 'DELETE person/:person_id/account/:id' do
     include_context 'get account id'
 
-    include_examples 'requires authentication' do
+    include_examples 'requires authentication and authorization' do
       let(:path) { @path }
       let(:action) { 'delete' }
     end
     
-    describe 'when authenticated', authenticated: true do
+    describe 'when authorized', authenticated: true, editor: true do
       describe 'succesfully deletes account' do
         include_examples 'successful request'
         

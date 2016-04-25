@@ -107,12 +107,12 @@ RSpec.describe "Organization API", type: :request, https: true do
   
   
   describe 'POST organization/' do
-    include_examples 'requires authentication' do
+    include_examples 'requires authentication and authorization' do
       let(:path) { organization_index_path }
       let(:action) { 'post' }
     end
     
-    describe 'when authenticated', authenticated: true do 
+    describe 'when authorized', authenticated: true, editor: true do 
       include_examples 'throws error when fields missing' do
         let(:path) { organization_index_path }
         let(:action) { 'post' }
@@ -174,12 +174,12 @@ RSpec.describe "Organization API", type: :request, https: true do
   describe 'PUT organization/' do
     include_context 'get organization id'
 
-    include_examples 'requires authentication' do
+    include_examples 'requires authentication and authorization' do
       let(:path) { @path }
       let(:action) { 'put' }
     end
 
-    describe 'when authenticated', authenticated: true do
+    describe 'when authorized', authenticated: true, editor: true do
       include_examples 'throws error when fields missing' do
         let(:path) { @path }
         let(:action) { 'put' }
@@ -218,12 +218,12 @@ RSpec.describe "Organization API", type: :request, https: true do
   describe 'DELETE organization/' do
     include_context 'get organization id'
 
-    include_examples 'requires authentication' do
+    include_examples 'requires authentication and authorization' do
       let(:path) { @path }
       let(:action) { 'delete' }
     end
 
-    describe 'when authenticated', authenticated: true do
+    describe 'when authorized', authenticated: true, editor: true do
       describe 'succesfully deletes organization' do
         include_examples 'successful request'
 

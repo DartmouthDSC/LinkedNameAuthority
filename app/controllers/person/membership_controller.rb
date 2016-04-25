@@ -1,9 +1,10 @@
 class Person::MembershipController < CrudController
   before_action :convert_org_to_fedora_id
   #  before_action :verify_authorization!, only: [:create, :update, :destroy]
-  load_resource :person, class: 'Lna::Person', only: [:create, :update, :destroy]
+  load_resource :person, class: 'Lna::Person'
   load_and_authorize_resource :membership, param_method: :attributes, class: 'Lna::Membership',
-                              through: :person, only: [:create, :update, :destroy], find_by: :find_one!
+                              through: :person
+  before_action :membership_not_nil
 
   PARAM_TO_MODEL = {
       'org:organization'     => 'organization_id',
@@ -72,6 +73,10 @@ class Person::MembershipController < CrudController
   
   private
 
+  def membership_not_nil
+    raise ActiveFedora::ObjectNotFoundError, "membership id not valid" if @membership.nil?
+  end
+  
   def attributes
     extra = {}
     case params[:action].to_sym
@@ -81,7 +86,7 @@ class Person::MembershipController < CrudController
       extra[:person_id] = params[:person_id]
     end
 
-    params_to_attributes(membership_params, **extra)
+    params_to_attributes(membership_params, extra)
   end
 
   # def verify_authorization!

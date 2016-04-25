@@ -5,9 +5,10 @@ class User < ActiveRecord::Base
   # Connects this user object to Role-management behaviors. 
   include Hydra::RoleManagement::UserRoles
 
-  validates_presence_of :name, :netid
-  validates_uniqueness_of :netid # If we support more providers, this will have to be removed.
-  validates_uniqueness_of :uid, allow_nil: true
+  before_validation :make_realm
+  
+  validates_presence_of :name, :netid, :realm
+  validates_uniqueness_of :netid, :uid
 
   # Removed default devise modules except for trackable and added the omniauthable module.
   devise :trackable, :omniauthable, omniauth_providers: [:cas]
@@ -28,7 +29,6 @@ class User < ActiveRecord::Base
       user.realm    = auth.extra.user.split(/@/)[1].downcase
       user.name     = auth.info.name
       user.affil    = auth.extra.affil
-      user.uid      = "#{user.netid}@#{user.realm}"
       user.save
     else
       raise NotImplementedError, 'Currently, only CAS authentication is provided.'
@@ -36,9 +36,19 @@ class User < ActiveRecord::Base
     user
   end
 
+  def uid=(uid)
+    super(uid.downcase)
+  end
+  
   def netid=(netid)
     super(netid.downcase)
   end
+
+ def make_realm
+   if realm && netid
+     self.uid = "#{self.netid}@#{self.realm}"
+   end
+ end
 
   def editor?
     roles.where(name: 'editor').exists?

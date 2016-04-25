@@ -43,17 +43,24 @@ RSpec.configure do |config|
     Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:cas]
     OmniAuth.config.mock_auth[:cas] = FactoryGirl.create(:omniauth_hash)
     get_via_redirect '/sign_in'
-
-    # need to remove this
-    editor = Role.find_or_initialize_by(name: 'editor')
-    User.first.update(roles: [editor])
   end
 
+  # Authorize User as an Editor
+  config.before(:context, editor: true) do
+    netid = FactoryGirl.create(:omniauth_hash).extra.netid
+    editor = Role.find_or_initialize_by(name: 'editor')
+    User.find_by(netid: netid).roles << editor
+  end
+
+  # Remove Editor Role
+  config.after(:context, editor: true) do
+    Role.find_by(name: "editor").destroy
+  end
+                       
   # Signs User out
   config.after(:context, authenticated: true) do
     get '/sign_out'
   end
-
   
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest

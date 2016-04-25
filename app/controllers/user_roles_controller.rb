@@ -11,7 +11,7 @@ class UserRolesController < ApplicationController
       u.save!
       redirect_to role_management.role_path(@role)
     else
-      redirect_to role_management.role_path(@role), :flash => { :error =>"Unable to find the user #{params[:user_key]}"}
+      redirect_to role_management.role_path(@role), :flash => { :error => "Unable to find the user #{params[:user_key]}" }
     end
   end
 
@@ -21,7 +21,8 @@ class UserRolesController < ApplicationController
     unless user = User.find_by(netid: netid)
       Net::DartmouthDND.start(%w(name affiliation netid)) do |dnd|
         if p = dnd.find(netid, :one)
-          user = User.create!(name: p.name, affil: p.affiliation, netid: p.netid)
+          user = User.create!(name: p.name, affil: p.affiliation, netid: p.netid,
+                              realm: 'dartmouth.edu')
         end
       end
     end

@@ -16,12 +16,12 @@ RSpec.describe "Person/Membership API", type: :request, https: true do
   end
   
   describe 'POST person/:person_id/membership(/:id)' do
-    include_examples 'requires authentication' do
+    include_examples 'requires authentication and authorization' do
       let(:path) { person_membership_index_path(person_id: @person_id) }
       let(:action) { 'post' }
     end
         
-    describe 'when authenticated', authenticated: true do
+    describe 'when authorized', authenticated: true, editor: true do
       include_examples 'throws error when fields missing' do
         let(:path) { person_membership_index_path(person_id: @person_id) }
         let(:action) { 'post' }
@@ -84,12 +84,12 @@ RSpec.describe "Person/Membership API", type: :request, https: true do
   describe 'PUT person/:person_id/membership/:id' do
     include_context 'get membership id'
 
-    include_examples 'requires authentication' do
+    include_examples 'requires authentication and authorization' do
       let(:path) { @path }
       let(:action) { 'put' }
     end
     
-    describe 'when authenticated', authenticated: true do
+    describe 'when authorized', authenticated: true, editor: true do
       include_examples 'throws error when fields missing' do
         let(:path) { @path }
         let(:action) { 'put' }
@@ -138,12 +138,12 @@ RSpec.describe "Person/Membership API", type: :request, https: true do
   describe 'DELETE person/:person_id/membership/:id' do
     include_context 'get membership id'
 
-    include_examples 'requires authentication' do
+    include_examples 'requires authentication and authorization' do
       let(:path) { @path }
       let(:action) { 'delete' }
     end
     
-    describe 'when authenticated', authenticated: true do
+    describe 'when authorized', authenticated: true, editor: true do
       describe 'succesfully deletes account' do
         include_examples 'successful request'
         
@@ -161,7 +161,8 @@ RSpec.describe "Person/Membership API", type: :request, https: true do
       end
       
       it 'returns 404 if id is invalid' do
-        delete person_membership_path(person_id: @person_id, id: 'blahblahblah'), { format: :jsonld }
+        delete person_membership_path(person_id: @person_id, id: 'blahblahblah'),
+               { format: :jsonld }
         expect_status :not_found
       end
     end

@@ -1,6 +1,8 @@
 class PersonController < CrudController
   before_action :convert_org_to_fedora_id
-
+  load_and_authorize_resource :person, param_method: :attributes, class: 'Lna::Person',
+                              only: [:create, :update, :destroy]
+  
   PARAM_TO_MODEL = {
       'foaf:name'       => 'full_name',
       'foaf:givenName'  => 'given_name',
@@ -12,7 +14,7 @@ class PersonController < CrudController
       'org:reportsTo'   => 'primary_org_id'
   }.freeze
   
-  # GET /person(/:id)
+  # GET /person/:id
   def show
     @person = search_for_persons(id: params[:id])
     @memberships = search_for_memberships(person_id: @person['id'])
@@ -34,27 +36,29 @@ class PersonController < CrudController
   # POST /person
   def create
     # Create person.
-    attributes = params_to_attributes(person_params)
-    p = Lna::Person.new(attributes)
-    render_unprocessable_entity && return unless p.save
-    
-    @person = search_for_id(p.id)
+    #    attributes = params_to_attributes(person_params)
+    #    p = Lna::Person.new(attributes)
 
-    location = person_path(id: FedoraID.shorten(p.id))
+    render_unprocessable_entity && return unless @person.save
+    
+    @person = search_for_id(@person.id)
+
+    location = person_path(FedoraID.shorten(@person['id']))
     
     respond_to do |format|
-      format.jsonld { render :create, status: :created, location: location, content_type: 'application/ld+json' }
+      format.jsonld { render :create, status: :created, location: location,
+                             content_type: 'application/ld+json' }
     end
   end
 
   # PUT /person/:id
   def update
-    person = search_for_persons(id: params[:id])
+#    person = search_for_persons(id: params[:id])
 
     # Update person.
-    attributes = params_to_attributes(person_params, put: true)
-    p = Lna::Person.find(person['id'])
-    render_unprocessable_entity && return unless p.update(attributes)
+#    attributes = params_to_attributes(person_params, put: true)
+#    p = Lna::Person.find(person['id'])
+    render_unprocessable_entity && return unless @person.update(attributes)
     
     @person = search_for_persons(id: params[:id])
 
@@ -63,17 +67,23 @@ class PersonController < CrudController
 
   # DELETE /person/:id
   def destroy
-    p = search_for_persons(id: params[:id])
+#    p = search_for_persons(id: params[:id])
 
     # Delete person
-    person = Lna::Person.find(p['id'])
-    person.destroy
-    render_unprocessable_entity && return unless person.destroyed?
+#    person = Lna::Person.find(p['id'])
+    @person.destroy
+    render_unprocessable_entity && return unless @person.destroyed?
     
     super
   end
 
   private
+
+  def attributes
+    extra = {}
+    extra[:put] = true if params[:action] == 'update'
+    params_to_attributes(person_params, extra)
+  end
 
   def convert_org_to_fedora_id
     params['org:reportsTo'] = org_uri_to_fedora_id(params['org:reportsTo'])
@@ -81,6 +91,7 @@ class PersonController < CrudController
   
   def person_params
     params.permit('id', 'foaf:name', 'foaf:givenName', 'foaf:familyName', 'foaf:title',
-                  'foaf:mbox', 'foaf:image', 'org:reportsTo', 'id', 'authenticity_token', 'foaf:homepage' => [])
+                  'foaf:mbox', 'foaf:image', 'org:reportsTo', 'authenticity_token',
+                  'foaf:homepage' => [])
   end
 end

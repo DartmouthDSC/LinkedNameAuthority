@@ -3,8 +3,8 @@ class OrganizationController < CrudController
   
   PARAM_TO_MODEL = {
     'org:identifier'       => 'hr_id',
-    'skos:prefLabel'      => 'label',
-    'skos:altLabel'       => 'alt_label',
+    'skos:prefLabel'       => 'label',
+    'skos:altLabel'        => 'alt_label',
     'owltime:hasBeginning' => 'begin_date',
     'vcard:postal-box'     => 'hinman_box',
     'org:purpose'          => 'kind'
@@ -30,6 +30,7 @@ class OrganizationController < CrudController
     # Create organization
     attributes = params_to_attributes(organization_params)
     o = Lna::Organization.new(attributes)
+    authorize! :create, o
     render_unprocessable_entity && return unless o.save
 
     @organization = search_for_id(o.id)
@@ -48,6 +49,7 @@ class OrganizationController < CrudController
 
     # Update organization (could be historic or active)
     o = ActiveFedora::Base.find(organization['id'])
+    authorize! :update, o
     if o.class == Lna::Organization
       attributes = params_to_attributes(organization_params, put: true,
                                         sub_organization_ids: params['org:hasSubOrganization'],
@@ -70,6 +72,7 @@ class OrganizationController < CrudController
 
     # Delete organization
     organization = ActiveFedora::Base.find(o['id'])
+    authorize! :destroy, organization
     organization.destroy
     render_unprocessable_entity && return unless organization.destroyed?
    
@@ -93,5 +96,3 @@ class OrganizationController < CrudController
     end
   end
 end
-
-  
