@@ -734,10 +734,10 @@ a.fa{
     margin-bottom: .3em;
     cursor: pointer;
 }
-.details h1{
+.details h1, .record h1{
     width: 95%;
 }
-.details h1 button{
+.details h1 button, .record h1 button{
     float: right;
 }
 .plum{
