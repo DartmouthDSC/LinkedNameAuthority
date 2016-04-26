@@ -180,8 +180,6 @@ LNA = {
 		$('.crumbHere').children().first().text(dataArray.person['foaf:name']);
 		if(dataArray.person['foaf:image'] != '') $('.sidebar img').attr('src', dataArray.person['foaf:image']);
 
-		console.log(dataArray)
-
 		$('.personName').html('Title: '+dataArray.person['foaf:title']+'<br>'+'Given: '+dataArray.person['foaf:givenName']+'<br>'+'Family: '+dataArray.person['foaf:familyName']+'<br>'+'Written: '+dataArray.person['foaf:name']);
 		$('.personEmail').text(dataArray.person['foaf:mbox']);
 		$('.personImage').text(dataArray.person['foaf:image']);
@@ -220,6 +218,7 @@ LNA = {
 		var iconClass = $.grep(LNA.constants.onlineAccounts, function(o){ return data['dc:title'] == o['title']});
 		if(iconClass.length > 0) node.addClass(iconClass[0].class);
 		button.attr('title', 'edit '+ data['dc:title'] + ' account');
+		button.data('formData', data);
 		label.text(data['foaf:accountName'].split('/').pop());
 		parent.prepend(node);
 	},
@@ -304,9 +303,13 @@ LNA = {
 		$('.pager').show();
 	},
 
-	//edit functions load data into edit modals, open the modal, and set the save handler
-	editAffilication: function(e, org){
+	//edit functions load data into edit modals
+	editAffiliation: function(e, org){
 		// var editForm = $('#modals ')
+	},
+
+	'editAccount': function(targetForm, data){
+		console.log(data);
 	},
 
 	//helpers
@@ -319,13 +322,19 @@ LNA = {
 
 	//Find corresponding buttons and attach the open event
 	'activateModals': function(){
-		$('[data-toggle="modal"]').not('[data-ready="true"]').click(function (e) { 
+		//activateModals may be called more than once, so undo whatever was done before.
+		$('[data-toggle="modal"]').unbind("click");
+
+		$('[data-toggle="modal"]').click(function (e) { 
 			e.preventDefault();
 			$($(this).data('target')).dialog("open");
+			if(typeof $($(this).data('target')).find('form').data('load') != "undefined"){
+				LNA[$($(this).data('target')).find('form').data('load')]($($(this).data('target')).find('form'), $($(this).data('formData')));
+			}
 			return false;
 		});
 		$('[data-toggle="modal"]').attr('data-ready', 'true');
-	},
+	},	
 	//Find control panel buttons and attach the toggle behavior
 	'activateControls': function(){
 		$('button[data-toggle="controlPanel"]').not('[data-ready="true"]').click(function (e){

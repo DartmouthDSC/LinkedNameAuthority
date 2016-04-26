@@ -129,7 +129,12 @@
 	        			  'dc:title': null,
 	        			  'foaf:accountName': null,
 	        			  'foaf:accountServiceHomepage': ''}
-	        			}
+	        			},
+	        'editAccount': {'method': 'UPDATE', 'path': 'person/', 'template':{
+	        			  'dc:title': null,
+	        			  'foaf:accountName': null,
+	        			  'foaf:accountServiceHomepage': ''}
+	        			}        			
 	    };
 	};
 
