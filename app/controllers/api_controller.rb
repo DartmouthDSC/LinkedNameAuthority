@@ -1,6 +1,6 @@
 require 'fedora_id'
 class ApiController < ActionController::Base
-  # Adds a few additional behaviors into the application controller
+  # Adds additional behaviors into the application controller
   include Hydra::Controller::ControllerBehavior
   include SolrSearchBehavior
 
@@ -10,7 +10,7 @@ class ApiController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
   
-  rescue_from ActionController::RoutingError, with: :render_not_found
+#  rescue_from ActionController::RoutingError, with: :render_not_found
 
   MAX_ROWS = 100.freeze
   
@@ -31,9 +31,9 @@ class ApiController < ActionController::Base
   end
 
   # TODO: Need to revist this.
-  def not_found
-    raise ActionController::RoutingError.new('Not Found')
-  end
+  # def not_found
+  #   raise ActionController::RoutingError.new('Not Found')
+  # end
 
   private
 

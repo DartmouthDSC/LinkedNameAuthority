@@ -157,6 +157,8 @@ GEM
       multipart-post (>= 1.2, < 3)
     fcrepo_wrapper (0.2.1)
       ruby-progressbar
+    gaffe (1.1.0)
+      rails (>= 4.0.0)
     globalid (0.3.6)
       activesupport (>= 4.1.0)
     haml (4.0.7)
@@ -481,6 +483,7 @@ DEPENDENCIES
   dotenv-rails
   factory_girl_rails
   fcrepo_wrapper (~> 0.2.1)
+  gaffe
   hydra-head (~> 9.10.0)
   hydra-role-management
   jbuilder (~> 2.0)

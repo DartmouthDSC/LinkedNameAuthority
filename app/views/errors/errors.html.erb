@@ -1,0 +1,21 @@
+<nav class="centered breadcrumbs" role="navigation">
+  <%= link_to(root_path, class: "crumbStop crumbHere") do %><span>Home</span><% end %>
+</nav>
+
+<main class="centered content">
+  <h1>Error!</h1>
+ 
+  <h2><%= @rescue_response.to_s.humanize %></h2>
+  
+  <p><%= @exception.message %></p>
+  
+  <p>Please correct the error and try again.</p>
+
+  <% if Rails.env.development? || Rails.env.test? %>
+	<p>Original exception (only displayed in <strong>development</strong> and <strong>test</strong> environment):</p>
+	
+	<pre>
+	  <code><%= @exception.inspect %></code>
+	</pre>
+  <% end %>
+</main>

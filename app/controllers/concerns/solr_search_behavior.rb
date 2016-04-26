@@ -1,6 +1,6 @@
 # Wrapper around Active Fedora Solr helpers. This class contains specific queries for use in the
-# Lna. Controllers that include this module should also implement a not_found method. When a
-# resource is not found, the not_found method is called.
+# Lna. Controllers that include this module should also catch ActiveFedora::ObjectNotFoundError
+# errors. When a resource is not found, an ActiveFedora::ObjectNotFoundError is raised..
 module SolrSearchBehavior
   extend ActiveSupport::Concern
 
@@ -26,7 +26,7 @@ module SolrSearchBehavior
         result
       end
     elsif only_one
-      not_found
+      raise ActiveFedora::ObjectNotFoundError
     else
       (docs_only) ? docs : result
     end
@@ -58,7 +58,7 @@ module SolrSearchBehavior
     begin
       search_for_id!(id)
     rescue
-      not_found
+      raise ActiveFedora::ObjectNotFoundError
     end
   end
 
