@@ -29,14 +29,17 @@ LNA = {
 		'licenses':[
 			{'title': 'Dartmouth OA', 
 			 'value': 'Dartmouth OA',
+			 'class': 'oa',
 			 'type': 'ali:license_ref',
 			 'uri': 'https://creativecommons.org/licenses/by-nc/4.0/'},
 			{'title': 'CC-BY 2.0', 
 			 'value': 'CC-BY 2.0', 
+			 'class': 'oa',
 			 'type': 'ali:license_ref',
 			 'uri': 'https://creativecommons.org/licenses/by/2.0/'},
 			{'title': 'All Rights Reserved', 
-			 'value': 'All Rights Reserved', 
+			 'value': 'All Rights Reserved',
+			 'class': 'closed', 
 			 'type': 'ali:license_ref',
 			 'uri': 'http://www.copyright.gov/title17/'}
 		],		
@@ -177,6 +180,16 @@ LNA = {
 		$('.crumbHere').children().first().text(dataArray.person['foaf:name']);
 		if(dataArray.person['foaf:image'] != '') $('.sidebar img').attr('src', dataArray.person['foaf:image']);
 
+		console.log(dataArray)
+
+		$('.personName').html('Title: '+dataArray.person['foaf:title']+'<br>'+'Given: '+dataArray.person['foaf:givenName']+'<br>'+'Family: '+dataArray.person['foaf:familyName']+'<br>'+'Written: '+dataArray.person['foaf:name']);
+		$('.personEmail').text(dataArray.person['foaf:mbox']);
+		$('.personImage').text(dataArray.person['foaf:image']);
+		$('.personHomepage').text(dataArray.person['foaf:homepage'].join('<br />'));
+
+		$('.personPrimary').text(dataArray.person['orgLabel']);
+		$('.parent button').click(function(e){LNA.openLink(e, dataArray.person['org:reportsTo'])});
+
 		//clear all spinners
 		$('.sidebar .spinner, .affiliations .spinner').parent().remove();
 
@@ -202,11 +215,12 @@ LNA = {
 	//Fill functions fill in templates/partials based on passed data
 	'fillAccount': function(parent, data){
 		var node = $('#templates .onlineAccount').clone();
-		var button = node.children().first();
+		var button = node.find('button').first();
+		var label = node.find('.accountName').first();
 		var iconClass = $.grep(LNA.constants.onlineAccounts, function(o){ return data['dc:title'] == o['title']});
 		if(iconClass.length > 0) node.addClass(iconClass[0].class);
 		button.attr('title', 'edit '+ data['dc:title'] + ' account');
-		button.text(data['foaf:accountName'].split('/').pop());
+		label.text(data['foaf:accountName'].split('/').pop());
 		parent.prepend(node);
 	},
 	'fillMembership': function(parent, data){
@@ -246,17 +260,16 @@ LNA = {
 		var node = $('#templates .work').clone();
 		var title = node.find('.itemTitle').first();
 		var authorList = node.find('.itemAuthors').first();
-		var editButton = node.find('.edit').first();
 		var viewButton = node.find('.view').first();
 
 		var date = data['dc:date'].substr(0,4);
 		var authors = data['bibo:authorList'].join(', ');
-		viewButton.click(function(e){ console.log('ok'); LNA.openLink(e, data['@id'])});
+		viewButton.click(function(e){ LNA.openLink(e, data['@id'])});
 
 		title.text(data['dc:title'] + ' (' + date + ')');
 		authorList.text(authors);
 
-		parent.prepend(node);
+		parent.append(node);
 	},		
 
 	'fillPersons': function(parent, data){

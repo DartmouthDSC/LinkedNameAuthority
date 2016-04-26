@@ -683,7 +683,7 @@ a.fa{
 .details li button:first-of-type{
     margin-left: 1em;
 }
-.details .add{
+.details .add, .sidebar .add{
     display: inline-block;
     height: 1.7em;
     width: 2.2em;
@@ -700,11 +700,11 @@ a.fa{
     color: inherit;
     padding: .2em;
 }
-.record button, .workData button{
+.record button, .workData button, .parent button{
     display: block;
     float: left;
 }
-.details div > button, .sidebar li > button{
+.details div > button, .sidebar div > button{
     display: flex;
     flex: 1 1 auto;
     align-items: center;
@@ -719,8 +719,16 @@ a.fa{
     margin-left: -.2em;
     text-align: left;
 }
+.sidebar li > button{
+    display: flex;
+    flex: 0 0 auto;
+    align-self: flex-end;
+}
+.sidebar div > button{
+    font-size: small;
+}
 
-.details button:hover, .details button:focus, .record button:hover, .record button:focus{
+.details button:hover, .details button:focus, .sidebar div > button:hover, .sidebar div > button:focus,.record button:hover, .record button:focus{
     margin-top: -.1em;
     box-shadow: 0 .1em .1em rgba(0,0,0,.5);
     margin-bottom: .3em;

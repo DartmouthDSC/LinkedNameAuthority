@@ -347,6 +347,7 @@
 		    			var org = $.grep(data.orgs, function(o){ return v['org:organization'] == o['@id']});
 		    			if(org.length > 0) v.orgLabel = org[0]['skos:prefLabel'];
 		    			else v.orgLabel = '';
+		    			if(org.length > 0 && org['@id'] == data.person.reportsTo) data.person.orgLabel = org[0]['skos:prefLabel'];
 		    			data.memberships.push(v);
 		    		}
 	    		});
