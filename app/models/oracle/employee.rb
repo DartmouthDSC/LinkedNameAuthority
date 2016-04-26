@@ -1,5 +1,5 @@
 module Oracle
-  class Faculty < OracleDatabase
+  class Employee < OracleDatabase
     self.table_name = 'DARTHR.DC_ACAD_COMMONS_EMP_V'
     self.primary_key = 'netid'
 
@@ -65,7 +65,7 @@ module Oracle
                                    :mbox        => self.email,
                                  },
                :membership    => {
-                                   :primary => !!(self.primary_flag),
+                                   :primary => ((self.primary_flag == 'Y' || self.primary_flag == 'y') ? true : false),
                                    :title   => self.title,
                                    :org     => {
                                                  :label     => self.department,
@@ -82,7 +82,6 @@ module Oracle
       [ :initials,
         :known_as,
         :rank,
-        :primary_group
       ].each do |key|
         hash.delete(key)
       end
