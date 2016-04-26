@@ -29,17 +29,17 @@ LNA = {
 		'licenses':[
 			{'title': 'Dartmouth OA', 
 			 'value': 'Dartmouth OA',
-			 'class': 'oa',
+			 'class': 'openAccess',
 			 'type': 'ali:license_ref',
 			 'uri': 'https://creativecommons.org/licenses/by-nc/4.0/'},
 			{'title': 'CC-BY 2.0', 
 			 'value': 'CC-BY 2.0', 
-			 'class': 'oa',
+			 'class': 'openAccess',
 			 'type': 'ali:license_ref',
 			 'uri': 'https://creativecommons.org/licenses/by/2.0/'},
 			{'title': 'All Rights Reserved', 
 			 'value': 'All Rights Reserved',
-			 'class': 'closed', 
+			 'class': 'closedAccess', 
 			 'type': 'ali:license_ref',
 			 'uri': 'http://www.copyright.gov/title17/'}
 		],		
@@ -243,9 +243,12 @@ LNA = {
 	},
 	'fillLicense': function(parent, data){
 		var node = $('#templates .license').clone();
-		var button = node.children().first();
+		var button = node.find('button').first();
+		var label = node.find('.licenseName').first();
+		var iconClass = $.grep(LNA.constants.licenses, function(o){ return data['dc:title'] == o['title']});
+		if(iconClass.length > 0) node.addClass(iconClass[0].class);		
 		button.attr('title', 'edit '+ data['dc:title'] + ' account');
-		button.text(data['dc:title']);
+		label.text(data['dc:title']);
 		parent.prepend(node);
 	},	
 	'fillSuborgs': function(parent, data){

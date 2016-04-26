@@ -755,6 +755,12 @@ a.fa{
 .netID{
     background-image: url('icon_netid.svg');
 }
+.openAccess{
+    background-image: url('icon_oa.svg');
+}
+.closedAccess{
+    background-image: url('icon_closed.svg');
+}
 
 /* pagination */
 .pager{
@@ -880,9 +886,9 @@ a.fa{
     .sidebar img{
         float: inherit;
     }
-    .sidebar ul li{
+/*    .sidebar ul li{
         text-align: center
-    }
+    }*/
     body.debug{
         background-color: #6666FF;
     }
