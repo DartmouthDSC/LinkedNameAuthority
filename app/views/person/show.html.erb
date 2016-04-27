@@ -11,12 +11,35 @@
                     <h1></h1>
                     <div><span class="spinner"></span></div>
                     <ul class="iconList">
-                        <li class="add"><button title="add account" id="newAccount" data-toggle="modal" data-target="#newAccountModal">Add ID</button></li>
                     </ul>
+                    <button title="add account" id="newAccount" data-toggle="modal" data-target="#newAccountModal"><span class="add"></span>Add New ID</button>
                 </div>
             </section>
-
             <section class="details">
+                <div class="personData">
+                    <h1>About <button class="fa fa-pencil fa-lg edit" title="edit person" data-toggle="modal" data-target="#editPersonModal"><span class="helpText">edit this person</span></button></h1>
+                    <p>
+                        <span class="title">Name</span><br>
+                        <span class="personName"></span>
+                    </p>
+                    <p>
+                        <span class="title">Email Address</span><br>
+                        <span class="personEmail"></span>
+                    </p>
+                    <p>
+                        <span class="title">Image URL</span><br>
+                        <span class="personImage"></span>
+                    </p>
+                    <p>
+                        <span class="title">Homepage URL(s)</span><br>
+                        <span class="personHomepage"></span>
+                    </p>                    
+                    <p class="parent">
+                        <span class="title">Primary Affiliation</span><br>
+                        <button class="fa fa-external-link-square fa-lg view" title="view parent"><span class="helpText">view primary affiliation</span></button>
+                        <span class="personPrimary"></span>
+                    </p>  
+                </div>
                 <div class="affiliations">
                     <h1>Affiliations</h1>
                     <ul class="iconList">
@@ -42,6 +65,7 @@
         <%= render "shared/modals/new_work" %>
         <%= render "shared/modals/new_affiliation" %>
         <%= render "shared/modals/new_account" %>
+        <%= render "shared/modals/edit_account" %>
         </section>        
 		<script>
         $(document).ready(function(){

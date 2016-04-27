@@ -2,7 +2,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-body">
-        <form data-lna-query="newAffiliation" class="formTwoColumn" data-opt="<%= @short_id %>/membership">
+        <form data-lna-query="newAffiliation" class="formTwoColumn" data-opt="<%= @short_id %>/membership" data-no-ajax="true">
           <div><label>Organization</label><input name="skos:prefLabel" class="autocompleteBehavior" data-autocomplete-type="org"></input></div>          
           <div><label>Title</label><input name="vcard:title"></input></div> 
           <div><label>Street Address</label><input name="vcard:street-address"></input></div>

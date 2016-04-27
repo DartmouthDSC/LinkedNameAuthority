@@ -1,0 +1,11 @@
+        <nav class="centered breadcrumbs" role="navigation">
+			<%= link_to(root_path, class: "crumbStop crumbHere") do %><span>Home</span><% end %>
+        </nav>
+        <main class="centered content">
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+	        <h1>Error</h1>
+	        <p><%= @errorText %></p>
+	        <p>Please correct the error and try again.</p>
+        </main>

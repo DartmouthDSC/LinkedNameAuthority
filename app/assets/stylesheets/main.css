@@ -68,6 +68,9 @@ textarea {
 .title{
     font-weight: 600;
 }
+.warning{
+    border: 5px double red;
+}
 .helpText{
     position: absolute;
     width: 1px;
@@ -369,6 +372,15 @@ footer{
     margin: .1em auto;
 }
 
+input[type="radio"]{
+    display: inline-block;
+    width: auto;
+    margin: auto auto auto 1em;
+}
+input[readonly]{
+    color: #888;
+}
+
 .formSingleColumn label{
     margin-top: .4em;
 }
@@ -394,6 +406,10 @@ footer{
     min-width: 130px;
     text-align: right;
     margin-right: .3em;
+}
+.formTwoColumn textarea{
+    width: 100%;
+    height: 4em;
 }
 .formTwoColumn button{
     margin: 1em 2em .4em;
@@ -673,7 +689,7 @@ a.fa{
 .details li button:first-of-type{
     margin-left: 1em;
 }
-.details .add{
+.details .add, .sidebar .add{
     display: inline-block;
     height: 1.7em;
     width: 2.2em;
@@ -690,11 +706,11 @@ a.fa{
     color: inherit;
     padding: .2em;
 }
-.record button{
+.record button, .workData button, .parent button{
     display: block;
-    float: right;
+    float: left;
 }
-.details div > button, .sidebar li > button{
+.details div > button, .sidebar div > button{
     display: flex;
     flex: 1 1 auto;
     align-items: center;
@@ -707,13 +723,28 @@ a.fa{
     color: inherit;
     padding: .2em;
     margin-left: -.2em;
+    text-align: left;
+}
+.sidebar li > button{
+    display: flex;
+    flex: 0 0 auto;
+    align-self: flex-end;
+}
+.sidebar div > button{
+    font-size: small;
 }
 
-.details button:hover, .details button:focus, .record button:hover, .record button:focus{
+.details button:hover, .details button:focus, .sidebar div > button:hover, .sidebar div > button:focus,.record button:hover, .record button:focus{
     margin-top: -.1em;
     box-shadow: 0 .1em .1em rgba(0,0,0,.5);
     margin-bottom: .3em;
     cursor: pointer;
+}
+.details h1, .record h1{
+    width: 95%;
+}
+.details h1 button, .record h1 button{
+    float: right;
 }
 .plum{
     background-image: url('icon_plum.svg');
@@ -729,6 +760,39 @@ a.fa{
 }
 .netID{
     background-image: url('icon_netid.svg');
+}
+.openAccess{
+    background-image: url('icon_oa.svg');
+}
+.closedAccess{
+    background-image: url('icon_closed.svg');
+}
+
+/* pagination */
+.pager{
+    margin: auto;
+    display: none;
+    text-align: center;
+    margin-bottom: 1em;
+}
+.pager a, .pager span{
+    background-color: #95AFA2;
+    display: inline-block;
+    border-radius: 50%;
+    height: 2em;
+    min-width: 2em;
+    color: white;
+    line-height: 2em;
+    box-shadow: 0 .1em rgba(0,0,0,.6);
+}
+.pager a:hover, .pager a:active{
+    box-shadow: 0 .2em rgba(0,0,0,.6);
+    margin-top: -.1em;
+}
+.currentPage span{
+    display: block;
+    padding-left: .5em;
+    padding-right: .5em;
 }
 
 /* item types */
@@ -780,12 +844,13 @@ a.fa{
         height: 2em;
     }
 
-    .cards{
+    .cards, .cardContainer{
+        width: 100%;
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
-        padding-left: 2em;
-        padding-right: 2em;
+        padding-left: 1em;
+        padding-right: 1em;
     }
     .card{
         flex: 0 1 100%;
@@ -827,9 +892,9 @@ a.fa{
     .sidebar img{
         float: inherit;
     }
-    .sidebar ul li{
+/*    .sidebar ul li{
         text-align: center
-    }
+    }*/
     body.debug{
         background-color: #6666FF;
     }

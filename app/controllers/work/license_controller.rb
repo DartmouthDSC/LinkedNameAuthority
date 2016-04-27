@@ -32,7 +32,9 @@ class Work::LicenseController < CrudController
     location = "/work/#{FedoraID.shorten(work['id'])}##{FedoraID.shorten(@license['id'])}"
 
     respond_to do |f|
-      f.jsonld { render :create, status: :created, location: location, content_type: 'application/ld+json' }
+      f.jsonld { render :create, status: :created, location: location,
+                        content_type: 'application/ld+json' }
+      f.html {redirect_to work_path(FedoraID.shorten(work['id'])) }
     end
   end
 

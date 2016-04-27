@@ -14,7 +14,7 @@
                                 <%= link_to(organizations_path, class: "roundButton") do%><i class="fa fa-2x fa-list" aria-hidden="true"></i><br />Browse<% end %>
                             </div>
                         </div>
-                        <div class="roundButton" data-toggle="modal" data-target="#findOrgModal">
+                        <div class="roundButton" data-toggle="modal" data-target="#findOrgsModal">
                             <div class="roundButtonCircle">
                                 <roundButton class="roundButton"><i class="fa fa-2x fa-search" aria-hidden="true"></i><br />Find</roundButton>
                             </div>
@@ -73,5 +73,8 @@
         <section id="modals">
     		<%= render "shared/modals/new_person" %>
             <%= render "shared/modals/new_organization" %>
+            <%= render "shared/modals/new_work" %>
             <%= render "shared/modals/find_persons" %>
+            <%= render "shared/modals/find_organizations" %>
+            <%= render "shared/modals/find_works" %>
         </section>

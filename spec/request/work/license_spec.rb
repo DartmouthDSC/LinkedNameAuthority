@@ -49,7 +49,7 @@ RSpec.describe 'Work/License API', type: :request, https: true do
             'ali:end_date'   => '2012-11-01',
             'ali:uri'        => 'https://creativecommons.org/licenses/by-nc-sa/2.0/',
             'dc:title'       => 'Creative Commons BY-NC-SA 2.0',
-            'dc:description' => 'license_ref'
+            'dc:description' => 'ali:license_ref'
           }
           post @path, body.to_json, {
             'ACCEPT'       => 'application/ld+json',
@@ -124,7 +124,7 @@ RSpec.describe 'Work/License API', type: :request, https: true do
             'ali:end_date'   => '2012-11-01',
             'ali:uri'        => 'https://creativecommons.org/licenses/by-nc-sa/2.0/',
             'dc:title'       => 'Creative Commons',
-            'dc:description' => 'license_ref'
+            'dc:description' => 'ali:license_ref'
           }
           put @path, body.to_json, {
             'ACCEPT'       => 'application/ld+json',
