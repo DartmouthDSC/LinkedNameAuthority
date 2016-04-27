@@ -8,7 +8,7 @@ class OrganizationsController < CollectionController
     result = search_for_active_organizations(
       rows: MAX_ROWS,
       sort: 'label_ssi asc',
-      docs_only: false
+      docs_only: false,
       page: @page,
     )
     @organizations = result['response']['docs']
