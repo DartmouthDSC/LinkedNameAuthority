@@ -1,6 +1,6 @@
 class Work::LicenseController < CrudController
-  LICENSE_REF  = 'license_ref'
-  FREE_TO_READ = 'free_to_read'
+  LICENSE_REF  = 'ali:license_ref'
+  FREE_TO_READ = 'ali:free_to_read'
   PARAM_TO_MODEL = {
     'ali:start_date' => 'start_date',
     'ali:end_date'   => 'end_date',
@@ -22,7 +22,7 @@ class Work::LicenseController < CrudController
       l = Lna::Collection::FreeToRead.new(attributes)
     else
       raise ActiveFedora::RecordInvalid, ActiveFedora::Base.new,
-            'dc:description must be license_ref or free_to_read'
+            "dc:description must be #{LICENSE_REF} or #{FREE_TO_READ}"
     end
 
     l.save!
@@ -34,7 +34,7 @@ class Work::LicenseController < CrudController
     respond_to do |f|
       f.jsonld { render :create, status: :created, location: location,
                         content_type: 'application/ld+json' }
-      f.html {redirect_to work_path(FedoraID.shorten(work['id'])) }
+      f.html { redirect_to work_path(FedoraID.shorten(work['id'])) }
     end
   end
 
