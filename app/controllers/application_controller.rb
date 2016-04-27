@@ -1,11 +1,4 @@
 class ApplicationController < ActionController::Base
-  # before_filter do
-  #   resource = controller_path.singularize.gsub('/', '_').to_sym 
-  #   method = "#{resource}_params"
-  #   params[resource] &&= send(method) if respond_to?(method, true)
-  # end
-
-#  include Hydra::Controller::ControllerBehavior
   layout 'lna'
 
   # Prevent CSRF attacks by raising an exception.
