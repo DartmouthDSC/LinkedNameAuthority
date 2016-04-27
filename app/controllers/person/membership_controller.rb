@@ -1,6 +1,5 @@
 class Person::MembershipController < CrudController
   before_action :convert_org_to_fedora_id
-  #  before_action :verify_authorization!, only: [:create, :update, :destroy]
   load_resource :person, class: 'Lna::Person'
   load_and_authorize_resource :membership, param_method: :attributes, class: 'Lna::Membership',
                               through: :person
@@ -20,15 +19,7 @@ class Person::MembershipController < CrudController
 
   # POST /person/:person_id/membership
   def create
-#    person = search_for_id(params[:person_id])
-
-    # Create membership
-#    attributes = params_to_attributes(membership_params, person_id: person['id'])
-#    m = Lna::Membership.new(attributes)
-
-  #  authorize! :create, m
-    
-    render_unprocessable_entity && return unless @membership.save
+    @membership.save!
 
     @membership = search_for_id(@membership.id) # gets solr doc
     
@@ -41,15 +32,8 @@ class Person::MembershipController < CrudController
 
   # PUT /person/:person_id/membership/:id
   def update
- #   membership = search_for_memberships(id: params[:id], person_id: params[:person_id])
-
-    # Update membership.
-#    m = Lna::Membership.find(params[:id])
-    
-#   authorize! :update, m
-    
-#    attributes = params_to_attributes(membership_params, put: true)
-    render_unprocessable_entity && return unless @membership.update(attributes)
+    @membership.update(attributes)
+    @membership.save!
     
     @membership = search_for_id(params[:id]) # gets solr doc
     
@@ -58,15 +42,7 @@ class Person::MembershipController < CrudController
 
   # DELETE /person/:person_id/membership/:id
   def destroy
-  #  membership = search_for_memberships(id: params[:id], person_id: params[:person_id])
-
-    # Delete membership
-#    m = Lna::Membership.find(membership['id'])
-
-#    authorize! :destroy, m
-
-    @membership.destroy
-    render_unprocessable_entiry && return unless @membership.destroyed?
+    @membership.destroy!
 
     super
   end
@@ -79,25 +55,19 @@ class Person::MembershipController < CrudController
   
   def attributes
     extra = {}
-    case params[:action].to_sym
-    when :update
-      extra[:put] = true 
-    when :create
-      extra[:person_id] = params[:person_id]
-    end
+    extra[:person_id] = params[:person_id] if params[:action] == 'create'
 
     params_to_attributes(membership_params, extra)
   end
 
-  # def verify_authorization!
-  #   authorize! params[:action].to_sym, Lna::Membership
-  # end
-  
   def convert_org_to_fedora_id
     params['org:organization'] = org_uri_to_fedora_id(params['org:organization'])
   end
   
   def membership_params
+    params.require('org:organization')
+    params.require('vcard:title')
+    params.require('owltime:hasBeginning')
     params.permit(PARAM_TO_MODEL.keys << 'person_id')
   end
 end

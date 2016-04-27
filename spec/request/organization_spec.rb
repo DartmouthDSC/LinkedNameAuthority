@@ -7,6 +7,13 @@ RSpec.describe "Organization API", type: :request, https: true do
     FactoryGirl.create(:orcid_for_org, account_holder: @org)
   end
 
+  let(:required_body) {
+    {
+      'skos:prefLabel'      => 'Dartmouth Information Technology Services',
+      'owltime:hasBeginning' => '2013-06-01',
+    }.to_json
+  }
+
   shared_context 'get organization id' do
     before :context do
       @id = FedoraID.shorten(@org.id)
@@ -108,8 +115,9 @@ RSpec.describe "Organization API", type: :request, https: true do
   
   describe 'POST organization/' do
     include_examples 'requires authentication and authorization' do
-      let(:path) { organization_index_path }
+      let(:path)   { organization_index_path }
       let(:action) { 'post' }
+      let(:body)   { required_body }
     end
     
     describe 'when authorized', authenticated: true, editor: true do 
@@ -175,8 +183,9 @@ RSpec.describe "Organization API", type: :request, https: true do
     include_context 'get organization id'
 
     include_examples 'requires authentication and authorization' do
-      let(:path) { @path }
+      let(:path)   { @path }
       let(:action) { 'put' }
+      let(:body)   { required_body }
     end
 
     describe 'when authorized', authenticated: true, editor: true do
@@ -219,8 +228,9 @@ RSpec.describe "Organization API", type: :request, https: true do
     include_context 'get organization id'
 
     include_examples 'requires authentication and authorization' do
-      let(:path) { @path }
+      let(:path)   { @path }
       let(:action) { 'delete' }
+      let(:body)   { required_body }
     end
 
     describe 'when authorized', authenticated: true, editor: true do

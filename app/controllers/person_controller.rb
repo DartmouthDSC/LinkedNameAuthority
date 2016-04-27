@@ -27,19 +27,14 @@ class PersonController < CrudController
       org_ids << m['Organization_ssim'].first
     end
 
-    query = ActiveFedora::SolrQueryBuilder.construct_query_for_ids(org_ids.uniq)
-    @organizations = ActiveFedora::SolrService.query(query)
+    @organizations = search_for_ids(org_ids.uniq)
 
     super
   end
 
   # POST /person
   def create
-    # Create person.
-    #    attributes = params_to_attributes(person_params)
-    #    p = Lna::Person.new(attributes)
-
-    render_unprocessable_entity && return unless @person.save
+    @person.save!
     
     @person = search_for_id(@person.id)
 
@@ -53,12 +48,8 @@ class PersonController < CrudController
 
   # PUT /person/:id
   def update
-#    person = search_for_persons(id: params[:id])
-
-    # Update person.
-#    attributes = params_to_attributes(person_params, put: true)
-#    p = Lna::Person.find(person['id'])
-    render_unprocessable_entity && return unless @person.update(attributes)
+    @person.update(attributes)
+    @person.save!
     
     @person = search_for_persons(id: params[:id])
 
@@ -67,12 +58,7 @@ class PersonController < CrudController
 
   # DELETE /person/:id
   def destroy
-#    p = search_for_persons(id: params[:id])
-
-    # Delete person
-#    person = Lna::Person.find(p['id'])
-    @person.destroy
-    render_unprocessable_entity && return unless @person.destroyed?
+    @person.destroy!
     
     super
   end
@@ -80,9 +66,7 @@ class PersonController < CrudController
   private
 
   def attributes
-    extra = {}
-    extra[:put] = true if params[:action] == 'update'
-    params_to_attributes(person_params, extra)
+    params_to_attributes(person_params)
   end
 
   def convert_org_to_fedora_id
@@ -90,6 +74,9 @@ class PersonController < CrudController
   end
   
   def person_params
+    ['org:reportsTo', 'foaf:name', 'foaf:givenName', 'foaf:familyName'].each do |p|
+      params.require(p)
+    end
     params.permit('id', 'foaf:name', 'foaf:givenName', 'foaf:familyName', 'foaf:title',
                   'foaf:mbox', 'foaf:image', 'org:reportsTo', 'authenticity_token',
                   'foaf:homepage' => [])

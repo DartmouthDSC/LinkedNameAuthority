@@ -1,5 +1,6 @@
 class WorkController < CrudController
   before_action :convert_creator_to_fedora_id
+  before_action :load_collection, only: [:create, :update]
 
   PARAM_TO_MODEL = {
       'bibo:doi'         => 'doi',
@@ -8,7 +9,7 @@ class WorkController < CrudController
       'bibo:pages'       => 'pages',
       'bibo:pageStart'   => 'page_start',
       'bibo:pageEnd'     => 'page_end',
-      'bibo:authorsList' => 'author_list',
+      'bibo:authorList'  => 'author_list',
       'dc:title'         => 'title',
       'dc:abstract'      => 'abstract',
       'dc:publisher'     => 'publisher',
@@ -27,18 +28,11 @@ class WorkController < CrudController
   
   # POST /work
   def create
-    render_unprocessable_entity && return unless params['dc:creator']
-    @person = search_for_persons(id: params['dc:creator'])
-
-    # Create work
-    attributes = params_to_attributes(work_params, collection_id: @person['collection_id_ssi'])
-    w = Lna::Collection::Document.new(attributes)
-    authorize! :create, w
-    render_unprocessable_entity && return unless w.save
-
-    @work = search_for_id(w.id)
+    authorize! :create, Lna::Collection::Document
+    @work = Lna::Collection::Document.create!(attributes)
+    @work = search_for_id(@work.id)
     
-    location = work_path(id: FedoraID.shorten(w.id))
+    location = work_path(FedoraID.shorten(@work['id']))
     respond_to do |f|
       f.jsonld { render :create, status: :created, location: location,
                         content_type: 'application/ld+json' }
@@ -48,17 +42,13 @@ class WorkController < CrudController
 
   # PUT /work/:id
   def update
-    work = search_for_works(id: params[:id])
+    unless @work = @collection.documents.find(params[:id])
+      raise ActiveFedora::ObjectNotFoundError, "work id not valid"
+    end
 
-    render_unprocessable_entity && return unless params['dc:creator']
-    @person = search_for_persons(id: params['dc:creator'])
-
-    # Update work.
-    attributes = params_to_attributes(work_params, put: true,
-                                      collection_id: @person['collection_id_ssi'] )
-    w = Lna::Collection::Document.find(params[:id])
-    authorize! :update, w
-    render_unprocessable_entity && return unless w.update(attributes)
+    authorize! :update, @work
+    @work.update(attributes)
+    @work.save!
     
     @work = search_for_id(params[:id])
     
@@ -67,19 +57,23 @@ class WorkController < CrudController
 
   # DELETE /work/:id
   def destroy
-    work = search_for_works(id: params[:id])
-
-    # Delete account.
-    w = Lna::Collection::Document.find(work['id'])
-    authorize! :destroy, w
-    w.destroy
-    render_unprocessable_entiry && return unless w.destroyed?
+    @work = Lna::Collection::Document.find(params[:id])
+    authorize! :destroy, @work
+    @work.destroy!
 
     super
   end
   
   private
 
+  def attributes
+    params_to_attributes(work_params, collection_id: @collection.id)
+  end
+
+  def load_collection
+    @collection = Lna::Person.find(work_params['dc:creator']).collections.first
+  end
+  
   def convert_creator_to_fedora_id
     if uri = params['dc:creator']
       if match = %r{^#{Regexp.escape(root_url)}person/([a-zA-Z0-9-]+$)}.match(uri)
@@ -89,9 +83,12 @@ class WorkController < CrudController
   end
     
   def work_params
-    params.permit('id', 'dc:creator', 'bibo:doi', 'bibo:volume', 'bibo:pages', 'bibo:pageStart',
+    params.require('dc:creator')
+    params.require('bibo:authorList')
+    params.require('dc:title')
+    params.permit('id', 'bibo:doi', 'dc:creator', 'bibo:volume', 'bibo:pages', 'bibo:pageStart',
                   'bibo:pageEnd', 'dc:title', 'dc:abstract', 'dc:publisher', 'dc:date',
-                  'dc:bibliographicCitation', 'authenticity_token', 'bibo:authorsList' => [],
+                  'dc:bibliographicCitation', 'authenticity_token', 'bibo:authorList' => [],
                   'bibo:uri' => [])
   end
 end

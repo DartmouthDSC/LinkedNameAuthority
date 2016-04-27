@@ -27,11 +27,9 @@ class OrganizationController < CrudController
 
   # POST /organization
   def create
-    # Create organization
+    authorize! :create, Lna::Organization
     attributes = params_to_attributes(organization_params)
-    o = Lna::Organization.new(attributes)
-    authorize! :create, o
-    render_unprocessable_entity && return unless o.save
+    o = Lna::Organization.create!(attributes)
 
     @organization = search_for_id(o.id)
 
@@ -51,15 +49,17 @@ class OrganizationController < CrudController
     o = ActiveFedora::Base.find(organization['id'])
     authorize! :update, o
     if o.class == Lna::Organization
-      attributes = params_to_attributes(organization_params, put: true,
+      attributes = params_to_attributes(organization_params,
                                         sub_organization_ids: params['org:hasSubOrganization'],
                                         super_organization_ids: params['org:subOrganizationOf'])
     else
-      attributes = params_to_attributes(organization_params, put: true,
+      attributes = params_to_attributes(organization_params,
                                         historic_placement: params['lna:historicPlacement'],
                                         end_date: params['owltime:hasEnd'])
     end
-    render_unprocessable_entity && return unless o.update(attributes)
+
+    o.update_attributes(attributes)
+    o.save!
 
     @organization = search_for_organizations(id: organization['id'])
     
@@ -68,13 +68,9 @@ class OrganizationController < CrudController
 
   # DELETE /organization/:id
   def destroy
-    o = search_for_organizations(id: params[:id])
-
-    # Delete organization
-    organization = ActiveFedora::Base.find(o['id'])
+    organization = ActiveFedora::Base.find(params['id'])
     authorize! :destroy, organization
-    organization.destroy
-    render_unprocessable_entity && return unless organization.destroyed?
+    organization.destroy!
    
     super
   end
@@ -82,6 +78,8 @@ class OrganizationController < CrudController
   private
 
   def organization_params
+    params.require('skos:prefLabel')
+    params.require('owltime:hasBeginning')
     params.permit('id', 'org:identifier', 'skos:prefLabel', 'owltime:hasBeginning', 
                   'lna:historicPlacement', 'owltime:hasEnd', 'vcard:postal-box',
                   'org:purpose', 'authenticity_token', 'skos:altLabel' => [],

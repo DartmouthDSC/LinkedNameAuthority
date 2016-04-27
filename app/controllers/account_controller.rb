@@ -12,7 +12,7 @@ class AccountController < CrudController
 
   # POST /person/:person_id/account OR POST /organization/:organization_id/account
   def create
-    render_unprocessable_entity && return unless @account.save
+    @account.save!
 
     @account = search_for_id(@account.id)
     location = "/#{@request_path}/#{FedoraID.shorten(@account_holder.id)}##{FedoraID.shorten(@account['id'])}"
@@ -25,7 +25,9 @@ class AccountController < CrudController
 
   # PUT /person/:person_id/account/:id OR PUT /organization/:organization_id/account/:id
   def update
-    render_unprocessable_entity && return unless @account.update(attributes)
+    @account.update(attributes)
+    @account.save!
+    
     @account = search_for_id(params[:id])
 
     super
@@ -33,9 +35,8 @@ class AccountController < CrudController
 
   # DELETE /person/:person_id/account/:id OR DELETE /organization/:org_id/account/:id
   def destroy
-    @account.destroy
-    render_unprocessable_entiry && return unless @account.destroyed?
-
+    @account.destroy!
+    
     super
   end
   
@@ -47,17 +48,12 @@ class AccountController < CrudController
   
   def attributes
     extra = {}
-    case params[:action].to_sym
-    when :update
-      extra[:put] = true
-    when :create
-      extra[:account_holder_id] = @account_holder.id
-    end
-
+    extra[:account_holder_id] = @account_holder.id if params[:action] == 'create'
     params_to_attributes(account_params, extra)
   end
   
   def account_params
+    PARAM_TO_MODEL.keys.each { |p| params.require(p) }
     params.permit(
       PARAM_TO_MODEL.keys.concat(['person_id', 'organization_id', :authenticity_token])
     )

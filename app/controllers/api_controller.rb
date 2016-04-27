@@ -1,7 +1,7 @@
 require 'fedora_id'
 class ApiController < ActionController::Base
   # Adds additional behaviors into the application controller
-  include Hydra::Controller::ControllerBehavior
+#  include Hydra::Controller::ControllerBehavior
   include SolrSearchBehavior
 
   layout 'lna'
@@ -9,8 +9,6 @@ class ApiController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
-  
-#  rescue_from ActionController::RoutingError, with: :render_not_found
 
   MAX_ROWS = 100.freeze
   
@@ -30,32 +28,7 @@ class ApiController < ActionController::Base
     request.env['omniauth.origin'] || stored_location_for(resource) || root_path
   end
 
-  # TODO: Need to revist this.
-  # def not_found
-  #   raise ActionController::RoutingError.new('Not Found')
-  # end
-
   private
-
-  def render_not_found
-    respond_to do |f|
-      f.jsonld { render json: { status: 'failure', error: 'not_found' }.to_json,
-                        status: :not_found, content_type: 'application/ld+json' }
-    end
-  end
-
-  # Error message for when an update, create or delete is unsuccessful.
-  # TODO: Error message should be more detailed put it would require mapping the errors
-  # back to the keys that the user knows about. How exactly we want this to look like should
-  # be decided on before we move in that direction.
-  def render_unprocessable_entity
-    respond_to do |f|
-      f.jsonld { render json: { status: 'failure',
-                                error: 'Problem creating, updating or deleting record'}.to_json,
-                        status: :unprocessable_entity,
-                        content_type: 'application/ld+json' }
-    end
-  end
 
   # Converts to id, person_id and work_id to full fedora ids if they are present.
   def convert_to_full_fedora_id

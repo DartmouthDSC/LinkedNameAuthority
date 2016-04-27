@@ -8,6 +8,15 @@ RSpec.describe "Person API", type: :request, https: true do
     @org_id = FedoraID.shorten(@jane.primary_org.id)
   end
 
+  let(:required_body) {
+    {
+      'foaf:name'       => 'John Bell',
+      'foaf:givenName'  => 'John',
+      'foaf:familyName' => 'Bell',
+      'org:reportsTo'   => organization_url(id: @org_id)
+    }.to_json
+  }
+  
   shared_context 'get person id' do
     before :context do
       @id = FedoraID.shorten(@jane.id)
@@ -68,8 +77,9 @@ RSpec.describe "Person API", type: :request, https: true do
   
   describe 'POST person/' do
     include_examples 'requires authentication and authorization' do
-      let(:path) { person_index_path }
+      let(:path)   { person_index_path }
       let(:action) { 'post' }
+      let(:body)   { required_body }
     end
     
     describe 'when authorized', authenticated: true, editor: true do
@@ -121,8 +131,9 @@ RSpec.describe "Person API", type: :request, https: true do
     include_context 'get person id'
     
     include_examples 'requires authentication and authorization' do
-      let(:path) { @path }
+      let(:path)   { @path }
       let(:action) { 'put' }
+      let(:body)   { required_body }
     end
 
     describe 'when authorized', authenticated: true, editor: true do
@@ -167,8 +178,9 @@ RSpec.describe "Person API", type: :request, https: true do
     include_context 'get person id'
 
     include_examples 'requires authentication and authorization' do
-      let(:path) { @path }
+      let(:path)   { @path }
       let(:action) { 'delete' }
+      let(:body)   { {}.to_json }
     end
 
     describe 'when authorized', authenticated: true, editor: true do

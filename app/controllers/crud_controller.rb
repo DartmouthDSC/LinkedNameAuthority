@@ -1,17 +1,6 @@
 class CrudController < ApiController
   before_action :convert_to_full_fedora_id
   before_action :authenticate_user!, only: [:create, :update, :destroy]
-
-#  rescue_from ActiveFedora::ObjectNotFoundError, with: :render_not_found
-
-  rescue_from CanCan::AccessDenied do |exception|
-    respond_to do |f|
-      f.jsonld { render json: { status: 'failure', error: 'forbidden'}.to_json,
-                        status: :forbidden, content_type: 'application/ld+json' }
-    end
-  end
-
-  # rescue_from ActiveFedora::RecordInvalid
   
   # GET
   def show
@@ -35,7 +24,7 @@ class CrudController < ApiController
     end
   end
 
-  # Helper method to map parameters send in request of body to model attributes.
+  # Helper method to map parameters sent in request of body to model attributes.
   #
   # @private
   #
@@ -43,7 +32,9 @@ class CrudController < ApiController
   # @params put [boolean] true if used for a put request; all fields are required to contain an
   #   empty string even if they aren't set.
   # @params extra_params [Hash]
-  def params_to_attributes(params, put: false, **extra_params)
+  def params_to_attributes(params, **extra_params)
+    put = self.params[:action] == 'update'
+    
     attributes = {}
     attributes.merge!(extra_params) if extra_params
 
