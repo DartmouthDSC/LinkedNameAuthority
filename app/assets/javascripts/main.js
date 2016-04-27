@@ -309,8 +309,30 @@ LNA = {
 	},
 
 	'editAccount': function(targetForm, data){
-		console.log(data);
+		var $targetForm = $(targetForm);
+		$targetForm.find('[name="dc:title"]').val(data['dc:title']);
+		var accountParts = data['foaf:accountName'].split('/')
+		$targetForm.find('[name="accountID"]').val(accountParts.pop());
+		$targetForm.find('[name="accountRoot"]').val(accountParts.join('/'));
+		$targetForm.find('[name="foaf:accountServiceHomepage"]').val(data['foaf:accountServiceHomepage']);
+
+		//data-opt on this form has a placeholder (;;;) for the account ID. Replace it with the actual ID
+		var oldOpt = $targetForm.data('opt').split('/');
+		oldOpt.pop();
+		oldOpt.push(data['@id'].substr(1));
+		var newOpt = oldOpt.join('/')
+		$targetForm.data('opt', newOpt);
 	},
+	'deleteAccount': function(targetForm, data){
+		var $targetForm = $(targetForm);
+
+		// //data-opt on this form has a placeholder (;;;) for the account ID. Replace it with the actual ID
+		var oldOpt = $targetForm.data('opt').split('/');
+		oldOpt.pop();
+		oldOpt.push(data['@id'].substr(1));
+		var newOpt = oldOpt.join('/')
+		$targetForm.data('opt', newOpt);
+	},	
 
 	//helpers
 	'openLink': function(e, link){
@@ -328,10 +350,13 @@ LNA = {
 		$('[data-toggle="modal"]').click(function (e) { 
 			e.preventDefault();
 			$($(this).data('target')).dialog("open");
-			if(typeof $($(this).data('target')).find('form').data('load') != "undefined"){
-				LNA[$($(this).data('target')).find('form').data('load')]($($(this).data('target')).find('form'), $($(this).data('formData')));
-			}
-			return false;
+			var formData = $($(this).data('formData'))[0]
+			var forms = $($(this).data('target')).find('form');
+			forms.each(function(i, v){
+				if(typeof $(v).data('load') != "undefined"){
+					LNA[$(v).data('load')]($(v), formData);
+				}
+			});
 		});
 		$('[data-toggle="modal"]').attr('data-ready', 'true');
 	},	
@@ -419,13 +444,17 @@ LNA = {
 		'mergeAccountName': function(e){
 			var selected = $(e.target);
 			var formNode = selected.parents('form');
-			var accountValue = formNode.find('select[name="template"]').val();
 			var merge = selected.val();
-			if(accountValue != ""){
+			var accountValue = formNode.find('select[name="template"]').val();
+			if(typeof accountValue != "undefined"){
+				//this should be the case for adds
 				var accountType = $.grep(LNA.constants.onlineAccounts, function(o){ return accountValue == o['value']});
 				if(accountType.length > 0){
 					merge = accountType[0].accountRoot + merge;
 				}
+			} else if (typeof formNode.find('input[name="accountRoot"]').val() != "undefined"){
+				//this should be the case for edits
+				merge = formNode.find('input[name="accountRoot"]').val() + '/' + merge;
 			}
 			formNode.find('input[name="foaf:accountName"]').val(merge);
 		}

@@ -68,6 +68,9 @@ textarea {
 .title{
     font-weight: 600;
 }
+.warning{
+    border: 5px double red;
+}
 .helpText{
     position: absolute;
     width: 1px;
@@ -373,6 +376,9 @@ input[type="radio"]{
     display: inline-block;
     width: auto;
     margin: auto auto auto 1em;
+}
+input[readonly]{
+    color: #888;
 }
 
 .formSingleColumn label{

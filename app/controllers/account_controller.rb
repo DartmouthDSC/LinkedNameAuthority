@@ -24,7 +24,7 @@ class AccountController < CrudController
     respond_to do |f|
       f.jsonld { render :create, status: :created, location: location,
                         content_type: 'application/ld+json' }
-      f.html {redirect_to person_path(FedoraID.shorten(acnt_holder['id']))}
+      f.html {redirect_to (@request_path == 'person') ? person_path(FedoraID.shorten(acnt_holder['id'])) : organization_path(FedoraID.shorten(acnt_holder['id']))}
     end
   end
 
@@ -51,7 +51,7 @@ class AccountController < CrudController
     # Delete account.
     a = Lna::Account.find(account['id'])
     a.destroy
-    render_unprocessable_entiry && return unless a.destroyed?
+    render_unprocessable_entity && return unless a.destroyed?
 
     super
   end

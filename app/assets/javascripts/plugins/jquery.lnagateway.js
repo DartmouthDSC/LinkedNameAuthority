@@ -130,11 +130,13 @@
 	        			  'foaf:accountName': null,
 	        			  'foaf:accountServiceHomepage': ''}
 	        			},
-	        'editAccount': {'method': 'UPDATE', 'path': 'person/', 'template':{
+	        'editAccount': {'method': 'PUT', 'path': 'person/', 'template':{
 	        			  'dc:title': null,
 	        			  'foaf:accountName': null,
 	        			  'foaf:accountServiceHomepage': ''}
-	        			}        			
+	        			},
+	        'deleteAccount': {'method': 'DELETE', 'path': 'person/', 'template':{ }
+	        			}    			
 	    };
 	};
 
@@ -159,7 +161,7 @@
 	    },
 
 	    //Queries associated with forms are mostly handled using extendForm below.
-	    //Reading is handled with convenience functions
+	    //Reading and button presses are handled with convenience functions
 	    'listOrgs': function(callback, page){
 	    	if(typeof page === "undefined") page = 1;
 	    	this.submitQuery('listOrgs', {}, callback, page);
@@ -211,7 +213,7 @@
 	    	var searchTerm = {'foaf:name': term};
 	    	this.submitQuery('findPersons', searchTerm, callback, page);
 	    	return false;
-	    }, 	    
+	    },
 
 	    //extendForm is called on all forms that have data-lna-query set on init
 	    //it can also be run manually.
@@ -247,7 +249,10 @@
 	       		var ajax=true;
 	       		if(typeof $formElement.data('no-ajax') != "undefined") ajax = false;
 
-	        	handle.submitQuery(query, formData, null, opt, ajax);
+	       		var fn=null;
+	       		if(typeof $formElement.data('refresh') != "undefined") fn = function(){location.reload()};
+
+	        	handle.submitQuery(query, formData, fn, opt, ajax);
 
 	        	return false;
 			});
