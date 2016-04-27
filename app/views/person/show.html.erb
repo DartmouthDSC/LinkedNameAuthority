@@ -1,20 +1,17 @@
 		<nav class="centered breadcrumbs" role="navigation">
-            <%= link_to(root_path, class: "crumbContinue") do %><span>Home</span><% end %><%= link_to(persons_path, class: "crumbContinue") do %><span>Person</span><% end %><a href="#" class="crumbHere crumbStop"><span>John P. Bell</span></a>
+            <%= link_to(root_path, class: "crumbContinue") do %><span>Home</span><% end %><%= link_to(persons_path, class: "crumbContinue") do %><span>Person</span><% end %><a href="#" class="crumbHere crumbStop"><span>Loading...</span></a>
         </nav>
         <main class="centered content">
         <!--[if lt IE 8]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
             <section class="sidebar">
-                <img src="img/unknownPerson.svg">
+                <%= image_tag "unknownPerson.svg" %>
                 <div>
-                    <h1>John P. Bell</h1>
+                    <h1></h1>
+                    <div><span class="spinner"></span></div>
                     <ul class="iconList">
-                        <li class="netID"><button href="#" title="">F039E2B</button></li>
-                        <li class="orcid"><button href="#">0000-0003-0514-1585</button></li>
-                        <li class="plum"><button href="#">jbell</button></li>
-                        <li class="academia"><button href="#">JohnBell</button></li>
-                        <li class="add"><button href="#">Add ID</button></li>
+                        <li class="add"><button title="add account" id="newAccount" data-toggle="modal" data-target="#newAccountModal">Add ID</button></li>
                     </ul>
                 </div>
             </section>
@@ -23,71 +20,32 @@
                 <div class="affiliations">
                     <h1>Affiliations</h1>
                     <ul class="iconList">
-                        <li>
-                            <span>2014–Present: Lead Application Developer, Information Technology Services</span>
-                            <button href="#edit" class="fa fa-pencil fa-lg" title="edit"><span class="helpText">edit this affiliation</span></button>
-                        </li>
-                        <li>
-                            <span>2012–Present: President, The Core 5 Incident</span>
-                            <button href="#edit" class="fa fa-pencil fa-lg" title="edit"><span class="helpText">edit this affiliation</span></button>
-                        </li>
-                        <li>
-                            <span>2011–Present: Asst. Prof. of Digital Curation, University of Maine</span>
-                            <button href="#edit" class="fa fa-pencil fa-lg" title="edit"><span class="helpText">edit this affiliation</span></button>
-                        </li>
+                        <li><span class='spinner'></span></li>
                     </ul>
-                    <button href="#" title="add affiliation" id="newAffiliation"><span class="add"></span>Add New Affiliation</button>
+                    <button title="add affiliation" id="newAffiliation" data-toggle="modal" data-target="#newAffiliationModal"><span class="add"></span>Add New Affiliation</button>
                 </div>
-                <div class="work">
-                <h1>Work</h1>
+                <div class="works">
+                <h1>Works</h1>                    
                     <ul class="iconList">
-                        <li>
-                            <p>
-                                <span class="itemTitle conference">Online Access for Scholars Adds Value to Media Archives</span>
-                                <span>Open Repositories 2015. June 9, 2015</span>
-                            </p>
-                            <button href="#view" class="fa fa-external-link-square fa-lg" title="edit"><span class="helpText">view this work</span></button>
-                            <button href="#edit" class="fa fa-pencil fa-lg" title="edit"><span class="helpText">edit this work</span></button>
-                        </li>
-                        <li>
-                            <p>
-                                <span class="itemTitle text">Diffused Museums–Networked, Augmented, and Self-Organized Collections</span>
-                                <span>International Handbook of Museum Studies. 2015</span>
-                            </p>
-                            <button href="#view" class="fa fa-external-link-square fa-lg" title="edit"><span class="helpText">view this work</span></button>
-                            <button href="#edit" class="fa fa-pencil fa-lg" title="edit"><span class="helpText">edit this work</span></button>
-                        </li>
-                        <li>
-                            <p>
-                                <span class="itemTitle conference">A Collaborative Model for PhDs</span>
-                                <span>TEDxUMaine. April 5, 2014</span>
-                            </p>
-                            <button href="#view" class="fa fa-external-link-square fa-lg" title="edit"><span class="helpText">view this work</span></button>
-                            <button href="#edit" class="fa fa-pencil fa-lg" title="edit"><span class="helpText">edit this work</span></button>
-                        </li>
-                        <li>
-                            <p>
-                                <span class="itemTitle text">The Variable Museum: Off Topic Art</span>
-                                <span>Leonardo Electronic Almanac 19.1. 2013</span>
-                            </p>
-                            <button href="#view" class="fa fa-external-link-square fa-lg" title="edit"><span class="helpText">view this work</span></button>
-                            <button href="#edit" class="fa fa-pencil fa-lg" title="edit"><span class="helpText">edit this work</span></button>
-                        </li>
-                        <li>
-                            <p>
-                                <span class="itemTitle video">Pixxelpoint 2011: Let's Get Ready</span>
-                                <span>Metropolitana Gallery (Gorizia, Italy). December 2-9, 2011</span>
-                            </p>
-                            <button href="#view" class="fa fa-external-link-square fa-lg" title="edit"><span class="helpText">view this work</span></button>
-                            <button href="#edit" class="fa fa-pencil fa-lg" title="edit"><span class="helpText">edit this work</span></button>
-                        </li>
+                        <li><span class='spinner'></span></li>
                     </ul>
-                    <button href="#" title="add work"><span class="add"></span>Add New Work</button>
+                    <button title="add work" id="newWork" data-toggle="modal" data-target="#newWorkModal"><span class="add"></span>Add New Work</button>
                 </div>
             </section>
         </main>
+        <section id="templates">
+        <%= render "shared/templates/lists_affiliation" %>
+        <%= render "shared/templates/lists_person_work" %>
+        <%= render "shared/templates/lists_account" %>
+        </section>
+        <section id="modals">
+        <%= render "shared/modals/new_work" %>
+        <%= render "shared/modals/new_affiliation" %>
+        <%= render "shared/modals/new_account" %>
+        </section>        
 		<script>
         $(document).ready(function(){
             $().LNAGateway().loadPerson(LNA.loadPerson, "<%= @short_id %>");
+            $().LNAGateway().loadPersonWorks(LNA.loadPersonWorks, "<%= @short_id %>");
         });
         </script>

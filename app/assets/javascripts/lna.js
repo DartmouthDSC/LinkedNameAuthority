@@ -14,4 +14,5 @@
 //= require vendor/jquery-1.11.2.min.js
 //= require vendor/jquery-ui.min.js
 //= require turbolinks//
+//= require plugins/jquery.tagsinput.min.js
 //= require plugins/jquery.lnagateway.js

@@ -1,5 +1,5 @@
         <nav class="centered breadcrumbs" role="navigation">
-            <%= link_to(root_path, class: "crumbContinue") do %><span>Home</span><% end %><%= link_to(persons_path, class: "crumbStop crumbHere") do %><span>Persons</span><% end %>
+            <%= link_to(root_path, class: "crumbContinue") do %><span>Home</span><% end %><%= link_to(works_path, class: "crumbStop crumbHere") do %><span>Works</span><% end %>
         </nav>
         <main class="centered content cards">
         <!--[if lt IE 8]>
@@ -7,10 +7,10 @@
         <![endif]-->
         </main>
         <section id="templates">
-        <%= render "shared/templates/cards_person" %>
+        <%= render "shared/templates/cards_work" %>
         </section>
         <script>
         $(document).ready(function(){
-            $().LNAGateway().listPersons(LNA.loadPersonCards, <%= @page %>);
+            $().LNAGateway().listWorks(LNA.loadWorkCards, <%= @page %>);
         });
         </script>

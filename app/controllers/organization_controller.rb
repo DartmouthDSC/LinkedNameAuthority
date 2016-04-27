@@ -22,6 +22,7 @@ class OrganizationController < CrudController
 
     ids = ['resultedFrom_ssim', 'changedBy_ssim'].map{ |i| @organization[i] }.compact.flatten
     @change_events = search_for_ids(ids)
+    @short_id = FedoraID.shorten(@organization['id'])
     super
   end
 

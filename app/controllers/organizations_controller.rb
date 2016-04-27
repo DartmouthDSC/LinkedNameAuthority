@@ -3,19 +3,19 @@ class OrganizationsController < CollectionController
 
   # GET /organizations
   def index
-    page = params['page']
+    @page = params['page']
 
     result = search_for_active_organizations(
       rows: MAX_ROWS,
       sort: 'label_ssi asc',
-      page: page,
       docs_only: false
+      page: @page,
     )
     @organizations = result['response']['docs']
     @organizations += parent_organizations(@organizations)
 
     respond_to do |format|
-      response.headers['Link'] = link_headers(result['response']['numFound'], MAX_ROWS, page)
+      response.headers['Link'] = link_headers(result['response']['numFound'], MAX_ROWS, @page)
       format.jsonld { render :index, content_type: 'application/ld+json' }
       format.html
     end
@@ -25,7 +25,7 @@ class OrganizationsController < CollectionController
   def search
     page = params['page']
 
-    # identifier exact match, pref_label and alt_label fuzzy(but not solr fuzzy)
+    # identifier exact match, prefLabel and altLabel fuzzy(but not solr fuzzy)
     query_map = {
       'skos:prefLabel'        => grouping_query('label_tesi', params['skos:prefLabel']),
       'skos:altLabel'         => grouping_query('alt_label_tesim', params['skos:altLabel']),

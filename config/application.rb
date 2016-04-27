@@ -39,5 +39,8 @@ module HydraTest
       'ActiveFedora::RecordNotDestroyed'  => :unprocessable_entity,
       'RSolr::Error::Http'                => :bad_request,
     )
+    
+    # Adding Vary header to ensure correct content type headers are used.
+    config.action_dispatch.default_headers.merge!('Vary' => 'Content-Type')
   end
 end

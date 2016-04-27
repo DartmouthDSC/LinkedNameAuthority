@@ -19,7 +19,7 @@
 	var Plugin = function (options){
 	    //defaults
 	    this.defaults = {
-	      'baseURL': 'https://jb.dac.dartmouth.edu/lna/',    //trailing slash required
+	      'baseURL': _base_url,    							 //defined in config or elsewhere, trailing slash required. In view, for LNA
 	      'lnaVersion': '0.2.0',
 	      'authenticity_token': true                         //whether or not to add auth token field to all queries
 	    };
@@ -36,6 +36,42 @@
 	     *
 	     */
 	    this.queries = {
+	    	'listPersons':{'method': 'GET', 'path': 'persons/', 'template': {}
+	    				},
+	    	'listOrgs':{'method': 'GET', 'path': 'organizations/', 'template': {}
+	    				},	    
+	    	'listWorks':{'method': 'GET', 'path': 'works/', 'template': {}
+	    				},	    								
+			'loadPerson': {'method': 'GET', 'path': 'person/', 'template': {}
+	    				},
+			'loadOrg': 	{'method': 'GET', 'path': 'organization/', 'template': {}
+	    				},	    				
+			'loadPersonWorks': {'method': 'GET', 'path': 'person/', 'template': {}
+	    				},
+	    	'findOrgs':   {'method': 'POST', 'path': 'organizations/', 'template':{
+	    				  'skos:prefLabel': '',
+	    				  'skos:altLabel': '',
+	    				  'org:subOrganizationOf': ''}
+	    				},
+	    	'findOrgPersons': {'method': 'POST', 'path': 'persons/', 'template':{
+	    				  'foaf:name': '',
+	    				  'foaf:givenName': '',
+	    				  'foaf:familyName': '',
+	    				  'org:member': ''}
+	    				},	
+	    	'findPersons': {'method': 'POST', 'path': 'persons/', 'template':{
+	    				  'foaf:name': '',
+	    				  'foaf:givenName': '',
+	    				  'foaf:familyName': '',
+	    				  'org:member': ''}
+	    				},
+			'newOrg':     {'method': 'POST', 'path': 'organization/', 'template': {
+	                      "org:identifier": null,
+	                      "skos:prefLabel": null,
+	                      "skos:altLabel": [],
+	                      "owltime:hasBeginning": null,
+	                      "owltime:hasEnd": ""}
+	                    },
 	     	'newPerson':  {'method': 'POST', 'path': 'person/', 'template': {
 	                      "foaf:name": null,
 	                      "foaf:givenName": null,
@@ -44,23 +80,44 @@
 	                      "foaf:mbox": null,
 	                      "foaf:homepage": "",
 	                      "org:reportsTo": ""}
-	                    },
-	    	'listPersons':{'method': 'GET', 'path': 'persons/', 'template': {}
-	    				},
-			'loadPerson': {'method': 'GET', 'path': 'person/', 'template': {}
-	    				},	    				
-			'newOrg':     {'method': 'POST', 'path': 'organization/', 'template': {
-	                      "org:identifier": null,
-	                      "skos:pref_label": null,
-	                      "skos:alt_label": [],
-	                      "owltime:hasBeginning": null,
-	                      "owltime:hasEnd": ""}
-	                    }                   
+	                    },	                    
+	        'newWork': 	  {'method': 'POST', 'path': 'work/', 'template': {
+	        			  'dc:title': null,
+	        			  'bibo:authorsList[]': null,
+	        			  'dc:abstract': null,
+	        			  'bibo:doi': '',
+	        			  'dc:date': '',
+	        			  'bibo:uri[]': [],
+	        			  'bibo:volume': '',
+	        			  'bibo:pages': '',
+	        			  'bibo:pageStart': '',
+	        			  'bibo:pageEnd': '',
+	        			  'dc:publisher': '',
+	        			  'dc:subject[]': [],
+	        			  'dc:bibliographicCitation': '',
+	        			  'dc:creator': null}
+	        			},
+	        'newAffiliation': {'method': 'POST', 'path': 'person/', 'template':{
+	        			  'org:organization': null,
+	        			  'vcard:email': '',
+	        			  'vcard:title': '',
+	        			  'vcard:street-address': '',
+	        			  'vcard:pobox': '',
+	        			  'vcard:postal-code': '',
+	        			  'vcard:localtiy': '',
+	        			  'vcard:country-name': '',
+	        			  'owltime:hasBeginning': null,
+	        			  'owltime:hadEnd': ''}
+	        			},
+	        'newAccount': {'method': 'POST', 'path': 'person/', 'template':{
+	        			  'dc:title': null,
+	        			  'foaf:accountName': null,
+	        			  'foaf:accountServiceHomepage': ''}
+	        			}
 	    };
 	};
 
   	Plugin.prototype = {
-
     	'init': function(opt){
 	        var handle = this;
 	        $.extend(this.options, opt);
@@ -79,15 +136,54 @@
 
 	    //Queries associated with forms are mostly handled using extendForm below.
 	    //Reading is handled with convenience functions
+	    'listOrgs': function(callback, page){
+	    	if(typeof page === "undefined") page = 1;
+	    	this.submitQuery('listOrgs', {}, callback, page);
+	    },
+
 	    'listPersons': function(callback, page){
 	    	if(typeof page === "undefined") page = 1;
 	    	this.submitQuery('listPersons', {}, callback, page);
 	    },
 
+	    'listWorks': function(callback, page){
+	    	if(typeof page === "undefined") page = 1;
+	    	this.submitQuery('listWorks', {}, callback, page);
+	    },	    
+
 	    'loadPerson': function(callback, uid){
 	    	if(typeof uid === "undefined") return false;
 	    	this.submitQuery('loadPerson', {}, callback, uid);
-	    },	    
+	    },
+	    'loadOrg': function(callback, uid){
+	    	if(typeof uid === "undefined") return false;
+	    	this.submitQuery('loadOrg', {}, callback, uid);
+	    },	
+	    'loadPersonWorks': function(callback, uid){
+	    	if(typeof uid === "undefined") return false;
+	    	this.submitQuery('loadPerson', {}, callback, uid + '/works');
+	    },
+
+	    //Search queries
+	    'findOrgs': function(callback, term, page){
+	    	if(typeof term === "undefined") return false;
+	    	if(typeof page === "undefined") page = 1;
+	    	var searchTerm = {'skos:prefLabel': term}
+	    	this.submitQuery('findOrgs', searchTerm, callback, page);
+	    },
+	    'findOrgPersons': function(callback, uid, page){
+	    	if(typeof uid === "undefined") return false;
+	    	if(typeof page === "undefined") page = 1;
+	    	var searchTerm = {'org:member': uid};
+	    	this.submitQuery('findOrgPersons', searchTerm, callback, page);
+	    }, 
+	    'findPersons': function(callback, term, page){
+	    	if(typeof term === "undefined") return false;
+	    	if(typeof page === "undefined") page = 1;
+	    	var searchTerm = {'foaf:name': term};
+	    	this.submitQuery('findPersons', searchTerm, callback, page);
+	    	return false;
+	    }, 	    
 
 	    //extendForm is called on all forms that have data-lna-query set on init
 	    //it can also be run manually.
@@ -117,7 +213,10 @@
         		return false;
        		}
 
-        	handle.submitQuery(query, formData);
+       		var opt = '';
+       		if($formElement.data('opt') !== "undefined") opt = $formElement.data('opt');
+
+        	handle.submitQuery(query, formData, null, opt);
 
         	return false;
 			});
@@ -146,6 +245,16 @@
         		if(v.name == 'authenticity_token' && handle.options.authenticity_token) data[v.name] = v.value;
       		});
 
+      		//If the form has fields with tag behavior, split those fields into an array.
+      		var delimiter = false;
+      		if(typeof $formElement.data('tag-delimiter') !== "undefined") delimiter = $formElement.data('tag-delimiter');
+      		if(delimiter){
+      			$formElement.find('input').each(function(i, v){
+      				if($(v).hasClass('tagBehavior') && typeof data[v.name] === "string") data[v.name] = data[v.name].split(delimiter);
+      			});
+      		} 		
+
+      		//validate and errors
       		var fail = false;
       		$.each(data, function(k,v){
         		if(data[k]===null){
@@ -161,12 +270,13 @@
     	},
 
     	'submitQuery': function(query, formData, fn, opt){
+    		if(typeof fn === "undefined" || fn == null) fn = function(){ return false };
     		if(typeof opt === "undefined") opt = '';
 	     	var queryData = this.queries[query];
     	 	$.ajax({
 	    	    "url": this.options.baseURL + queryData.path + opt,
 	        	"method": queryData.method,
-		        "accepts": "application/ld+json",
+		        "accepts": {"json": "application/ld+json"},
 		        "data": formData,
 		        "dataType": "json",
 		        "success": fn
@@ -191,13 +301,43 @@
 	    		return data;
 	    	},
     		'person': function(xhrData){
-	    		var data = {'person': [], 'orgs': [], 'accounts': [], 'appointments': []};
+	    		var data = {'person': [], 'accounts': [], 'memberships': [], 'orgs': []};
 
-
-// ************** LEFT OFF HERE  *******************
+	    		$.each(xhrData['@graph'], function(i, v){
+	    			if(v['@type']=='foaf:Person') data.person = v;
+					// if(v['@type']=='org:Membership') data.memberships.push(v);
+					if(v['@type']=='foaf:OnlineAccount') data.accounts.push(v);
+					if(v['@type']=='org:Organization') data.orgs.push(v);
+	    		});
+	    		$.each(xhrData['@graph'], function(i, v){
+	    			if(v['@type']=='org:Membership'){
+		    			var org = $.grep(data.orgs, function(o){ return v['org:organization'] == o['@id']});
+		    			if(org.length > 0) v.orgLabel = org[0]['skos:prefLabel'];
+		    			else v.orgLabel = '';
+		    			data.memberships.push(v);
+		    		}
+	    		});
 
 	    		return data;
-	    	}	    	
+	    	},
+	    	'org': function(xhrData){
+	    		var data = {'org': {}, 'accounts': []};
+	    		$.each(xhrData['@graph'], function(i, v){
+	    			if(v['@type']=='org:Organization') data.org = v;
+	    			if(v['@type']=='foaf:OnlineAccount') data.accounts.push(v)
+	    		});
+	    		return data;
+	    	},
+    		'personWorks': function(xhrData){
+	    		return xhrData['@graph'];
+	    	},
+    		'works': function(xhrData){
+	    		return xhrData['@graph'];
+	    	},	    	
+	    	'orgs': function(xhrData){
+	    		return xhrData['@graph'];
+	    	}
+
     	},
 
     	//Utility function to parse link headers
