@@ -3,12 +3,10 @@
 </nav>
 
 <main class="centered content">
-  <h1>Error!</h1>
- 
-  <h2><%= @rescue_response.to_s.humanize %></h2>
-  
+  <h1>Error: <%= @rescue_response.to_s.humanize %></h1>
+
   <p><%= @exception.message %></p>
-  
+
   <p>Please correct the error and try again.</p>
 
   <% if Rails.env.development? || Rails.env.test? %>
