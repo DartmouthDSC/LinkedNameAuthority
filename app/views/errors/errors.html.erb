@@ -5,8 +5,13 @@
 <main class="centered content">
   <h1>Error: <%= @rescue_response.to_s.humanize %></h1>
 
-  <p><%= @exception.message %></p>
-
+  <% case @exception.class.to_s %>
+  <% when 'RSolr::Error::Http' %>
+	<p>Query Invalid.</p>
+  <% else %>
+	<p><%= @exception.message %></p>
+  <% end %>
+  
   <p>Please correct the error and try again.</p>
 
   <% if Rails.env.development? || Rails.env.test? %>
