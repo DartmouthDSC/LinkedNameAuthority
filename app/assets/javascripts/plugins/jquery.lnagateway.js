@@ -123,7 +123,7 @@
 	        			  'vcard:localtiy': '',
 	        			  'vcard:country-name': '',
 	        			  'owltime:hasBeginning': null,
-	        			  'owltime:hadEnd': ''}
+	        			  'owltime:hasEnd': ''}
 	        			},
 	        'newAccount': {'method': 'POST', 'path': 'person/', 'template':{
 	        			  'dc:title': null,
