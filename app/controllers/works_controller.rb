@@ -8,7 +8,7 @@ class WorksController < CollectionController
       start_date: params[:start_date] || nil,
       rows: MAX_ROWS,
       sort: 'date_dtsi desc',
-      docs_only: false
+      docs_only: false,
       page: @page
     )
     @works = result['response']['docs']
