@@ -148,7 +148,9 @@
 	        			  'owltime:hasEnd': ''}
 	        			},
 	        'deleteAccount': {'method': 'DELETE', 'path': 'person/', 'template':{ }
-	        			}    			
+	        			},    			
+	        'deleteAffiliation': {'method': 'DELETE', 'path': 'person/', 'template':{ }
+	        			}
 	    };
 	};
 

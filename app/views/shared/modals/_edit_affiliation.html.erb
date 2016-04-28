@@ -15,6 +15,11 @@
           <%= hidden_field_tag :authenticity_token, form_authenticity_token, {:id => nil} %>
           <%= hidden_field_tag "foaf:person", "https://jb.dac.dartmouth.edu/lna/person/" + @short_id, {:id => nil} %>
           <button type="submit" title="submit">Submit</button>
+          <div class="centered">OR</div>
+        </form>
+        <form data-lna-query="deleteAffiliation" class="formTwoColumn" data-opt="<%= @short_id %>/membership/;;;" data-refresh="true" data-load="deleteAffiliation">
+        <%= hidden_field_tag :authenticity_token, form_authenticity_token, {:id => nil} %>
+        <button type="submit" title="Delete" class="warning" name="delete">Delete Affiliation</button>
         </form>
       </div>
     </div>

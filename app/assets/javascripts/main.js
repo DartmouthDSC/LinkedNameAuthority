@@ -332,6 +332,12 @@ LNA = {
 		//data-opt on this form has a placeholder (;;;) for the account ID. Replace it with the actual ID
 		LNA.replaceOptPlaceholder(targetForm, data['@id'].substr(1));
 	},	
+	'deleteAffiliation': function(targetForm, data){
+		var $targetForm = $(targetForm);
+
+		//data-opt on this form has a placeholder (;;;) for the account ID. Replace it with the actual ID
+		LNA.replaceOptPlaceholder(targetForm, data['@id'].substr(1));
+	},		
 
 	//helpers
 	'openLink': function(e, link){
