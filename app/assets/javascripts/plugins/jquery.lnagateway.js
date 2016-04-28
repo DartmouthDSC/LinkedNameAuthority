@@ -118,9 +118,9 @@
 	        			  'vcard:email': '',
 	        			  'vcard:title': '',
 	        			  'vcard:street-address': '',
-	        			  'vcard:pobox': '',
+	        			  'vcard:post-office-box': '',
 	        			  'vcard:postal-code': '',
-	        			  'vcard:localtiy': '',
+	        			  'vcard:locality': '',
 	        			  'vcard:country-name': '',
 	        			  'owltime:hasBeginning': null,
 	        			  'owltime:hasEnd': ''}
@@ -140,9 +140,9 @@
 	        			  'vcard:email': '',
 	        			  'vcard:title': '',
 	        			  'vcard:street-address': '',
-	        			  'vcard:pobox': '',
+	        			  'vcard:post-office-box': '',
 	        			  'vcard:postal-code': '',
-	        			  'vcard:localtiy': '',
+	        			  'vcard:locality': '',
 	        			  'vcard:country-name': '',
 	        			  'owltime:hasBeginning': null,
 	        			  'owltime:hasEnd': ''}
