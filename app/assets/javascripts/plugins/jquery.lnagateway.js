@@ -86,8 +86,9 @@
 	                      "foaf:givenName": null,
 	                      "foaf:familyName": null,
 	                      "foaf:title": "",
+	                      "foaf:image": "",
+	                      "foaf:homepage": [],	                      
 	                      "foaf:mbox": null,
-	                      "foaf:homepage": "",
 	                      "org:reportsTo": null}
 	                    },	                    
 	        'newWork': 	  {'method': 'POST', 'path': 'work/', 'template': {
@@ -147,6 +148,16 @@
 	        			  'owltime:hasBeginning': null,
 	        			  'owltime:hasEnd': ''}
 	        			},
+	     	'editPerson': {'method': 'PUT', 'path': 'person/', 'template': {
+	                      "foaf:name": null,
+	                      "foaf:givenName": null,
+	                      "foaf:familyName": null,
+	                      "foaf:title": "",
+	                      "foaf:image": "",
+	                      "foaf:homepage": "",
+	                      "foaf:mbox": null,
+	                      "org:reportsTo": null}
+	                    },		        			
 	        'deleteAccount': {'method': 'DELETE', 'path': 'person/', 'template':{ }
 	        			},    			
 	        'deleteAffiliation': {'method': 'DELETE', 'path': 'person/', 'template':{ }
@@ -265,6 +276,7 @@
 
 	       		var fn=null;
 	       		if(typeof $formElement.data('refresh') != "undefined") fn = function(){location.reload()};
+	       		if(typeof $formElement.data('handler') != "undefined") fn = LNA[$formElement.data('handler')];
 
 	        	handle.submitQuery(query, formData, fn, opt, ajax);
 
@@ -362,7 +374,6 @@
 
 	    		$.each(xhrData['@graph'], function(i, v){
 	    			if(v['@type']=='foaf:Person') data.person = v;
-					// if(v['@type']=='org:Membership') data.memberships.push(v);
 					if(v['@type']=='foaf:OnlineAccount') data.accounts.push(v);
 					if(v['@type']=='org:Organization') data.orgs.push(v);
 	    		});
@@ -371,8 +382,12 @@
 		    			var org = $.grep(data.orgs, function(o){ return v['org:organization'] == o['@id']});
 		    			if(org.length > 0) v.orgLabel = org[0]['skos:prefLabel'];
 		    			else v.orgLabel = '';
-		    			if(org.length > 0 && org['@id'] == data.person.reportsTo) data.person.orgLabel = org[0]['skos:prefLabel'];
 		    			data.memberships.push(v);
+		    		}
+		    		if(v['@type']=='foaf:Person'){
+		    			var org = $.grep(data.orgs, function(o){ return v['org:reportsTo'] == o['@id']});
+		    			if(org.length > 0) v.orgLabel = org[0]['skos:prefLabel'];
+		    			else v.orgLabel = '';		    			
 		    		}
 	    		});
 

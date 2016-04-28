@@ -2,15 +2,15 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-body">
-        <form data-lna-query="newPerson" class="formSingleColumn" data-no-ajax="true">
-          <label>Given Name</label><input name="foaf:givenName"></input>
-          <label>Family Name</label><input name="foaf:familyName"></input>
-          <label>Written Name</label><input name="foaf:name"></input>
-          <label>Title</label><input name="foaf:title"></input>
-          <label>Reports To</label><input name="skos:prefLabel" class="autocompleteBehavior" autocomplete="off" data-autocomplete-type="reportsTo"></input>
-          <label>Email</label><input name="foaf:mbox"></input>
-          <label>Photo URL</label><input name="foaf:image"></input>
-          <label>Homepage URL</label><input name="foaf:homepage"></input>
+        <form data-lna-query="newPerson" class="formTwoColumn" data-no-ajax="true" data-tag-delimiter=";;;">
+          <div><label>Given Name</label><input name="foaf:givenName"></input></div>
+          <div><label>Family Name</label><input name="foaf:familyName"></input></div>
+          <div><label>Written Name</label><input name="foaf:name"></input></div>
+          <div><label>Title</label><input name="foaf:title"></input></div>
+          <div><label>Reports To</label><input name="skos:prefLabel" class="autocompleteBehavior" autocomplete="off" data-autocomplete-type="reportsTo"></input></div>
+          <div><label>Email</label><input name="foaf:mbox"></input></div>
+          <div><label>Photo URL</label><input name="foaf:image"></input></div>
+          <div><label>Homepage URL</label><input name="foaf:homepage" class="tagBehavior"></input></div>
           <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
           <%= hidden_field_tag "org:reportsTo", nil, {:id => nil} %>
           <button type="submit" title="submit">Submit</button>

@@ -54,7 +54,7 @@ LNA = {
 			var node = $('#templates .person').clone();
 			node.find('h1').text(person['foaf:givenName']+' '+person['foaf:familyName']);
 			if(person['foaf:image'] != ''){
-				node.find('img')[0].attr('src', person['foaf:image']);
+				node.find('img').attr('src', person['foaf:image']);
 			}
 			node.attr('href', person['@id']);
 			if(person['foaf:title']!=''){
@@ -180,10 +180,12 @@ LNA = {
 		$('.crumbHere').children().first().text(dataArray.person['foaf:name']);
 		if(dataArray.person['foaf:image'] != '') $('.sidebar img').attr('src', dataArray.person['foaf:image']);
 
+		$('button.edit').data('formData', dataArray.person);
+
 		$('.personName').html('Title: '+dataArray.person['foaf:title']+'<br>'+'Given: '+dataArray.person['foaf:givenName']+'<br>'+'Family: '+dataArray.person['foaf:familyName']+'<br>'+'Written: '+dataArray.person['foaf:name']);
 		$('.personEmail').text(dataArray.person['foaf:mbox']);
 		$('.personImage').text(dataArray.person['foaf:image']);
-		$('.personHomepage').text(dataArray.person['foaf:homepage'].join('<br />'));
+		$('.personHomepage').html(dataArray.person['foaf:homepage'].join('<br />'));
 
 		$('.personPrimary').text(dataArray.person['orgLabel']);
 		$('.parent button').click(function(e){LNA.openLink(e, dataArray.person['org:reportsTo'])});
@@ -304,6 +306,16 @@ LNA = {
 	},
 
 	//edit functions load data into edit modals
+	editPerson: function(targetForm, data){
+		var $targetForm = $(targetForm);
+		$.each(data, function(k, v){
+			$targetForm.find('[name="'+k+'"]').val(data[k]);
+		});
+		$targetForm.find('[name="skos:prefLabel"]').val(data['orgLabel']);
+		var homepage = $targetForm.find('[name="foaf:homepage"]');
+		homepage.importTags('');
+		$(data['foaf:homepage']).each(function(i, v){ homepage.addTag(v)});
+	},	
 	editAffiliation: function(targetForm, data){
 		var $targetForm = $(targetForm);
 		$.each(data, function(k, v){
@@ -337,7 +349,9 @@ LNA = {
 
 		//data-opt on this form has a placeholder (;;;) for the account ID. Replace it with the actual ID
 		LNA.replaceOptPlaceholder(targetForm, data['@id'].substr(1));
-	},		
+	},
+	//deletePerson is not necessary
+
 
 	//helpers
 	'openLink': function(e, link){
@@ -354,6 +368,10 @@ LNA = {
 		oldOpt.push(id);
 		var newOpt = oldOpt.join('/')
 		$targetForm.data('opt', newOpt);	
+	},
+
+	'goHome': function(){
+		location.href=_base_url;
 	},
 
 	//Find corresponding buttons and attach the open event
