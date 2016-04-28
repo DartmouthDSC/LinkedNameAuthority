@@ -78,6 +78,7 @@
 	                      "org:identifier": null,
 	                      "skos:prefLabel": null,
 	                      "skos:altLabel": [],
+	                      "org:purpose": "",
 	                      "owltime:hasBeginning": null,
 	                      "owltime:hasEnd": ""}
 	                    },
@@ -86,8 +87,9 @@
 	                      "foaf:givenName": null,
 	                      "foaf:familyName": null,
 	                      "foaf:title": "",
+	                      "foaf:image": "",
+	                      "foaf:homepage": [],	                      
 	                      "foaf:mbox": null,
-	                      "foaf:homepage": "",
 	                      "org:reportsTo": null}
 	                    },	                    
 	        'newWork': 	  {'method': 'POST', 'path': 'work/', 'template': {
@@ -118,9 +120,9 @@
 	        			  'vcard:email': '',
 	        			  'vcard:title': '',
 	        			  'vcard:street-address': '',
-	        			  'vcard:pobox': '',
+	        			  'vcard:post-office-box': '',
 	        			  'vcard:postal-code': '',
-	        			  'vcard:localtiy': '',
+	        			  'vcard:locality': '',
 	        			  'vcard:country-name': '',
 	        			  'owltime:hasBeginning': null,
 	        			  'owltime:hasEnd': ''}
@@ -135,8 +137,70 @@
 	        			  'foaf:accountName': null,
 	        			  'foaf:accountServiceHomepage': ''}
 	        			},
+	        'editAffiliation': {'method': 'PUT', 'path': 'person/', 'template':{
+	        			  'org:organization': null,
+	        			  'vcard:email': '',
+	        			  'vcard:title': '',
+	        			  'vcard:street-address': '',
+	        			  'vcard:post-office-box': '',
+	        			  'vcard:postal-code': '',
+	        			  'vcard:locality': '',
+	        			  'vcard:country-name': '',
+	        			  'owltime:hasBeginning': null,
+	        			  'owltime:hasEnd': ''}
+	        			},
+			'editOrg':    {'method': 'PUT', 'path': 'organization/', 'template': {
+	                      "org:identifier": null,
+	                      "skos:prefLabel": null,
+	                      "skos:altLabel": [],
+	                      "org:purpose": "",
+	                      "owltime:hasBeginning": null,
+	                      "owltime:hasEnd": ""}
+	                    },	        			
+	     	'editPerson': {'method': 'PUT', 'path': 'person/', 'template': {
+	                      "foaf:name": null,
+	                      "foaf:givenName": null,
+	                      "foaf:familyName": null,
+	                      "foaf:title": "",
+	                      "foaf:image": "",
+	                      "foaf:homepage": "",
+	                      "foaf:mbox": null,
+	                      "org:reportsTo": null}
+	                    },
+	        'editWork':  {'method': 'PUT', 'path': 'work/', 'template': {
+	        			  'dc:title': null,
+	        			  'bibo:authorList': null,
+	        			  'dc:abstract': null,
+	        			  'bibo:doi': '',
+	        			  'dc:date': '',
+	        			  'bibo:uri': [],
+	        			  'bibo:volume': '',
+	        			  'bibo:pages': '',
+	        			  'bibo:pageStart': '',
+	        			  'bibo:pageEnd': '',
+	        			  'dc:publisher': '',
+	        			  'dc:subject': [],
+	        			  'dc:bibliographicCitation': '',
+	        			  'dc:creator': null}
+	        			},	                    
+	        'editLicense': {'method': 'PUT', 'path': 'work/', 'template':{
+	        			  'dc:title': null,
+	        			  'dc:description': null,
+	        			  'ali:start_date': null,
+	        			  'ali:end_date': '',
+	        			  'ali:uri': ''}
+	        			},  
 	        'deleteAccount': {'method': 'DELETE', 'path': 'person/', 'template':{ }
-	        			}    			
+	        			},    			
+	        'deleteAffiliation': {'method': 'DELETE', 'path': 'person/', 'template':{ }
+	        			},
+	        'deleteLicense': {'method': 'DELETE', 'path': 'work/', 'template':{ }
+	        			},
+	        'deleteWork': {'method': 'DELETE', 'path': 'work/', 'template':{ }
+	        			},
+	        'deleteOrg': {'method': 'DELETE', 'path': 'organization/', 'template':{ }
+	        			}	
+
 	    };
 	};
 
@@ -228,7 +292,7 @@
 		        return false;
 		    }
 		    if(typeof this.queries[query] === 'undefined'){
-		        console.log('Tried to extend a form for which there is no query');
+		        console.log('Tried to extend a form for which there is no query: '+query);
 		        return false;
 		    }
       
@@ -251,6 +315,7 @@
 
 	       		var fn=null;
 	       		if(typeof $formElement.data('refresh') != "undefined") fn = function(){location.reload()};
+	       		if(typeof $formElement.data('handler') != "undefined") fn = LNA[$formElement.data('handler')];
 
 	        	handle.submitQuery(query, formData, fn, opt, ajax);
 
@@ -348,7 +413,6 @@
 
 	    		$.each(xhrData['@graph'], function(i, v){
 	    			if(v['@type']=='foaf:Person') data.person = v;
-					// if(v['@type']=='org:Membership') data.memberships.push(v);
 					if(v['@type']=='foaf:OnlineAccount') data.accounts.push(v);
 					if(v['@type']=='org:Organization') data.orgs.push(v);
 	    		});
@@ -357,8 +421,12 @@
 		    			var org = $.grep(data.orgs, function(o){ return v['org:organization'] == o['@id']});
 		    			if(org.length > 0) v.orgLabel = org[0]['skos:prefLabel'];
 		    			else v.orgLabel = '';
-		    			if(org.length > 0 && org['@id'] == data.person.reportsTo) data.person.orgLabel = org[0]['skos:prefLabel'];
 		    			data.memberships.push(v);
+		    		}
+		    		if(v['@type']=='foaf:Person'){
+		    			var org = $.grep(data.orgs, function(o){ return v['org:reportsTo'] == o['@id']});
+		    			if(org.length > 0) v.orgLabel = org[0]['skos:prefLabel'];
+		    			else v.orgLabel = '';		    			
 		    		}
 	    		});
 
@@ -388,6 +456,11 @@
 	    			if(v['@type']=='foaf:Person') data.person = v;
 					if(v['@type']=='bibo:Document') data.work = v;
 					if(v['@type']=='dc:licenseDocument') data.licenses.push(v);
+	    		});
+	    		$.each(data.licenses, function(i, v){
+	    			var free = $.grep(data.work['ali:free_to_read'], function(f){ return v['@id'] == f});
+	    			if(free.length > 0) v['dc:description'] = "ali:free_to_read";
+	    			else v['dc:description'] = "ali:license_ref";
 	    		});
 
 	    		return data;

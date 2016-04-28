@@ -1,8 +1,8 @@
-<div class="modal fade newPersonModal formModal" id="newPersonModal" tabindex="-1" role="dialog" aria-labelledby="newPersonModal" title="Add a Person to LNA">
+<div class="modal fade editPersonModal formModal" id="editPersonModal" tabindex="-1" role="dialog" aria-labelledby="editPersonModal" title="Edit a Person">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-body">
-        <form data-lna-query="newPerson" class="formTwoColumn" data-no-ajax="true" data-tag-delimiter=";;;">
+        <form data-lna-query="editPerson" class="formTwoColumn"  data-load="editPerson" data-refresh="true" data-tag-delimiter=";;;" data-opt="<%= @short_id %>">
           <div><label>Given Name</label><input name="foaf:givenName"></input></div>
           <div><label>Family Name</label><input name="foaf:familyName"></input></div>
           <div><label>Written Name</label><input name="foaf:name"></input></div>
@@ -14,6 +14,11 @@
           <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
           <%= hidden_field_tag "org:reportsTo", nil, {:id => nil} %>
           <button type="submit" title="submit">Submit</button>
+          <div class="centered">OR</div>
+        </form>
+        <form data-lna-query="deleteAffiliation" class="formTwoColumn" data-opt="<%= @short_id %>" data-handler="goHome">
+        <%= hidden_field_tag :authenticity_token, form_authenticity_token, {:id => nil} %>
+        <button type="submit" title="Delete" class="warning" name="delete">Delete Person</button>
         </form>
       </div>
     </div>

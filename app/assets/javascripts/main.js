@@ -9,7 +9,7 @@ LNA = {
 			 'value': 'netID',
 			 'class': 'netID',
 			 'homepage': 'http://tech.dartmouth.edu/its/services-support/help-yourself/netid-lookup',
-			 'accountRoot': 'http://lna.dartmouth.edu/person/'},  //tk accountRoot isn't right
+			 'accountRoot': ''},  
 			{'title': 'ORCiD',
 			 'value': 'orcid',
 		     'class': 'orcid',
@@ -54,7 +54,7 @@ LNA = {
 			var node = $('#templates .person').clone();
 			node.find('h1').text(person['foaf:givenName']+' '+person['foaf:familyName']);
 			if(person['foaf:image'] != ''){
-				node.find('img')[0].attr('src', person['foaf:image']);
+				node.find('img').attr('src', person['foaf:image']);
 			}
 			node.attr('href', person['@id']);
 			if(person['foaf:title']!=''){
@@ -122,6 +122,7 @@ LNA = {
 		} else {
 			$('.orgDateRange').text(dataArray.org['owltime:hasBeginning'].substr(0,4) + '-Present');
 		}
+		$('.orgData .edit').data('formData', dataArray);
 
 		//clear all spinners
 		$('main .spinner').parent().remove();
@@ -162,6 +163,9 @@ LNA = {
 		$('.workAbstract').text(dataArray.work['dc:abstract']);
 		$('.workPublisher').text(dataArray.work['dc:publisher']);
 		$('.workCitation').text(dataArray.work['dc:bibliographicCitation']);
+		$('.workURIs').html(dataArray.work['bibo:uri'].join('<br>'));
+
+		$('button.edit').data('formData', dataArray);
 
 		//render License list
 		$.each(dataArray.licenses, function(k, v){ LNA.fillLicense($('.sidebar .iconList'), v) });
@@ -180,10 +184,12 @@ LNA = {
 		$('.crumbHere').children().first().text(dataArray.person['foaf:name']);
 		if(dataArray.person['foaf:image'] != '') $('.sidebar img').attr('src', dataArray.person['foaf:image']);
 
+		$('button.edit').data('formData', dataArray.person);
+
 		$('.personName').html('Title: '+dataArray.person['foaf:title']+'<br>'+'Given: '+dataArray.person['foaf:givenName']+'<br>'+'Family: '+dataArray.person['foaf:familyName']+'<br>'+'Written: '+dataArray.person['foaf:name']);
 		$('.personEmail').text(dataArray.person['foaf:mbox']);
 		$('.personImage').text(dataArray.person['foaf:image']);
-		$('.personHomepage').text(dataArray.person['foaf:homepage'].join('<br />'));
+		$('.personHomepage').html(dataArray.person['foaf:homepage'].join('<br />'));
 
 		$('.personPrimary').text(dataArray.person['orgLabel']);
 		$('.parent button').click(function(e){LNA.openLink(e, dataArray.person['org:reportsTo'])});
@@ -237,7 +243,7 @@ LNA = {
 		viewButton.click(function(e){ LNA.openLink(e, data['org:organization'])});
 		editButton.attr('title', 'edit '+ data['orgLabel'] + ' affiliation');
 		editButton.children('.helpText').text('edit '+ data['orgLabel'] + ' affiliation');
-		editButton.click(function(e){ LNA.editAffiliation(e, data['org:organization'])});
+		editButton.data('formData', data);
 		parent.prepend(node);
 	},
 	'fillLicense': function(parent, data){
@@ -247,6 +253,7 @@ LNA = {
 		var iconClass = $.grep(LNA.constants.licenses, function(o){ return data['dc:title'] == o['title']});
 		if(iconClass.length > 0) node.addClass(iconClass[0].class);		
 		button.attr('title', 'edit '+ data['dc:title'] + ' account');
+		button.data('formData', data)
 		label.text(data['dc:title']);
 		parent.prepend(node);
 	},	
@@ -304,8 +311,25 @@ LNA = {
 	},
 
 	//edit functions load data into edit modals
-	editAffiliation: function(e, org){
-		// var editForm = $('#modals ')
+	editPerson: function(targetForm, data){
+		var $targetForm = $(targetForm);
+		$.each(data, function(k, v){
+			$targetForm.find('[name="'+k+'"]').val(data[k]);
+		});
+		$targetForm.find('[name="skos:prefLabel"]').val(data['orgLabel']);
+		var homepage = $targetForm.find('[name="foaf:homepage"]');
+		homepage.importTags('');
+		$(data['foaf:homepage']).each(function(i, v){ homepage.addTag(v)});
+	},	
+	editAffiliation: function(targetForm, data){
+		var $targetForm = $(targetForm);
+		$.each(data, function(k, v){
+			$targetForm.find('[name="'+k+'"]').val(data[k]);
+		});
+		$targetForm.find('[name="skos:prefLabel"]').val(data['orgLabel']);
+
+		//data-opt on this form has a placeholder (;;;) for the account ID. Replace it with the actual ID
+		LNA.replaceOptPlaceholder(targetForm, data['@id'].substr(1));
 	},
 
 	'editAccount': function(targetForm, data){
@@ -317,22 +341,70 @@ LNA = {
 		$targetForm.find('[name="foaf:accountServiceHomepage"]').val(data['foaf:accountServiceHomepage']);
 
 		//data-opt on this form has a placeholder (;;;) for the account ID. Replace it with the actual ID
-		var oldOpt = $targetForm.data('opt').split('/');
-		oldOpt.pop();
-		oldOpt.push(data['@id'].substr(1));
-		var newOpt = oldOpt.join('/')
-		$targetForm.data('opt', newOpt);
+		LNA.replaceOptPlaceholder(targetForm, data['@id'].substr(1));
 	},
+	editWork: function(targetForm, data){
+		var $targetForm = $(targetForm);
+		$.each(data.work, function(k, v){
+			$targetForm.find('[name="'+k+'"]').val(v);
+		});
+		$targetForm.find('[name="foaf:name"]').val(data.person['foaf:name']);
+
+		var authorList = $targetForm.find('[name="bibo:authorList"]');
+		authorList.importTags('');
+		$(data.work['bibo:authorList']).each(function(i, v) {authorList.addTag(v)});
+
+		var uri = $targetForm.find('[name="bibo:uri"]');
+		uri.importTags('');
+		$(data.work['bibo:uri']).each(function(i, v) {uri.addTag(v)});
+
+		var subject = $targetForm.find('[name="dc:subject"]');
+		subject.importTags('');
+		$(data.work['dc:subject']).each(function(i, v) {subject.addTag(v)});
+	},
+
+	editOrg: function(targetForm, data){
+		var $targetForm = $(targetForm);
+		$.each(data.org, function(k, v){
+			$targetForm.find('[name="'+k+'"]').val(v);
+		});
+
+		var akaList = $targetForm.find('[name="skos:altLabel"]');
+		akaList.importTags('');
+		$(data.org['skos:altLabel']).each(function(i, v) {akaList.addTag(v)});
+	},	
+
+	'editLicense': function(targetForm, data){
+		var $targetForm = $(targetForm);
+		console.log(data)
+		$targetForm.find("[value='"+data['dc:description']+"']").attr('checked', true);		
+		$.each(data, function(k, v){
+			$targetForm.find('[name="'+k+'"]').val(data[k]);
+		});
+
+		//data-opt on this form has a placeholder (;;;) for the account ID. Replace it with the actual ID
+		LNA.replaceOptPlaceholder(targetForm, data['@id'].substr(1));
+	},	
 	'deleteAccount': function(targetForm, data){
 		var $targetForm = $(targetForm);
 
-		// //data-opt on this form has a placeholder (;;;) for the account ID. Replace it with the actual ID
-		var oldOpt = $targetForm.data('opt').split('/');
-		oldOpt.pop();
-		oldOpt.push(data['@id'].substr(1));
-		var newOpt = oldOpt.join('/')
-		$targetForm.data('opt', newOpt);
+		//data-opt on this form has a placeholder (;;;) for the account ID. Replace it with the actual ID
+		LNA.replaceOptPlaceholder(targetForm, data['@id'].substr(1));
 	},	
+	'deleteAffiliation': function(targetForm, data){
+		var $targetForm = $(targetForm);
+
+		//data-opt on this form has a placeholder (;;;) for the account ID. Replace it with the actual ID
+		LNA.replaceOptPlaceholder(targetForm, data['@id'].substr(1));
+	},
+	//deletePerson is not necessary
+	'deleteLicense': function(targetForm, data){
+		var $targetForm = $(targetForm);
+
+		//data-opt on this form has a placeholder (;;;) for the account ID. Replace it with the actual ID
+		LNA.replaceOptPlaceholder(targetForm, data['@id'].substr(1));
+	},	
+
 
 	//helpers
 	'openLink': function(e, link){
@@ -340,6 +412,19 @@ LNA = {
 			window.open(link, '_new');
 		}
 		else window.location.href = link;
+	},
+
+	'goHome': function(){
+		location.href=_base_url;
+	},
+
+	'replaceOptPlaceholder': function(targetForm, id){
+		var $targetForm = $(targetForm);
+		var oldOpt = $targetForm.data('opt').split('/');
+		oldOpt.pop();
+		oldOpt.push(id);
+		var newOpt = oldOpt.join('/')
+		$targetForm.data('opt', newOpt);
 	},
 
 	//Find corresponding buttons and attach the open event
@@ -436,6 +521,8 @@ LNA = {
 			var selected = $(e.target);
 			var formNode = selected.parents('form');
 			var licenseType = $.grep(LNA.constants.licenses, function(o){ return selected.val() == o['title']});
+
+			if(typeof licenseType[0] == "undefined") return false;
 
 			formNode.find('input[name="dc:title"]').val(licenseType[0].title);
 			formNode.find('input[name="ali:uri"]').val(licenseType[0].uri);
