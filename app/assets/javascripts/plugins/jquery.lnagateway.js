@@ -157,11 +157,20 @@
 	                      "foaf:homepage": "",
 	                      "foaf:mbox": null,
 	                      "org:reportsTo": null}
-	                    },		        			
+	                    },
+	        'editLicense': {'method': 'PUT', 'path': 'work/', 'template':{
+	        			  'dc:title': null,
+	        			  'dc:description': null,
+	        			  'ali:start_date': null,
+	        			  'ali:end_date': '',
+	        			  'ali:uri': ''}
+	        			},  
 	        'deleteAccount': {'method': 'DELETE', 'path': 'person/', 'template':{ }
 	        			},    			
 	        'deleteAffiliation': {'method': 'DELETE', 'path': 'person/', 'template':{ }
-	        			}
+	        			},
+	        'deleteLicense': {'method': 'DELETE', 'path': 'work/', 'template':{ }
+	        			}	        			
 	    };
 	};
 
@@ -253,7 +262,7 @@
 		        return false;
 		    }
 		    if(typeof this.queries[query] === 'undefined'){
-		        console.log('Tried to extend a form for which there is no query');
+		        console.log('Tried to extend a form for which there is no query: '+query);
 		        return false;
 		    }
       
@@ -417,6 +426,11 @@
 	    			if(v['@type']=='foaf:Person') data.person = v;
 					if(v['@type']=='bibo:Document') data.work = v;
 					if(v['@type']=='dc:licenseDocument') data.licenses.push(v);
+	    		});
+	    		$.each(data.licenses, function(i, v){
+	    			var free = $.grep(data.work['ali:free_to_read'], function(f){ return v['@id'] == f});
+	    			if(free.length > 0) v['dc:description'] = "ali:free_to_read";
+	    			else v['dc:description'] = "ali:license_ref";
 	    		});
 
 	    		return data;

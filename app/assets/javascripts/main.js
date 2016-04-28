@@ -249,6 +249,7 @@ LNA = {
 		var iconClass = $.grep(LNA.constants.licenses, function(o){ return data['dc:title'] == o['title']});
 		if(iconClass.length > 0) node.addClass(iconClass[0].class);		
 		button.attr('title', 'edit '+ data['dc:title'] + ' account');
+		button.data('formData', data)
 		label.text(data['dc:title']);
 		parent.prepend(node);
 	},	
@@ -338,6 +339,17 @@ LNA = {
 		//data-opt on this form has a placeholder (;;;) for the account ID. Replace it with the actual ID
 		LNA.replaceOptPlaceholder(targetForm, data['@id'].substr(1));
 	},
+	'editLicense': function(targetForm, data){
+		var $targetForm = $(targetForm);
+		console.log(data)
+		$targetForm.find("[value='"+data['dc:description']+"']").attr('checked', true);		
+		$.each(data, function(k, v){
+			$targetForm.find('[name="'+k+'"]').val(data[k]);
+		});
+
+		//data-opt on this form has a placeholder (;;;) for the account ID. Replace it with the actual ID
+		LNA.replaceOptPlaceholder(targetForm, data['@id'].substr(1));
+	},	
 	'deleteAccount': function(targetForm, data){
 		var $targetForm = $(targetForm);
 
@@ -351,6 +363,12 @@ LNA = {
 		LNA.replaceOptPlaceholder(targetForm, data['@id'].substr(1));
 	},
 	//deletePerson is not necessary
+	'deleteLicense': function(targetForm, data){
+		var $targetForm = $(targetForm);
+
+		//data-opt on this form has a placeholder (;;;) for the account ID. Replace it with the actual ID
+		LNA.replaceOptPlaceholder(targetForm, data['@id'].substr(1));
+	},	
 
 
 	//helpers
@@ -361,17 +379,17 @@ LNA = {
 		else window.location.href = link;
 	},
 
+	'goHome': function(){
+		location.href=_base_url;
+	},
+
 	'replaceOptPlaceholder': function(targetForm, id){
 		var $targetForm = $(targetForm);
 		var oldOpt = $targetForm.data('opt').split('/');
 		oldOpt.pop();
 		oldOpt.push(id);
 		var newOpt = oldOpt.join('/')
-		$targetForm.data('opt', newOpt);	
-	},
-
-	'goHome': function(){
-		location.href=_base_url;
+		$targetForm.data('opt', newOpt);
 	},
 
 	//Find corresponding buttons and attach the open event
@@ -468,6 +486,8 @@ LNA = {
 			var selected = $(e.target);
 			var formNode = selected.parents('form');
 			var licenseType = $.grep(LNA.constants.licenses, function(o){ return selected.val() == o['title']});
+
+			if(typeof licenseType[0] == "undefined") return false;
 
 			formNode.find('input[name="dc:title"]').val(licenseType[0].title);
 			formNode.find('input[name="ali:uri"]').val(licenseType[0].uri);
