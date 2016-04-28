@@ -6,19 +6,13 @@ class Ability
   
   # Define permissions here.
   def initialize(user)
-    # Permissions needed for hydra-role-management.
+    # Permissions needed for hydra-role-management. Admins cannot create, update or destroy roles.
     if user.admin?
-      can [:create, :show, :add_user, :remove_user, :index, :edit, :update, :destroy], Role
+      can [:show, :add_user, :remove_user, :index, :edit], Role
     end
 
+    # Permission for editors and admins to make changes to fedora objects.
     if user.editor? || user.admin?
-      # can [:create, :update, :destroy], [ Lna::Person, Lna::Account, Lna::Membership,
-      #                                     Lna::Collection::Document, Lna::Organization,
-      #                                     Lna::Organization::Historic,
-      #                                     Lna::Organization::ChangeEvent,
-      #                                     Lna::Collection::FreeToRead,
-      #                                     Lna::Collection::LicenseReference ]
-
       can [:create, :update, :destroy], ActiveFedora::Base
     end
   end
