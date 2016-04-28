@@ -78,6 +78,7 @@
 	                      "org:identifier": null,
 	                      "skos:prefLabel": null,
 	                      "skos:altLabel": [],
+	                      "org:purpose": "",
 	                      "owltime:hasBeginning": null,
 	                      "owltime:hasEnd": ""}
 	                    },
@@ -148,6 +149,14 @@
 	        			  'owltime:hasBeginning': null,
 	        			  'owltime:hasEnd': ''}
 	        			},
+			'editOrg':    {'method': 'PUT', 'path': 'organization/', 'template': {
+	                      "org:identifier": null,
+	                      "skos:prefLabel": null,
+	                      "skos:altLabel": [],
+	                      "org:purpose": "",
+	                      "owltime:hasBeginning": null,
+	                      "owltime:hasEnd": ""}
+	                    },	        			
 	     	'editPerson': {'method': 'PUT', 'path': 'person/', 'template': {
 	                      "foaf:name": null,
 	                      "foaf:givenName": null,
@@ -188,7 +197,9 @@
 	        'deleteLicense': {'method': 'DELETE', 'path': 'work/', 'template':{ }
 	        			},
 	        'deleteWork': {'method': 'DELETE', 'path': 'work/', 'template':{ }
-	        			}	        			
+	        			},
+	        'deleteOrg': {'method': 'DELETE', 'path': 'organization/', 'template':{ }
+	        			}	
 
 	    };
 	};

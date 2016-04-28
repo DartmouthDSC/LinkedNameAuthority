@@ -122,6 +122,7 @@ LNA = {
 		} else {
 			$('.orgDateRange').text(dataArray.org['owltime:hasBeginning'].substr(0,4) + '-Present');
 		}
+		$('.orgData .edit').data('formData', dataArray);
 
 		//clear all spinners
 		$('main .spinner').parent().remove();
@@ -361,6 +362,17 @@ LNA = {
 		subject.importTags('');
 		$(data.work['dc:subject']).each(function(i, v) {subject.addTag(v)});
 	},
+
+	editOrg: function(targetForm, data){
+		var $targetForm = $(targetForm);
+		$.each(data.org, function(k, v){
+			$targetForm.find('[name="'+k+'"]').val(v);
+		});
+
+		var akaList = $targetForm.find('[name="skos:altLabel"]');
+		akaList.importTags('');
+		$(data.org['skos:altLabel']).each(function(i, v) {akaList.addTag(v)});
+	},	
 
 	'editLicense': function(targetForm, data){
 		var $targetForm = $(targetForm);
