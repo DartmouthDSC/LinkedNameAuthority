@@ -58,7 +58,6 @@ class OrganizationsController < CollectionController
   end
 
   def convert_super_org_to_fedora_id
-    params['org:subOrganizationOf'] =
-      org_uri_to_fedora_id(params['org:subOrganizationOf'])
+    org_uri_to_fedora_id('org:subOrganizationOf')
   end
 end

@@ -1,5 +1,5 @@
 class PersonController < CrudController
-  before_action :convert_org_to_fedora_id
+  before_action :convert_org_to_fedora_id, only: [:create, :update]
   load_and_authorize_resource :person, param_method: :attributes, class: 'Lna::Person',
                               only: [:create, :update, :destroy]
   
@@ -71,7 +71,7 @@ class PersonController < CrudController
   end
 
   def convert_org_to_fedora_id
-    params['org:reportsTo'] = org_uri_to_fedora_id(params['org:reportsTo'])
+    org_uri_to_fedora_id!('org:reportsTo')
   end
   
   def person_params

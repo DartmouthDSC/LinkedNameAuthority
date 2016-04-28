@@ -4,6 +4,8 @@ require 'airborne'
 RSpec.describe "Organization API", type: :request, https: true do
   before :all do
     @org = FactoryGirl.create(:library)
+    @provost = @org.super_organizations.first
+    @dltg = @org.sub_organizations.first
     FactoryGirl.create(:orcid_for_org, account_holder: @org)
   end
 
@@ -133,12 +135,14 @@ RSpec.describe "Organization API", type: :request, https: true do
         before :context do
           @count = Lna::Organization.count
           body = {
-            'org:identifier'       => '0021',
-            'skos:prefLabel'      => 'Dartmouth Information Technology Services',
-            'skos:altLabel'       => ['ITS'],
-            'owltime:hasBeginning' => '2013-06-01',
-            'vcard:postal-box'     => '0000',
-            'org:purpose'          => 'SUBDIV'
+            'org:identifier'         => '0021',
+            'skos:prefLabel'         => 'Dartmouth Information Technology Services',
+            'skos:altLabel'          => ['ITS'],
+            'owltime:hasBeginning'   => '2013-06-01',
+            'vcard:postal-box'       => '0000',
+            'org:purpose'            => 'SUBDIV',
+            'org:subOrganizationOf'  => [organization_url(FedoraID.shorten(@provost.id))],
+            'org:hasSubOrganization' => [organization_url(FedoraID.shorten(@dltg.id))]
           }
 
           post organization_index_path, body.to_json, {
@@ -148,12 +152,23 @@ RSpec.describe "Organization API", type: :request, https: true do
           
           m = /#{Regexp.escape(root_url)}organization\/([a-zA-Z0-9-]+)/.match(json_body[:@id])
           @id = FedoraID.shorten(m[1])
+          @its = Lna::Organization.find(FedoraID.lengthen(@id))
         end
 
         it 'creates and saves a new organization' do
           expect(Lna::Organization.count).to eq @count + 1
         end
 
+        it 'adds super organization' do
+          expect(@its.super_organizations.count).to eq 1
+          expect(@its.super_organizations).to include @provost
+        end
+        
+        it 'adds sub organization' do
+          expect(@its.sub_organizations.count).to eq 1
+          expect(@its.sub_organizations).to include @dltg
+        end
+        
         it 'returns correct location header' do
           expect_header('Location', organization_path(id: @id))
         end
@@ -199,12 +214,12 @@ RSpec.describe "Organization API", type: :request, https: true do
         
         before :context do
           body = {
-            'org:identifier'       => '0022',
-            'skos:prefLabel'      => 'Dartmouth College Library',
-            'skos:altLabel'       => ['Library'],
-            'owltime:hasBeginning' => '1974-01-01',
-            'vcard:postal-box'     => '0000',
-            'org:purpose'          => 'SUBDIV'
+            'org:identifier'         => '0022',
+            'skos:prefLabel'         => 'Dartmouth College Library',
+            'skos:altLabel'          => ['Library'],
+            'owltime:hasBeginning'   => '1974-01-01',
+            'vcard:postal-box'       => '0000',
+            'org:purpose'            => 'SUBDIV',
           }
           put @path, body.to_json, {
             'ACCEPT' => 'application/ld+json',
@@ -216,7 +231,7 @@ RSpec.describe "Organization API", type: :request, https: true do
         it 'updates code in fedora store' do
           expect(@org.hr_id).to eq '0022'
         end
-        
+
         it 'response body contains updated code' do
           expect_json(:'org:identifier' => '0022')
         end

@@ -81,6 +81,8 @@ class WorkController < CrudController
     if uri = params['dc:creator']
       if match = %r{^#{Regexp.escape(root_url)}person/([a-zA-Z0-9-]+$)}.match(uri)
         params['dc:creator'] = FedoraID.lengthen(match[1])
+      else
+        raise ActionDispatch::ParamsParser::ParseError.new('dc:creator must be a full uri', nil)
       end
     end
   end

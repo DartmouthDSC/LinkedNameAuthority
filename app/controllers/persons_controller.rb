@@ -58,6 +58,6 @@ class PersonsController < CollectionController
   end
 
   def convert_org_to_fedora_id
-    params['org:member'] = org_uri_to_fedora_id(params['org:member'])
+    org_uri_to_fedora_id('org:member')
   end
 end

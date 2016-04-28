@@ -10,7 +10,7 @@ RSpec.describe "Person/Membership API", type: :request, https: true do
 
   let(:required_body) {
     {
-      'org:organization'     => organization_url(id: @org_id),
+      'org:organization'     => organization_url(@org_id),
       "vcard:title"          => "Professor of Engineering",
       "owltime:hasBeginning" => "2015-08-20"
     }.to_json

@@ -1,6 +1,6 @@
 class Person::MembershipController < CrudController
-  before_action :convert_org_to_fedora_id
   load_resource :person, class: 'Lna::Person'
+  before_action :convert_org_to_fedora_id, except: :destroy
   load_and_authorize_resource :membership, param_method: :attributes, class: 'Lna::Membership',
                               through: :person
   before_action :membership_not_nil
@@ -62,7 +62,8 @@ class Person::MembershipController < CrudController
   end
 
   def convert_org_to_fedora_id
-    params['org:organization'] = org_uri_to_fedora_id(params['org:organization'])
+    puts params['org:organization']
+    org_uri_to_fedora_id!('org:organization')
   end
   
   def membership_params

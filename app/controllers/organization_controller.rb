@@ -29,9 +29,17 @@ class OrganizationController < CrudController
   # POST /organization
   def create
     authorize! :create, Lna::Organization
-    attributes = params_to_attributes(organization_params)
-    o = Lna::Organization.create!(attributes)
 
+    attributes = params_to_attributes(organization_params)
+    
+    o = Lna::Organization.create!(attributes) do |o|
+      o.super_organization_ids = organization_params['org:subOrganizationOf']  
+    end
+
+    # Could not get sub organizations to save any other way.
+    o.sub_organization_ids = organization_params['org:hasSubOrganization']
+    o.save!
+    
     @organization = search_for_id(o.id)
 
     location = organization_path(id: FedoraID.shorten(o.id))
@@ -52,8 +60,10 @@ class OrganizationController < CrudController
     authorize! :update, o
     if o.class == Lna::Organization
       attributes = params_to_attributes(organization_params,
-                                        sub_organization_ids: params['org:hasSubOrganization'],
-                                        super_organization_ids: params['org:subOrganizationOf'])
+                                        sub_organization_ids:
+                                          params['org:hasSubOrganization'],
+                                        super_organization_ids:
+                                          params['org:subOrganizationOf'])
     else
       attributes = params_to_attributes(organization_params,
                                         historic_placement: params['lna:historicPlacement'],
@@ -90,9 +100,7 @@ class OrganizationController < CrudController
     
   def convert_sub_and_super_org_ids
     ['org:hasSubOrganization', 'org:subOrganizationOf'].each do |o|
-      if params[o].kind_of?(Array)
-        params[o].map { |i| org_uri_to_fedora_id(i) }
-      end
+      org_uri_to_fedora_id!(o) unless params[o].blank?
     end
   end
 end
