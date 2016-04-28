@@ -40,7 +40,13 @@
    whenever -w
    ```
    
-   **Note:** This will write the crontab under the current user running this command. If you would like the commands in the crontab to run in a different environment than `development`, either use the `--set` flag avaliable in `whenever` or set the rails environment before running the command `RAILS_ENV=qa whenever -w`.
+   **Note:** This will write the crontab under the current user running this command. 
+   **Note:** If you would like the commands in the crontab to run in a different environment than `development`, either use the `--set` flag avaliable in `whenever` or set the rails environment before running the command `RAILS_ENV=qa whenever -w`.
+
+7. To seed db (with roles and privilages for developers):
+   ```
+   rake db:seed
+   ```
    
 ## Deploying to QA
 1. If this is the first time deploying to qa, **on qa.dac**
@@ -58,6 +64,11 @@
 3. If this is the first time deploying to qa, and you would like to load all the data without waiting for the cron job run:
    ```
    bundle exec cap qa deploy:load_data
+   ```
+
+4. If this is the first time deploying to qa, you will probably want to seed the db, with basic roles and privilages for the developers.
+   ```
+   bundle exec cap qa deploy:seed_db
    ```
 
 ##Environment Variables
