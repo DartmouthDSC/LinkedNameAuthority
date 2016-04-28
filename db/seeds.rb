@@ -34,7 +34,7 @@ add_admins(
   ]
 )
 
-if Rails.env == 'production'
+if Rails.env == 'production' || Rails.env == 'qa'
   add_admins(
     [
       { name: 'Carole F. Meyers',  netid: 'f001hm3', realm: 'dartmouth.edu' },
