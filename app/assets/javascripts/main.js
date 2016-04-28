@@ -162,6 +162,9 @@ LNA = {
 		$('.workAbstract').text(dataArray.work['dc:abstract']);
 		$('.workPublisher').text(dataArray.work['dc:publisher']);
 		$('.workCitation').text(dataArray.work['dc:bibliographicCitation']);
+		$('.workURIs').html(dataArray.work['bibo:uri'].join('<br>'));
+
+		$('button.edit').data('formData', dataArray);
 
 		//render License list
 		$.each(dataArray.licenses, function(k, v){ LNA.fillLicense($('.sidebar .iconList'), v) });
@@ -339,6 +342,26 @@ LNA = {
 		//data-opt on this form has a placeholder (;;;) for the account ID. Replace it with the actual ID
 		LNA.replaceOptPlaceholder(targetForm, data['@id'].substr(1));
 	},
+	editWork: function(targetForm, data){
+		var $targetForm = $(targetForm);
+		$.each(data.work, function(k, v){
+			$targetForm.find('[name="'+k+'"]').val(v);
+		});
+		$targetForm.find('[name="foaf:name"]').val(data.person['foaf:name']);
+
+		var authorList = $targetForm.find('[name="bibo:authorList"]');
+		authorList.importTags('');
+		$(data.work['bibo:authorList']).each(function(i, v) {authorList.addTag(v)});
+
+		var uri = $targetForm.find('[name="bibo:uri"]');
+		uri.importTags('');
+		$(data.work['bibo:uri']).each(function(i, v) {uri.addTag(v)});
+
+		var subject = $targetForm.find('[name="dc:subject"]');
+		subject.importTags('');
+		$(data.work['dc:subject']).each(function(i, v) {subject.addTag(v)});
+	},
+
 	'editLicense': function(targetForm, data){
 		var $targetForm = $(targetForm);
 		console.log(data)

@@ -158,6 +158,22 @@
 	                      "foaf:mbox": null,
 	                      "org:reportsTo": null}
 	                    },
+	        'editWork':  {'method': 'PUT', 'path': 'work/', 'template': {
+	        			  'dc:title': null,
+	        			  'bibo:authorList': null,
+	        			  'dc:abstract': null,
+	        			  'bibo:doi': '',
+	        			  'dc:date': '',
+	        			  'bibo:uri': [],
+	        			  'bibo:volume': '',
+	        			  'bibo:pages': '',
+	        			  'bibo:pageStart': '',
+	        			  'bibo:pageEnd': '',
+	        			  'dc:publisher': '',
+	        			  'dc:subject': [],
+	        			  'dc:bibliographicCitation': '',
+	        			  'dc:creator': null}
+	        			},	                    
 	        'editLicense': {'method': 'PUT', 'path': 'work/', 'template':{
 	        			  'dc:title': null,
 	        			  'dc:description': null,
@@ -170,7 +186,10 @@
 	        'deleteAffiliation': {'method': 'DELETE', 'path': 'person/', 'template':{ }
 	        			},
 	        'deleteLicense': {'method': 'DELETE', 'path': 'work/', 'template':{ }
+	        			},
+	        'deleteWork': {'method': 'DELETE', 'path': 'work/', 'template':{ }
 	        			}	        			
+
 	    };
 	};
 
