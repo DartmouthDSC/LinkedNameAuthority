@@ -45,6 +45,7 @@ class PersonsController < CollectionController
     respond_to do |format|
       response.headers['Link'] = link_headers(result['response']['numFound'], MAX_ROWS, page)
       format.jsonld { render :search, content_type: 'application/ld+json' }
+      format.html
     end
   end
 
@@ -57,6 +58,6 @@ class PersonsController < CollectionController
   end
 
   def convert_org_to_fedora_id
-    params['org:member'] = org_uri_to_fedora_id(params['org:member'])
+    org_uri_to_fedora_id('org:member')
   end
 end

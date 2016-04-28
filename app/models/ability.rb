@@ -1,18 +1,19 @@
 class Ability
-  include Hydra::Ability
+  # Not using Hydra::Ability, because we are not using Blacklight nor are we limiting any of the
+  # show actions. We also don't need finer control over what objects can be edited. Any admins
+  # or editors can edit all ActiveFedora::Base objects.
+  include CanCan::Ability
   
-  # Define any customized permissions here.
-  def custom_permissions
-    # Limits deleting objects to a the admin user
-    #
-    # if current_user.admin?
-    #   can [:destroy], ActiveFedora::Base
-    # end
+  # Define permissions here.
+  def initialize(user)
+    # Permissions needed for hydra-role-management. Admins cannot create, update or destroy roles.
+    if user.admin?
+      can [:show, :add_user, :remove_user, :index, :edit], Role
+    end
 
-    # Limits creating new objects to a specific group
-    #
-    # if user_groups.include? 'special_group'
-    #   can [:create], ActiveFedora::Base
-    # end
+    # Permission for editors and admins to make changes to fedora objects.
+    if user.editor? || user.admin?
+      can [:create, :update, :destroy], ActiveFedora::Base
+    end
   end
 end

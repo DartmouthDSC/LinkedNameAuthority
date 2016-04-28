@@ -3,8 +3,8 @@ class OrganizationController < CrudController
   
   PARAM_TO_MODEL = {
     'org:identifier'       => 'hr_id',
-    'skos:prefLabel'      => 'label',
-    'skos:altLabel'       => 'alt_label',
+    'skos:prefLabel'       => 'label',
+    'skos:altLabel'        => 'alt_label',
     'owltime:hasBeginning' => 'begin_date',
     'vcard:postal-box'     => 'hinman_box',
     'org:purpose'          => 'kind'
@@ -22,16 +22,24 @@ class OrganizationController < CrudController
 
     ids = ['resultedFrom_ssim', 'changedBy_ssim'].map{ |i| @organization[i] }.compact.flatten
     @change_events = search_for_ids(ids)
+    @short_id = FedoraID.shorten(@organization['id'])
     super
   end
 
   # POST /organization
   def create
-    # Create organization
-    attributes = params_to_attributes(organization_params)
-    o = Lna::Organization.new(attributes)
-    render_unprocessable_entity && return unless o.save
+    authorize! :create, Lna::Organization
 
+    attributes = params_to_attributes(organization_params)
+    
+    o = Lna::Organization.create!(attributes) do |o|
+      o.super_organization_ids = organization_params['org:subOrganizationOf']  
+    end
+
+    # Could not get sub organizations to save any other way.
+    o.sub_organization_ids = organization_params['org:hasSubOrganization']
+    o.save!
+    
     @organization = search_for_id(o.id)
 
     location = organization_path(id: FedoraID.shorten(o.id))
@@ -39,6 +47,7 @@ class OrganizationController < CrudController
     respond_to do |f|
       f.jsonld { render :create, status: :created, location: location,
                         content_type: 'application/ld+json'}
+      f.html {redirect_to location}
     end
   end
 
@@ -48,16 +57,21 @@ class OrganizationController < CrudController
 
     # Update organization (could be historic or active)
     o = ActiveFedora::Base.find(organization['id'])
+    authorize! :update, o
     if o.class == Lna::Organization
-      attributes = params_to_attributes(organization_params, put: true,
-                                        sub_organization_ids: params['org:hasSubOrganization'],
-                                        super_organization_ids: params['org:subOrganizationOf'])
+      attributes = params_to_attributes(organization_params,
+                                        sub_organization_ids:
+                                          params['org:hasSubOrganization'],
+                                        super_organization_ids:
+                                          params['org:subOrganizationOf'])
     else
-      attributes = params_to_attributes(organization_params, put: true,
+      attributes = params_to_attributes(organization_params,
                                         historic_placement: params['lna:historicPlacement'],
                                         end_date: params['owltime:hasEnd'])
     end
-    render_unprocessable_entity && return unless o.update(attributes)
+
+    o.update_attributes(attributes)
+    o.save!
 
     @organization = search_for_organizations(id: organization['id'])
     
@@ -66,12 +80,9 @@ class OrganizationController < CrudController
 
   # DELETE /organization/:id
   def destroy
-    o = search_for_organizations(id: params[:id])
-
-    # Delete organization
-    organization = ActiveFedora::Base.find(o['id'])
-    organization.destroy
-    render_unprocessable_entity && return unless organization.destroyed?
+    organization = ActiveFedora::Base.find(params['id'])
+    authorize! :destroy, organization
+    organization.destroy!
    
     super
   end
@@ -79,6 +90,8 @@ class OrganizationController < CrudController
   private
 
   def organization_params
+    params.require('skos:prefLabel')
+    params.require('owltime:hasBeginning')
     params.permit('id', 'org:identifier', 'skos:prefLabel', 'owltime:hasBeginning', 
                   'lna:historicPlacement', 'owltime:hasEnd', 'vcard:postal-box',
                   'org:purpose', 'authenticity_token', 'skos:altLabel' => [],
@@ -87,11 +100,7 @@ class OrganizationController < CrudController
     
   def convert_sub_and_super_org_ids
     ['org:hasSubOrganization', 'org:subOrganizationOf'].each do |o|
-      if params[o].kind_of?(Array)
-        params[o].map { |i| org_uri_to_fedora_id(i) }
-      end
+      org_uri_to_fedora_id!(o) unless params[o].blank?
     end
   end
 end
-
-  

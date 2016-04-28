@@ -8,6 +8,15 @@ RSpec.describe "Person API", type: :request, https: true do
     @org_id = FedoraID.shorten(@jane.primary_org.id)
   end
 
+  let(:required_body) {
+    {
+      'foaf:name'       => 'John Bell',
+      'foaf:givenName'  => 'John',
+      'foaf:familyName' => 'Bell',
+      'org:reportsTo'   => organization_url(id: @org_id)
+    }.to_json
+  }
+  
   shared_context 'get person id' do
     before :context do
       @id = FedoraID.shorten(@jane.id)
@@ -67,12 +76,13 @@ RSpec.describe "Person API", type: :request, https: true do
   end
   
   describe 'POST person/' do
-    include_examples 'requires authentication' do
-      let(:path) { person_index_path }
+    include_examples 'requires authentication and authorization' do
+      let(:path)   { person_index_path }
       let(:action) { 'post' }
+      let(:body)   { required_body }
     end
     
-    describe 'when authenticated', authenticated: true do
+    describe 'when authorized', authenticated: true, editor: true do
       include_examples 'throws error when fields missing' do
         let(:path) { person_index_path }
         let(:action) { 'post' }
@@ -107,11 +117,11 @@ RSpec.describe "Person API", type: :request, https: true do
         end
         
         it 'returns correct location header' do
-          expect_header('Location', person_path(id: @id))
+          expect_header('Location', person_path(@id))
         end 
         
         it 'returns body with @id' do
-          expect_json(:@id => person_url(id: @id))
+          expect_json(:@id => person_url(@id))
         end
       end    
     end
@@ -120,12 +130,13 @@ RSpec.describe "Person API", type: :request, https: true do
   describe 'PUT person/:id' do
     include_context 'get person id'
     
-    include_examples 'requires authentication' do
-      let(:path) { @path }
+    include_examples 'requires authentication and authorization' do
+      let(:path)   { @path }
       let(:action) { 'put' }
+      let(:body)   { required_body }
     end
 
-    describe 'when authenticated', authenticated: true do
+    describe 'when authorized', authenticated: true, editor: true do
       include_examples 'throws error when fields missing' do
         let(:path) { @path }
         let(:action) { 'put' }
@@ -142,7 +153,7 @@ RSpec.describe "Person API", type: :request, https: true do
             'foaf:mbox'       => 'jane.doe@dartmouth.edu',
             'foaf:image'      => 'http://ld.dartmouth.edu/api/person/F12345F/img',
             'foaf:homepage'   => ['http://janeadoe.dartmouth.edu/'],
-            'org:reportsTo'   => organization_url(id: @org_id)
+            'org:reportsTo'   => organization_url(@org_id)
           }
           
           put @path, body.to_json, {
@@ -166,12 +177,13 @@ RSpec.describe "Person API", type: :request, https: true do
   describe 'DELETE person/:id' do
     include_context 'get person id'
 
-    include_examples 'requires authentication' do
-      let(:path) { @path }
+    include_examples 'requires authentication and authorization' do
+      let(:path)   { @path }
       let(:action) { 'delete' }
+      let(:body)   { {}.to_json }
     end
 
-    describe 'when authenticated', authenticated: true do
+    describe 'when authorized', authenticated: true, editor: true do
       describe 'succesfully deletes person' do
         include_examples 'successful request'
 

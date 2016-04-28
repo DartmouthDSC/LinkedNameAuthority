@@ -1,6 +1,6 @@
 # Wrapper around Active Fedora Solr helpers. This class contains specific queries for use in the
-# Lna. Controllers that include this module should also implement a not_found method. When a
-# resource is not found, the not_found method is called.
+# Lna. Controllers that include this module should also catch ActiveFedora::ObjectNotFoundError
+# errors. When a resource is not found, an ActiveFedora::ObjectNotFoundError is raised..
 module SolrSearchBehavior
   extend ActiveSupport::Concern
 
@@ -26,7 +26,7 @@ module SolrSearchBehavior
         result
       end
     elsif only_one
-      not_found
+      raise ActiveFedora::ObjectNotFoundError, 'Object does not exist.'
     else
       (docs_only) ? docs : result
     end
@@ -50,15 +50,15 @@ module SolrSearchBehavior
     end
   end
 
-  # Searches Solr for an id, if there isn't only one result the not_found method is called.
-  # Controllers that use this methods/module should have a not_found method implemented.
+  # Searches Solr for an id, if there isn't only one result and error is raised.
+  # Controllers that use this methods/module should catch ActiveFedora::ObjectNotFoundError.
   #
   # @param (see #search_for_id!)
   def search_for_id(id)
     begin
       search_for_id!(id)
     rescue
-      not_found
+      raise ActiveFedora::ObjectNotFoundError, 'Object does not exist'
     end
   end
 
@@ -74,8 +74,8 @@ module SolrSearchBehavior
   end
   
   # Searches Solr for a Lna::Person with the given id or query. Cannot pass in both a query and
-  # and id. If an id is given, only one result is returned. If there are no results the not_found
-  # method is called.
+  # and id. If an id is given, only one result is returned. If there are no results an error is
+  # raised.
   #
   # @param id [String] id of person searching for
   # @param (see #search_with_model_filter)

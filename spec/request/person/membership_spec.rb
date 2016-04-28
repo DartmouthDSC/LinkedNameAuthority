@@ -7,6 +7,14 @@ RSpec.describe "Person/Membership API", type: :request, https: true do
   before :all do
     @org_id = FedoraID.shorten(@jane.primary_org.id)
   end
+
+  let(:required_body) {
+    {
+      'org:organization'     => organization_url(@org_id),
+      "vcard:title"          => "Professor of Engineering",
+      "owltime:hasBeginning" => "2015-08-20"
+    }.to_json
+  }
   
   shared_context 'get membership id' do
     before :context do
@@ -16,12 +24,13 @@ RSpec.describe "Person/Membership API", type: :request, https: true do
   end
   
   describe 'POST person/:person_id/membership(/:id)' do
-    include_examples 'requires authentication' do
-      let(:path) { person_membership_index_path(person_id: @person_id) }
+    include_examples 'requires authentication and authorization' do
+      let(:path)   { person_membership_index_path(person_id: @person_id) }
       let(:action) { 'post' }
+      let(:body)   { required_body }
     end
         
-    describe 'when authenticated', authenticated: true do
+    describe 'when authorized', authenticated: true, editor: true do
       include_examples 'throws error when fields missing' do
         let(:path) { person_membership_index_path(person_id: @person_id) }
         let(:action) { 'post' }
@@ -84,12 +93,13 @@ RSpec.describe "Person/Membership API", type: :request, https: true do
   describe 'PUT person/:person_id/membership/:id' do
     include_context 'get membership id'
 
-    include_examples 'requires authentication' do
-      let(:path) { @path }
+    include_examples 'requires authentication and authorization' do
+      let(:path)   { @path }
       let(:action) { 'put' }
+      let(:body)   { required_body }
     end
     
-    describe 'when authenticated', authenticated: true do
+    describe 'when authorized', authenticated: true, editor: true do
       include_examples 'throws error when fields missing' do
         let(:path) { @path }
         let(:action) { 'put' }
@@ -138,12 +148,13 @@ RSpec.describe "Person/Membership API", type: :request, https: true do
   describe 'DELETE person/:person_id/membership/:id' do
     include_context 'get membership id'
 
-    include_examples 'requires authentication' do
-      let(:path) { @path }
+    include_examples 'requires authentication and authorization' do
+      let(:path)   { @path }
       let(:action) { 'delete' }
+      let(:body)   { {}.to_json }
     end
     
-    describe 'when authenticated', authenticated: true do
+    describe 'when authorized', authenticated: true, editor: true do
       describe 'succesfully deletes account' do
         include_examples 'successful request'
         
@@ -161,7 +172,8 @@ RSpec.describe "Person/Membership API", type: :request, https: true do
       end
       
       it 'returns 404 if id is invalid' do
-        delete person_membership_path(person_id: @person_id, id: 'blahblahblah'), { format: :jsonld }
+        delete person_membership_path(person_id: @person_id, id: 'blahblahblah'),
+               { format: :jsonld }
         expect_status :not_found
       end
     end

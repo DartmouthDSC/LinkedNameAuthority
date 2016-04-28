@@ -1,4 +1,6 @@
 class Work::LicenseController < CrudController
+  LICENSE_REF  = 'ali:license_ref'
+  FREE_TO_READ = 'ali:free_to_read'
   PARAM_TO_MODEL = {
     'ali:start_date' => 'start_date',
     'ali:end_date'   => 'end_date',
@@ -8,27 +10,31 @@ class Work::LicenseController < CrudController
   
   # POST /work/:work_id/license
   def create
-    work = search_for_works(id: params[:work_id])
-
-    attributes = params_to_attributes(license_params, document_id: work['id'])
+    authorize! :create, Lna::Collection::LicenseReference
+    authorize! :create, Lna::Collection::FreeToRead
+    
+    work = search_for_works(id: license_params[:work_id])
 
     case license_params['dc:description']
-    when 'license_ref'
+    when LICENSE_REF
       l = Lna::Collection::LicenseReference.new(attributes)
-    when 'free_to_read'
+    when FREE_TO_READ
       l = Lna::Collection::FreeToRead.new(attributes)
     else
-      render_unprocessable_entity && return
+      raise ActiveFedora::RecordInvalid, ActiveFedora::Base.new,
+            "dc:description must be #{LICENSE_REF} or #{FREE_TO_READ}"
     end
 
-    render_unprocessable_entity && return unless l.save
+    l.save!
 
     @license = search_for_id(l.id)
     
     location = "/work/#{FedoraID.shorten(work['id'])}##{FedoraID.shorten(@license['id'])}"
 
     respond_to do |f|
-      f.jsonld { render :create, status: :created, location: location, content_type: 'application/ld+json' }
+      f.jsonld { render :create, status: :created, location: location,
+                        content_type: 'application/ld+json' }
+      f.html { redirect_to work_path(FedoraID.shorten(work['id'])) }
     end
   end
 
@@ -37,9 +43,10 @@ class Work::LicenseController < CrudController
     license = search_for_licenses(id: params[:id], document_id: params[:work_id])
 
     # Update license.
-    attributes = params_to_attributes(license_params, put: true, document_id: params[:work_id])
     l = ActiveFedora::Base.find(license['id'])
-    render_unprocessable_entity && return unless l.update(attributes)
+    authorize! :update, l
+    l.update(attributes)
+    l.save!
 
     @license = search_for_id(params[:id])
 
@@ -52,13 +59,21 @@ class Work::LicenseController < CrudController
 
     # Delete License
     l = ActiveFedora::Base.find(license['id'])
-    l.destroy
-    render_unprocessable_entiry && return unless l.destroyed?
+    authorize! :destroy, l
+    l.destroy!
 
     super
   end
 
+  def attributes
+    params_to_attributes(license_params, document_id: params[:work_id])
+  end
+
   def license_params
+    params.require('dc:description')
+    params.require('ali:start_date')
+    params.require('dc:title')
+    params.require('ali:uri') if params['dc:description'] == LICENSE_REF
     params.permit(PARAM_TO_MODEL.keys.concat(['id', 'work_id', 'dc:description']))
   end
 end

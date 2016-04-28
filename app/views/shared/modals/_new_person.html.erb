@@ -2,15 +2,17 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-body">
-        <form data-lna-query="newPerson" class="formSingleColumn">
+        <form data-lna-query="newPerson" class="formSingleColumn" data-no-ajax="true">
           <label>Given Name</label><input name="foaf:givenName"></input>
           <label>Family Name</label><input name="foaf:familyName"></input>
           <label>Written Name</label><input name="foaf:name"></input>
           <label>Title</label><input name="foaf:title"></input>
+          <label>Reports To</label><input name="skos:prefLabel" class="autocompleteBehavior" autocomplete="off" data-autocomplete-type="reportsTo"></input>
           <label>Email</label><input name="foaf:mbox"></input>
           <label>Photo URL</label><input name="foaf:image"></input>
           <label>Homepage URL</label><input name="foaf:homepage"></input>
           <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+          <%= hidden_field_tag "org:reportsTo", nil, {:id => nil} %>
           <button type="submit" title="submit">Submit</button>
         </form>
       </div>
