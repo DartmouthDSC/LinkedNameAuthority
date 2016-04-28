@@ -11,7 +11,7 @@ class User < ActiveRecord::Base
   validates_uniqueness_of :netid, :uid
 
   # Removed default devise modules except for trackable and added the omniauthable module.
-  devise :trackable, :omniauthable, omniauth_providers: [:cas]
+  devise :trackable, :timeoutable, :omniauthable, omniauth_providers: [:cas]
 
   # Method added by Blacklight; Blacklight uses #to_s on your user class to get
   # a user-displayable login/identifier for the account.
