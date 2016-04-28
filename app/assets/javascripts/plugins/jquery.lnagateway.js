@@ -135,6 +135,18 @@
 	        			  'foaf:accountName': null,
 	        			  'foaf:accountServiceHomepage': ''}
 	        			},
+	        'editAffiliation': {'method': 'PUT', 'path': 'person/', 'template':{
+	        			  'org:organization': null,
+	        			  'vcard:email': '',
+	        			  'vcard:title': '',
+	        			  'vcard:street-address': '',
+	        			  'vcard:pobox': '',
+	        			  'vcard:postal-code': '',
+	        			  'vcard:localtiy': '',
+	        			  'vcard:country-name': '',
+	        			  'owltime:hasBeginning': null,
+	        			  'owltime:hasEnd': ''}
+	        			},
 	        'deleteAccount': {'method': 'DELETE', 'path': 'person/', 'template':{ }
 	        			}    			
 	    };

@@ -9,7 +9,7 @@ LNA = {
 			 'value': 'netID',
 			 'class': 'netID',
 			 'homepage': 'http://tech.dartmouth.edu/its/services-support/help-yourself/netid-lookup',
-			 'accountRoot': 'http://lna.dartmouth.edu/person/'},  //tk accountRoot isn't right
+			 'accountRoot': ''},  
 			{'title': 'ORCiD',
 			 'value': 'orcid',
 		     'class': 'orcid',
@@ -237,7 +237,7 @@ LNA = {
 		viewButton.click(function(e){ LNA.openLink(e, data['org:organization'])});
 		editButton.attr('title', 'edit '+ data['orgLabel'] + ' affiliation');
 		editButton.children('.helpText').text('edit '+ data['orgLabel'] + ' affiliation');
-		editButton.click(function(e){ LNA.editAffiliation(e, data['org:organization'])});
+		editButton.data('formData', data);
 		parent.prepend(node);
 	},
 	'fillLicense': function(parent, data){
@@ -304,8 +304,15 @@ LNA = {
 	},
 
 	//edit functions load data into edit modals
-	editAffiliation: function(e, org){
-		// var editForm = $('#modals ')
+	editAffiliation: function(targetForm, data){
+		var $targetForm = $(targetForm);
+		$.each(data, function(k, v){
+			$targetForm.find('[name="'+k+'"]').val(data[k]);
+		});
+		$targetForm.find('[name="skos:prefLabel"]').val(data['orgLabel']);
+
+		//data-opt on this form has a placeholder (;;;) for the account ID. Replace it with the actual ID
+		LNA.replaceOptPlaceholder(targetForm, data['@id'].substr(1));
 	},
 
 	'editAccount': function(targetForm, data){
@@ -317,21 +324,13 @@ LNA = {
 		$targetForm.find('[name="foaf:accountServiceHomepage"]').val(data['foaf:accountServiceHomepage']);
 
 		//data-opt on this form has a placeholder (;;;) for the account ID. Replace it with the actual ID
-		var oldOpt = $targetForm.data('opt').split('/');
-		oldOpt.pop();
-		oldOpt.push(data['@id'].substr(1));
-		var newOpt = oldOpt.join('/')
-		$targetForm.data('opt', newOpt);
+		LNA.replaceOptPlaceholder(targetForm, data['@id'].substr(1));
 	},
 	'deleteAccount': function(targetForm, data){
 		var $targetForm = $(targetForm);
 
-		// //data-opt on this form has a placeholder (;;;) for the account ID. Replace it with the actual ID
-		var oldOpt = $targetForm.data('opt').split('/');
-		oldOpt.pop();
-		oldOpt.push(data['@id'].substr(1));
-		var newOpt = oldOpt.join('/')
-		$targetForm.data('opt', newOpt);
+		//data-opt on this form has a placeholder (;;;) for the account ID. Replace it with the actual ID
+		LNA.replaceOptPlaceholder(targetForm, data['@id'].substr(1));
 	},	
 
 	//helpers
@@ -340,6 +339,15 @@ LNA = {
 			window.open(link, '_new');
 		}
 		else window.location.href = link;
+	},
+
+	'replaceOptPlaceholder': function(targetForm, id){
+		var $targetForm = $(targetForm);
+		var oldOpt = $targetForm.data('opt').split('/');
+		oldOpt.pop();
+		oldOpt.push(id);
+		var newOpt = oldOpt.join('/')
+		$targetForm.data('opt', newOpt);	
 	},
 
 	//Find corresponding buttons and attach the open event

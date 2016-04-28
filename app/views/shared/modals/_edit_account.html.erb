@@ -6,16 +6,16 @@
           <div><label>Title</label><input name="dc:title" readonly="readonly"></input></div>          
           <div><label>ID</label><input name="accountID" class="changeBehavior" data-onchange="mergeAccountName"></input></div>
           <div><label>Service Link</label><input name="foaf:accountServiceHomepage" readonly="readonly"></input></div>
-          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-          <%= hidden_field_tag "foaf:accountName" %>
-          <%= hidden_field_tag "accountRoot" %>
-          <%= hidden_field_tag "template" %>
-          <%= hidden_field_tag "dc:creator", "https://jb.dac.dartmouth.edu/lna/person/" + @short_id %>
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token, {:id => nil} %>
+          <%= hidden_field_tag "foaf:accountName", {:id => nil} %>
+          <%= hidden_field_tag "accountRoot", {:id => nil} %>
+          <%= hidden_field_tag "template", {:id => nil} %>
+          <%= hidden_field_tag "dc:creator", "https://jb.dac.dartmouth.edu/lna/person/" + @short_id, {:id => nil} %>
           <button type="submit" title="Update">Update</button>
           <div class="centered">OR</div>
         </form>
         <form data-lna-query="deleteAccount" class="formTwoColumn" data-opt="<%= @short_id %>/account/;;;" data-refresh="true" data-load="deleteAccount">
-        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+        <%= hidden_field_tag :authenticity_token, form_authenticity_token, {:id => nil} %>
         <button type="submit" title="Delete" class="warning" name="delete">Delete Account</button>
         </form>
       </div>
