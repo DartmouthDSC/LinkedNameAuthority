@@ -2,12 +2,12 @@ class OrganizationController < CrudController
   before_action :convert_sub_and_super_org_ids, only: [:create, :update]
   
   PARAM_TO_MODEL = {
-    'org:identifier'       => 'hr_id',
-    'skos:prefLabel'       => 'label',
-    'skos:altLabel'        => 'alt_label',
-    'owltime:hasBeginning' => 'begin_date',
-    'vcard:postal-box'     => 'hinman_box',
-    'org:purpose'          => 'kind'
+    'org:identifier'         => 'hr_id',
+    'skos:prefLabel'         => 'label',
+    'skos:altLabel'          => 'alt_label',
+    'owltime:hasBeginning'   => 'begin_date',
+    'vcard:post-office-box' => 'hinman_box',
+    'org:purpose'            => 'kind'
   }.freeze
 
   # GET /organization/:id
@@ -93,7 +93,7 @@ class OrganizationController < CrudController
     params.require('skos:prefLabel')
     params.require('owltime:hasBeginning')
     params.permit('id', 'org:identifier', 'skos:prefLabel', 'owltime:hasBeginning', 
-                  'lna:historicPlacement', 'owltime:hasEnd', 'vcard:postal-box',
+                  'lna:historicPlacement', 'owltime:hasEnd', 'vcard:post-office-box',
                   'org:purpose', 'authenticity_token', 'skos:altLabel' => [],
                   'org:hasSubOrganization' => [], 'org:subOrganizationOf' => [])
   end

@@ -40,7 +40,7 @@ RSpec.describe "Organizations API", type: :request, https: true do
     end
 
     it 'returns hinman box' do
-      expect_json('@graph.0', :'vcard:postal-box' => @org.hinman_box)
+      expect_json('@graph.0', :'vcard:post-office-box' => @org.hinman_box)
     end
 
     it 'includes link headers' do

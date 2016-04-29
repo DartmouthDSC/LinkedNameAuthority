@@ -68,7 +68,7 @@ RSpec.describe "Organization API", type: :request, https: true do
         end
 
         it 'contains hinman box' do
-          expect_json('@graph.0', :'vcard:postal-box' => @org.hinman_box)
+          expect_json('@graph.0', :'vcard:post-office-box' => @org.hinman_box)
         end
 
         it 'contains account' do
@@ -139,7 +139,7 @@ RSpec.describe "Organization API", type: :request, https: true do
             'skos:prefLabel'         => 'Dartmouth Information Technology Services',
             'skos:altLabel'          => ['ITS'],
             'owltime:hasBeginning'   => '2013-06-01',
-            'vcard:postal-box'       => '0000',
+            'vcard:post-office-box'  => '0000',
             'org:purpose'            => 'SUBDIV',
             'org:subOrganizationOf'  => [organization_url(FedoraID.shorten(@provost.id))],
             'org:hasSubOrganization' => [organization_url(FedoraID.shorten(@dltg.id))]
@@ -186,8 +186,8 @@ RSpec.describe "Organization API", type: :request, https: true do
             expect_json(:'org:purpose' => 'SUBDIV')
           end
 
-          it 'contains postal box' do
-            expect_json(:'vcard:postal-box' => '0000')
+          it 'contains post office box' do
+            expect_json(:'vcard:post-office-box' => '0000')
           end
         end
       end
@@ -218,7 +218,7 @@ RSpec.describe "Organization API", type: :request, https: true do
             'skos:prefLabel'         => 'Dartmouth College Library',
             'skos:altLabel'          => ['Library'],
             'owltime:hasBeginning'   => '1974-01-01',
-            'vcard:postal-box'       => '0000',
+            'vcard:post-office-box'  => '0000',
             'org:purpose'            => 'SUBDIV',
           }
           put @path, body.to_json, {

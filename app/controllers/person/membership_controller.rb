@@ -6,15 +6,16 @@ class Person::MembershipController < CrudController
   before_action :membership_not_nil
 
   PARAM_TO_MODEL = {
-      'org:organization'     => 'organization_id',
-      'vcard:email'          => 'email',
-      'vcard:title'          => 'title',
-      'vcard:street-address' => 'street_address',
-      'vcard:postal-code'    => 'postal_code',
-      'vcard:country-name'   => 'country_name',
-      'vcard:locality'       => 'locality',
-      'owltime:hasBeginning' => 'begin_date',
-      'owltime:hasEnd'       => 'end_date'
+      'org:organization'      => 'organization_id',
+      'vcard:email'           => 'email',
+      'vcard:title'           => 'title',
+      'vcard:street-address'  => 'street_address',
+      'vcard:postal-code'     => 'postal_code',
+      'vcard:country-name'    => 'country_name',
+      'vcard:locality'        => 'locality',
+      'vcard:post-office-box' => 'pobox',
+      'owltime:hasBeginning'  => 'begin_date',
+      'owltime:hasEnd'        => 'end_date'
   }.freeze
 
   # POST /person/:person_id/membership
@@ -27,7 +28,7 @@ class Person::MembershipController < CrudController
     respond_to do |f|
       f.jsonld { render :create, status: :created, location: location,
                         content_type: 'application/ld+json' }
-      f.html { redirect_to person_path(FedoraID.shorten(person['id'])) }
+      f.html { redirect_to person_path(FedoraID.shorten(@person.id)) }
     end
   end
 
@@ -62,7 +63,6 @@ class Person::MembershipController < CrudController
   end
 
   def convert_org_to_fedora_id
-    puts params['org:organization']
     org_uri_to_fedora_id!('org:organization')
   end
   
