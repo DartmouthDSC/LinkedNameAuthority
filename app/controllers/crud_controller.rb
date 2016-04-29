@@ -24,7 +24,7 @@ class CrudController < ApiController
     end
   end
 
-  # Helper method to map parameters send in request of body to model attributes.
+  # Helper method to map parameters sent in request of body to model attributes.
   #
   # @private
   #
@@ -32,7 +32,9 @@ class CrudController < ApiController
   # @params put [boolean] true if used for a put request; all fields are required to contain an
   #   empty string even if they aren't set.
   # @params extra_params [Hash]
-  def params_to_attributes(params, put: false, **extra_params)
+  def params_to_attributes(params, **extra_params)
+    put = self.params[:action] == 'update'
+    
     attributes = {}
     attributes.merge!(extra_params) if extra_params
 

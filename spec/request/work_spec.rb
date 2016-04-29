@@ -3,6 +3,13 @@ require 'airborne'
 
 RSpec.describe "Work API", type: :request, https: true do
   include_context 'creates test person'
+  let(:required_body) {
+    {
+      "bibo:authorList" => ["Bell, John", "Ippolito, Jon"],
+      "dc:title" => "Diffused Museums and Making the Title Longer",
+      "dc:creator" => person_url(id: FedoraID.shorten(@jane.id))
+    }.to_json
+  }
 
   shared_context 'get work id' do
     before :context do
@@ -13,14 +20,15 @@ RSpec.describe "Work API", type: :request, https: true do
   end
   
   describe 'POST work/' do
-    include_examples 'requires authentication' do
+    include_examples 'requires authentication and authorization' do
       let(:path) { "/work" }
       let(:action) { 'post' }
+      let(:body)   { required_body }
     end
         
-    describe 'when authenticated', authenticated: true do
+    describe 'when authenticated', authenticated: true, editor: true do
       include_examples 'throws error when fields missing' do
-        let(:path) { work_index_path }
+        let(:path)   { work_index_path }
         let(:action) { 'post' }
       end
       
@@ -35,7 +43,7 @@ RSpec.describe "Work API", type: :request, https: true do
             "bibo:pages" => "24",
             "bibo:pageStart" => "473",
             "bibo:pageEnd" => "497",
-            "bibo:authorsList" => ["Bell, John", "Ippolito, Jon"],
+            "bibo:authorList" => ["Bell, John", "Ippolito, Jon"],
             "dc:title" => "Diffused Museums",
             "dc:abstract" => "Lorem ipsum...",
             "dc:publisher" => "Wiley",
@@ -56,11 +64,11 @@ RSpec.describe "Work API", type: :request, https: true do
         end
       
         it 'return correct location header' do
-          expect_header('Location', work_path(id: @id))
+          expect_header('Location', work_path(@id))
         end
 
         it 'returns body with @id.' do
-          expect_json(:@id => work_url(id: @id))
+          expect_json(:@id => work_url(@id))
         end
       end
     end
@@ -80,7 +88,7 @@ RSpec.describe "Work API", type: :request, https: true do
       end
       
       it 'contains @id' do
-        expect_json('@graph.0', :@id => work_url(id: @id))
+        expect_json('@graph.0', :@id => work_url(@id))
       end
       
       it 'contains doi' do
@@ -100,7 +108,7 @@ RSpec.describe "Work API", type: :request, https: true do
       end
 
       it 'contains creator' do
-        expect_json('@graph.0', :'dc:creator' => person_url(id: FedoraID.shorten(@jane.id)))
+        expect_json('@graph.0', :'dc:creator' => person_url(FedoraID.shorten(@jane.id)))
       end
 
       it 'contains license refs' do
@@ -120,12 +128,13 @@ RSpec.describe "Work API", type: :request, https: true do
   describe 'PUT work/:id' do
     include_context 'get work id'
 
-    include_examples 'requires authentication' do
-      let(:path) { @path }
+    include_examples 'requires authentication and authorization' do
+      let(:path)   { @path }
       let(:action) { 'put' }
+      let(:body)   { required_body }
     end
     
-    describe 'when authenticated', authenticated: true do
+    describe 'when authenticated', authenticated: true, editor: true do
       include_examples 'throws error when fields missing' do
         let(:path) { @path }
         let(:action) { 'put' }
@@ -143,7 +152,7 @@ ract"],
               "bibo:pages" => "24",
               "bibo:pageStart" => "473",
               "bibo:pageEnd" => "497",
-              "bibo:authorsList" => ["Bell, John", "Ippolito, Jon"],
+              "bibo:authorList" => ["Bell, John", "Ippolito, Jon"],
               "dc:title" => "Diffused Museums and Making the Title Longer",
               "dc:abstract" => "Lorem ipsum...",
               "dc:publisher" => "Wiley",
@@ -167,7 +176,11 @@ ract"],
       end
 
       it 'returns 404 if id is invalid' do
-        put work_path(id: 'dfklajdlfkjasldfj'), { format: :jsonld }
+        put work_path(id: 'dfklajdlfkjasldfj'), required_body, {
+              'ACCEPT'       => 'application/ld+json',
+              'CONTENT_TYPE' => 'application/ld+json'
+            }
+        
         expect_status :not_found
       end
     end
@@ -176,12 +189,13 @@ ract"],
   describe 'DELETE work/:id' do
     include_context 'get work id'
 
-    include_examples 'requires authentication' do
-      let(:path) { @path }
+    include_examples 'requires authentication and authorization' do
+      let(:path)   { @path }
       let(:action) { 'delete' }
+      let(:body)   { {}.to_json }
     end
     
-    describe 'when authenticated', authenticated: true do
+    describe 'when authenticated', authenticated: true, editor: true do
       describe 'succesfully deletes work' do
         include_examples 'successful request'
         

@@ -1,3 +1,9 @@
+GIT
+  remote: git://github.com/dartmouth-dltg/net-dnd.git
+  revision: 709928fd9d5029f5735bb6323861965821e8e6d5
+  specs:
+    net-dnd (1.1.2)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -84,6 +90,7 @@ GEM
     bootstrap-sass (3.3.6)
       autoprefixer-rails (>= 5.2.1)
       sass (>= 3.3.4)
+    bootstrap_form (2.3.0)
     builder (3.2.2)
     byebug (8.2.4)
     cancancan (1.13.1)
@@ -150,6 +157,8 @@ GEM
       multipart-post (>= 1.2, < 3)
     fcrepo_wrapper (0.2.1)
       ruby-progressbar
+    gaffe (1.1.0)
+      rails (>= 4.0.0)
     globalid (0.3.6)
       activesupport (>= 4.1.0)
     haml (4.0.7)
@@ -173,6 +182,10 @@ GEM
       hydra-access-controls (= 9.10.0)
       hydra-core (= 9.10.0)
       rails (>= 3.2.6)
+    hydra-role-management (0.2.2)
+      blacklight
+      bootstrap_form
+      cancancan
     i18n (0.7.0)
     jbuilder (2.4.1)
       activesupport (>= 3.0.0, < 5.1)
@@ -472,9 +485,12 @@ DEPENDENCIES
   dotenv-rails
   factory_girl_rails
   fcrepo_wrapper (~> 0.2.1)
+  gaffe
   hydra-head (~> 9.10.0)
+  hydra-role-management
   jbuilder (~> 2.0)
   ldp (~> 0.5.0)
+  net-dnd!
   nokogiri (~> 1.6.7)
   nom-xml (~> 0.5.1)
   om (~> 3.1.0)

@@ -1,5 +1,5 @@
 class PersonTwoController < ActionController::Base
-  include Hydra::Controller::ControllerBehavior
+#  include Hydra::Controller::ControllerBehavior
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.

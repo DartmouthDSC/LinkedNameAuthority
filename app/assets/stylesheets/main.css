@@ -62,8 +62,14 @@ textarea {
 .centered{
     margin: 0 auto;
 }
+.text-centered{
+    text-align: center;
+}
 .title{
     font-weight: 600;
+}
+.warning{
+    border: 5px double red;
 }
 .helpText{
     position: absolute;
@@ -74,6 +80,42 @@ textarea {
     overflow: hidden;
     clip: rect(0,0,0,0);
     border: 0;
+}
+
+/* spinner */ 
+@keyframes spinner {
+    to {transform: rotate(360deg);}
+}
+ 
+@-webkit-keyframes spinner {
+    to {-webkit-transform: rotate(360deg);}
+}
+ 
+.spinner {
+    min-width: 24px;
+    min-height: 24px;
+    position:relative;
+}
+ 
+.spinner:before {
+    content: 'Loading…';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    margin-top: -10px;
+    margin-left: -10px;
+}
+ 
+.spinner:not(:required):before {
+    content: '';
+    border-radius: 50%;
+    border: 2px solid transparent;
+    border-top-color: #D2DAD6;
+    border-bottom-color: #D2DAD6;
+    animation: spinner .8s ease infinite;
+    -webkit-animation: spinner .8s ease infinite;
 }
 
 /* =========================================================================
@@ -330,6 +372,15 @@ footer{
     margin: .1em auto;
 }
 
+input[type="radio"]{
+    display: inline-block;
+    width: auto;
+    margin: auto auto auto 1em;
+}
+input[readonly]{
+    color: #888;
+}
+
 .formSingleColumn label{
     margin-top: .4em;
 }
@@ -338,6 +389,30 @@ footer{
     float: right;
     margin-right: 10%;
     margin-top: 1em;
+}
+
+.formTwoColumn{
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    /*flex-flow: row wrap;*/
+}
+.formTwoColumn > div{
+    display: flex;
+    flex-direction: row;
+}
+.formTwoColumn div label{
+    width: 15%;
+    min-width: 130px;
+    text-align: right;
+    margin-right: .3em;
+}
+.formTwoColumn textarea{
+    width: 100%;
+    height: 4em;
+}
+.formTwoColumn button{
+    margin: 1em 2em .4em;
 }
 
 /* tk remove */
@@ -392,11 +467,11 @@ footer{
 
 
 .cards{
-
+    width: 100%;
     padding-left: 1em;
     padding-right: 1em;
 }
-.card{
+.card, .sectionCard{
     display: flex;
     border: 1px solid black;
     flex-direction: column;
@@ -428,9 +503,62 @@ footer{
     border: .1em solid black;
 }
 
+.sectionCard h1{ margin: 0 auto 1em auto; font-size: 1.4em; font-weight: normal;}
+.sectionCard p { margin: 0 auto; text-align: center; max-width: 80%; line-height: 1.2em;}
+.sectionCard img{
+    width: 60%;
+    max-width: 300px;
+    display: block;
+    margin: 0 auto;
+    border: .1em solid black;
+}
+.sectionCard .roundButton{
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1em;
+}
+.sectionCard div.roundButton:hover{
+    margin-top: -.2em;
+    margin-bottom: 1.2em;
+}
+.sectionCard .roundButtonCircle:hover{
+    box-shadow: 0 .3em .3em rgba(0,0,0,.5);
+}
 
+.sectionCard .roundButtonCircle{
+    width: 100%;
+    height:0;
+    margin-left: -10px;
+    color: white;
+    padding-bottom: 100%;
+    border-radius: 50%;
+    border:10px solid #cfdcec;
+    overflow:hidden;
+    
+    background: #4679BD; 
+    box-shadow: 0 .1em .1em rgba(0,0,0,.5);
+}
 
+.sectionCard i{
+    margin-bottom: .1em;
+}
 
+.sectionCard .roundButtonCircle roundButton, .sectionCard .roundButtonCircle a{
+    display:block;
+    float:left;
+    width:100%;
+    padding-top:50%;
+    padding-bottom:50%;
+    line-height:1em;
+    margin-top:-1.6em;
+    
+    text-align:center;
+    color: white;
+    font-size:1.2em;
+    text-decoration:none;
+    cursor: pointer;
+}
 
 .sidebar{
     display: flex;
@@ -455,51 +583,51 @@ footer{
     font-size: 1.2em;
     font-weight: 600;
 }
-.sidebar ul, .details div ul{
+.sidebar ul, .details div ul, .record div ul{
     text-align: left;
     padding: 0;
     list-style: none;
     font-size: .8em;
 }
-.details{
+.details, .record{
     display: flex;
     flex-direction: column;
     /*text-align: center;*/
     flex: 1 1 30em;
     margin-left: 1em;
 }
-.details div{
+.details div, .record div{
     border: 1px solid black;
     padding: 1em;
     margin-bottom: 1em;
     box-shadow: 0 .2em .2em rgba(0,0,0,.5);
 }
-.details div h1{
+.details div h1, .record div h1{
     font-size: 1.2em;
     font-weight: 600;
     margin: 0;
     padding: 0 0 0 1.6em;
-    background-image: url('../img/icon_downArrow.svg');
+    background-image: url('icon_downArrow.svg');
     background-size: 1.4em;
     background-repeat: no-repeat;
     min-height: 1.6em;
     z-index: 1;
     display: inline-block;
 }
-.details div ul{
+.details div ul, .related ul{
     display: block;
-    font-size: 1em;
+    font-size: 1em !important; 
     border-left: .15em solid #5D4F3B;
     margin: 0 0 0 .75em;
     padding-top: .5em;
     z-index: 0;
 
 }
-.details div ul li{
+.details div ul li, .related ul li{
     padding-left: 0;
     /*align-items: center;*/
 }
-.details div ul li::before{
+.details div ul li::before , .related ul li::before{
     display: inline-block;
     width: 2.4em;
     flex: 0 0 auto;
@@ -507,6 +635,10 @@ footer{
     height: .6em;
     content: " ";
     border-bottom: .15em solid #5D4F3B;
+}
+.related ul li img{
+    max-height: 4em;
+    max-width: 4em;
 }
 
 #templates{
@@ -542,29 +674,29 @@ a.fa{
     flex-direction: column;
     margin: 0 0 .7em 0;
 }
-.details li {
+.details li, .related li {
     align-items: flex-start;
 }
-.details li:hover{
+.details li:hover, .related li:hover{
     background-color: rgba(210,218,214,.4);
 }
-.details li span {
+.details li span, .related li span {
     flex: 1 1 10em;
 }
-.details .iconList p span{
+.details .iconList p span, .related p span{
     flex: 1 1 auto;
 }
 .details li button:first-of-type{
     margin-left: 1em;
 }
-.details .add{
+.details .add, .sidebar .add{
     display: inline-block;
     height: 1.7em;
     width: 2.2em;
     background-size: 1.7em;
     background-repeat: no-repeat;
 }
-.details button, .iconList button{
+.details button, .iconList button, .record button{
     display: flex;
     align-items: center;
     margin-bottom: .2em;
@@ -574,7 +706,11 @@ a.fa{
     color: inherit;
     padding: .2em;
 }
-.details div > button, .sidebar li > button{
+.record button, .workData button, .parent button{
+    display: block;
+    float: left;
+}
+.details div > button, .sidebar div > button{
     display: flex;
     flex: 1 1 auto;
     align-items: center;
@@ -587,13 +723,28 @@ a.fa{
     color: inherit;
     padding: .2em;
     margin-left: -.2em;
+    text-align: left;
+}
+.sidebar li > button{
+    display: flex;
+    flex: 0 0 auto;
+    align-self: flex-end;
+}
+.sidebar div > button{
+    font-size: small;
 }
 
-.details button:hover, .details button:focus{
+.details button:hover, .details button:focus, .sidebar div > button:hover, .sidebar div > button:focus,.record button:hover, .record button:focus{
     margin-top: -.1em;
     box-shadow: 0 .1em .1em rgba(0,0,0,.5);
     margin-bottom: .3em;
     cursor: pointer;
+}
+.details h1, .record h1{
+    width: 95%;
+}
+.details h1 button, .record h1 button{
+    float: right;
 }
 .plum{
     background-image: url('icon_plum.svg');
@@ -608,7 +759,40 @@ a.fa{
     background-image: url('icon_add.svg');
 }
 .netID{
-    background-image: url('../img/icon_netid.svg');
+    background-image: url('icon_netid.svg');
+}
+.openAccess{
+    background-image: url('icon_oa.svg');
+}
+.closedAccess{
+    background-image: url('icon_closed.svg');
+}
+
+/* pagination */
+.pager{
+    margin: auto;
+    display: none;
+    text-align: center;
+    margin-bottom: 1em;
+}
+.pager a, .pager span{
+    background-color: #95AFA2;
+    display: inline-block;
+    border-radius: 50%;
+    height: 2em;
+    min-width: 2em;
+    color: white;
+    line-height: 2em;
+    box-shadow: 0 .1em rgba(0,0,0,.6);
+}
+.pager a:hover, .pager a:active{
+    box-shadow: 0 .2em rgba(0,0,0,.6);
+    margin-top: -.1em;
+}
+.currentPage span{
+    display: block;
+    padding-left: .5em;
+    padding-right: .5em;
 }
 
 /* item types */
@@ -660,12 +844,13 @@ a.fa{
         height: 2em;
     }
 
-    .cards{
+    .cards, .cardContainer{
+        width: 100%;
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
-        padding-left: 2em;
-        padding-right: 2em;
+        padding-left: 1em;
+        padding-right: 1em;
     }
     .card{
         flex: 0 1 100%;
@@ -694,6 +879,12 @@ a.fa{
         margin-bottom: 1.2em;
     }
 
+    .sectionCard{
+        display: flex;
+        flex: 0 1 calc(50% - 3em);
+        margin-bottom: 2em;
+    }
+
 
     .sidebar{
         flex: 0 0 12em;
@@ -701,9 +892,9 @@ a.fa{
     .sidebar img{
         float: inherit;
     }
-    .sidebar ul li{
+/*    .sidebar ul li{
         text-align: center
-    }
+    }*/
     body.debug{
         background-color: #6666FF;
     }
@@ -717,6 +908,11 @@ a.fa{
 @media only screen and (min-width: 66em) {
     body.debug{
         background-color: black;
+    }
+
+    .sectionCard{
+        flex: 0 1 calc(33% - 3em);
+        margin-bottom: 1.75em;
     }
 }
 

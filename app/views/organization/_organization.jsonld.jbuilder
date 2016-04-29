@@ -5,7 +5,7 @@ json.partial! 'organization/organization_minimal', org: org
 json.set! 'org:identifier', org['hr_id_tesi'] || ''
 json.set! 'skos:altLabel', org['alt_label_tesim'] || []
 json.set! 'org:purpose', org['kind_tesi'] || ''
-json.set! 'vcard:postal-box', org['hinman_box_tesi'] || '' 
+json.set! 'vcard:post-office-box', org['hinman_box_tesi'] || '' 
 json.set! 'owltime:hasBeginning', org['begin_date_dtsi']
 json.set! 'owltime:hasEnd', org['end_date_dtsi'] || ''
 

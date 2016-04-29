@@ -15,16 +15,31 @@
         <link href='//fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
         <%= csrf_meta_tags %>
         <%= stylesheet_link_tag "lna" %>
+        <script>_base_url = "<%= root_url %>";</script>
         <%= javascript_include_tag "lna"  %>
     </head>
     <body class="<%= controller_name %> <%= action_name %>">
         <header class="masthead">
             <h1 class="branding"><span>LINKED</span><span>NAME</span><span>AUTHORITY</span></h1>
-            <form class="simpleSearch"><div><input name="simpleSearch" type="text"/><button name="submit" type="submit" value="submit">Search</button> <button class="fa fa-search fa-lg" id="controlPanelToggle" data-toggle="modal" data-target="#searchModal"></button> <button class="fa fa-bars fa-lg controlPanelToggle" data-toggle="controlPanel"></button></div>
-            </form>
+            <% if !current_user %>
+            <a href="<%= url_for(controller: "users/sessions", action: "new", only_path: false) %>">Log In <i class="fa fa-sign-in" aria-hidden="true"></i></a>
+            <% else %>
+            <a href="<%= url_for(controller: "users/sessions", action: "destroy", only_path: false) %>">Log <%= current_user.name %> out <i class="fa fa-sign-out" aria-hidden="true"></i></a>
+            <% end %>
         </header>
-        <%= render "shared/controls" %>
+        <% if current_user %>
 		<%= yield %>
+        <% else %>
+        <nav class="centered breadcrumbs" role="navigation">
+            <%= link_to(root_path, class: "crumbStop crumbHere") do %><span>Home</span><% end %>
+        </nav>
+        <main class="centered content">
+            <p class="centered text-centered">
+                <a href="<%= url_for(controller: "users/sessions", action: "new", only_path: false) %>"><i class="fa fa-3x fa-sign-in" aria-hidden="true"></i><br />You must log in to continue.</a>
+                <br />&nbsp;
+            </p>
+        </main>
+        <% end %>
         <footer>
         Linked Name Authority - Dartmouth College
         </footer>

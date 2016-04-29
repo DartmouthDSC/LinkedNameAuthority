@@ -7,6 +7,15 @@ RSpec.describe 'Work/License API', type: :request, https: true do
     @work_id = FedoraID.shorten(@work.id)
   end
 
+  let(:required_body) {
+    {
+      'ali:start_date' => '2011-11-01',
+      'ali:uri'        => 'https://creativecommons.org/licenses/by-nc-sa/2.0/',
+      'dc:title'       => 'Creative Commons BY-NC-SA 2.0',
+      'dc:description' => 'license_ref'
+    }.to_json
+  }
+  
   shared_context 'get work id' do
     before :context do
       @id = FedoraID.shorten(@work.license_refs.first.id)
@@ -19,12 +28,13 @@ RSpec.describe 'Work/License API', type: :request, https: true do
       @path = work_license_index_path(work_id: @work_id)
     end
 
-    include_examples 'requires authentication' do
-      let(:path) { @path }
+    include_examples 'requires authentication and authorization' do
+      let(:path)   { @path }
       let(:action) { 'post' }
+      let(:body)   { required_body }
     end
 
-    describe 'when authenticated', authenticated: true do
+    describe 'when authorized', authenticated: true, editor: true do
       include_examples 'throws error when fields missing' do
         let(:path) { @path }
         let(:action) { 'post' }
@@ -39,7 +49,7 @@ RSpec.describe 'Work/License API', type: :request, https: true do
             'ali:end_date'   => '2012-11-01',
             'ali:uri'        => 'https://creativecommons.org/licenses/by-nc-sa/2.0/',
             'dc:title'       => 'Creative Commons BY-NC-SA 2.0',
-            'dc:description' => 'license_ref'
+            'dc:description' => 'ali:license_ref'
           }
           post @path, body.to_json, {
             'ACCEPT'       => 'application/ld+json',
@@ -73,7 +83,17 @@ RSpec.describe 'Work/License API', type: :request, https: true do
         end
 
         it 'returns 404 if work_id is invalid' do
-          post work_license_index_path(work_id: 'dlkfalsfjklkfds'), { format: :jsonld }
+          body = {
+            'ali:start_date' => '2011-11-01',
+            'ali:uri'        => 'https://creativecommons.org/licenses/by-nc-sa/2.0/',
+            'dc:title'       => 'Creative Commons BY-NC-SA 2.0',
+            'dc:description' => 'license_ref'
+          }
+          
+          post work_license_index_path(work_id: 'dlkfalsfjklkfds'), body.to_json, {
+                 'ACCEPT'       => 'application/ld+json',
+                 'CONTENT_TYPE' => 'application/ld+json'
+               }
           expect_status :not_found
         end
       end
@@ -83,12 +103,13 @@ RSpec.describe 'Work/License API', type: :request, https: true do
   describe 'PUT work/:work_id/license/:id' do
     include_context 'get work id'
 
-    include_examples 'requires authentication' do
-      let(:path) { @path }
+    include_examples 'requires authentication and authorization' do
+      let(:path)   { @path }
       let(:action) { 'put' }
+      let(:body)   { required_body }
     end
 
-    describe 'when authenticated', authenticated: true do
+    describe 'when authorized', authenticated: true, editor: true do
       include_examples 'throws error when fields missing' do
         let(:path) { @path }
         let(:action) { 'put' }
@@ -103,7 +124,7 @@ RSpec.describe 'Work/License API', type: :request, https: true do
             'ali:end_date'   => '2012-11-01',
             'ali:uri'        => 'https://creativecommons.org/licenses/by-nc-sa/2.0/',
             'dc:title'       => 'Creative Commons',
-            'dc:description' => 'license_ref'
+            'dc:description' => 'ali:license_ref'
           }
           put @path, body.to_json, {
             'ACCEPT'       => 'application/ld+json',
@@ -128,12 +149,13 @@ RSpec.describe 'Work/License API', type: :request, https: true do
   describe 'DELETE work/:work_id/license/:id' do
     include_context 'get work id'
 
-    include_examples 'requires authentication' do
-      let(:path) { @path }
+    include_examples 'requires authentication and authorization' do
+      let(:path)   { @path }
       let(:action) { 'delete' }
+      let(:body)   { {}.to_json }
     end
 
-    describe 'when authenticated', authenticated: true do
+    describe 'when authorized', authenticated: true, editor: true do
       describe 'succesfully deletes license' do
         include_examples 'successful request'
 

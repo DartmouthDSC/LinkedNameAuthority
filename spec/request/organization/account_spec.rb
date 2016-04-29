@@ -7,6 +7,14 @@ RSpec.describe "Organization/Account API", type: :request, https: true do
     @org_id = FedoraID.shorten(@org.id)
   end
 
+  let(:required_body) {
+    {
+      'dc:title'                    => 'ORCID',
+      'foaf:accountName'            => 'http://orcid.org/0000-0000-0000-0000',
+      'foaf:accountServiceHomepage' => 'http://orcid.org/'
+    }.to_json
+  }
+  
   shared_context 'get account id' do
     before :context do
       @id = FedoraID.shorten(@org.accounts.first.id)
@@ -19,12 +27,13 @@ RSpec.describe "Organization/Account API", type: :request, https: true do
       @path = organization_account_index_path(organization_id: @org_id)
     end
     
-    include_examples 'requires authentication' do
-      let(:path) { @path }
+    include_examples 'requires authentication and authorization' do
+      let(:path)   { @path }
       let(:action) { 'post' }
+      let(:body)   { required_body }
     end
         
-    describe 'when authenticated', authenticated: true do
+    describe 'when authorized', authenticated: true, editor: true do
       include_examples 'throws error when fields missing' do
         let(:path) { @path }
         let(:action) { 'post' }
@@ -85,12 +94,13 @@ RSpec.describe "Organization/Account API", type: :request, https: true do
   describe 'PUT organization/:org_id/account/:id' do
     include_context 'get account id'
 
-    include_examples 'requires authentication' do
-      let(:path) { @path }
+    include_examples 'requires authentication and authorization' do
+      let(:path)   { @path }
       let(:action) { 'put' }
+      let(:body)   { required_body }
     end
     
-    describe 'when authenticated', authenticated: true do
+    describe 'when authorized', authenticated: true, editor: true do
       include_examples 'throws error when fields missing' do
         let(:path) { @path }
         let(:action) { 'put' }
@@ -128,12 +138,13 @@ RSpec.describe "Organization/Account API", type: :request, https: true do
   describe 'DELETE organization/:organization_id/account/:id' do
     include_context 'get account id'
 
-    include_examples 'requires authentication' do
-      let(:path) { @path }
+    include_examples 'requires authentication and authorization' do
+      let(:path)   { @path }
       let(:action) { 'delete' }
+      let(:body)   { {}.to_json }
     end
     
-    describe 'when authenticated', authenticated: true do
+    describe 'when authorized', authenticated: true, editor: true do
       describe 'succesfully deletes account' do
         include_examples 'successful request'
         

@@ -7,10 +7,6 @@ RSpec.describe User, type: :model do
     jane.destroy
   end
 
-  it 'requires provider' do
-    expect{ FactoryGirl.create(:user, provider: '') }.to raise_error ActiveRecord::RecordInvalid
-  end
-
   it 'requires netid' do
     expect{ FactoryGirl.create(:user, netid: '') }.to raise_error ActiveRecord::RecordInvalid
   end
@@ -29,7 +25,7 @@ RSpec.describe User, type: :model do
     end
     
     it 'requires unique uid' do
-       expect{ FactoryGirl.create(:user, netid: 'd12345d') }.to raise_error ActiveRecord::RecordInvalid
+       expect{ FactoryGirl.create(:user) }.to raise_error ActiveRecord::RecordInvalid
     end
 
     it 'requires unique netid' do

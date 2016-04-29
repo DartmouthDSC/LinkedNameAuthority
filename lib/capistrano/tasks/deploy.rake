@@ -39,4 +39,15 @@ namespace :deploy do
       end
     end
   end
+
+  desc 'Seed db with roles and users'
+  task :seed_db do
+    on roles(:app) do
+      with rails_env: fetch(:rails_env) do
+        within release_path do
+          execute :rake, 'db:seed'
+        end
+      end
+    end
+  end
 end
