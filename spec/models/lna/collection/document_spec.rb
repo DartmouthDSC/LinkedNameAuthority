@@ -94,6 +94,10 @@ RSpec.describe Lna::Collection::Document, type: :model do
       expect(subject.abstract).to eql 'Lorem ipsum...'
     end
 
+    it 'sets subject' do
+      expect(subject.subject).to match_array ['Environment', 'Global Warming']
+    end
+    
     it 'sets bibliographic citation' do
       expect(subject.bibliographic_citation).to eql 'other citation...'
     end
