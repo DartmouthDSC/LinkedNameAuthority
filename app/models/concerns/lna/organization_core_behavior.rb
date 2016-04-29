@@ -38,7 +38,7 @@ module Lna
         index.as :stored_searchable
       end
 
-      property :hinman_box, predicate: ::RDF::Vocab::VCARD['postal-code'], multiple: false do |index|
+      property :hinman_box, predicate: ::RDF::Vocab::VCARD['post-office-box'], multiple: false do |index|
         index.as :stored_searchable
       end
 
