@@ -57,40 +57,24 @@ module Oracle
       nameParts.push(self.suffix) if (self.suffix)
 
 #     Our full hash.
-      hash = { :netid         => self.netid,
-               :person        => {
-                                   :given_name  => firstname,
-                                   :family_name => self.last_name,
-                                   :full_name   => nameParts.join(' '),
-                                   :mbox        => self.email,
-                                 },
-               :membership    => {
-                                   :primary => ((self.primary_flag == 'Y' || self.primary_flag == 'y') ? true : false),
-                                   :title   => self.title,
-                                   :org     => {
-                                                 :label     => self.department,
-                                                 :alt_label => [ self.department_id ],
-                                               }
-                                 },
-               :initials      => self.initials,
-               :known_as      => self.knownas,
-               :rank          => self.faculty_rank,
+      {
+        netid: self.netid,
+        person: {
+          given_name:  firstname,
+          family_name: self.last_name,
+          full_name:   nameParts.join(' '),
+          mbox:        self.email,
+        },
+        membership: {
+          primary: (self.primary_flag == 'Y' || self.primary_flag == 'y'),
+          title:   self.title,
+          org:     {
+            label: self.department,
+            hr_id: self.department_id,
+          }
+          start_date: self.dept_start_date,
+        }
       }
-
-#     Until we build out the LNA ImportController, we ditch fields
-#     that model doesn't know about.
-      [ :initials,
-        :known_as,
-        :rank,
-      ].each do |key|
-        hash.delete(key)
-      end
-
-#     Return our (reduced) hash.
-      return hash
-      
     end
-
   end
-
 end
