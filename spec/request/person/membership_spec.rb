@@ -41,15 +41,16 @@ RSpec.describe "Person/Membership API", type: :request, https: true do
         
         before :context do
           body = {
-            'org:organization'     => organization_url(id: @org_id),
-            'vcard:email'          => "jane.doe@dartmouth.edu",
-            "vcard:title"          => "Professor of Engineering",
-            "vcard:street-address" => "14 Engineering Dr.",
-            "vcard:postal-code"    => "03755",
-            "vcard:country-name"   => "United States",
-            "vcard:locality"       => "Hanover, NH",
-            "owltime:hasBeginning" => "2015-08-20",
-            "owltime:hasEnd"       => ""
+            'org:organization'      => organization_url(id: @org_id),
+            'vcard:email'           => "jane.doe@dartmouth.edu",
+            "vcard:title"           => "Professor of Engineering",
+            "vcard:street-address"  => "14 Engineering Dr.",
+            "vcard:postal-code"     => "03755",
+            "vcard:country-name"    => "United States",
+            "vcard:locality"        => "Hanover, NH",
+            "vcard:post-office-box" => "1234",
+            "owltime:hasBeginning"  => "2015-08-20",
+            "owltime:hasEnd"        => ""
           }
           post person_membership_index_path(person_id: @person_id), body.to_json, {
                  'ACCEPT'       => 'application/ld+json',
@@ -79,6 +80,10 @@ RSpec.describe "Person/Membership API", type: :request, https: true do
           
           it 'contains email' do
             expect_json(:'vcard:email' => @mem.email)
+          end
+
+          it 'contains post office box' do
+            expect_json(:'vcard:post-office-box' => @mem.pobox)
           end
         end
       end
@@ -110,15 +115,16 @@ RSpec.describe "Person/Membership API", type: :request, https: true do
         
         before :context do
           body = {
-            'org:organization'     => organization_url(@org_id),
-            'vcard:email'          => "jane.doe@dartmouth.edu",
-            "vcard:title"          => "Associate Professor of Engineering",
-            "vcard:street-address" => "14 Engineering Dr.",
-            "vcard:postal-code"    => "03755",
-            "vcard:country-name"   => "United States",
-            "vcard:locality"       => "Hanover, NH",
-            "owltime:hasBeginning" => "2015-08-20",
-            "owltime:hasEnd"       => ""
+            'org:organization'      => organization_url(@org_id),
+            'vcard:email'           => "jane.doe@dartmouth.edu",
+            "vcard:title"           => "Associate Professor of Engineering",
+            "vcard:street-address"  => "14 Engineering Dr.",
+            "vcard:postal-code"     => "03755",
+            "vcard:country-name"    => "United States",
+            "vcard:locality"        => "Hanover, NH",
+            "vcard:post-office-box" => "1234",
+            "owltime:hasBeginning"  => "2015-08-20",
+            "owltime:hasEnd"        => ""
           }
           put @path, body.to_json, {
                 'ACCEPT'       => 'application/ld+json',
