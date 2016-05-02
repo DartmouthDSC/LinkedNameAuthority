@@ -71,8 +71,8 @@ module Oracle
           org:     {
             label: self.department,
             hr_id: self.department_id,
-          }
-          start_date: self.dept_start_date,
+          },
+          start_date: self.dept_start_date
         }
       }
     end
