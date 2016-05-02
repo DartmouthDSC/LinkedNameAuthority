@@ -3,22 +3,24 @@
 </nav>
 
 <main class="centered content">
+  
+  <section class="details">
   <h1>Error: <%= @rescue_response.to_s.humanize %></h1>
-
   <% case @exception.class.to_s %>
   <% when 'RSolr::Error::Http' %>
-	<p>Query Invalid.</p>
+	<p>Query Invalid.<br>
   <% else %>
-	<p><%= @exception.message %></p>
+	<p><%= @exception.message %><br>
   <% end %>
-  
-  <p>Please correct the error and try again.</p>
+  Please correct the error and try again.</p>
 
   <% if Rails.env.development? || Rails.env.test? %>
-	<p>Original exception (only displayed in <strong>development</strong> and <strong>test</strong> environment):</p>
+	<div>Original exception (only displayed in <strong>development</strong> and <strong>test</strong> environment):
 	
-	<pre>
-	  <code><%= @exception.inspect %></code>
-	</pre>
+		<pre>
+		  <code><%= @exception.inspect %></code>
+		</pre>
+	</div>
   <% end %>
+  </section>
 </main>

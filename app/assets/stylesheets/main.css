@@ -414,6 +414,16 @@ input[readonly]{
 .formTwoColumn button{
     margin: 1em 2em .4em;
 }
+.plainForm button, .plainForm button:hover{
+    margin: 0 auto .3em auto !important;   
+    width: 60%;
+    border: 1px solid black !important;
+}
+.plainForm div{
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
 
 /* tk remove */
 
@@ -635,6 +645,9 @@ input[readonly]{
     height: .6em;
     content: " ";
     border-bottom: .15em solid #5D4F3B;
+}
+.details pre{
+    background-color: goldenrod;
 }
 .related ul li img{
     max-height: 4em;

@@ -1,0 +1,21 @@
+<nav class="centered breadcrumbs" role="navigation">
+  <%= link_to(root_path, class: "crumbContinue") do %><span>Home</span><% end %><%= link_to(role_management.roles_path, class: "crumbStop crumbHere") do %><span>Roles</span><% end %>
+</nav>
+
+<main class="centered content">
+  <section class="record">
+    <div class="related">
+      <h1>Manage role assignments for:</h1>
+      <ul class="iconList">
+      <% @roles.each do |role| %>
+        <li><p><%= role.name %></p>
+         <%=link_to(role_management.role_path(role), :style=>"display: flex" )do %><i class="fa fa-lg fa-pencil edit"></i><% end %></li>
+      <% end %>
+      </ul>
+
+      <% if can? :create, Role %>
+        <%= button_to "Create a new role", role_management.new_role_path, method: :get, class: 'btn btn-primary' %>
+      <% end %>
+    </div>
+  </section>
+</main>
