@@ -636,6 +636,9 @@ input[readonly]{
     content: " ";
     border-bottom: .15em solid #5D4F3B;
 }
+.details pre{
+    background-color: goldenrod;
+}
 .related ul li img{
     max-height: 4em;
     max-width: 4em;
