@@ -3,7 +3,7 @@ module Symplectic
   module Elements
     class Publication
       attr_accessor :id, :author_list, :publisher, :date, :title, :page_start, :page_end, :pages,
-                    :volume, :issue, :number, :canonical_url, :doi, :abstract, :subject
+                    :volume, :issue, :number, :canonical_url, :doi, :abstract, :subject, :journal
 
       # Creates publication object from <api:object> element returned from the Elements API.
       #
@@ -39,7 +39,8 @@ module Symplectic
           page_end:   "api:field[@name='pagination']/api:pagination/api:end-page",
           pages:      "api:field[@name='pagination']/api:pagination/api:page-count",
           number:     "api:field[@name='number']/api:text",
-          doi:        "api:field[@name='doi']/api:links/api:link[@type='doi']/@href"
+          doi:        "api:field[@name='doi']/api:links/api:link[@type='doi']/@href",
+          journal:    "api:field[@name='journal']/api:text"
         }
 
         # Loop through all the xpath queries.
