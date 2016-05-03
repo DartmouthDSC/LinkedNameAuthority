@@ -29,7 +29,8 @@ class WorksController < CollectionController
       'bibo:doi'        => field_query('doi_tesi', params['bibo:doi']),
       'dc:title'        => grouping_query('title_tesi', params['dc:title']),
       'bibo:abstract'   => grouping_query('abstract_tesi', params['bibo:abstract']),
-      'org:member'      => "(({!join from=hasMember_ssim to=creator_id_ssi}{!join from=id to=Organization_ssim}label_tesi:\"#{params['org:member']}\") OR ({!join from=id to=creator_id_ssi}{!join from=id to=reportsTo_ssim}label_tesi:\"#{params['org:member']}\"))"
+      'dc:subject'      => grouping_query('subject_tesim', params['dc:subject']),
+      'org:member'      => "(_query_:\"{!join from=hasMember_ssim to=creator_id_ssi}_query_:\\\"{!join from=id to=Organization_ssim}label_tesi:\\\\\\\"#{params['org:member']}\\\\\\\"\\\"\" OR _query_:\"{!join from=id to=creator_id_ssi}_query_:\\\"{!join from=id to=reportsTo_ssim}label_tesi:\\\\\\\"#{params['org:member']}\\\\\\\"\\\"\")"
     }
     
     result = search_for_works(

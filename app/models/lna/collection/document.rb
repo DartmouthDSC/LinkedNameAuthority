@@ -81,6 +81,10 @@ module Lna
         index.as :displayable
       end
 
+      property :subject, predicate: ::RDF::Vocab::DC.subject, multiple: true do |index|
+        index.as :multiple_stored_searchable
+      end
+      
       property :elements_id, predicate: Vocabs::LNA.elementsID, multiple: false do |index|
         index.as :stored_searchable
       end

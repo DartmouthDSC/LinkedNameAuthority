@@ -49,43 +49,36 @@ RSpec.describe "Organizations API", type: :request, https: true do
   end
 
   describe 'POST organizations/' do
+    let(:request) {
+      post organizations_path, body.to_json, {
+             'ACCEPT' => 'application/ld+json',
+             'CONTENT_TYPE' => 'application/ld+json'
+           }
+    }
+    let(:body) { {} }
+    
     context 'when searching by skos:prefLabel' do
       context 'when search term matches' do
-        before :context do
-          body = { 'skos:prefLabel' => 'engineering thayer' }
-          post organizations_path, body.to_json, {
-                 'ACCEPT' => 'application/ld+json',
-                 'CONTENT_TYPE' => 'application/ld+json'
-               }
-        end
-
-        it 'returns status code of 200' do
-          expect_status :ok
-        end
+        let(:body) { { 'skos:prefLabel' => 'engineering thayer' } }
 
         it 'returns 1 result' do
+          request
+          expect_status :ok
           expect_json_sizes(:@graph => 1)
         end
       end
       
-      context 'when search term does not match' do 
-        before :context do
-          body = { 'skos:prefLabel' => 'Computer Science Department' }
-          post organizations_path, body.to_json, {
-                 'ACCEPT' => 'application/ld+json',
-                 'CONTENT_TYPE' => 'application/ld+json'
-               }
-        end
-        
-        it 'returns status code of 200' do
-          expect_status :ok
-        end
+      context 'when search term does not match' do
+        let(:body) { { 'skos:prefLabel' => 'Computer Science Department' } }
         
         it 'returns 0 results' do
+          request
+          expect_status :ok
           expect_json_sizes(:@graph => 0)
         end
         
         it 'includes link headers' do
+          request
           expect_header('Link', "<#{organizations_url(page: 1)}>; rel=\"first\", <#{organizations_url(page: 1)}>; rel=\"last\"")
         end
       end
@@ -93,37 +86,21 @@ RSpec.describe "Organizations API", type: :request, https: true do
 
     context 'when searching by skos:altLabel' do
       context 'when search term matches' do
-        before :context do
-          body = { 'skos:altLabel' => 'thayer school' }
-          post organizations_path, body.to_json, {
-                 'ACCEPT' => 'application/ld+json',
-                 'CONTENT_TYPE' => 'application/ld+json'
-               }
-        end
-        
-        it 'returns status code of 200' do
-          expect_status :ok
-        end
-        
+        let(:body) { { 'skos:altLabel' => 'thayer school' } }
+
         it 'returns 1 result' do
+          request
+          expect_status :ok
           expect_json_sizes(:@graph => 1)
         end
       end
 
       context 'when search term does not match' do
-        before :context do
-          body = { 'skos:altLabel' => 'thay' }
-          post organizations_path, body.to_json, {
-                 'ACCEPT' => 'application/ld+json',
-                 'CONTENT_TYPE' => 'application/ld+json'
-               }
-        end
-
-        it 'returns status code of 200' do
-          expect_status :ok
-        end
+        let(:body) { { 'skos:altLabel' => 'thay' } }
 
         it 'returns 0 results' do
+          request
+          expect_status :ok
           expect_json_sizes(:@graph => 0)
         end
       end
@@ -138,37 +115,22 @@ RSpec.describe "Organizations API", type: :request, https: true do
 
       context 'when search term matches' do
         context 'by org pref label' do
-          before :context do
-            body = { 'org:subOrganizationOf' => 'provost' }
-            post organizations_path, body.to_json, {
-                   'ACCEPT' => 'application/ld+json',
-                   'CONTENT_TYPE' => 'application/ld+json'
-                 }
-          end
-
-          it 'returns status code of 200' do
-            expect_status :ok
-          end
+          let(:body) { { 'org:subOrganizationOf' => 'provost' } }
 
           it 'returns 1 result' do
+            request
+            expect_status :ok
             expect_json_sizes(:@graph => 2) # super org node will also be returned
           end
         end
         
         context 'by uri' do
-          before :context do
-            body = { 'org:subOrganizationOf' => organization_url(FedoraID.shorten(@provost.id)) }
-            post organizations_path, body.to_json, {
-                   'ACCEPT' => 'application/ld+json',
-                   'CONTENT_TYPE' => 'application/ld+json'
-                 }
-          end
-
-          it 'returns status code of 200' do
-            expect_status :ok
-          end
+          let(:body) { { 'org:subOrganizationOf' =>
+                         organization_url(FedoraID.shorten(@provost.id)) } }
 
           it 'returns 1 result' do
+            request
+            expect_status :ok
             expect_json_sizes(:@graph => 2) # super org node will also be returned
           end
         end
@@ -176,37 +138,21 @@ RSpec.describe "Organizations API", type: :request, https: true do
       
       context 'when search term does not match' do
         context 'by org pref label' do
-          before :context do
-            body = { 'org:subOrganizationOf' => 'prov' }
-            post organizations_path, body.to_json, {
-                   'ACCEPT' => 'application/ld+json',
-                   'CONTENT_TYPE' => 'application/ld+json'
-                 }
-          end
-
-          it 'returns status code of 200' do
-            expect_status :ok
-          end
+          let(:body) { { 'org:subOrganizationOf' => 'prov' } }
 
           it 'returns 0 results' do
+            request
+            expect_status :ok
             expect_json_sizes(:@graph => 0)
           end
         end
         
         context 'by uri' do
-          before :context do
-            body = { 'org:subOrganizationOf' => organization_url('blah-blah-blah-1234') }
-            post organizations_path, body.to_json, {
-                   'ACCEPT' => 'application/ld+json',
-                   'CONTENT_TYPE' => 'application/ld+json'
-                 }
-          end
-
-          it 'returns status code of 200' do
-            expect_status :ok
-          end
+          let(:body) { { 'org:subOrganizationOf' => organization_url('blah-blah-blah-1234') } }
 
           it 'returns 0 results' do
+            request
+            expect_status :ok
             expect_json_sizes(:@graph => 0)
           end
         end

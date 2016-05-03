@@ -9,6 +9,7 @@ json.set! 'dc:date', work['date_dtsi'] || ''
 json.set! 'dc:abstract', work['abstract_tesi'] || ''
 json.set! 'dc:isPartOf', "#{creator_uri}/works" 
 json.set! 'dc:bibliographicCitation',  work['bibliographic_citation_ss'] || ''
+json.set! 'dc:subject', work['subject_tesim'] || []
 json.set! 'dc:creator', creator_uri
 
 if full

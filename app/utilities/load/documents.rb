@@ -49,6 +49,7 @@ module Load
             begin
               doc_hash = publication.to_hash
               doc_hash[:elements_id] = doc_hash.delete(:id)
+              doc_hash[:bibliographic_citation] = doc_hash.delete(:journal)
 
               # Remove any singleton backslashes in abstracts (only place the problem has
               # been present).
