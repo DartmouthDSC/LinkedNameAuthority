@@ -300,6 +300,9 @@
       		$formElement.submit(function(e){
 	        	e.preventDefault();
 
+	        	$formElement.closest('.modal').dialog("close");
+	        	$("body").css("cursor", "progress");
+
 	        	var formData = handle.readForm(this);
 
 	        	if(!formData) {
