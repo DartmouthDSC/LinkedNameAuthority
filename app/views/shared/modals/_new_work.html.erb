@@ -2,7 +2,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-body">
-        <form data-lna-query="newWork" data-tag-delimiter=";;;" class="formTwoColumn" data-no-ajax="true">
+        <form data-lna-query="newWork" accept-charset="UTF-8" data-tag-delimiter=";;;" class="formTwoColumn" data-no-ajax="true">
           <div><label>Title</label><input name="dc:title"></input></div>
           <% if @short_id %>
             <%= hidden_field_tag "dc:creator", person_url(@short_id) %>
