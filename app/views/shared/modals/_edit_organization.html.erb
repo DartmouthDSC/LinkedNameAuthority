@@ -13,7 +13,7 @@
           <button type="submit" title="submit">Update</button>
           <div class="centered">OR</div>
         </form>
-        <form data-lna-query="deleteOrg" class="formTwoColumn" data-opt="<%= @short_id %>" data-handler="goHome">
+        <form data-lna-query="deleteOrg" class="formTwoColumn" data-confirm="true" data-opt="<%= @short_id %>" data-handler="goHome">
         <%= hidden_field_tag :authenticity_token, form_authenticity_token, {:id => nil} %>
         <button type="submit" title="Delete" class="warning" name="delete">Delete Organization</button>
         </form>

@@ -41,7 +41,12 @@ LNA = {
 			 'value': 'All Rights Reserved',
 			 'class': 'closedAccess', 
 			 'type': 'ali:license_ref',
-			 'uri': 'http://www.copyright.gov/title17/'}
+			 'uri': 'http://www.copyright.gov/title17/'},
+			{'title': 'Embargoed', 
+			 'value': 'Embargoed',
+			 'class': 'closedAccess', 
+			 'type': 'ali:license_ref',
+			 'uri': 'http://www.copyright.gov/title17/'}			 
 		],		
 		'fuzzySearch' : ''		//Add ~2 or something here to make some searches fuzzy by default
 	},
@@ -253,8 +258,9 @@ LNA = {
 		var iconClass = $.grep(LNA.constants.licenses, function(o){ return data['dc:title'] == o['title']});
 		if(iconClass.length > 0) node.addClass(iconClass[0].class);		
 		button.attr('title', 'edit '+ data['dc:title'] + ' account');
-		button.data('formData', data)
-		label.text(data['dc:title']);
+		button.data('formData', data);
+		var icon = LNA.isCurrentDate(data['ali:start_date'], data['ali:end_date']) ? "<i class='fa fa-check-circle green' aria-hidden='true'></i>" : "<i class='fa fa-ban red' aria-hidden='true'></i>";
+		label.html(icon + " " + data['dc:title']);
 		parent.prepend(node);
 	},	
 	'fillSuborgs': function(parent, data){
@@ -324,6 +330,7 @@ LNA = {
 	editAffiliation: function(targetForm, data){
 		var $targetForm = $(targetForm);
 		$.each(data, function(k, v){
+			if(v && (k=='owltime:hasBeginning' || k=='owltime:hasEnd')) data[k] = data[k].split('T')[0];			
 			$targetForm.find('[name="'+k+'"]').val(data[k]);
 		});
 		$targetForm.find('[name="skos:prefLabel"]').val(data['orgLabel']);
@@ -346,7 +353,8 @@ LNA = {
 	editWork: function(targetForm, data){
 		var $targetForm = $(targetForm);
 		$.each(data.work, function(k, v){
-			$targetForm.find('[name="'+k+'"]').val(v);
+			if(v && k=='dc:date') data.work[k] = data.work[k].split('T')[0];			
+			$targetForm.find('[name="'+k+'"]').val(data.work[k]);
 		});
 		$targetForm.find('[name="foaf:name"]').val(data.person['foaf:name']);
 
@@ -366,7 +374,8 @@ LNA = {
 	editOrg: function(targetForm, data){
 		var $targetForm = $(targetForm);
 		$.each(data.org, function(k, v){
-			$targetForm.find('[name="'+k+'"]').val(v);
+			if(v && (k=='owltime:hasBeginning' || k=='owltime:hasEnd')) data.org[k] = data.org[k].split('T')[0];	
+			$targetForm.find('[name="'+k+'"]').val(data.org[k]);
 		});
 
 		var akaList = $targetForm.find('[name="skos:altLabel"]');
@@ -376,9 +385,9 @@ LNA = {
 
 	'editLicense': function(targetForm, data){
 		var $targetForm = $(targetForm);
-		console.log(data)
 		$targetForm.find("[value='"+data['dc:description']+"']").attr('checked', true);		
 		$.each(data, function(k, v){
+			if(v && (k=='ali:start_date' || k=='ali:end_date')) data[k] = data[k].split('T')[0];				
 			$targetForm.find('[name="'+k+'"]').val(data[k]);
 		});
 
@@ -427,6 +436,22 @@ LNA = {
 		$targetForm.data('opt', newOpt);
 	},
 
+	'isCurrentDate': function(start, end){
+		//assumes dates are YYYY-MM-DDT...
+		if(typeof start == "undefined" || start == "" || start == null) return false;
+		//end date may be empty
+		if(typeof end == "undefined" || end == "" || end == null) end = "2999-12-31T00:00:00Z";
+		start = start.split('T')[0];
+		end = end.split('T')[0];
+		var startArray = start.split('-');
+		var startDate = new Date(startArray[0], startArray[1]-1, startArray[2]);
+		var endArray = end.split('-');
+		var endDate = new Date(endArray[0], endArray[1]-1, endArray[2]);
+		var today = new Date();
+
+		return today >= startDate && today <= endDate;
+	},
+
 	//Find corresponding buttons and attach the open event
 	'activateModals': function(){
 		//activateModals may be called more than once, so undo whatever was done before.
@@ -466,7 +491,12 @@ LNA = {
 	},
 	'activateWidgets': function(){
 		$('.dateBehavior').not('[data-ready="true"]').datepicker({
-			'dateFormat': 'yy-mm-dd'
+			'dateFormat': 'yy-mm-dd',
+			'changeMonth': true,
+			'changeYear': true,
+			'yearRange': '1900:2020',
+			'selectOtherMonths': true,
+			'showOtherMonths': true,
 		});
 		$('.dateBehavior').attr('data-ready', 'true');
 	},
