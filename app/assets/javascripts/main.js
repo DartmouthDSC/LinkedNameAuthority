@@ -466,7 +466,12 @@ LNA = {
 	},
 	'activateWidgets': function(){
 		$('.dateBehavior').not('[data-ready="true"]').datepicker({
-			'dateFormat': 'yy-mm-dd'
+			'dateFormat': 'yy-mm-dd',
+			'changeMonth': true,
+			'changeYear': true,
+			'yearRange': '1900:2020',
+			'selectOtherMonths': true,
+			'showOtherMonths': true,
 		});
 		$('.dateBehavior').attr('data-ready', 'true');
 	},
