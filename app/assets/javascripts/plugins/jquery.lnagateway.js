@@ -300,6 +300,10 @@
       		$formElement.submit(function(e){
 	        	e.preventDefault();
 
+	        	if(typeof $formElement.data('confirm') != "undefined"){
+	        		if(confirm("Are you absolutely sure you want to do this?") == false) return false;
+	        	}
+
 	        	$formElement.closest('.modal').dialog("close");
 	        	$("body").css("cursor", "progress");
 
