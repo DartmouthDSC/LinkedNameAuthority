@@ -368,7 +368,8 @@ LNA = {
 	editOrg: function(targetForm, data){
 		var $targetForm = $(targetForm);
 		$.each(data.org, function(k, v){
-			$targetForm.find('[name="'+k+'"]').val(v);
+			if(v && (k=='owltime:hasBeginning' || k=='owltime:hasEnd')) data.org[k] = data.org[k].split('T')[0];	
+			$targetForm.find('[name="'+k+'"]').val(data.org[k]);
 		});
 
 		var akaList = $targetForm.find('[name="skos:altLabel"]');
