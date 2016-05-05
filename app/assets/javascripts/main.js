@@ -253,8 +253,9 @@ LNA = {
 		var iconClass = $.grep(LNA.constants.licenses, function(o){ return data['dc:title'] == o['title']});
 		if(iconClass.length > 0) node.addClass(iconClass[0].class);		
 		button.attr('title', 'edit '+ data['dc:title'] + ' account');
-		button.data('formData', data)
-		label.text(data['dc:title']);
+		button.data('formData', data);
+		var icon = LNA.isCurrentDate(data['ali:start_date'], data['ali:end_date']) ? "<i class='fa fa-check-circle green' aria-hidden='true'></i>" : "<i class='fa fa-ban red' aria-hidden='true'></i>";
+		label.html(icon + " " + data['dc:title']);
 		parent.prepend(node);
 	},	
 	'fillSuborgs': function(parent, data){
@@ -428,6 +429,24 @@ LNA = {
 		oldOpt.push(id);
 		var newOpt = oldOpt.join('/')
 		$targetForm.data('opt', newOpt);
+	},
+
+	'isCurrentDate': function(start, end){
+		//assumes dates are YYYY-MM-DDT...
+
+		if(typeof start == "undefined" || start == "" || end == null) return false;
+		//end date may be empty
+		if(typeof end == "undefined" || end == "" || end == null) end = "2999-12-31T00:00:00Z";
+		start = start.split('T')[0];
+		end = end.split('T')[0];
+		var startArray = start.split('-');
+		var startDate = new Date(startArray[0], startArray[1]-1, startArray[2]);
+		var endArray = end.split('-');
+		var endDate = new Date(endArray[0], endArray[1]-1, endArray[2]);
+		var today = new Date();
+
+		console.log(startArray)
+		return today >= startDate && today <= endDate;
 	},
 
 	//Find corresponding buttons and attach the open event
