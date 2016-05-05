@@ -8,6 +8,6 @@
 //= require font-awesome.min.css
 //= require jquery-ui.css
 //= require jquery-ui.structure.css
-//= require jquery-ui.theme.css
+//= require jquery-ui.theme.css.erb
 //= require jquery.tagsinput.min.css
 //= require main.css
