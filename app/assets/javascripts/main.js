@@ -324,6 +324,7 @@ LNA = {
 	editAffiliation: function(targetForm, data){
 		var $targetForm = $(targetForm);
 		$.each(data, function(k, v){
+			if(v && (k=='owltime:hasBeginning' || k=='owltime:hasEnd')) data[k] = data[k].split('T')[0];			
 			$targetForm.find('[name="'+k+'"]').val(data[k]);
 		});
 		$targetForm.find('[name="skos:prefLabel"]').val(data['orgLabel']);
@@ -346,7 +347,8 @@ LNA = {
 	editWork: function(targetForm, data){
 		var $targetForm = $(targetForm);
 		$.each(data.work, function(k, v){
-			$targetForm.find('[name="'+k+'"]').val(v);
+			if(v && k=='dc:date') data.work[k] = data.work[k].split('T')[0];			
+			$targetForm.find('[name="'+k+'"]').val(data.work[k]);
 		});
 		$targetForm.find('[name="foaf:name"]').val(data.person['foaf:name']);
 
@@ -376,9 +378,9 @@ LNA = {
 
 	'editLicense': function(targetForm, data){
 		var $targetForm = $(targetForm);
-		console.log(data)
 		$targetForm.find("[value='"+data['dc:description']+"']").attr('checked', true);		
 		$.each(data, function(k, v){
+			if(v && (k=='ali:start_date' || k=='ali:end_date')) data[k] = data[k].split('T')[0];				
 			$targetForm.find('[name="'+k+'"]').val(data[k]);
 		});
 
