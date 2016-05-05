@@ -41,7 +41,12 @@ LNA = {
 			 'value': 'All Rights Reserved',
 			 'class': 'closedAccess', 
 			 'type': 'ali:license_ref',
-			 'uri': 'http://www.copyright.gov/title17/'}
+			 'uri': 'http://www.copyright.gov/title17/'},
+			{'title': 'Embargoed', 
+			 'value': 'Embargoed',
+			 'class': 'closedAccess', 
+			 'type': 'ali:license_ref',
+			 'uri': 'http://www.copyright.gov/title17/'}			 
 		],		
 		'fuzzySearch' : ''		//Add ~2 or something here to make some searches fuzzy by default
 	},
@@ -433,8 +438,7 @@ LNA = {
 
 	'isCurrentDate': function(start, end){
 		//assumes dates are YYYY-MM-DDT...
-
-		if(typeof start == "undefined" || start == "" || end == null) return false;
+		if(typeof start == "undefined" || start == "" || start == null) return false;
 		//end date may be empty
 		if(typeof end == "undefined" || end == "" || end == null) end = "2999-12-31T00:00:00Z";
 		start = start.split('T')[0];
@@ -445,7 +449,6 @@ LNA = {
 		var endDate = new Date(endArray[0], endArray[1]-1, endArray[2]);
 		var today = new Date();
 
-		console.log(startArray)
 		return today >= startDate && today <= endDate;
 	},
 
