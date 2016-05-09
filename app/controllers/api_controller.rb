@@ -1,33 +1,11 @@
 require 'fedora_id'
-class ApiController < ActionController::Base
-  # Adds additional behaviors into the application controller
-#  include Hydra::Controller::ControllerBehavior
-  include SolrSearchBehavior
+class ApiController < ApplicationController
+  before_action :redirect_to_admin
 
-  layout 'lna'
-  
-  # Prevent CSRF attacks by raising an exception.
-  # For APIs, you may want to use :null_session instead.
-  protect_from_forgery with: :exception
+  include SolrSearchBehavior
 
   MAX_ROWS = 100.freeze
   
-  # Because we are not using the database authenticatable module provided by
-  # devise, we have to define this method so that controller can redirect in
-  # case of failure.
-  def new_session_path(scope)
-    new_user_session_path
-  end
-
-  def after_sign_out_path_for(resource_or_scope)
-#    request.referrer
-    "https://login.dartmouth.edu/logout.php?app=LNA&url=#{root_url}"
-  end
-
-  def after_sign_in_path_for(resource)
-    request.env['omniauth.origin'] || stored_location_for(resource) || root_path
-  end
-
   private
 
   # Converts to id, person_id and work_id to full fedora ids if they are present.
@@ -70,6 +48,13 @@ class ApiController < ActionController::Base
     return false
   end
 
+  def redirect_to_admin
+    if request.format == :html
+      path = root_url + 'admin/' + request.original_url.gsub(root_url, '')
+      redirect_to path, action: params[:action]
+    end
+  end
+  
   # see (#org_uri_to_fedora_id)
   # Throws error is uri is not valid.
   def org_uri_to_fedora_id!(uri_param)
