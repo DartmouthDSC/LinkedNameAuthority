@@ -54,19 +54,16 @@ RSpec.describe Lna::Organization::Historic, type: :model do
     end
   end
 
-  context 'validations' do
-    before :example do
-      @old_thayer = FactoryGirl.create(:old_thayer)
-    end
-
-    after :example do
-      @old_thayer.destroy
-    end
-    
-    subject { @old_thayer }
+  context 'validations' do    
+    subject { FactoryGirl.create(:old_thayer) }
     
     it 'assures end date is set' do
       subject.end_date = nil
+      expect(subject.save).to be false
+    end
+
+    it 'assures end date is after begin date' do
+      subject.end_date = Date.parse('1980-01-01')
       expect(subject.save).to be false
     end
   end
