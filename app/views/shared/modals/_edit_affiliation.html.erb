@@ -2,7 +2,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-body">
-        <form data-lna-query="editAffiliation" class="formTwoColumn" accept-charset="UTF-8" data-opt="<%= @short_id %>/membership/;;;" data-refresh="true" data-load="editAffiliation">
+        <form data-lna-query="editAffiliation" class="formTwoColumn" accept-charset="UTF-8" data-opt="<%= FedoraID.shorten(params[:id]) %>/membership/;;;" data-refresh="true" data-load="editAffiliation">
           <div><label>Organization</label><input name="skos:prefLabel" class="autocompleteBehavior" data-autocomplete-type="org"></input></div>          
           <div><label>Title</label><input name="vcard:title"></input></div> 
           <div><label>Street Address</label><input name="vcard:street-address"></input></div>
@@ -13,11 +13,11 @@
           <div><label>End Date</label><input name="owltime:hasEnd" class="dateBehavior"></input></div> 
           <%= hidden_field_tag "org:organization", nil, {:id => nil} %>
           <%= hidden_field_tag :authenticity_token, form_authenticity_token, {:id => nil} %>
-          <%= hidden_field_tag "foaf:person", "https://jb.dac.dartmouth.edu/lna/person/" + @short_id, {:id => nil} %>
+          <%= hidden_field_tag "foaf:person", root_url + "person/" + FedoraID.shorten(params[:id]), {:id => nil} %>
           <button type="submit" title="submit">Submit</button>
           <div class="centered">OR</div>
         </form>
-        <form data-lna-query="deleteAffiliation" accept-charset="UTF-8" class="formTwoColumn" data-confirm="true" data-opt="<%= @short_id %>/membership/;;;" data-refresh="true" data-load="deleteAffiliation">
+        <form data-lna-query="deleteAffiliation" accept-charset="UTF-8" class="formTwoColumn" data-confirm="true" data-opt="<%= FedoraID.shorten(params[:id]) %>/membership/;;;" data-refresh="true" data-load="deleteAffiliation">
         <%= hidden_field_tag :authenticity_token, form_authenticity_token, {:id => nil} %>
         <button type="submit" title="Delete" class="warning" name="delete">Delete Affiliation</button>
         </form>
