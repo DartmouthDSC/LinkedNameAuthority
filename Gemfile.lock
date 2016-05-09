@@ -277,6 +277,8 @@ GEM
     pry-nav (0.2.4)
       pry (>= 0.9.10, < 0.11.0)
     rack (1.6.4)
+    rack-mini-profiler (0.9.7)
+      rack (>= 1.1.3)
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (4.2.4)
@@ -499,6 +501,7 @@ DEPENDENCIES
   om (~> 3.1.0)
   omniauth-cas
   pry-nav
+  rack-mini-profiler
   rails (= 4.2.4)
   rdf-vocab
   rsolr (~> 1.0.13)
@@ -516,3 +519,6 @@ DEPENDENCIES
   uglifier (>= 1.3.0)
   web-console (= 2.3.0)
   whenever
+
+BUNDLED WITH
+   1.10.6
