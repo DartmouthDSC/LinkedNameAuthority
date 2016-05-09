@@ -60,6 +60,6 @@
         </section>        
         <script>
         $(document).ready(function(){
-            $().LNAGateway().loadWork(LNA.loadWork, "<%= @short_id %>");
+            $().LNAGateway().loadWork(LNA.loadWork, "<%= params[:id] %>");
         });
         </script>

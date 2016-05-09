@@ -52,7 +52,7 @@
         </section>        
 		<script>
         $(document).ready(function(){
-            $().LNAGateway().loadOrg(LNA.loadOrg, "<%= @short_id %>");
+            $().LNAGateway().loadOrg(LNA.loadOrg, "<%= params[:id] %>");
             $().LNAGateway().findOrgPersons(LNA.loadOrgPersons, "<%= @organization['id'] %>");
         });
         </script>
