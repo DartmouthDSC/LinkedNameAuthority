@@ -220,6 +220,8 @@ RSpec.describe "Organization API", type: :request, https: true do
             'owltime:hasBeginning'   => '1974-01-01',
             'vcard:post-office-box'  => '0000',
             'org:purpose'            => 'SUBDIV',
+            'org:subOrganizationOf'  => [organization_url(FedoraID.shorten(@provost.id))],
+            'org:hasSubOrganization' => [organization_url(FedoraID.shorten(@dltg.id))]
           }
           put @path, body.to_json, {
             'ACCEPT' => 'application/ld+json',
@@ -228,10 +230,18 @@ RSpec.describe "Organization API", type: :request, https: true do
           @org.reload
         end
         
-        it 'updates code in fedora store' do
+        it 'updates hr id in fedora store' do
           expect(@org.hr_id).to eq '0022'
         end
 
+        it 'keeps sub organizations' do
+          expect(@org.sub_organizations).to eq [@dltg]
+        end
+
+        it 'keeps super organizations' do
+          expect(@org.super_organizations).to eq [@provost]
+        end
+        
         it 'response body contains updated code' do
           expect_json(:'org:identifier' => '0022')
         end
