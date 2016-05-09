@@ -71,7 +71,7 @@
         </section>        
 		<script>
         $(document).ready(function(){
-            $().LNAGateway().loadPerson(LNA.loadPerson, "<%= @short_id %>");
-            $().LNAGateway().loadPersonWorks(LNA.loadPersonWorks, "<%= @short_id %>");
+            $().LNAGateway().loadPerson(LNA.loadPerson, "<%= params[:id] %>");
+            $().LNAGateway().loadPersonWorks(LNA.loadPersonWorks, "<%= params[:id] %>");
         });
         </script>
