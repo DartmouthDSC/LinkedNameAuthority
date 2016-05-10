@@ -1770,7 +1770,7 @@ Applies to both current and historic orgs. Do not use to add an end date to an o
 Change Events trigger conversion of one (or more) organizations to another (or more than one) organization(s). Both orgs must already exist. Some logic applies to {id_from} and {id_to}:
 
 - if {id_from} already has an org:changedBy relationship associated with it, that ChangeEvent is associated with the new {id_to} org using org:resultedFrom.
-- if {id_to} already has an org:resultedFrom relationship associated with it, that ChangeEvent is associated with {id_from} using org:changedBy so long as {id_to} does not have an org:changedBy relationship as well.
+- if {id_to} already has an org:resultedFrom relationship associated with it, that ChangeEvent is associated with {id_from} using org:changedBy so long as {id_from} does not have an org:changedBy relationship as well.
 - if neither {id_from} or {id_to} have no currently associated ChangeEvents, a new ChangeEvent is created.
 
 ex: Math splits and becomes Math and CS (order is important here):
