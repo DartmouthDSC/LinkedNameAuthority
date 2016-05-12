@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.2.4'
+gem 'rails', '4.2.6'
 
 # Hydra dependencies
 gem 'active-fedora', '~> 9.12.0'
