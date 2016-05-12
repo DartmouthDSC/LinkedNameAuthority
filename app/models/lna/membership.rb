@@ -69,11 +69,15 @@ module Lna
     end
     
     def ended?
-      end_date != nil && Date.today >= end_date
+      !active_on?(Date.today)
     end
 
     def active?
-      end_date == nil || end_date > Date.today
+      active_on? Date.today
+    end
+
+    def active_on?(date)
+      begin_date <= date && (end_date == nil || end_date > date)
     end
   end
 end
