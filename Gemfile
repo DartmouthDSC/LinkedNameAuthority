@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.2.4'
+gem 'rails', '4.2.6'
 
 # Hydra dependencies
 gem 'active-fedora', '~> 9.12.0'
@@ -39,6 +39,7 @@ gem 'uglifier', '>= 1.3.0' # Use Uglifier as compressor for JavaScript assets
 group :development, :test, :ci do
   gem 'airborne'
   gem 'byebug'  # Call 'byebug' anywhere in the code to stop to get a debugger console.
+  gem 'database_cleaner'
   gem 'factory_girl_rails'
   gem 'pry-nav'
   gem 'rspec-its'

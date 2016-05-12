@@ -23,12 +23,22 @@ require 'coveralls'
 # Adding Coveralls.
 Coveralls.wear!
 
-RSpec.configure do |config|  
-  # Cleaning Fedora and Solr before each context. Removing the need to
-  # continuously delete objects.
+RSpec.configure do |config|
+  config.before(:suite) do
+    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.clean_with(:truncation)
+  end
+  
+  # Cleaning Fedora and Solr before each context. Removing the need to continuously delete objects.
   config.before(:context) do
     ActiveFedora::Cleaner.clean!
-    User.destroy_all
+  end
+
+  # Cleaning SQL database
+  config.around(:context) do |example|
+    DatabaseCleaner.cleaning do
+      example.run
+    end
   end
   
   # Forces HTTPS requests.
@@ -51,7 +61,7 @@ RSpec.configure do |config|
     editor = Role.find_or_initialize_by(name: 'editor')
     User.find_by(netid: netid).roles << editor
   end
-
+  
   # Remove Editor Role
   config.after(:context, editor: true) do
     Role.find_by(name: "editor").destroy
