@@ -25,7 +25,6 @@ module Oracle
 
 #   Return a hash in a connonical form for the Lna Person Loader.
     def to_hash
-      
       unless (self.netid)
         raise ArgumentError.new("#{self.last_name}: No NetID (#{self})")
       end
@@ -72,9 +71,14 @@ module Oracle
             label: self.department,
             hr_id: self.department_id,
           },
-          start_date: self.dept_start_date
+          start_date: self.dept_start_date || self.latest_start_date
         }
       }
+    end
+
+    # Filter out employees with title of Non-Paid, Temporary and nil.
+    def self.with_title
+      where.not({ title: ['Temporary', 'Non-Paid', nil] })
     end
   end
 end
