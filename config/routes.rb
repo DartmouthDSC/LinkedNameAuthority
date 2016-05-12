@@ -59,6 +59,7 @@ Rails.application.routes.draw do
   resources :organization, only: [:show, :create, :destroy], concerns: :updateable do
     resources :account, only: [:create, :destroy], concerns: :updateable
 
+    post '/end', to: 'change_event#terminate', as: :end
   end
   
   # Change Events
