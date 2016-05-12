@@ -58,9 +58,13 @@ Rails.application.routes.draw do
   # Organization, Organization Account
   resources :organization, only: [:show, :create, :destroy], concerns: :updateable do
     resources :account, only: [:create, :destroy], concerns: :updateable
-  end
 
+    post '/end', to: 'change_event#terminate', as: :end
+  end
+  
   # Change Events
+  post '/organization/:id_from/change_to/:id_to', to: 'change_event#create', as: :change_event
+
 
   # Redirects for html requests.
   constraints format: 'html' do

@@ -18,6 +18,15 @@ module Load
     rescue => e
       log_error(e, "Error loading #{HR_FACULTY} in Oracle")
     end
+
+    def self.from_hr_employees
+      batch_load('People from HR employee view') do |loader|
+        Oracle::Employee.with_title.first(100) do |person|
+          loader.into_lna(person.to_hash)
+        end
+      end
+    end
+
     
     # Creates or updates Lna objects for the person described by the given hash.
     #

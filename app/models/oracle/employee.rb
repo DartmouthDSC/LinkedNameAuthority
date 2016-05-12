@@ -80,5 +80,13 @@ module Oracle
     def self.with_title
       where.not({ title: ['Temporary', 'Non-Paid', nil] })
     end
+
+    def self.primary
+      where({ primary_flag: ['Y', 'y'] })
+    end
+
+    def self.not_primary
+      self.primary.not
+    end
   end
 end

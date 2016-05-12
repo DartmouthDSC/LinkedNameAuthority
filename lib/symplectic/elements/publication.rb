@@ -30,7 +30,7 @@ module Symplectic
       # @params record [Nokogiri::XML::Element]
       def load_from_record(record)
         xpath_queries = {
-          publisher:  "api:field[@name='issue']/api:text",
+          publisher:  "api:field[@name='publisher']/api:text",
           title:      "api:field[@name='title']/api:text",
           volume:     "api:field[@name='volume']/api:text",
           abstract:   "api:field[@name='abstract']/api:text",
