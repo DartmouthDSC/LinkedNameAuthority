@@ -6,8 +6,8 @@ RSpec.describe "Work API", type: :request, https: true do
   let(:required_body) {
     {
       "bibo:authorList" => ["Bell, John", "Ippolito, Jon"],
-      "dc:title" => "Diffused Museums and Making the Title Longer",
-      "dc:creator" => person_url(id: FedoraID.shorten(@jane.id))
+      "dc:title"        => "Diffused Museums and Making the Title Longer",
+      "dc:creator"      => person_url(id: FedoraID.shorten(@jane.id))
     }.to_json
   }
 
@@ -48,6 +48,7 @@ RSpec.describe "Work API", type: :request, https: true do
             "dc:abstract" => "Lorem ipsum...",
             "dc:publisher" => "Wiley",
             "dc:date" => "2015",
+            "dc:subject" => ["Art"],
             "dc:creator" => person_url(id: FedoraID.shorten(@jane.id))
           }
           
@@ -114,6 +115,10 @@ RSpec.describe "Work API", type: :request, https: true do
       it 'contains license refs' do
         expect_json('@graph.0', :'ali:license_ref' => [])
       end
+
+      it 'contains subjects' do
+        expect_json('@graph.0', :'dc:subject' => ["Art"])
+      end
     end
   end
 
@@ -140,7 +145,7 @@ RSpec.describe "Work API", type: :request, https: true do
         let(:action) { 'put' }
       end
       
-      describe 'updates a new account' do
+      describe 'updates a new work' do
         include_examples 'successful request'
         
         before :context do
@@ -157,6 +162,7 @@ ract"],
               "dc:abstract" => "Lorem ipsum...",
               "dc:publisher" => "Wiley",
               "dc:date" => "2015",
+              "dc:subject" => ["Art"],
               "dc:creator" => person_url(id: FedoraID.shorten(@jane.id))
           }
           put @path, body.to_json, {

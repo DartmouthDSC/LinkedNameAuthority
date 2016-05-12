@@ -24,7 +24,10 @@
             <% if !current_user %>
             <a href="<%= url_for(controller: "users/sessions", action: "new", only_path: false) %>">Log In <i class="fa fa-sign-in" aria-hidden="true"></i></a>
             <% else %>
-            <a href="<%= url_for(controller: "users/sessions", action: "destroy", only_path: false) %>">Log <%= current_user.name %> out <i class="fa fa-sign-out" aria-hidden="true"></i></a>
+            <span><a href="<%= url_for(controller: "users/sessions", action: "destroy", only_path: false) %>">Log <%= current_user.name %> out <i class="fa fa-sign-out" aria-hidden="true"></i></a>
+            <% if current_user.admin? %>
+            <a href="<%= Hydra::RoleManagement::Engine.routes.url_helpers.roles_path %>"><i class="fa fa-key" aria-hidden="true"></i></a>
+            <% end %>
             <% end %>
         </header>
         <% if current_user %>

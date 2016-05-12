@@ -3,7 +3,7 @@ module Symplectic
   module Elements
     class Publication
       attr_accessor :id, :author_list, :publisher, :date, :title, :page_start, :page_end, :pages,
-                    :volume, :issue, :number, :canonical_url, :doi, :abstract
+                    :volume, :issue, :number, :canonical_url, :doi, :abstract, :subject, :journal
 
       # Creates publication object from <api:object> element returned from the Elements API.
       #
@@ -39,7 +39,8 @@ module Symplectic
           page_end:   "api:field[@name='pagination']/api:pagination/api:end-page",
           pages:      "api:field[@name='pagination']/api:pagination/api:page-count",
           number:     "api:field[@name='number']/api:text",
-          doi:        "api:field[@name='doi']/api:links/api:link[@type='doi']/@href"
+          doi:        "api:field[@name='doi']/api:links/api:link[@type='doi']/@href",
+          journal:    "api:field[@name='journal']/api:text"
         }
 
         # Loop through all the xpath queries.
@@ -51,6 +52,7 @@ module Symplectic
 
         extract_author_list(record.at_xpath("api:field[@name='authors']"))
         extract_date(record.at_xpath("api:field[@name='publication-date']"))
+        extract_subject(record.at_xpath("api:field[@name='keywords']"))
       end
       
       # Extract author list from api:field[@name='authors']
@@ -83,6 +85,16 @@ module Symplectic
         day   = api_field.at_xpath('api:date/api:day') || '01'
         date = [year, month, day].map { |i| (i.respond_to? :value) ? i.value : i }.join('-')
         send(:date=, date)
+      end
+
+      # Extract keywords (subjects) from api:field[@name='keywords']. Subjects should be in
+      # an array.
+      #
+      # @param [Nokogiri::XML::Element] api_field
+      def extract_subject(api_field)
+        return unless api_field
+        subjects = api_field.xpath('api:keywords/api:keyword').map(&:text)
+        send(:subject=, subjects)
       end
 
       # Returns hash representation of object's instance variables.

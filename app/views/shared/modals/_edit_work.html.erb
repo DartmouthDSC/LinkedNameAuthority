@@ -2,7 +2,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-body">
-        <form data-lna-query="editWork" data-tag-delimiter=";;;" class="formTwoColumn" data-opt="<%= @short_id %>" data-refresh="true" data-load="editWork">
+        <form data-lna-query="editWork" data-tag-delimiter=";;;" accept-charset="UTF-8" class="formTwoColumn" data-opt="<%= @short_id %>" data-refresh="true" data-load="editWork">
           <div><label>Title</label><input name="dc:title"></input></div>
           <div><label>Attributed To</label><input name="foaf:name" class="autocompleteBehavior" autocomplete="off" data-autocomplete-type="person"></input></div> 
           <%= hidden_field_tag "dc:creator", nil, {:id=>nil} %>        
@@ -22,7 +22,7 @@
           <button type="submit" title="submit">Update</button>
           <div class="centered">OR</div>
         </form>
-        <form data-lna-query="deleteWork" class="formTwoColumn" data-opt="<%= @short_id %>" data-handler="goHome">
+        <form data-lna-query="deleteWork" accept-charset="UTF-8" class="formTwoColumn" data-confirm="true" data-opt="<%= @short_id %>" data-handler="goHome">
         <%= hidden_field_tag :authenticity_token, form_authenticity_token, {:id => nil} %>
         <button type="submit" title="Delete" class="warning" name="delete">Delete Work</button>
         </form>

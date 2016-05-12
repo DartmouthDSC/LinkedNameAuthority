@@ -14,6 +14,7 @@ FactoryGirl.define do
     canonical_uri ['http://example.com/newenglandpress/article/14']
     doi           'http://dx.doi.org/19.1409/ddlp.1490'
     abstract      'Lorem ipsum...'
+    subject       ['Environment', 'Global Warming']
     bibliographic_citation 'other citation...'
 
     before(:create) do |document|
@@ -37,6 +38,7 @@ FactoryGirl.define do
     number        '2'
     canonical_uri ['http://example.com/nature/article/13']
     doi           'http://dx.doi.org/29.1093/dslp.1338'
+    subject       ['Global Warming']
     abstract      'Lorem ipsum...'
   end
 end

@@ -47,39 +47,31 @@ RSpec.describe "Persons API", type: :request, https: true do
   end
   
   describe 'POST person/' do
+    let(:request) {
+      post persons_path, body.to_json, {
+             'ACCEPT' => 'application/ld+json',
+             'CONTENT_TYPE' => 'application/ld+json'
+           }
+    }
+    let(:body) { {} }
+    
     context 'when searching by foaf:name' do
       context 'when search term matches' do
-        before :context do
-          body = { 'foaf:name' => 'doe jane' }
-          post persons_path, body.to_json, {
-                 'ACCEPT' => 'application/ld+json',
-                 'CONTENT_TYPE' => 'application/ld+json'
-               }
-        end
-
-        it 'returns status code of 200' do
-          expect_status :ok
-        end
+        let(:body) { { 'foaf:name' => 'doe jane' } }
 
         it 'returns one result' do
+          request
+          expect_status :ok
           expect_json_sizes(:@graph => 2) #second item is graph is primary org
         end
       end
       
       context 'when search does not match' do
-        before :context do
-          body = { 'foaf:familyName' => 'doe john' }
-          post persons_path, body.to_json, {
-                 'ACCEPT' => 'application/ld+json',
-                 'CONTENT_TYPE' => 'application/ld+json'
-               }
-        end
-
-        it 'return status code of 200' do
-          expect_status :ok
-        end
+        let(:body) { { 'foaf:familyName' => 'doe john' } }
 
         it 'returns 0 results' do
+          request
+          expect_status :ok
           expect_json_sizes(:@graph => 0)
         end
       end
@@ -87,41 +79,26 @@ RSpec.describe "Persons API", type: :request, https: true do
     
     context 'when searching by foaf:familyName' do
       context 'when search term matches' do
-        before :context do
-          body = { 'foaf:familyName' => 'doe' }
-          post persons_path, body.to_json, {
-                 'ACCEPT' => 'application/ld+json',
-                 'CONTENT_TYPE' => 'application/ld+json'
-               }
-        end
-        
-        it 'returns status code of 200' do
-          expect_status :ok
-        end
+        let(:body) { { 'foaf:familyName' => 'doe' } }
 
         it 'returns one result' do
+          request
+          expect_status :ok
           expect_json_sizes(:@graph => 2) #second item is graph is primary org
         end
       end
 
-      context 'when search term does not match' do 
-        before :context do
-          body = { 'foaf:familyName' => 'not doe' }
-          post persons_path, body.to_json, {
-                 'ACCEPT' => 'application/ld+json',
-                 'CONTENT_TYPE' => 'application/ld+json'
-               }
-        end
-        
-        it 'return status code of 200' do
-          expect_status :ok
-        end
+      context 'when search term does not match' do
+        let(:body) { { 'foaf:familyName' => 'not doe' } }
         
         it 'returns 0 results' do
+          request
+          expect_status :ok
           expect_json_sizes(:@graph => 0)
         end
         
         it 'includes link headers' do
+          request
           expect_header('Link',
                         "<#{persons_url(1)}>; rel=\"first\", <#{persons_url(1)}>; rel=\"last\"")
         end
@@ -130,37 +107,21 @@ RSpec.describe "Persons API", type: :request, https: true do
 
     context 'when searching by foaf:givenName' do
       context 'when search term match' do
-        before :context do
-          body = { 'foaf:givenName' => 'jane' }
-          post persons_path, body.to_json, {
-                 'ACCEPT' => 'application/ld+json',
-                 'CONTENT_TYPE' => 'application/ld+json'
-               }
-        end
-
-        it 'returns status code of 200' do
-          expect_status :ok
-        end
+        let(:body) { { 'foaf:givenName' => 'jane' } }
 
         it 'returns one result' do
+          request
+          expect_status :ok
           expect_json_sizes(:@graph => 2) #second item is graph is primary org
         end
       end
       
       context 'when search term does not match' do
-        before :context do
-          body = { 'foaf:givenName' => 'not jane' }
-          post persons_path, body.to_json, {
-                 'ACCEPT' => 'application/ld+json',
-                 'CONTENT_TYPE' => 'application/ld+json'
-               }
-        end
-
-        it 'return status code of 200' do
-          expect_status :ok
-        end
+        let(:body) { { 'foaf:givenName' => 'not jane' } }
 
         it 'returns 0 results' do
+          request
+          expect_status :ok
           expect_json_sizes(:@graph => 0)
         end
       end
@@ -169,77 +130,44 @@ RSpec.describe "Persons API", type: :request, https: true do
     context 'when searching by org:member' do
       context 'when search term matches' do
         context 'by org pref label' do
-          before :context do
-            body = { 'org:member' => 'thayer school' }
-            post persons_path, body.to_json, {
-                   'ACCEPT' => 'application/ld+json',
-                   'CONTENT_TYPE' => 'application/ld+json'
-                 }
-          end
-          
-          it 'returns status code of 200' do
-            expect_status :ok
-          end
+          let(:body) { { 'org:member' => 'thayer school' } }
 
           it 'returns one result' do
+            request
+            expect_status :ok
             expect_json_sizes(:@graph => 2) #second item is graph is primary org
           end
-          
         end
         
         context 'by org uri' do
-          before :context do
-            body = { 'org:member' => organization_url(FedoraID.shorten(@jane.primary_org.id)) }
-            post persons_path, body.to_json, {
-                   'ACCEPT' => 'application/ld+json',
-                   'CONTENT_TYPE' => 'application/ld+json'
-                 }
-          end
-
-          it 'returns status code of 200' do
-            expect_status :ok
-          end
+          let(:body) { { 'org:member' =>
+                         organization_url(FedoraID.shorten(@jane.primary_org.id)) } }
 
           it 'returns one result' do
+            request
+            expect_status :ok
             expect_json_sizes(:@graph => 2) #second item is graph is primary org
           end
-          
         end
       end
 
       context 'when search term does not match' do
         context 'by org pref label' do
-          before :context do
-            body = { 'org:member' => 'science' }
-            post persons_path, body.to_json, {
-                   'ACCEPT' => 'application/ld+json',
-                   'CONTENT_TYPE' => 'application/ld+json'
-                 }
-          end
-          
-          it 'return status code of 200' do
-            expect_status :ok
-          end
+          let(:body) { { 'org:member' => 'science' } }
 
           it 'returns 0 results' do
+            request
+            expect_status :ok
             expect_json_sizes(:@graph => 0)
           end          
         end
         
         context 'by org uri' do
-          before :context do
-            body = { 'org:member' => organization_url('dfjasdfkj-987uf-99hkjfd') }
-            post persons_path, body.to_json, {
-                   'ACCEPT' => 'application/ld+json',
-                   'CONTENT_TYPE' => 'application/ld+json'
-                 }
-          end
-
-          it 'return status code of 200' do
-            expect_status :ok
-          end
+          let(:body) { { 'org:member' => organization_url('dfjasdfkj-987uf-99hkjfd') } }
 
           it 'returns 0 results' do
+            request
+            expect_status :ok
             expect_json_sizes(:@graph => 0)
           end
         end

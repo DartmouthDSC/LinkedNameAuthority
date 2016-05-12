@@ -1,18 +1,30 @@
-<h2>Role: <%= @role.name %></h2>
+<nav class="centered breadcrumbs" role="navigation">
+  <%= link_to(root_path, class: "crumbContinue") do %><span>Home</span><% end %><%= link_to(role_management.roles_path, class: "crumbContinue") do %><span>Roles</span><% end %><%= link_to(role_management.role_path(@role), class: "crumbStop crumbHere") do %><span><%= @role.name %></span><% end %>
+</nav>
 
-<h3>Accounts:</h3>
-<ul>
-  <% @role.users.each do |user| %>
-	<li><%= user.user_key %>
-	  <% if can? :remove_user, Role %>
-		<%= button_to "Remove User", role_management.role_user_path(@role, user), :method=>:delete, :class=>'btn btn-danger' %>
-	  <% end %>
-	</li>
-  <% end %>
-</ul>
-<h3>Add a new account:</h3>
-<%= bootstrap_form_tag :url=> role_management.role_users_path(@role) do |f| %>
-  <%= f.text_field 'user_key', :label=>'User' %>
-  <%= f.submit "Add" %>
-  <%= link_to "Cancel", role_management.roles_path, :class => 'btn btn-default' %>
-  <% end %>
+<main class="centered content">
+  <section class="record">
+    <div class="plainForm">
+      <h1>Add New "<%= @role.name %>" Account</h1>
+      <form class="formTwoColumn" action="<%= role_management.role_users_path(@role) %>" method="post" accept-charset="UTF-8">
+        <input name="utf8" type="hidden" value="✓">
+        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+        <div><label>User NetID</label><input name="user_key"></input>@dartmouth.edu</div>
+        <button type="submit" title="submit">Add User</button>
+      </form>
+    </div>
+    <div class="related">
+      <h1>Current "<%= @role.name %>" Accounts</h1>
+      <ul class="iconList">
+        <% @role.users.each do |user| %>
+        <li>
+          <p><%= user.user_key %></p>
+          <% if can? :remove_user, Role %>
+          <%= button_to role_management.role_user_path(@role, user), :method=>:delete do %><i class='fa fa-minus-circle fa-2x'></i><% end %>
+          <% end %>
+        </li>
+        <% end %>
+      </ul>
+    </div>
+  </section>
+</main>
