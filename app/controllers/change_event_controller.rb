@@ -39,7 +39,7 @@ class ChangeEventController < ApiController
 
     date = Date.parse(terminate_params['prov:atTime'])
 
-    if @organization_id.is_a? Lna::Organization
+    if @organization_id.is_a? Lna::Organization::Historic
       raise ActionController::BadRequest, 'organization already historic'
     end
     
