@@ -28,6 +28,7 @@ LNA API for Dartmouth College (v0.2.0)
 - /organization/{id} - GET, PUT, DELETE
 - /organization/{organization_id}/account/{id} - POST, PUT, DELETE
 - /organization/{id_from}/change_to/{id_to} - POST
+- /organization/{organization_id}/end - POST
 
 Generally speaking, GET and POST paths use content negotiation to determine a response. text/html and application/ld+json are supported. PUT and DELETE methods may only respond with application/ld+json.
 
@@ -274,7 +275,7 @@ Request parameters listed are search options and can be mixed as needed.
                     "org:organization": "http://lna.dartmouth.edu/organization/3",
                     "vcard:email": "john.p.bell@dartmouth.edu",
                     "vcard:title": "Lead Application Developer",
-                    "vcard:pobox": "6028",
+                    "vcard:post-office-box": "6028",
                     "vcard:street-address": "Hinman Box 6028, Berry Library",
                     "vcard:postal-code": "03755",
                     "vcard:country-name": "United States",
@@ -289,7 +290,7 @@ Request parameters listed are search options and can be mixed as needed.
                     "vcard:email": "john.p.bell@dartmouth.edu",
                     "vcard:title": "Test Dummy",
                     "vcard:street-address": "Hinman Box 6028, Berry Library",
-                    "vcard:pobox": "6028",
+                    "vcard:post-office-box": "6028",
                     "vcard:postal-code": "03755",
                     "vcard:country-name": "United States",
                     "vcard:locality": "Lebanon, NH",
@@ -550,7 +551,7 @@ Request parameters listed are search options and can be mixed as needed.
             "vcard:email": "john.p.bell@dartmouth.edu",
             "vcard:title": "Lead Application Developer",
             "vcard:street-address": "Hinman Box 6028, Berry Library",
-            "vcard:pobox": "6028",
+            "vcard:post-office-box": "6028",
             "vcard:postal-code": "03755",
             "vcard:country-name": "United States",
             "vcard:locality": "Lebanon, NH",
@@ -579,7 +580,7 @@ Request parameters listed are search options and can be mixed as needed.
                 "vcard:email": "john.p.bell@dartmouth.edu",
                 "vcard:title": "Lead Application Developer",
                 "vcard:street-address": "Hinman Box 6028, Berry Library",
-                "vcard:pobox": "6028",
+                "vcard:post-office-box": "6028",
                 "vcard:postal-code": "03755",
                 "vcard:country-name": "United States",
                 "vcard:locality": "Lebanon, NH",
@@ -606,7 +607,7 @@ Request parameters listed are search options and can be mixed as needed.
             "vcard:email": "john.p.bell@dartmouth.edu",
             "vcard:title": "Lead Application Developer",
             "vcard:street-address": "Hinman Box 6028, Berry Library",
-            "vcard:pobox": "6028",
+            "vcard:post-office-box": "6028",
             "vcard:postal-code": "03755",
             "vcard:country-name": "United States",
             "vcard:locality": "Lebanon, NH",
@@ -631,7 +632,7 @@ Request parameters listed are search options and can be mixed as needed.
                 "vcard:email": "john.p.bell@dartmouth.edu",
                 "vcard:title": "Lead Application Developer",
                 "vcard:street-address": "Hinman Box 6028, Berry Library",
-                "vcard:pobox": "6028",
+                "vcard:post-office-box": "6028",
                 "vcard:postal-code": "03755",
                 "vcard:country-name": "United States",
                 "vcard:locality": "Lebanon, NH",
@@ -1349,7 +1350,7 @@ Orgs returned include their parent org (org:subOrganizationOf) but not a list of
                         "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/8"],
                         "skos:prefLabel": "Dartmouth Information Technology Services",
                         "skos:altLabel": ["ITS"],
-                        "vcard:pobox": "1223",
+                        "vcard:post-office-box": "1223",
                         "org:purpose": "unit",
                         "owltime:hasBeginning": "2013-06-01",
                         "owltime:hasEnd": "2013-06-01"
@@ -1361,7 +1362,7 @@ Orgs returned include their parent org (org:subOrganizationOf) but not a list of
                         "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/3"],
                         "skos:prefLabel": "Dartmouth Digital Library Technology Group",
                         "skos:altLabel": ["DLTG"],
-                        "vcard:pobox": "1098",
+                        "vcard:post-office-box": "1098",
                         "org:purpose": "unit",
                         "owltime:hasBeginning": "2000-06-01",
                         "owltime:hasEnd": ""
@@ -1373,7 +1374,7 @@ Orgs returned include their parent org (org:subOrganizationOf) but not a list of
                         "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/12"],
                         "skos:prefLabel": "Dartmouth College Library",
                         "skos:altLabel": [],
-                        "vcard:pobox": "1098",
+                        "vcard:post-office-box": "1098",
                         "org:purpose": "unit",
                         "owltime:hasBeginning": "1769-06-01",
                         "owltime:hasEnd": ""
@@ -1425,7 +1426,7 @@ Orgs returned include their parent org (org:subOrganizationOf) but not a list of
                         "skos:prefLabel": "Dartmouth Information Technology Services",
                         "skos:altLabel": ["ITS"],
                         "org:purpose": "unit",
-                        "vcard:pobox": "1223",
+                        "vcard:post-office-box": "1223",
                         "owltime:hasBeginning": "2013-06-01",
                         "owltime:hasEnd": ""
                     },
@@ -1436,7 +1437,7 @@ Orgs returned include their parent org (org:subOrganizationOf) but not a list of
                         "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/3"],
                         "skos:prefLabel": "Dartmouth Digital Library Technology Group",
                         "skos:altLabel": ["DLTG"],
-                        "vcard:pobox": "1908",
+                        "vcard:post-office-box": "1908",
                         "org:purpose": "unit",
                         "owltime:hasBeginning": "2000-06-01",
                         "owltime:hasEnd": ""
@@ -1448,7 +1449,7 @@ Orgs returned include their parent org (org:subOrganizationOf) but not a list of
                         "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/8"],
                         "skos:prefLabel": "Academic Computing",
                         "skos:altLabel": [],
-                        "vcard:pobox": "1980",
+                        "vcard:post-office-box": "1980",
                         "org:purpose": "unit",
                         "owltime:hasBeginning": "1980-06-01",
                         "owltime:hasEnd": "2014-01-01",
@@ -1476,7 +1477,7 @@ Note that all organizations are created as active orgs. They may be immediately 
             "org:identifier": "its",
             "skos:prefLabel": "Dartmouth Information Technology Services",
             "skos:altLabel": ["ITS"],
-            "vcard:pobox": "1223",
+            "vcard:post-office-box": "1223",
             "org:purpose": "unit",
             "owltime:hasBeginning": "2013-06-01"
         }
@@ -1502,7 +1503,7 @@ Note that all organizations are created as active orgs. They may be immediately 
                 "org:identifier": "its",
                 "skos:prefLabel": "Dartmouth Information Technology Services",
                 "skos:altLabel": ["ITS"],
-                "vcard:pobox": "1223",
+                "vcard:post-office-box": "1223",
                 "org:purpose": "unit",
                 "owltime:hasBeginning": "2013-06-01",
                 "owltime:hasEnd": ""
@@ -1565,7 +1566,7 @@ Note that the response data will vary depending on whether the organization is a
                     "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/3"],
                     "skos:prefLabel": "Dartmouth Digital Library Technology Group",
                     "skos:altLabel": ["DLTG"],
-                    "vcard:pobox": "1908",
+                    "vcard:post-office-box": "1908",
                     "org:purpose": "unit",
                     "owltime:hasBeginning": "2000-06-01",
                     "owltime:hasEnd": "",
@@ -1580,7 +1581,7 @@ Note that the response data will vary depending on whether the organization is a
                     "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/12"],
                     "skos:prefLabel": "Dartmouth College Library",
                     "skos:altLabel": [],
-                    "vcard:pobox": "1008",
+                    "vcard:post-office-box": "1008",
                     "org:purpose": "unit",
                     "owltime:hasBeginning": "1769-06-01",
                     "owltime:hasEnd": ""
@@ -1592,7 +1593,7 @@ Note that the response data will vary depending on whether the organization is a
                     "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/3"],
                     "skos:prefLabel": "DAC dev team",
                     "skos:altLabel": [],
-                    "vcard:pobox": "9008",
+                    "vcard:post-office-box": "9008",
                     "org:purpose": "unit",
                     "owltime:hasBeginning": "2015-01-01",
                     "owltime:hasEnd": ""
@@ -1652,7 +1653,7 @@ Applies to both current and historic orgs. Do not use to add an end date to an o
                 "org:identifier": "its",
                 "skos:prefLabel": "Dartmouth Information Technology Services",
                 "skos:altLabel": ["ITS"],
-                "vcard:pobox": "1223",
+                "vcard:post-office-box": "1223",
                 "org:purpose": "unit",
                 "owltime:hasBeginning": "2013-06-01",
                 "owltime:hasEnd": ""
@@ -1769,7 +1770,7 @@ Applies to both current and historic orgs. Do not use to add an end date to an o
 Change Events trigger conversion of one (or more) organizations to another (or more than one) organization(s). Both orgs must already exist. Some logic applies to {id_from} and {id_to}:
 
 - if {id_from} already has an org:changedBy relationship associated with it, that ChangeEvent is associated with the new {id_to} org using org:resultedFrom.
-- if {id_to} already has an org:resultedFrom relationship associated with it, that ChangeEvent is associated with {id_from} using org:changedBy so long as {id_to} does not have an org:changedBy relationship as well.
+- if {id_to} already has an org:resultedFrom relationship associated with it, that ChangeEvent is associated with {id_from} using org:changedBy so long as {id_from} does not have an org:changedBy relationship as well.
 - if neither {id_from} or {id_to} have no currently associated ChangeEvents, a new ChangeEvent is created.
 
 ex: Math splits and becomes Math and CS (order is important here):
@@ -1806,7 +1807,7 @@ ex: Math absorbs CS (order isn't as important):
 
     + Headers
             
-            Location: /organzation/{id_to}
+            Location: /organzation/{id_to}#change1
 
     + Body
 
@@ -1822,4 +1823,51 @@ ex: Math absorbs CS (order isn't as important):
                 "org:resultingOrganization": ["{id_to}"],
                 "prov:atTime": "2012-12-01",
                 "dc:description": "A wild organziation appeared"
+            }
+            
+## Ending Change [/organization/{organization_id}/end]
+
+### Ending an Organization [POST]
+
++ Parameters
+    + organization_id (number, required) - ID of the ending Organization
+
++ Request (application/ld+json)
+
+        {            
+            "@context": {
+                "org": "http://www.w3.org/ns/org#",
+                "dc": "http://purl.org/dc/elements/1.1/",
+                "prov": "http://www.w3.org/ns/prov#"
+            },
+            "prov:atTime": "2012-12-01",
+            "dc:description": "A wild organziation ended",
+        }
+        
++ Response 201 (application/ld+json)
+
+    + Headers
+            
+            Location: /organzation/{organization_id}
+
+    + Body
+
+            {
+                "@context": {
+                    "skos": "http://www.w3.org/2004/02/skos/core#",
+                    "org": "http://www.w3.org/ns/org#",
+                    "owltime": "http://www.w3.org/TR/owl-time#"
+                    "vcard": "http://www.w3.org/2006/vcard/ns#"
+                },
+                "@type": "org:Organization",
+                "@id": "http://lna.dartmouth.edu/organization/1",
+                "status": "success",
+                "org:identifier": "its",
+                "skos:prefLabel": "Dartmouth Information Technology Services",
+                "skos:altLabel": ["ITS"],
+                "vcard:post-office-box": "1223",
+                "org:purpose": "unit",
+                "owltime:hasBeginning": "2013-06-01",
+                "owltime:hasEnd": "2016-05-09",
+                "lna:historicPlacement": "serializationGoesHere"
             }
