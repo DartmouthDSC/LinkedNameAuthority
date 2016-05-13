@@ -10,6 +10,7 @@ FactoryGirl.define do
     membership      { {
                         primary: true,
                         title:   'Professor',
+                        begin_date: Date.yesterday,
                         org:      { label:     'Thayer School of Engineering',
                                     alt_label: ['Thayer'],
                                     hr_id:     '1234' }
