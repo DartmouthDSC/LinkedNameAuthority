@@ -2,7 +2,7 @@ namespace :load do
   desc "Load from all feeds."
   task all: :environment do
     Load::Organizations.from_hr
-    Load::People.from_hr_faculty_view
+    Load::People.from_hr
     Load::Documents.from_elements
   end
 

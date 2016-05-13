@@ -69,9 +69,9 @@ module Oracle
           title:   self.title,
           org:     {
             label: self.department,
-            hr_id: self.department_id,
+            hr_id: self.department_id.to_s,
           },
-          start_date: self.dept_start_date || self.latest_start_date
+          begin_date: self.dept_start_date || self.latest_start_date
         }
       }
     end
