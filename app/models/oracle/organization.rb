@@ -75,12 +75,10 @@ module Oracle
       r
     end
 
-    # Queries for recenly ended organization by org type. Results are returned in ascending
-    # date order.
+    # Queries for organizations ended (ended by today) by org type. Results are returned in
+    # ascending date order.
     def self.find_ended_orgs_by_type(type)
-      find_by_type(type)
-        .where.not(org_end_date: nil)
-        .order(:org_end_date)
+      where('org_type = ? AND org_end_date <= ?', type, Date.today)
     end
   end
 end
