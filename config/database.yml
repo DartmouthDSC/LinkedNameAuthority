@@ -1,4 +1,6 @@
+#
 # Development/Test SQLite version 3.x database connections
+#
 sqlite: &sqlite
   adapter: sqlite3
   pool: 5
@@ -16,13 +18,14 @@ test: &test
 
 ci: *test
 
-
+#
 # Production Postgres database connections
+#
 postgres: &postgres 
   adapter: postgresql
   pool: 5
   host: localhost
-  #  encoding: unicode
+  encoding: unicode
   username: <%= ENV['POSTGRES_USER'] %>
   password: <%= ENV['POSTGRES_PASSWORD'] %>
 
@@ -34,8 +37,9 @@ qa:
   <<: *postgres
   database: qa
 
-  
+#  
 # Oracle database connections
+#
 oracle: &oracle
   adapter: oracle_enhanced
   username: <%= ENV['LNA_ORACLE_USERNAME'] %>
