@@ -36,6 +36,7 @@ set :keep_releases, 5
 
 set :bundle_without, %w{development test ci}.join(' ')
 
+# Adding whenever, to the list of binaries that should be prepended to with `bundle exec`
 set :bundle_bins, fetch(:bundle_bins) + %w(whenever)
 
 namespace :deploy do
