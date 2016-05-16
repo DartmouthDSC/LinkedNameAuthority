@@ -68,8 +68,8 @@ module Load
 
     # Logs warning and adds it to the warning hash.
     #
-    # @params k [String] generalized warnings
-    # @params v [String] specifics about warning, netid, name, etc
+    # @param k [String] generalized warnings
+    # @param v [String] specifics about warning, netid, name, etc
     def log_warning(k, v)
       Rails.logger.tagged('LOADER') {
         Rails.logger.tagged(title.upcase) {

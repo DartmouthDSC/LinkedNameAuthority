@@ -83,7 +83,7 @@ module Lna
     #
     # @param [Lna::Organization] active
     # @param [Date] end_date
-    # @returns [Lna::Organization::Historic] historic organization
+    # @return [Lna::Organization::Historic] historic organization
     def self.convert_to_historic(active, end_date = Date.today)
       active.reload
       if active.accounts.count > 0
