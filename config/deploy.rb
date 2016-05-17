@@ -37,9 +37,6 @@ set :keep_releases, 5
 
 set :bundle_without, %w{development test ci}.join(' ')
 
-#set :whenever_identifier, ->{ "#{fetch(:application)}_#{fetch(:stage)}" }
-
 namespace :deploy do
   after :finished, "deploy:restart_apache"
-#  after :finished, "deploy:write_crontab"
 end
