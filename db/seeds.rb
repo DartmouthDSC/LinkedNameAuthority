@@ -23,7 +23,6 @@ def add_role_to_users(role, users)
     user = User.find_or_create_by!(attrs)
     user.roles << role
     user.save!
-    end
   end
 end
 
