@@ -21,7 +21,7 @@ test:
   database: lna_test
   
 ci:
-  adapter: postgresql
+  <<: *default
   database: travis_ci_test
   
 production:
