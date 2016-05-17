@@ -21,7 +21,7 @@ test:
   database: test
   
 ci:
-  <<: *default
+  adapter: postgresql
   database: travis_ci_test
   
 production:
