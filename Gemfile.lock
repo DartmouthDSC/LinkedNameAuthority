@@ -271,6 +271,7 @@ GEM
       nokogiri (~> 1.5)
       omniauth (~> 1.2.0)
     orm_adapter (0.5.0)
+    pg (0.18.4)
     pry (0.10.3)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -500,6 +501,7 @@ DEPENDENCIES
   nom-xml (~> 0.5.1)
   om (~> 3.1.0)
   omniauth-cas
+  pg
   pry-nav
   rails (= 4.2.6)
   rdf-vocab
@@ -518,6 +520,3 @@ DEPENDENCIES
   uglifier (>= 1.3.0)
   web-console (= 2.3.0)
   whenever
-
-BUNDLED WITH
-   1.10.6
