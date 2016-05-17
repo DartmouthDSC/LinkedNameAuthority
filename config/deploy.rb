@@ -37,10 +37,9 @@ set :keep_releases, 5
 
 set :bundle_without, %w{development test ci}.join(' ')
 
-# Adding whenever, to the list of binaries that should be prepended to with `bundle exec`
-set :bundle_bins, fetch(:bundle_bins) + %w(whenever)
+#set :whenever_identifier, ->{ "#{fetch(:application)}_#{fetch(:stage)}" }
 
 namespace :deploy do
   after :finished, "deploy:restart_apache"
-  after :finished, "deploy:write_crontab"
+#  after :finished, "deploy:write_crontab"
 end
