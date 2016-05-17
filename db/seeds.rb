@@ -20,8 +20,9 @@ end
 
 def add_role_to_users(role, users)
   users.each do |attrs|
-    User.find_or_create_by!(attrs) do |u|
-      u.roles << role
+    user = User.find_or_create_by!(attrs)
+    user.roles << role
+    user.save!
     end
   end
 end
