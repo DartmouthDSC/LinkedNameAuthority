@@ -20,8 +20,8 @@ gem 'hydra-role-management'
 gem 'jbuilder', '~> 2.0'
 gem 'net-dnd', github: 'dartmouth-dltg/net-dnd'
 gem 'omniauth-cas'
+gem 'pg'
 gem 'rdf-vocab'
-
 gem 'turbolinks' # Turbolinks makes following links in your web application faster.
 gem 'therubyracer', platforms: :ruby # Embed the V8 JavaScript interpreter into Ruby
 gem 'whenever' # Used to run cron jobs.
@@ -45,7 +45,6 @@ group :development, :test, :ci do
   gem 'rspec-its'
   gem 'rspec-rails'
   gem 'spring'  # Spring speeds up development.
-  gem 'sqlite3'
 end
 
 group :development do
@@ -59,8 +58,4 @@ group :ci do
   gem 'coveralls', require: false
   gem 'fcrepo_wrapper', '~> 0.2.1'
   gem 'solr_wrapper', '~> 0.5.0'
-end
-
-group :qa, :production do
-  gem 'pg'
 end

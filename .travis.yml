@@ -4,6 +4,12 @@ bundler_args: "--without oracle --jobs=3 --retry=3"
 script: RAILS_ENV=ci bundle exec rake ci
 jdk:
 - oraclejdk8
+services:
+  - postgresql
+before_script:
+  - psql -c 'create database travis_ci_test;' -U postgres
+addons:
+  postgresql: "9.5"
 notifications:
   email: false
   slack:

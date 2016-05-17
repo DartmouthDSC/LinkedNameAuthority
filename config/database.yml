@@ -1,34 +1,29 @@
 #
-# Development/Test SQLite version 3.x database connections
+# Postgres database connections
 #
-sqlite: &sqlite
-  adapter: sqlite3
-  pool: 5
-  timeout: 5000
-  
-development:
-  <<: *sqlite
-  database: db/development.sqlite3
-
-# Warning: The database defined as "test" will be erased and
-# re-generated from your development database when you run "rake".
-test: &test
-  <<: *sqlite
-  database: db/test.sqlite3
-
-ci: *test
-
-#
-# Production Postgres database connections
-#
-postgres: &postgres 
+default: &default
   adapter: postgresql
   pool: 5
-  host: localhost
   encoding: unicode
+  
+postgres: &postgres
+  <<: *default
+  host: localhost
   username: <%= ENV['POSTGRES_USER'] %>
   password: <%= ENV['POSTGRES_PASSWORD'] %>
 
+development:
+  <<: *postgres
+  database: development
+  
+test:
+  <<: *postgres
+  database: test
+  
+ci:
+  <<: *default
+  database: travis_ci_test
+  
 production:
   <<: *postgres
   database: production
