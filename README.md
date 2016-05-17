@@ -5,17 +5,20 @@
 
 ##Install notes for Development VMs
 
-1. The Oracle client requires setting environment variables in ~/.bash_profile. Add this to that file before running bundle install:
+1. The Oracle client and Postgres requires setting environment variables in ~/.bash_profile. Add this to that file before running bundle install:
     ```
     # Oracle Definitions.
     export ORACLE_BASE=/usr/lib/oracle
     export ORACLE_HOME=$ORACLE_BASE/12.1/client64
 
     export LD_LIBRARY_PATH=/usr/lib/oracle/12.1/client64/lib:$LD_LIBRARY_PATH
-    export PATH=/usr/lib/oracle/12.1/client64/bin:$PATH
+    export PATH=$PATH:/usr/lib/oracle/12.1/client64/bin
     
     # Sets Characters Oracle is using.
     export NLS_LANG=AMERICAN_AMERICA.WE8ISO8859P1
+    
+    # Adding Postgresql commands to PATH.
+    export PATH=$PATH:/usr/pgsql-9.5/bin
     ```
 2. Install all gem dependencies:
     ```
