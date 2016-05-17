@@ -21,7 +21,7 @@ set :deploy_to, "/opt/deploy/#{fetch(:application)}"
 # Default value for :pty is false
 # set :pty, true
 
-set :linked_files, fetch(:linked_files, []).push('.env', 'db/production.sqlite3')
+set :linked_files, fetch(:linked_files, []).push('.env')
 
 set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets',
                                                'public/system')
