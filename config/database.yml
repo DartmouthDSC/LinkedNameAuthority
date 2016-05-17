@@ -14,11 +14,11 @@ postgres: &postgres
 
 development:
   <<: *postgres
-  database: development
+  database: lna_dev
   
 test:
   <<: *postgres
-  database: test
+  database: lna_test
   
 ci:
   adapter: postgresql
@@ -26,11 +26,11 @@ ci:
   
 production:
   <<: *postgres
-  database: production
+  database: lna_prod
 
 qa:
   <<: *postgres
-  database: qa
+  database: lna_qa
 
 #  
 # Oracle database connections
