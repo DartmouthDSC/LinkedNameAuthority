@@ -56,6 +56,6 @@ end
 
 group :ci do
   gem 'coveralls', require: false
-  gem 'fcrepo_wrapper', '~> 0.2.1'
-  gem 'solr_wrapper', '~> 0.5.0'
+  gem 'fcrepo_wrapper'
+  gem 'solr_wrapper'
 end
