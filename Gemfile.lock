@@ -278,6 +278,8 @@ GEM
       slop (~> 3.4)
     pry-nav (0.2.4)
       pry (>= 0.9.10, < 0.11.0)
+    pry-rails (0.3.4)
+      pry (>= 0.9.10)
     rack (1.6.4)
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -502,6 +504,7 @@ DEPENDENCIES
   omniauth-cas
   pg
   pry-nav
+  pry-rails
   rails (= 4.2.6)
   rdf-vocab
   rsolr (~> 1.0.13)

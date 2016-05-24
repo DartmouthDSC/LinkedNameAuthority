@@ -91,6 +91,7 @@ RSpec.describe Load::People do
         @original = @load.into_lna_by_netid!('d00000a', FactoryGirl.create(:person_hash))
         m = { primary: true,
               title: 'Associate Professor',
+              begin_date: Date.yesterday,
               org: { label: 'Computer Science',
                      hr_id: '5678'  }            }
         @updated = @load.into_lna_by_netid!('d00000a', FactoryGirl.create(:person_hash, membership: m))
@@ -130,6 +131,7 @@ RSpec.describe Load::People do
       before :context do
         @load.into_lna_by_netid!('d00000a', FactoryGirl.create(:person_hash))
         m = { title: 'Associate Professor',
+              begin_date: Date.yesterday,
               org: { label: 'Computer Science',
                      hr_id: '5678' }              }
         @updated = @load.into_lna_by_netid!('d00000a',
@@ -163,6 +165,7 @@ RSpec.describe Load::People do
       
       it 'uses existing organization for membership' do
         m = { title: 'Department Chair',
+              begin_date: Date.yesterday,
               org: { label: 'Thayer School of Engineering',
                      hr_id: '1234' }                        }
         @load.into_lna_by_netid!('d00000a', FactoryGirl.create(:person_hash, membership: m))
