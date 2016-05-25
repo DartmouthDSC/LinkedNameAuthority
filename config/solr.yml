@@ -1,4 +1,3 @@
-# This is a sample config file that points to a solr server for each environment
 development:
   url: http://localhost:8983/solr/lna_dev
 test: &test

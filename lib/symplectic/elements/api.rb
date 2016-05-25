@@ -6,20 +6,40 @@ module Symplectic
     class RequestError < StandardError; end # Params for request invalid.
     
     class Api < Faraday::Connection
-      
-      API_ROOT = 'https://elements-api-dev.dartmouth.edu:9002/elements-secure-api/'
 
-      # Creates connection to Elements API with basic authentication information.
-      #
-      # TODO: Eventually should probably be reading in the api root, username and pass
-      #   from a configuration file. Potentially config/elements.yml.
+      attr_reader :config
+      
+      # Creates connection to Elements API connection with basic authentication information.
       def initialize
-        super(url: API_ROOT)
-        
-        raise RequestError, 'Elements username not set' unless ENV['ELEMENTS_USERNAME']
-        raise RequestError, 'Elements password not set' unless ENV['ELEMENTS_PASSWORD']
-        
-        self.basic_auth(ENV['ELEMENTS_USERNAME'], ENV['ELEMENTS_PASSWORD'])
+        load_config        
+        super(url: self.config[:api_root])
+        self.basic_auth(self.config[:username], self.config[:password])
+      end
+
+      # Load configuration from yaml file containing api_root, username and password for each
+      # environment.
+      #
+      # Note: Rails is being used to load the configuration, if this library is moved out into
+      # its own gem this part of the code will have to be rewritten to remove the dependency on
+      # rails.
+      #
+      # @example Configuration Yaml File
+      #   development:
+      #     user: example
+      #     password: secret
+      #     api_root: https://example.com/api
+      #
+      def load_config
+        c = Rails.application.config_for(:elements).symbolize_keys
+
+        # Assure the keys we need are present.
+        [:password, :username, :api_root].each do |k|
+          unless c.key?(k) && !c[k].blank?
+            raise "elements.yml missing #{k} for #{Rails.env}"
+          end
+        end
+
+        @config = c
       end
     end
   end
