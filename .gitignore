@@ -15,3 +15,18 @@
 /log/*
 !/log/.keep
 /tmp
+
+# Ignore file with environmental variables.
+/.env*
+/.htaccess
+
+# Ignore compiled assets.
+/public/assets
+
+# Ignore Coveralls created directory.
+/coverage
+
+# Ignore byebug history
+/.byebug_history
+
+

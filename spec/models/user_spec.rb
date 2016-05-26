@@ -4,10 +4,7 @@ RSpec.describe User, type: :model do
   it 'has valid factory' do
     jane = FactoryGirl.create(:user)
     expect(jane).to be_truthy
-  end
-
-  it 'requires provider' do
-    expect{ FactoryGirl.create(:user, provider: '') }.to raise_error ActiveRecord::RecordInvalid
+    jane.destroy
   end
 
   it 'requires netid' do
@@ -28,17 +25,21 @@ RSpec.describe User, type: :model do
     end
     
     it 'requires unique uid' do
-      expect{ FactoryGirl.create(:user, netid: 'd12345d') }.to raise_error
+       expect{ FactoryGirl.create(:user) }.to raise_error ActiveRecord::RecordInvalid
     end
 
     it 'requires unique netid' do
-      expect{ FactoryGirl.create(:user, uid: 'd12345d@dartmouth.edu') }.to raise_error
+      expect{ FactoryGirl.create(:user, uid: 'd12345d@dartmouth.edu') }.to raise_error ActiveRecord::RecordInvalid
     end
   end
 
   describe '.from_omniauth', :omniauth do
     before :all do
       @jane = User.from_omniauth(FactoryGirl.create(:omniauth_hash))
+    end
+
+    after :all do
+      @jane.destroy
     end
     
     it 'creates user record' do
@@ -56,10 +57,12 @@ RSpec.describe User, type: :model do
     context 'when user logs in for the second time' do
       before :all do
         @jane = User.from_omniauth(
-          FactoryGirl.create( :omniauth_hash,
-                              affil: 'THAY',
-                              user: 'Jane A. Doe-Smith@THAYER.DARTMOUTH.EDU',
-                              name: 'Jane A. Doe-Smith', ))
+          FactoryGirl.create(:omniauth_hash,
+                             affil: 'THAY',
+                             user: 'Jane A. Doe-Smith@THAYER.DARTMOUTH.EDU',
+                             name: 'Jane A. Doe-Smith'
+                            )
+        )
       end
       
       it 'updates realm' do
@@ -78,10 +81,5 @@ RSpec.describe User, type: :model do
         expect(@jane.uid).to eql('f12345f@thayer.dartmouth.edu')
       end
     end
-
-    after :all do
-      @jane.destroy
-    end
   end
-  
 end

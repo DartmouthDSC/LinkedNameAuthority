@@ -1,0 +1,24 @@
+        <nav class="centered breadcrumbs" role="navigation">
+            <%= link_to(root_path, class: "crumbContinue") do %><span>Home</span><% end %><%= link_to(organizations_path, class: "crumbStop crumbHere") do %><span>Organizations</span><% end %>
+        </nav>
+        <main class="centered content cards">
+        <%= render "shared/controls" %>     
+        <div class="cardContainer">
+
+        </div>   
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <%= render "shared/controls" %>        
+        </main>
+        <section id="templates">
+        <%= render "shared/templates/cards_organization" %>
+        </section>
+        <script>
+        
+
+
+        $(document).ready(function(){
+            LNA.loadOrgCards(<%= raw render(:template => "organizations/search.jsonld", :locals => { :organizations => @organizations }) %>);
+        });
+        </script>

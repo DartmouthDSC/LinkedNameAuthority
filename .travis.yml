@@ -1,0 +1,18 @@
+language: ruby
+cache: bundler
+bundler_args: "--without oracle --jobs=3 --retry=3"
+script:
+  - RAILS_ENV=ci bundle exec rake db:migrate
+  - RAILS_ENV=ci bundle exec rake ci
+jdk:
+- oraclejdk8
+services:
+  - postgresql
+before_script:
+  - psql -c 'create database travis_ci_test;' -U postgres
+addons:
+  postgresql: "9.4"
+notifications:
+  email: false
+  slack:
+    secure: j0rufi09whwqkjJ+Fjwy+aIPOJ/mth+eOa6joTt1Vgx+PGmuGbeV+geXeIGeFt0Isd0UPWpE3NjMnKfaz+RDdfEJyZrPLy1xahkILNq32cXbzyXqfeW34OHgLwB0cBlhSJiBzmOoKcjujGDhZvkC5Q2dqFlAScfFGzG060OFeuKW1MIfD138tYFqhmT/TyEnA8afbqnu7LhRcMd4nK1Ovo+RNCO0fHZUC+npaZVwMxXoMdH0r5OJQQN7QWm9darPmC8x+B6rkRyhk6koXxG0R48s2AeX8BivvXk8GQARwvV6ctjFwK0/nnCjI0a792V+TgGP782NZkls2PZxJvh+5Rm6hSRLpZsMuEyjpAeDybEwX6+GMegldOhAk31fA35m3LrnlJQBOx8zvrxfTD8o+nuWDOUBNwK2M5aXF/VIpHOw7wUk/oeL/gcvIPG0coblmuvNBf/FtjIu133hDGgbIt9EgJBF2TATTAzet0ERJ88+rS+p42XT2Pq3l1rfs+7hfpBZIzjLd5+2T/RCYxMoo6APSEtwhtKuOq60MgJ82wy4cpqF5Ia6rz5Lo+Np2C/f/kIsgvC6rJY4V/7K/xzC1QzY1oJFFj7sc9D//wggwZXRI8kjsNEoDErzS+OWhN6d4O+biey9YzJMvKQNQKOLc7Yc9JqSXRJvT/YhCgQV9tQ=

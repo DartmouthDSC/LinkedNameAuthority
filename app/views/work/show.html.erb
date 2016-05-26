@@ -1,0 +1,65 @@
+        <nav class="centered breadcrumbs" role="navigation">
+            <%= link_to(root_path, class: "crumbContinue") do %><span>Home</span><% end %><%= link_to(works_path, class: "crumbContinue") do %><span>Work</span><% end %><a href="#" class="crumbHere crumbStop"><span>Loading...</span></a>
+        </nav>
+        <main class="centered content">
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+            <section class="sidebar">
+                <div>
+                    <h1>Licenses</h1>
+                    <div><span class="spinner"></span></div>
+                    <ul class="iconList">
+                    </ul>
+                    <button title="add license" id="newLicense" data-toggle="modal" data-target="#newLicenseModal"><span class="add"></span>Add License</button>
+                </div>
+            </section>
+            <section class="details">
+                <div class="workData">
+                    <h1><button class="fa fa-pencil fa-lg edit" title="edit work" data-toggle="modal" data-target="#editWorkModal"><span class="helpText">edit this work</span></button> Work</h1>
+                    <h3></h3>
+                    <p class="creator">
+                        <span class="title">Creator</span><br>
+                        <button class="fa fa-external-link-square fa-lg view" title="view person"><span class="helpText">view this person</span></button>
+                        <span class="workCreator"></span> 
+                    </p>
+                    <p>
+                        <span class="title">Authors</span><br>
+                        <span class="workAuthorList"></span>
+                    </p>
+                    <p>
+                        <span class="title">Date</span><br>
+                        <span class="workDate"></span>
+                    </p>  
+                    <p>
+                        <span class="title">Citation</span><br>
+                        <span class="workCitation"></span>
+                    </p>    
+                    <p>
+                        <span class="title">Abstract</span><br>
+                        <span class="workAbstract"></span>                       
+                    </p>
+                    <p>
+                        <span class="title">DOI</span><br>
+                        <span class="workDOI"></span>
+                    </p>
+                    <p>
+                        <span class="title">Other URIs</span><br>
+                        <span class="workURIs"></span>
+                    </p>
+                </div>
+            </section>
+        </main>
+        <section id="templates">
+            <%= render "shared/templates/lists_license" %>
+        </section>
+        <section id="modals">
+            <%= render "shared/modals/new_license" %>
+            <%= render "shared/modals/edit_license" %>
+            <%= render "shared/modals/edit_work" %>
+        </section>        
+        <script>
+        $(document).ready(function(){
+            $().LNAGateway().loadWork(LNA.loadWork, "<%= @short_id %>");
+        });
+        </script>

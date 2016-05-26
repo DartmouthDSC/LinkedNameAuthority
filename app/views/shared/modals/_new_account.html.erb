@@ -1,0 +1,20 @@
+<div class="modal fade newAccountModal formModal" id="newAccountModal" tabindex="-1" role="dialog" aria-labelledby="newAccountModal" title="Add an Account for this Person to LNA">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form data-lna-query="newAccount" accept-charset="UTF-8" class="formTwoColumn" data-opt="<%= @short_id %>/account" data-no-ajax="true">
+          <div><label>Template</label><select name="template" class="dropdownBehavior changeBehavior" data-opt="onlineAccounts" data-onchange="prefillAccounts">
+            <option></option>
+          </select></div>          
+          <div><label>Title</label><input name="dc:title"></input></div>          
+          <div><label>ID</label><input name="accountID" class="changeBehavior" data-onchange="mergeAccountName"></input></div>
+           <div><label>Service Link</label><input name="foaf:accountServiceHomepage"></input></div>
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+          <%= hidden_field_tag "foaf:accountName" %>
+          <%= hidden_field_tag "dc:creator", "https://jb.dac.dartmouth.edu/lna/person/" + @short_id %>
+          <button type="submit" title="submit">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,1873 @@
+FORMAT: 1A
+HOST: http://linkednameauthority.apiblueprint.org/
+
+# linkednameauthority
+
+LNA API for Dartmouth College (v0.2.0)
+
+## Path index and valid methods
+
+- /persons/{page} - GET, POST
+- /person/ - POST
+- /person/{id} - GET, PUT, DELETE
+- /person/{person_id}/account/ - POST
+- /person/{person_id}/account/{id}/ - PUT, DELETE
+- /person/{person_id}/orcid/ - GET
+- /person/{person_id}/membership/ - POST
+- /person/{person_id}/membership/{id} - PUT, DELETE
+- /person/{person_id}/works/ - GET
+- /person/{person_id}/works/{start_date} - GET
+- /works/{page} - GET, POST
+- /works/{start_date}/{page} - GET, POST
+- /work - POST
+- /work/{id} - GET, PUT, DELETE
+- /work/{work_id}/license/ - POST
+- /work/{work_id}/license/{id} - PUT, DELETE
+- /organizations/{page} - GET, POST
+- /organization/ - POST
+- /organization/{id} - GET, PUT, DELETE
+- /organization/{organization_id}/account/{id} - POST, PUT, DELETE
+- /organization/{id_from}/change_to/{id_to} - POST
+- /organization/{organization_id}/end - POST
+
+Generally speaking, GET and POST paths use content negotiation to determine a response. text/html and application/ld+json are supported. PUT and DELETE methods may only respond with application/ld+json.
+
+For LDP compliance, application/x-turtle may be added in the future.
+
+It's worth noting that the goals of LNA are person-centric. That is expressed in a few ways, most importantly that the 'works' objects are works relative to a person and are really modeling citation entries or references rather than actual works. For instance, a paper co-authered by two Persons will appear as two separate Works because its citation information may be slightly different for each Person.
+
+## Persons Collection [/persons/{page}]
+Paginated by *page*, limited to 100 results. If *page* is absent, page 1 is returned.
+
+GET requests sorted by foaf:family_name ASC foaf:given_name ASC
+POST requests sorted by relevance
+
+Organizations are appended to the graph if they are referenced by person nodes.
+
+Pagination is controlled using header links, which only appear as appropriate.
+
+### List all Persons [GET]
+
++ Parameters
+    
+    + page (number, optional) - Which page of the result set to return
+        +default: '1'
+
++ Response 200 (application/ld+json)
+
+    + Headers
+    
+            Link: <http://lna.dartmouth.edu/persons/1>; rel="first", <http://lna.dartmouth.edu/persons/5>; rel="next", <http://lna.dartmouth.edu/persons/3>; rel="prev"
+
+    + Body
+    
+            {
+                "@context": {
+                    "foaf": "http://xmlns.com/foaf/0.1/",
+                    "org": "http://www.w3.org/ns/org#",
+                    "skos": "http://www.w3.org/2004/02/skos/core#"
+                },
+                "@id": "http://lna.dartmouth.edu/persons/{page}",
+                "generatedAt": "2015-10-30T09:30:10Z",
+                "status": "success",
+                "@graph": [
+                    {
+                        "@id": "http://lna.dartmouth.edu/person/1",
+                        "@type": "foaf:Person",
+                        "foaf:givenName": "John",
+                        "foaf:familyName": "Bell",
+                        "foaf:title": "Dr.",
+                        "foaf:mbox": "john.p.bell@dartmouth.edu",
+                        "foaf:image": "http://dartmouth.edu/fictionalImageBank/12094.jpg",
+                        "org:reportsTo": "http://lna.dartmouth.edu/organization/3"
+                    },
+                    {
+                        "@id": "http://lna.dartmouth.edu/person/2",
+                        "@type": "foaf:Person",
+                        "foaf:givenName": "Carla",
+                        "foaf:familyName": "Galarza",
+                        "foaf:title": "Ms.",
+                        "foaf:mbox": "carla.m.galarza@dartmouth.edu",
+                        "foaf:image": "http://dartmouth.edu/fictionalImageBank/98712.jpg",
+                        "org:reportsTo": "http://lna.dartmouth.edu/organization/1"
+                    },
+                    {
+                        "@id": "http://lna.dartmouth.edu/organization/1",
+                        "@type": "org:Organization",
+                        "skos:prefLabel": "Dartmouth College Library"
+                    },
+                    {
+                        "@id": "http://lna.dartmouth.edu/organization/3",
+                        "@type": "org:Organization",
+                        "skos:prefLabel": "Dartmouth ITS"
+                    }
+                ]
+            }
+        
++ Response 200 (text/html)
+
+        <html>Human readable interface</html>
+
+### Search for a list of Persons [POST]
+Request parameters listed are search options and can be mixed as needed.
+
++ Parameters
+
+    + page (number, optional) - Which page of the result set to return
+        +default: '1'
+
++ Request (application/ld+json)
+
+        {   "foaf:name": "John Bell",
+            "foaf:givenName": "John",
+            "foaf:familyName": "Bell",
+            "org:member": "ITS"         }
+
++ Response 200 (application/ld+json)
+
+    + Headers
+    
+            Link: <http://lna.dartmouth.edu/persons/1>; rel="first", <http://lna.dartmouth.edu/persons/5>; rel="next", <http://lna.dartmouth.edu/persons/3>; rel="prev"
+            
+    + Body
+    
+            {
+                "@context": {
+                    "foaf": "http://xmlns.com/foaf/0.1/",
+                    "org": "http://www.w3.org/ns/org#",
+                    "skos": "http://www.w3.org/2004/02/skos/core#"
+                },
+                "@id": "http://lna.dartmouth.edu/persons/{page}",
+                "generatedAt": "2015-10-30T09:30:10Z",
+                "queryString": "foaf:givenName=John&org:member='ITS'",
+                "status": "success",
+                "@graph": [
+                    {
+                        "@id": "http://lna.dartmouth.edu/person/1",
+                        "@type": "foaf:Person",
+                        "foaf:givenName": "John",
+                        "foaf:familyName": "Bell",
+                        "foaf:title": "Dr.",
+                        "foaf:mbox": "john.p.bell@dartmouth.edu",
+                        "foaf:image": "http://dartmouth.edu/fictionalImageBank/12094.jpg",
+                        "org:reportsTo": "http://lna.dartmouth.edu/organization/3"
+                    },
+                    {
+                        "@id": "http://lna.dartmouth.edu/person/2",
+                        "@type": "foaf:Person",
+                        "foaf:givenName": "Carla",
+                        "foaf:familyName": "Galarza",
+                        "foaf:title": "Ms.",
+                        "foaf:mbox": "carla.m.galarza@dartmouth.edu",
+                        "foaf:image": "http://dartmouth.edu/fictionalImageBank/97410.jpg",
+                        "org:reportsTo": "http://lna.dartmouth.edu/organization/1"
+                    },
+                    {
+                        "@id": "http://lna.dartmouth.edu/organization/1",
+                        "@type": "org:Organization",
+                        "skos:prefLabel": "Dartmouth College Library"
+                    },
+                    {
+                        "@id": "http://lna.dartmouth.edu/organization/3",
+                        "@type": "org:Organization",
+                        "skos:prefLabel": "Dartmouth ITS"
+                    }
+                ]
+            }
+        
++ Response 200 (text/html)
+
+    + Headers
+    
+            Link: <http://lna.dartmouth.edu/persons/1>; rel="first", <http://lna.dartmouth.edu/persons/5>; rel="next", <http://lna.dartmouth.edu/persons/3>; rel="prev"
+            
+    + Body
+
+            <html>Human readable interface</html>
+
+## Person [/person/{id}]
+
+### Retrieve a Person [GET]
+
++ Parameters
+
+    + id (number, required) - The ID of the person to get. If omitted, redirect to /persons/ for text/html and error for application/ld+json.
+
++ Request (text/html)
+
+        { id: null }
+        
++ Response 303
+
+    + Headers
+    
+            Location: /persons/
+
++ Request (application/ld+json)
+
+        { id: null }
+        
++ Response 400
+
++ Request (application/ld+json)
+
+        { id: 1 }
+
++ Response 200 (application/ld+json)
+
+        {
+            "@context": {
+                "foaf": "http://xmlns.com/foaf/0.1/",
+                "org": "http://www.w3.org/ns/org#",
+                "skos": "http://www.w3.org/2004/02/skos/core#",
+                "dc": "http://purl.org/dc/elements/1.1/",
+                "vcard": "http://www.w3.org/2006/vcard/ns#",
+                "owltime": "http://www.w3.org/TR/owl-time#"
+            },
+            "@type": "foaf:Person",
+            "foaf:primaryTopic": "http://lna.dartmouth.edu/person/1",
+            "generatedAt": "2015-10-30T09:30:10Z",
+            "status": "success",
+            "@graph":
+            [   
+                {
+                    "@id": "http://lna.dartmouth.edu/person/1",
+                    "@type": "foaf:Person",
+                    "foaf:name": "John Bell",
+                    "foaf:givenName": "John",
+                    "foaf:familyName": "Bell",
+                    "foaf:title": "Dr.",
+                    "foaf:mbox": "john.p.bell@dartmouth.edu",
+                    "foaf:mbox_sha1sum": "a92c12a703e002b7dc3cdc3234017e2983c3549d",
+                    "foaf:image": "http://www.dartmouth.edu/myImageHere.jpg",
+                    "foaf:homepage": "http://tech.dartmouth.edu/its/people/john-p-bell",
+                    "foaf:account": [
+                        {"@id": "#account1"},
+                        {"@id": "#account2"}
+                    ],
+                    "foaf:publications": "http://lna.dartmouth.edu/person/1/works",
+                    "org:reportsTo": "http://lna.dartmouth.edu/organization/3",
+                    "@reverse":
+                    {
+                        "org:member": [
+                            {"@id": "#membership1"},
+                            {"@id": "#membership2"}
+                        ]
+                    }
+                },
+                {
+                    "@id": "#account1",
+                    "@type": "foaf:OnlineAccount",
+                    "dc:title": "ORCID",
+                    "foaf:accountName": "http://orcid.org/0000-0003-0514-1585",
+                    "foaf:accountServiceHomepage": "http://orcid.org/"
+                },
+                {
+                    "@id": "#account2",
+                    "@type": "foaf:OnlineAccount",
+                    "dc:title": "Dartmouth NetID",
+                    "foaf:accountName": "q827b3n",
+                    "foaf:accountServiceHomepage": "http://tech.dartmouth.edu/its/services-support/help-yourself/netid-lookup"
+                },
+                {
+                    "@id": "#membership1",
+                    "@type": "org:Membership",
+                    "org:organization": "http://lna.dartmouth.edu/organization/3",
+                    "vcard:email": "john.p.bell@dartmouth.edu",
+                    "vcard:title": "Lead Application Developer",
+                    "vcard:post-office-box": "6028",
+                    "vcard:street-address": "Hinman Box 6028, Berry Library",
+                    "vcard:postal-code": "03755",
+                    "vcard:country-name": "United States",
+                    "vcard:locality": "Lebanon, NH",
+                    "owltime:hasBeginning": "2015-08-20",
+                    "owltime:hasEnd": ""
+                },
+                {
+                    "@id": "#membership2",
+                    "@type": "org:Membership",
+                    "org:organization": "http://lna.dartmouth.edu/organization/5",
+                    "vcard:email": "john.p.bell@dartmouth.edu",
+                    "vcard:title": "Test Dummy",
+                    "vcard:street-address": "Hinman Box 6028, Berry Library",
+                    "vcard:post-office-box": "6028",
+                    "vcard:postal-code": "03755",
+                    "vcard:country-name": "United States",
+                    "vcard:locality": "Lebanon, NH",
+                    "owltime:hasBeginning": "2015-08-20",
+                    "owltime:hasEnd": ""
+                },
+                {
+                    "@id": "http://lna.dartmouth.edu/organization/5",
+                    "@type": "org:Organization",
+                    "skos:prefLabel": "Dartmouth Crash Testing Corps"
+                },
+                {
+                    "@id": "http://lna.dartmouth.edu/organization/3",
+                    "@type": "org:Organization",
+                    "skos:prefLabel": "Dartmouth ITS"
+                }
+            ]
+            
+        }
+
++ Request (text/html)
+
+        { id: 1 }
+        
++ Response 200 (text/html)
+
+        <html>Human readable interface</html>        
+
+### Create a New Person [POST /person/]
+
++ Request (application/ld+json)
+
+        {            
+            "@context": {
+                "foaf": "http://xmlns.com/foaf/0.1/",
+                "org": "http://www.w3.org/ns/org#"
+            },
+            "@type": "foaf:Person",
+            "foaf:name": "John Bell",
+            "foaf:givenName": "John",
+            "foaf:familyName": "Bell",
+            "foaf:title": "Dr.",
+            "foaf:mbox": "john.p.bell@dartmouth.edu",
+            "foaf:image": "http://dartmouth.edu/fictionalImageBank/12340.jpg",
+            "foaf:homepage": ["http://novomancy.org/"],
+            "org:reportsTo": "http://lna.dartmouth.edu/organization/1"
+        }
+        
++ Response 201 (application/ld+json)
+
+    + Headers
+
+            Location: /person/3
+
+    + Body
+
+            {
+                "@context": {
+                    "foaf": "http://xmlns.com/foaf/0.1/",
+                    "org": "http://www.w3.org/ns/org#"
+                },
+                "status": "success",
+                "@id": "http://lna.dartmouth.edu/person/1",
+                "@type": "foaf:Person",
+                "foaf:name": "John Bell",
+                "foaf:givenName": "John",
+                "foaf:familyName": "Bell",
+                "foaf:title": "Dr.",
+                "foaf:mbox": "john.p.bell@dartmouth.edu",
+                "foaf:image": "http://dartmouth.edu/fictionalImageBank/12340.jpg",
+                "org:reportsTo": "http://lna.dartmouth.edu/organization/1",
+                "foaf:mbox_sha1sum": "a92c12a703e002b7dc3cdc3234017e2983c3549d"
+            }
+
+### Update an existing Person [PUT]
+
++ Parameters
+    + id (number, required) - ID of the Person to update
+
++ Request (application/ld+json)
+
+        {            
+            "@context": {
+                "foaf": "http://xmlns.com/foaf/0.1/",
+                "org": "http://www.w3.org/ns/org#"
+            },
+            "@type": "foaf:Person",
+            "foaf:name": "John Bell",
+            "foaf:givenName": "John",
+            "foaf:familyName": "Bell",
+            "foaf:title": "Dr.",
+            "foaf:mbox": "john.p.bell@dartmouth.edu",
+            "foaf:image": "http://dartmouth.edu/fictionalImageBank/12340.jpg",
+            "foaf:homepage": ["http://novomancy.org/"],
+            "org:reportsTo": "http://lna.dartmouth.edu/organization/1"
+        }
+        
++ Response 200 (application/ld+json)
+
+    + Body
+
+            {
+                "@context": {
+                    "foaf": "http://xmlns.com/foaf/0.1/",
+                    "org": "http://www.w3.org/ns/org#"
+                },
+                "status": "success",
+                "@id": "http://lna.dartmouth.edu/person/1",
+                "@type": "foaf:Person",
+                "foaf:name": "John Bell",
+                "foaf:givenName": "John",
+                "foaf:familyName": "Bell",
+                "foaf:title": "Dr.",
+                "foaf:mbox": "john.p.bell@dartmouth.edu",
+                "foaf:image": "http://dartmouth.edu/fictionalImageBank/12340.jpg",
+                "org:reportsTo": "http://lna.dartmouth.edu/organization/1",
+                "foaf:mbox_sha1sum": "a92c12a703e002b7dc3cdc3234017e2983c3549d"
+            }
+
+### Delete an existing Person [DELETE]
+
++ Parameters
+    + id (number, required) - ID of the Person to delete
+
++ Request (application/ld+json)
+
++ Response 200 (application/ld+json)
+
+    + Body
+    
+            { "status": "success" }
+
+## Person Accounts [/person/{person_id}/account/{id}]
+
+### Create an account identifier [POST /person/{person_id}/account]
+
++ Parameters
+    + person_id (number, required) - ID of the person that owns this account
+
++ Request (application/ld+json)
+
+        {            
+            "@context": {
+                "foaf": "http://xmlns.com/foaf/0.1/",
+                "dc": "http://purl.org/dc/elements/1.1/"
+            },
+            "@type": "foaf:OnlineAccount",
+            "dc:title": "ORCID",
+            "foaf:accountName": "http://orcid.org/0000-0003-0514-1585",
+            "foaf:accountServiceHomepage": "http://orcid.org/"
+        }
+        
++ Response 201 (application/ld+json)
+
+    + Headers
+            
+            Location: /person/1#account1
+
+    + Body
+
+            {
+                "@context": {
+                    "foaf": "http://xmlns.com/foaf/0.1/",
+                    "dc": "http://purl.org/dc/elements/1.1/"
+                },
+                "status": "success",
+                "@id": "http://lna.dartmouth.edu/person/1/account/account1",
+                "@type": "foaf:OnlineAccount",
+                "dc:title": "ORCID",
+                "foaf:accountName": "http://orcid.org/0000-0003-0514-1585",
+                "foaf:accountServiceHomepage": "http://orcid.org/"
+            }
+
+### Update an account identifier [PUT]
+
++ Parameters
+    + person_id (number, required) - ID of the person that owns this account
+    + id (number, required) - ID of the account to update
+
++ Request (application/ld+json)
+
+        {            
+            "@context": {
+                "foaf": "http://xmlns.com/foaf/0.1/",
+                "dc": "http://purl.org/dc/elements/1.1/"
+            },
+            "dc:title": "ORCID",
+            "foaf:accountName": "http://orcid.org/0000-0003-0514-1585",
+            "foaf:accountServiceHomepage": "http://orcid.org/"
+        }
+        
++ Response 200 (application/ld+json)
+
+    + Body
+
+            {
+                "@context": {
+                    "foaf": "http://xmlns.com/foaf/0.1/",
+                    "dc": "http://purl.org/dc/elements/1.1/"
+                },
+                "status": "success",
+                "@id": "http://lna.dartmouth.edu/person/1/account/account1",
+                "@type": "foaf:OnlineAccount",
+                "dc:title": "ORCID",
+                "foaf:accountName": "http://orcid.org/0000-0003-0514-1585",
+                "foaf:accountServiceHomepage": "http://orcid.org/"
+            }
+
+### Delete an account identifier [DELETE]
+
++ Parameters
+    + person_id (number, required) - ID of the person that owns this account
+    + id (number, required) - ID of the account to delete
+
++ Request (application/ld+json)
+        
++ Response 200 (application/ld+json)
+
+    + Body
+
+            {
+                "status": "success",
+            }
+
+## Person ORCID Accounts convenience function [/person/{person_id}/orcid/]
+
+### Retrieve an ORCID account [GET]
+
++ Parameters
+    + person_id (number, required) - ID of the person whose ORCID account we're retrieving
+    
++ Request (application/ld+json)
+
++ Response 200 (application/ld+json)
+
+    + Body
+            
+            {
+                "foaf:accountName": "http://orcid.org/0000-0003-0514-1585"
+            }
+
+## Person Memberships [/person/{person_id}/membership/{id}/]
+
+### Create a membership [POST /person/{person_id}/membership]
+
++ Parameters
+    + person_id (number, required) - ID of the person that owns this membership
+
++ Request (application/ld+json)
+
+        {            
+            "@context": {
+                "org": "http://www.w3.org/ns/org#",
+                "vcard": "http://www.w3.org/2006/vcard/ns#",
+                "owltime": "http://www.w3.org/TR/owl-time#"
+            },
+            "org:organization": "http://lna.dartmouth.edu/organization/3",
+            "vcard:email": "john.p.bell@dartmouth.edu",
+            "vcard:title": "Lead Application Developer",
+            "vcard:street-address": "Hinman Box 6028, Berry Library",
+            "vcard:post-office-box": "6028",
+            "vcard:postal-code": "03755",
+            "vcard:country-name": "United States",
+            "vcard:locality": "Lebanon, NH",
+            "owltime:hasBeginning": "2015-08-20",
+            "owltime:hasEnd": ""
+        }
+        
++ Response 201 (application/ld+json)
+
+    + Headers
+            
+            Location: /person/1#membership1
+
+    + Body
+
+            {
+                "@context": {
+                    "org": "http://www.w3.org/ns/org#",
+                    "vcard": "http://www.w3.org/2006/vcard/ns#",
+                    "owltime": "http://www.w3.org/TR/owl-time#"
+                },
+                "@type": "org:Membership",
+                "@id": "http://lna.dartmouth.edu/person/1/membership/1",
+                "status": "success",
+                "org:organization": "http://lna.dartmouth.edu/organization/3",
+                "vcard:email": "john.p.bell@dartmouth.edu",
+                "vcard:title": "Lead Application Developer",
+                "vcard:street-address": "Hinman Box 6028, Berry Library",
+                "vcard:post-office-box": "6028",
+                "vcard:postal-code": "03755",
+                "vcard:country-name": "United States",
+                "vcard:locality": "Lebanon, NH",
+                "owltime:hasBeginning": "2015-08-20",
+                "owltime:hasEnd": ""
+            }
+
+
+### Update a membership [PUT]
+
++ Parameters
+    + person_id (number, required) - ID of the person that owns this membership
+    + id (number, required) - ID of the membership to update
+
++ Request (application/ld+json)
+
+        {            
+            "@context": {
+                "org": "http://www.w3.org/ns/org#",
+                "vcard": "http://www.w3.org/2006/vcard/ns#",
+                "owltime": "http://www.w3.org/TR/owl-time#"
+            },
+            "org:organization": "http://lna.dartmouth.edu/organization/3",
+            "vcard:email": "john.p.bell@dartmouth.edu",
+            "vcard:title": "Lead Application Developer",
+            "vcard:street-address": "Hinman Box 6028, Berry Library",
+            "vcard:post-office-box": "6028",
+            "vcard:postal-code": "03755",
+            "vcard:country-name": "United States",
+            "vcard:locality": "Lebanon, NH",
+            "owltime:hasBeginning": "2015-08-20",
+            "owltime:hasEnd": ""
+        }
+        
++ Response 200 (application/ld+json)
+
+    + Body
+    
+            {
+                "@context": {
+                    "org": "http://www.w3.org/ns/org#",
+                    "vcard": "http://www.w3.org/2006/vcard/ns#",
+                    "owltime": "http://www.w3.org/TR/owl-time#"
+                },
+                "@type": "org:Membership",
+                "@id": "http://lna.dartmouth.edu/person/1/membership/1",
+                "status": "success",
+                "org:organization": "http://lna.dartmouth.edu/organization/3",
+                "vcard:email": "john.p.bell@dartmouth.edu",
+                "vcard:title": "Lead Application Developer",
+                "vcard:street-address": "Hinman Box 6028, Berry Library",
+                "vcard:post-office-box": "6028",
+                "vcard:postal-code": "03755",
+                "vcard:country-name": "United States",
+                "vcard:locality": "Lebanon, NH",
+                "owltime:hasBeginning": "2015-08-20",
+                "owltime:hasEnd": ""
+                }
+            }
+
+### Delete a membership [DELETE]
+
++ Parameters
+    + person_id (number, required) - ID of the person that owns this account
+    + id (number, required) - ID of the membership to delete
+
++ Request (application/ld+json)
+        
++ Response 200 (application/ld+json)
+
+    + Body
+
+            {
+                "status": "success",
+            }
+
+
+## Person's Works Collection [/person/{person_id}/works/{start_date}/]
+
+Note that works metadata varies and the fields referenced here may vary.
+
+### Retrieve a list of a person's works [GET]
+
++ Parameters
+    + person_id (number, required) - ID of the person whose works are to be retrieved
+    + start_date (YYYY-MM-DD, optional) - Start date for the list. No end date is required. If omitted, all works are returned
+    
++ Request (application/ld+json)
+
++ Response 200 (application/ld+json)
+
+    + Body
+    
+            {
+                "@context": {
+                    "bibo": "http://purl.org/ontology/bibo/#",
+                    "dc": "http://purl.org/dc/elements/1.1/",
+                    "foaf": "http://xmlns.com/foaf/0.1/"
+                },
+                "@type": "bibo:Collection",
+                "@id": "http://lna.dartmouth.edu/person/1/works",
+                "status": "success",
+                "foaf:primaryTopic": "http://lna.dartmouth.edu/person/1",
+                "bibo:hasPart": ["http://lna.dartmouth.edu/work/1", "http://lna.dartmouth.edu/work/2"],
+                "@graph": [
+                    {
+                        "@id": "http://lna.dartmouth.edu/work/1",
+                        "@type": "bibo:Document",
+                        "dc:title": "Diffused Museums: Networked, Augmented, and Self-Organized Collections",
+                        "bibo:authorList": ["Bell, John", "Ippolito, Jon"],
+                        "dc:date": "2015-05-26",
+                        "dc:abstract": "Lorem Ipsum...",
+                        "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works",
+                        "dc:creator": "http://lna.dartmouth.edu/person/1",
+                        "dc:subject": ["keywords", "go", "here"],
+                        "dc:bibliographicCitation": "Bell, John, and Jon Ippolito. \"Diffused Museums: Networked, Augmented, and Self-Organized Collections.\" The International Handbooks of Museum Studies. Vol. 3. N.p.: n.p., n.d. N. pag. Print."
+                    },
+                    {
+                        "@id": "http://lna.dartmouth.edu/work/2",
+                        "@type": "bibo:Document",
+                        "dc:title": "10 PRINT CHR$(205.5+RND(1)); : GOTO 10",
+                        "bibo:authorList": ["Montfort, Nick", "Baudoin, Patsy", "Bell, John", "Bogost, Ian", "Douglass, Jeremy", "Marino, Mark", "Mateas, Michael", "Reas, Casey", "Sample, Mark", "Vawter, Noah"],
+                        "dc:date": "2012-11-01",
+                        "dc:abstract": "Lorem Ipsum...",
+                        "dc:publisher": "MIT Press",
+                        "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works",
+                        "dc:creator": "http://lna.dartmouth.edu/person/1",
+                        "dc:subject": ["keywords", "go", "here"],
+                        "dc:bibliographicCitation": "Montfort, Nick, Patsy Beaudoin, and John Bell. 10 PRINT CHR$(205.5 RND(1)) GOTO 10. N.p.: n.p., n.d. Print."
+                    }
+                ]
+            }
+            
+
+## Works Collections [/works/{page}/]
+
+Works are sorted by date added, descending, then authorlist, ascending. Paginated by *page*, with 100 results per page.
+
+### Get a paginated list of all works [GET]
+
++ Parameters
+    + page (number, optional) - Which page of the result set to return
+        +default: '1'
+
++ Request (application/ld+json)
+
++ Response 200 (application/ld+json)
+ 
+    + Headers
+    
+            Link: <http://lna.dartmouth.edu/works/1>; rel="first", <http://lna.dartmouth.edu/works/5>; rel="next", <http://lna.dartmouth.edu/works/3>; rel="prev"
+
+    + Body
+    
+            {
+                "@context": {
+                    "dc": "http://purl.org/dc/elements/1.1/",
+                    "bibo": "http://purl.org/ontology/bibo/#"
+                },
+                "@id": "http://lna.dartmouth.edu/works/1",
+                "generatedAt": "2015-10-30T09:30:10Z",
+                "status": "success",
+                "@graph": [
+                    {
+                        "@id": "http://lna.dartmouth.edu/work/1",
+                        "@type": "bibo:Document",
+                        "dc:title": "Diffused Museums: Networked, Augmented, and Self-Organized Collections",
+                        "bibo:authorList": ["Bell, John", "Ippolito, Jon"],
+                        "dc:date": "2015-05-26",
+                        "dc:abstract": "Lorem Ipsum...",
+                        "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works",
+                        "dc:creator": "http://lna.dartmouth.edu/person/1",
+                        "dc:subject": ["keywords", "go", "here"],
+                        "dc:bibliographicCitation": "Bell, John, and Jon Ippolito. \"Diffused Museums: Networked, Augmented, and Self-Organized Collections.\" The International Handbooks of Museum Studies. Vol. 3. N.p.: n.p., n.d. N. pag. Print."
+                    },
+                    {
+                        "@id": "http://lna.dartmouth.edu/work/2",
+                        "@type": "bibo:Document",
+                        "dc:title": "10 PRINT CHR$(205.5+RND(1)); : GOTO 10",
+                        "bibo:authorList": ["Montfort, Nick", "Baudoin, Patsy", "Bell, John", "Bogost, Ian", "Douglass, Jeremy", "Marino, Mark", "Mateas, Michael", "Reas, Casey", "Sample, Mark", "Vawter, Noah"],
+                        "dc:date": "2012-11-01",
+                        "dc:abstract": "Lorem Ipsum...",
+                        "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works",
+                        "dc:creator": "http://lna.dartmouth.edu/person/1",
+                        "dc:subject": ["keywords", "go", "here"],
+                        "dc:bibliographicCitation": "Montfort, Nick, Patsy Beaudoin, and John Bell. 10 PRINT CHR$(205.5 RND(1)) GOTO 10. N.p.: n.p., n.d. Print."
+                    }
+                ]
+            }
+
+### Search for a list of matching works [POST]
+
+Request parameters listed are search options and can be mixed as needed.
+
+Works are sorted by relevance. Paginated by *page*, with 100 results per page.
+
++ Parameters
+    + page (number, optional) - Which page of the result set to return
+        +default: '1'
+
++ Request (application/ld+json)
+
+        {   "bibo:authorList": ["Bell, John"],
+            "bibo:doi": "http://dx.doi.org/10.1002/9781118829059.wbihms321",
+            "dc:title": "Print",
+            "dc:abstract": "BASIC",
+            "org:member": "ITS"         }
+
++ Response 200 (application/ld+json)
+
+    + Headers
+    
+            Link: <http://lna.dartmouth.edu/works/1>; rel="first", <http://lna.dartmouth.edu/works/5>; rel="next", <http://lna.dartmouth.edu/works/3>; rel="prev"
+            
+    + Body
+    
+             {
+                "@context": {
+                    "dc": "http://purl.org/dc/elements/1.1/",
+                    "bibo": "http://purl.org/ontology/bibo/#"
+                },
+                "@id": "http://lna.dartmouth.edu/works/1",
+                "queryString": "bibo:authorList=John",
+                "generatedAt": "2015-10-30T09:30:10Z",
+                "status": "success",
+                "@graph": [
+                    {
+                        "@id": "http://lna.dartmouth.edu/work/1",
+                        "@type": "bibo:Document",
+                        "dc:title": "Diffused Museums: Networked, Augmented, and Self-Organized Collections",
+                        "bibo:authorList": ["Bell, John", "Ippolito, Jon"],
+                        "dc:date": "2015-05-26",
+                        "dc:abstract": "Lorem Ipsum...",
+                        "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works",
+                        "dc:creator": "http://lna.dartmouth.edu/person/1",
+                        "dc:subject": ["keywords", "go", "here"],
+                        "dc:bibliographicCitation": "Bell, John, and Jon Ippolito. \"Diffused Museums: Networked, Augmented, and Self-Organized Collections.\" The International Handbooks of Museum Studies. Vol. 3. N.p.: n.p., n.d. N. pag. Print."
+                    },
+                    {
+                        "@id": "http://lna.dartmouth.edu/work/2",
+                        "@type": "bibo:Document",
+                        "dc:title": "10 PRINT CHR$(205.5+RND(1)); : GOTO 10",
+                        "bibo:authorList": ["Montfort, Nick", "Baudoin, Patsy", "Bell, John", "Bogost, Ian", "Douglass, Jeremy", "Marino, Mark", "Mateas, Michael", "Reas, Casey", "Sample, Mark", "Vawter, Noah"],
+                        "dc:date": "2012-11-01",
+                        "dc:abstract": "Lorem Ipsum...",
+                        "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works",
+                        "dc:creator": "http://lna.dartmouth.edu/person/1",
+                        "dc:subject": ["keywords", "go", "here"],
+                        "dc:bibliographicCitation": "Montfort, Nick, Patsy Beaudoin, and John Bell. 10 PRINT CHR$(205.5 RND(1)) GOTO 10. N.p.: n.p., n.d. Print."
+                    }
+                ]
+            }
+ 
+        
++ Response 200 (text/html)
+
+    + Headers
+    
+            Link: <http://lna.dartmouth.edu/works/1>; rel="first", <http://lna.dartmouth.edu/works/5>; rel="next", <http://lna.dartmouth.edu/works/3>; rel="prev"
+            
+    + Body
+
+            <html>Human readable interface</html>
+
+## Recent Works Collections convenience function [/works/{start_date}/{page}/]
+
+### Get a paginated list of all works since a certain date [GET]
+
+Works are sorted by date added, descending, then authorlist, ascending. Paginated by *page*, with 100 results per page.
+
++ Parameters
+    + start_date (YYYY-MM-DD, required) - Start date for the list.
+    + page (number, optional) - Which page of the result set to return
+        +default: '1'
+
++ Request (application/ld+json)
+
++ Response 200 (application/ld+json)
+ 
+    + Headers
+    
+            Link: <http://lna.dartmouth.edu/works/1990-01-01/1>; rel="first", <http://lna.dartmouth.edu/works/1990-01-01/5>; rel="next", <http://lna.dartmouth.edu/works/1990-01-01/3>; rel="prev"
+
+    + Body
+    
+            {
+                "@context": {
+                    "dc": "http://purl.org/dc/elements/1.1/",
+                    "bibo": "http://purl.org/ontology/bibo/#"
+                },
+                "@id": "http://lna.dartmouth.edu/works/1",
+                "generatedAt": "2015-10-30T09:30:10Z",
+                "status": "success",
+                "@graph": [
+                    {
+                        "@id": "http://lna.dartmouth.edu/work/1",
+                        "@type": "bibo:Document",
+                        "dc:title": "Diffused Museums: Networked, Augmented, and Self-Organized Collections",
+                        "bibo:authorList": ["Bell, John", "Ippolito, Jon"],
+                        "dc:date": "2015-05-26",
+                        "dc:abstract": "Lorem Ipsum...",
+                        "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works",
+                        "dc:creator": "http://lna.dartmouth.edu/person/1",
+                        "dc:subject": ["keywords", "go", "here"],
+                        "dc:bibliographicCitation": "Bell, John, and Jon Ippolito. \"Diffused Museums: Networked, Augmented, and Self-Organized Collections.\" The International Handbooks of Museum Studies. Vol. 3. N.p.: n.p., n.d. N. pag. Print."
+                    },
+                    {
+                        "@id": "http://lna.dartmouth.edu/work/2",
+                        "@type": "bibo:Document",
+                        "dc:title": "10 PRINT CHR$(205.5+RND(1)); : GOTO 10",
+                        "bibo:authorList": ["Montfort, Nick", "Baudoin, Patsy", "Bell, John", "Bogost, Ian", "Douglass, Jeremy", "Marino, Mark", "Mateas, Michael", "Reas, Casey", "Sample, Mark", "Vawter, Noah"],
+                        "dc:date": "2012-11-01",
+                        "dc:abstract": "Lorem Ipsum...",
+                        "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works",
+                        "dc:creator": "http://lna.dartmouth.edu/person/1",
+                        "dc:subject": ["keywords", "go", "here"],
+                        "dc:bibliographicCitation": "Montfort, Nick, Patsy Beaudoin, and John Bell. 10 PRINT CHR$(205.5 RND(1)) GOTO 10. N.p.: n.p., n.d. Print."
+                    }
+                ]
+            }
+
+### Search for a list of matching works since a certain date [POST]
+
+Request parameters listed are search options and can be mixed as needed.
+
+Works are sorted by relevance. Paginated by *page*, with 100 results per page.
+
++ Parameters
+    + start_date (YYYY-MM-DD, required) - Start date for the list.
+    + page (number, optional) - Which page of the result set to return
+        +default: '1'
+
++ Request (application/ld+json)
+
+        {   "bibo:authorList": ["Bell, John"],
+            "bibo:doi": "http://dx.doi.org/10.1002/9781118829059.wbihms321",
+            "dc:title": "Print",
+            "bibo:abstract": "BASIC",
+            "org:member": "ITS"         }
+
++ Response 200 (application/ld+json)
+
+    + Headers
+    
+            Link: <http://lna.dartmouth.edu/works/1990-01-01/1>; rel="first", <http://lna.dartmouth.edu/works/1990-01-01/5>; rel="next", <http://lna.dartmouth.edu/works/1990-01-01/3>; rel="prev"
+            
+    + Body
+    
+             {
+                "@context": {
+                    "dc": "http://purl.org/dc/elements/1.1/",
+                    "bibo": "http://purl.org/ontology/bibo/#"
+                },
+                "@id": "http://lna.dartmouth.edu/works/1",
+                "queryString": "bibo:authorList=John",
+                "generatedAt": "2015-10-30T09:30:10Z",
+                "status": "success",
+                "@graph": [
+                    {
+                        "@id": "http://lna.dartmouth.edu/work/1",
+                        "@type": "bibo:Document",
+                        "dc:title": "Diffused Museums: Networked, Augmented, and Self-Organized Collections",
+                        "bibo:authorList": ["Bell, John", "Ippolito, Jon"],
+                        "dc:date": "2015-05-26"
+                        "dc:abstract": "Lorem Ipsum...",
+                        "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works",
+                        "dc:creator": "http://lna.dartmouth.edu/person/1",
+                        "dc:subject": ["keywords", "go", "here"],
+                        "dc:bibliographicCitation": "Bell, John, and Jon Ippolito. \"Diffused Museums: Networked, Augmented, and Self-Organized Collections.\" The International Handbooks of Museum Studies. Vol. 3. N.p.: n.p., n.d. N. pag. Print."
+                    },
+                    {
+                        "@id": "http://lna.dartmouth.edu/work/2",
+                        "@type": "bibo:Document",
+                        "dc:title": "10 PRINT CHR$(205.5+RND(1)); : GOTO 10",
+                        "bibo:authorList": ["Montfort, Nick", "Baudoin, Patsy", "Bell, John", "Bogost, Ian", "Douglass, Jeremy", "Marino, Mark", "Mateas, Michael", "Reas, Casey", "Sample, Mark", "Vawter, Noah"],
+                        "dc:date": "2012-11-01",
+                        "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works",
+                        "dc:creator": "http://lna.dartmouth.edu/person/1",
+                        "dc:subject": ["keywords", "go", "here"],
+                        "dc:bibliographicCitation": "Montfort, Nick, Patsy Beaudoin, and John Bell. 10 PRINT CHR$(205.5 RND(1)) GOTO 10. N.p.: n.p., n.d. Print."
+                    }
+                ]
+            }
+ 
+        
++ Response 200 (text/html)
+
+    + Headers
+
+            Link: <http://lna.dartmouth.edu/works/1990-01-01/1>; rel="first", <http://lna.dartmouth.edu/works/1990-01-01/5>; rel="next", <http://lna.dartmouth.edu/works/1990-01-01/3>; rel="prev"
+            
+    + Body
+
+            <html>Human readable interface</html>
+
+## Work [/work/{id}]
+
+Note that the fields shown here are representative and will vary from work to work. dc:creator is always required and must point to a Person already in the LNA.
+
+### Create a new work [POST /work]
+
++ Request (application/ld+json)
+
+        {            
+            "@context": {
+                    "bibo": "http://purl.org/ontology/bibo/#",
+                    "dc": "http://purl.org/dc/elements/1.1/",
+            },
+            "bibo:doi": "http://dx.doi.org/10.1002/9781118829059.wbihms321",
+            "bibo:uri": ["http://onlinelibrary.wiley.com/doi/10.1002/9781118829059.wbihms321/abstract"],
+            "bibo:volume": "3",
+            "bibo:pages": "24",
+            "bibo:pageStart": "473",
+            "bibo:pageEnd": "497",
+            "bibo:authorList": ["Bell, John", "Ippolito, Jon"],
+            "dc:title": "Diffused Museums",
+            "dc:abstract": "Lorem ipsum...",
+            "dc:publisher": "Wiley",
+            "dc:date": "2015",
+            "dc:creator": "http://lna.dartmouth.edu/person/1",
+            "dc:subject": ["keywords", "go", "here"],
+            "dc:bibliographicCitation": "Bell, John, and Jon Ippolito. \"Diffused Museums: Networked, Augmented, and Self-Organized Collections.\" The International Handbooks of Museum Studies. Vol. 3. N.p.: n.p., n.d. N. pag. Print."
+        }
+        
++ Response 201 (application/ld+json)
+
+    + Headers
+            
+            Location: /work/1
+
+    + Body
+
+            {
+            "@context": {
+                    "bibo": "http://purl.org/ontology/bibo/#",
+                    "dc": "http://purl.org/dc/elements/1.1/",
+            },
+            "@type": "bibo:Document",
+            "@id": "http://lna.dartmouth.edu/work/1",
+            "status": "success",
+            "bibo:doi": "http://dx.doi.org/10.1002/9781118829059.wbihms321",
+            "bibo:uri": ["http://onlinelibrary.wiley.com/doi/10.1002/9781118829059.wbihms321"],
+            "bibo:volume": "3",
+            "bibo:pages": "24",
+            "bibo:pageStart": "473",
+            "bibo:pageEnd": "497",
+            "bibo:authorList": ["Bell, John", "Ippolito, Jon"],
+            "dc:title": "Diffused Museums",
+            "dc:abstract": "Lorem ipsum...",
+            "dc:publisher": "Wiley",
+            "dc:date": "2015",
+            "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works",
+            "dc:creator": "http://lna.dartmouth.edu/person/1",
+            "dc:subject": ["keywords", "go", "here"],
+            "dc:bibliographicCitation": "Bell, John, and Jon Ippolito. \"Diffused Museums: Networked, Augmented, and Self-Organized Collections.\" The International Handbooks of Museum Studies. Vol. 3. N.p.: n.p., n.d. N. pag. Print."
+            }
+
+
+### Retrieve a Work [GET]
+
++ Parameters
+
+    + id (number, required) - The ID of the work to get. If omitted, redirect to /works/ for text/html and error for application/ld+json.
+
++ Request (text/html)
+
+        { id: null }
+        
++ Response 303
+
+    + Headers
+    
+            Location: /works/
+
++ Request (application/ld+json)
+
+        { id: null }
+        
++ Response 400
+
++ Request (application/ld+json)
+
+        { id: 1 }
+
++ Response 200 (application/ld+json)
+
+        { 
+            "@context": {
+                    "bibo": "http://purl.org/ontology/bibo/#",
+                    "dc": "http://purl.org/dc/elements/1.1/",
+                    "foaf": "http://xmlns.com/foaf/0.1/",
+                    "ali": "http://www.niso.org/schemas/ali/1.0/",
+            },
+            "@type": "bibo:Document",
+            "status": "success",
+            "foaf:primaryTopic": "http://lna.dartmouth.edu/work/1",
+            "@graph":
+            [
+                {   "@id": "http://lna.dartmouth.edu/work/1",
+                    "@type": "bibo:Document",
+                    "bibo:doi": "http://dx.doi.org/10.1002/9781118829059.wbihms321",
+                    "bibo:uri": ["http://onlinelibrary.wiley.com/doi/10.1002/9781118829059.wbihms321"],
+                    "bibo:volume": "3",
+                    "bibo:pages": "24",
+                    "bibo:pageStart": "473",
+                    "bibo:pageEnd": "497",
+                    "bibo:authorList": ["Bell, John", "Ippolito, Jon"],
+                    "bibo:abstract": "Lorem ipsum...",
+                    "dc:title": "Diffused Museums",
+                    "dc:publisher": "Wiley",
+                    "dc:date": "2015-12-01",
+                    "dc:abstract": "Lorem Ipsum...",
+                    "dc:bibliographicCitation": "Bell, John, and Jon Ippolito. \"Diffused Museums: Networked, Augmented, and Self-Organized Collections.\" The International Handbooks of Museum Studies. Vol. 3. N.p.: n.p., n.d. N. pag. Print.",
+                    "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works",
+                    "dc:creator": "http://lna.dartmouth.edu/person/1",
+                    "ali:license_ref": ["#license1", "#license2"]
+                },
+                {   "@id": "http://lna.dartmouth.edu/person/1",
+                    "@type": "foaf:Person",
+                    "foaf:name": "John Bell",
+                    "foaf:givenName": "John",
+                    "foaf:familyName": "Bell",
+                    "foaf:title": "Dr.",
+                    "foaf:mbox": "john.p.bell@dartmouth.edu"
+                },
+                {
+                    "@id": "#license1",
+                    "@type": "dc:LicenseDocument",
+                    "ali:start_date": "2012-11-01",
+                    "ali:uri": "https://creativecommons.org/licenses/by-nc-sa/3.0/",
+                    "dc:title": "Creative Commons BY-NC-SA 3.0"
+                },
+                {
+                    "@id": "#license2",
+                    "@type": "dc:LicenseDocument",
+                    "ali:start_date": "2011-11-01",
+                    "ali:end_date": "2012-11-01",
+                    "ali:uri": "https://creativecommons.org/licenses/by-nc-sa/2.0/",
+                    "dc:title": "Creative Commons BY-NC-SA 2.0"
+                }                
+        }
+        
++ Request (text/html)
+
+        { id: 1 }
+        
++ Response 200 (text/html)
+
+        <html>Human readable interface</html>
+        
+### Update a Work [PUT]
+
++ Parameters
+
+    + id (number, required) - The ID of the work to update. If omitted, return an error.
+
++ Request (application/ld+json)
+
+        { id: null }
+        
++ Response 400
+
++ Request (application/ld+json)
+
+        {            
+            "@context": {
+                    "bibo": "http://purl.org/ontology/bibo/#",
+                    "dc": "http://purl.org/dc/elements/1.1/",
+            },
+            "bibo:doi": "http://dx.doi.org/10.1002/9781118829059.wbihms321",
+            "bibo:uri": ["http://onlinelibrary.wiley.com/doi/10.1002/9781118829059.wbihms321/abstract"],
+            "bibo:volume": "3",
+            "bibo:pages": "24",
+            "bibo:pageStart": "473",
+            "bibo:pageEnd": "497",
+            "bibo:authorList": ["Bell, John", "Ippolito, Jon"],
+            "dc:title": "Diffused Museums",
+            "dc:abstract": "Lorem ipsum...",
+            "dc:publisher": "Wiley",
+            "dc:date": "2015",
+            "dc:creator": "http://lna.dartmouth.edu/person/1",
+            "dc:subject": ["keywords", "go", "here"],
+            "dc:bibliographicCitation": "Bell, John, and Jon Ippolito. \"Diffused Museums: Networked, Augmented, and Self-Organized Collections.\" The International Handbooks of Museum Studies. Vol. 3. N.p.: n.p., n.d. N. pag. Print."
+        }
+        
++ Response 201 (application/ld+json)
+
+    + Headers
+            
+            Location: /work/1
+
+    + Body
+
+            {
+            "@context": {
+                    "bibo": "http://purl.org/ontology/bibo/#",
+                    "dc": "http://purl.org/dc/elements/1.1/",
+            },
+            "@type": "bibo:Document",
+            "@id": "http://lna.dartmouth.edu/work/1",
+            "status": "success",
+            "bibo:doi": "http://dx.doi.org/10.1002/9781118829059.wbihms321",
+            "bibo:uri": ["http://onlinelibrary.wiley.com/doi/10.1002/9781118829059.wbihms321"],
+            "bibo:volume": "3",
+            "bibo:pages": "24",
+            "bibo:pageStart": "473",
+            "bibo:pageEnd": "497",
+            "bibo:authorList": ["Bell, John", "Ippolito, Jon"],
+            "dc:title": "Diffused Museums",
+            "dc:abstract": "Lorem ipsum...",
+            "dc:publisher": "Wiley",
+            "dc:date": "2015",
+            "dc:isPartOf": "http://lna.dartmouth.edu/person/1/works",
+            "dc:creator": "http://lna.dartmouth.edu/person/1",
+            "dc:subject": ["keywords", "go", "here"],
+            "dc:bibliographicCitation": "Bell, John, and Jon Ippolito. \"Diffused Museums: Networked, Augmented, and Self-Organized Collections.\" The International Handbooks of Museum Studies. Vol. 3. N.p.: n.p., n.d. N. pag. Print."
+            }
+        
+### Delete a Work [DELETE]
+
++ Parameters
+    + id (number, required) - ID of the Work to delete
+
++ Request (application/ld+json)
+
++ Response 200 (application/ld+json)
+
+    + Body
+    
+            { "status": "success" }
+
+## Work License [/work/{work_id}/license/{id}/]
+Note that dc:description for licenses refers to the ali license type and should be either free_to_read or license_ref.
+
+### Create a license [POST /work/{work_id}/license/]
+
++ Parameters
+    + work_id (number, required) - ID of the work to which the license refers.
+
++ Request (application/ld+json)
+
+        {
+            "@context": {
+                    "ali": "http://www.niso.org/schemas/ali/1.0/",
+                    "dc": "http://purl.org/dc/elements/1.1/",
+            },
+            "@type": "dc:licenseDocument",
+            "ali:start_date": "2011-11-01",
+            "ali:end_date": "2012-11-01",
+            "ali:uri": "https://creativecommons.org/licenses/by-nc-sa/2.0/",
+            "dc:title": "Creative Commons BY-NC-SA 2.0",
+            "dc:description": "ali:license_ref"
+        }
+        
++ Response 201 (application/ld+json)
+
+    + Headers
+            
+            Location: /work/1#license1
+
+    + Body
+
+            {
+                "@context": {
+                        "ali": "http://www.niso.org/schemas/ali/1.0/",
+                        "dc": "http://purl.org/dc/elements/1.1/",
+                },
+                "@type": "dc:licenseDocument",
+                "@id": "http://lna.dartmouth.edu/works/1/license/1",
+                "ali:start_date": "2011-11-01",
+                "ali:end_date": "2012-11-01",
+                "ali:uri": "https://creativecommons.org/licenses/by-nc-sa/2.0/",
+                "dc:title": "Creative Commons BY-NC-SA 2.0",
+                "dc:description": "ali:license_ref"
+            }
+
+### Update a license [PUT]
+
++ Parameters
+    + work_id (number, required) - ID of the work to which the license refers
+    + id (number, required) - ID of the license to update
+
++ Request (application/ld+json)
+
+        {            
+            "@context": {
+                    "ali": "http://www.niso.org/schemas/ali/1.0/",
+                    "dc": "http://purl.org/dc/elements/1.1/",
+            },      
+            "@type": "dc:licenseDocument",
+            "ali:start_date": "2011-11-01",
+            "ali:end_date": "2012-11-01",
+            "ali:uri": "https://creativecommons.org/licenses/by-nc-sa/2.0/",
+            "dc:title": "Creative Commons BY-NC-SA 2.0",
+            "dc:description": "ali:license_ref"
+        }
+        
++ Response 200 (application/ld+json)
+
+    + Body
+    
+            {
+                "@context": {
+                        "ali": "http://www.niso.org/schemas/ali/1.0/",
+                        "dc": "http://purl.org/dc/elements/1.1/",
+                },
+                "@type": "dc:licenseDocument",
+                "@id": "http://lna.dartmouth.edu/works/1/license/1",
+                "ali:start_date": "2011-11-01",
+                "ali:end_date": "2012-11-01",
+                "ali:uri": "https://creativecommons.org/licenses/by-nc-sa/2.0/",
+                "dc:title": "Creative Commons BY-NC-SA 2.0",
+                "dc:description": "ali:license_ref"
+            }
+
+### Delete a license [DELETE]
+
++ Parameters
+    + work_id (number, required) - ID of the work to which the license refers
+    + id (number, required) - ID of the License to delete
+
++ Request (application/ld+json)
+
++ Response 200 (application/ld+json)
+
+    + Body
+    
+            { "status": "success" }
+
+## Organizations Collection [/organizations/{page}/]
+
+### Retrieve a list of all Organizations [GET]
+
+Note that this only retrieves *active* organizations. Sort order is by skos:prefLabel ascending.
+
+Orgs returned include their parent org (org:subOrganizationOf) but not a list of child orgs.
+
++ Parameters
+    + page (number, optional) - Which page of the result set to return
+        + default: "1"
+
++ Request (application/ld+json)
+
++ Response 200 (application/ld+json)
+ 
+    + Headers
+    
+            Link: <http://lna.dartmouth.edu/organizations/1>; rel="first", <http://lna.dartmouth.edu/organizations/5>; rel="next", <http://lna.dartmouth.edu/organizations/3>; rel="prev"
+
+    + Body
+    
+            {
+                "@context": {
+                    "skos": "http://www.w3.org/2004/02/skos/core#",
+                    "org": "http://www.w3.org/ns/org#",
+                    "owltime": "http://www.w3.org/TR/owl-time#",
+                    "vcard": "http://www.w3.org/2006/vcard/ns#"
+                },
+                "@id": "http://lna.dartmouth.edu/organizations/1",
+                "generatedAt": "2015-10-30T09:30:10Z",
+                "status": "success",
+                "@graph": [
+                    {
+                        "@id": "http://lna.dartmouth.edu/organization/1",
+                        "@type": "org:Organization",
+                        "org:identifier": "its1",
+                        "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/8"],
+                        "skos:prefLabel": "Dartmouth Information Technology Services",
+                        "skos:altLabel": ["ITS"],
+                        "vcard:post-office-box": "1223",
+                        "org:purpose": "unit",
+                        "owltime:hasBeginning": "2013-06-01",
+                        "owltime:hasEnd": "2013-06-01"
+                    },
+                    {
+                        "@id": "http://lna.dartmouth.edu/organization/2",
+                        "@type": "org:Organization",
+                        "org:identifier": "dltg1",
+                        "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/3"],
+                        "skos:prefLabel": "Dartmouth Digital Library Technology Group",
+                        "skos:altLabel": ["DLTG"],
+                        "vcard:post-office-box": "1098",
+                        "org:purpose": "unit",
+                        "owltime:hasBeginning": "2000-06-01",
+                        "owltime:hasEnd": ""
+                    },
+                    {
+                        "@id": "http://lna.dartmouth.edu/organization/3",
+                        "@type": "org:Organization",
+                        "org:identifier": "library1",
+                        "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/12"],
+                        "skos:prefLabel": "Dartmouth College Library",
+                        "skos:altLabel": [],
+                        "vcard:post-office-box": "1098",
+                        "org:purpose": "unit",
+                        "owltime:hasBeginning": "1769-06-01",
+                        "owltime:hasEnd": ""
+                    }
+
+                ]
+            }
+
+### Search for a list of Organizations [POST]
+
+Note that this searches both active and historic organizations. Sort order is by skos:prefLabel ascending.
+
+Orgs returned include their parent org (org:subOrganizationOf) but not a list of child orgs.
+
++ Parameters
+    + page (number, optional) - Which page of the result set to return
+        + default: "1"
+
++ Request (application/ld+json)
+
+        {   "skos:prefLabel": "Library",
+            "skos:altLabel": "AHRC",
+            "org:subOrganizationOf": "ITS"  }
+            
++ Response 200 (application/ld+json)
+ 
+    + Headers
+    
+            Link: <http://lna.dartmouth.edu/organizations/1>; rel="first", <http://lna.dartmouth.edu/organizations/5>; rel="next", <http://lna.dartmouth.edu/organizations/3>; rel="prev"
+
+    + Body
+    
+            {
+                "@context": {
+                    "skos": "http://www.w3.org/2004/02/skos/core#",
+                    "org": "http://www.w3.org/ns/org#",
+                    "owltime": "http://www.w3.org/TR/owl-time#",
+                    "vcard": "http://www.w3.org/2006/vcard/ns#"
+                },
+                "@id": "http://lna.dartmouth.edu/organizations/1",
+                "generatedAt": "2015-10-30T09:30:10Z",
+                "status": "success",
+                "@graph": [
+                    {
+                        "@id": "http://lna.dartmouth.edu/organization/1",
+                        "@type": "org:Organization",
+                        "org:identifier": "its1",
+                        "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/8"],
+                        "skos:prefLabel": "Dartmouth Information Technology Services",
+                        "skos:altLabel": ["ITS"],
+                        "org:purpose": "unit",
+                        "vcard:post-office-box": "1223",
+                        "owltime:hasBeginning": "2013-06-01",
+                        "owltime:hasEnd": ""
+                    },
+                    {
+                        "@id": "http://lna.dartmouth.edu/organization/2",
+                        "@type": "org:Organization",
+                        "org:identifier": "dltg1",
+                        "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/3"],
+                        "skos:prefLabel": "Dartmouth Digital Library Technology Group",
+                        "skos:altLabel": ["DLTG"],
+                        "vcard:post-office-box": "1908",
+                        "org:purpose": "unit",
+                        "owltime:hasBeginning": "2000-06-01",
+                        "owltime:hasEnd": ""
+                    },
+                    {
+                        "@id": "http://lna.dartmouth.edu/organization/4",
+                        "@type": "org:Organization",
+                        "org:identifier": "acomp",
+                        "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/8"],
+                        "skos:prefLabel": "Academic Computing",
+                        "skos:altLabel": [],
+                        "vcard:post-office-box": "1980",
+                        "org:purpose": "unit",
+                        "owltime:hasBeginning": "1980-06-01",
+                        "owltime:hasEnd": "2014-01-01",
+                        "lna:historicPlacement": "serializationGoesHere"
+                    }
+
+                ]
+            }
+
+## Organization [/organization/{id}]
+
+### Create an Organization [POST /organization/]
+
+Note that all organizations are created as active orgs. They may be immediately set to historic, but if so then they should first be given any relevant sub/parent organization relationships and then made historic.
+
++ Request (application/ld+json)
+
+        {            
+            "@context": {
+                "skos": "http://www.w3.org/2004/02/skos/core#",
+                "org": "http://www.w3.org/ns/org#",
+                "owltime": "http://www.w3.org/TR/owl-time#",
+                "vcard": "http://www.w3.org/2006/vcard/ns#"
+            },
+            "org:identifier": "its",
+            "skos:prefLabel": "Dartmouth Information Technology Services",
+            "skos:altLabel": ["ITS"],
+            "vcard:post-office-box": "1223",
+            "org:purpose": "unit",
+            "owltime:hasBeginning": "2013-06-01"
+        }
+        
++ Response 201 (application/ld+json)
+
+    + Headers
+            
+            Location: /organzation/1
+
+    + Body
+
+            {
+                "@context": {
+                    "skos": "http://www.w3.org/2004/02/skos/core#",
+                    "org": "http://www.w3.org/ns/org#",
+                    "owltime": "http://www.w3.org/TR/owl-time#",
+                    "vcard": "http://www.w3.org/2006/vcard/ns#"
+                },
+                "@type": "org:Organization",
+                "@id": "http://lna.dartmouth.edu/organization/1",
+                "status": "success",
+                "org:identifier": "its",
+                "skos:prefLabel": "Dartmouth Information Technology Services",
+                "skos:altLabel": ["ITS"],
+                "vcard:post-office-box": "1223",
+                "org:purpose": "unit",
+                "owltime:hasBeginning": "2013-06-01",
+                "owltime:hasEnd": ""
+            }
+
+### Retreive an Organization [GET]
+
+Note that the response data will vary depending on whether the organization is active or historic.
+
++ Parameters
+
+    + id (number, required) - The ID of the organization to get. If omitted, redirect to /organizations/ for text/html and error for application/ld+json.
+
++ Request (text/html)
+
+        { id: null }
+        
++ Response 303
+
+    + Headers
+    
+            Location: /organizations/
+
++ Request (application/ld+json)
+
+        { id: null }
+        
++ Response 400
+
++ Request (application/ld+json)
+
+        { id: 2 }
+
++ Response 200 (application/ld+json)
+
+    + Headers
+            
+            Location: /organzation/2
+
+    + Body
+
+            {
+            "@context": {
+                "skos": "http://www.w3.org/2004/02/skos/core#",
+                "org": "http://www.w3.org/ns/org#",
+                "owltime": "http://www.w3.org/TR/owl-time#",
+                "foaf": "http://xmlns.com/foaf/0.1/",
+                "dc": "http://purl.org/dc/elements/1.1/",
+                "prov": "http://www.w3.org/ns/prov#",
+                "vcard": "http://www.w3.org/2006/vcard/ns#"
+            },
+            "status": "success",
+            "@type": "org:Organization",
+            "foaf:primaryTopic": "http://lna.dartmouth.edu/organization/2",            
+            "@graph": [
+                {
+                    "@type": "org:Organization",
+                    "@id": "http://lna.dartmouth.edu/organization/2",
+                    "org:identifier": "dltg1",
+                    "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/3"],
+                    "skos:prefLabel": "Dartmouth Digital Library Technology Group",
+                    "skos:altLabel": ["DLTG"],
+                    "vcard:post-office-box": "1908",
+                    "org:purpose": "unit",
+                    "owltime:hasBeginning": "2000-06-01",
+                    "owltime:hasEnd": "",
+                    "org:hasSubOrganization": ["http://lna.dartmouth.edu/organization/10"],
+                    "org:resultedFrom": "#change1",
+                    "foaf:account": ["#account1"]
+                },            
+                {
+                    "@id": "http://lna.dartmouth.edu/organization/3",
+                    "@type": "org:Organization",
+                    "org:identifier": "library1",
+                    "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/12"],
+                    "skos:prefLabel": "Dartmouth College Library",
+                    "skos:altLabel": [],
+                    "vcard:post-office-box": "1008",
+                    "org:purpose": "unit",
+                    "owltime:hasBeginning": "1769-06-01",
+                    "owltime:hasEnd": ""
+                },
+                {
+                    "@id": "http://lna.dartmouth.edu/organization/10",
+                    "@type": "org:Organization",
+                    "org:identifier": "dacteam",
+                    "org:subOrganizationOf": ["http://lna.dartmouth.edu/organization/3"],
+                    "skos:prefLabel": "DAC dev team",
+                    "skos:altLabel": [],
+                    "vcard:post-office-box": "9008",
+                    "org:purpose": "unit",
+                    "owltime:hasBeginning": "2015-01-01",
+                    "owltime:hasEnd": ""
+                },
+                {
+                    "@id": "#change1",
+                    "@type": "org:ChangeEvent",
+                    "org:originalOrganization": [], 
+                    "org:resultingOrganization": ["http://lna.dartmouth.edu/organization/2"],
+                    "prov:atTime": "2012-12-01",
+                    "dc:description": "A wild organziation appeared"
+                },
+                {
+                    "@id": "#account1",
+                    "@type": "foaf:OnlineAccount",
+                    "dc:title": "Web Site",
+                    "foaf:accountName": "https://www.dartmouth.edu/~library/dltg/",
+                    "foaf:accountServiceHomepage": "http://dartmouth.edu/"
+                }
+            }
+
+### Update an Organization [PUT]
+
+Applies to both current and historic orgs. Do not use to add an end date to an organization; use changeTo for that.
+
++ Parameters
+    + id (number, required) - ID of the organization to update
+
++ Request (application/ld+json)
+
+        {            
+            "@context": {
+                "skos": "http://www.w3.org/2004/02/skos/core#",
+                "org": "http://www.w3.org/ns/org#",
+                "owltime": "http://www.w3.org/TR/owl-time#"
+            },
+            "org:identifier": "its",
+            "skos:prefLabel": "Dartmouth Information Technology Services",
+            "skos:altLabel": ["ITS"],
+            "org:purpose": "unit",
+            "owltime:hasBeginning": "2013-06-01"
+        }
+        
++ Response 200 (application/ld+json)
+
+    + Body
+    
+            {
+                "@context": {
+                    "skos": "http://www.w3.org/2004/02/skos/core#",
+                    "org": "http://www.w3.org/ns/org#",
+                    "owltime": "http://www.w3.org/TR/owl-time#"
+                },
+                "@type": "org:Organization",
+                "@id": "http://lna.dartmouth.edu/organization/1",
+                "status": "success",
+                "org:identifier": "its",
+                "skos:prefLabel": "Dartmouth Information Technology Services",
+                "skos:altLabel": ["ITS"],
+                "vcard:post-office-box": "1223",
+                "org:purpose": "unit",
+                "owltime:hasBeginning": "2013-06-01",
+                "owltime:hasEnd": ""
+            }
+
+
+### Delete an Organization [DELETE]
+
++ Parameters
+    + id (number, required) - ID of the Organization to delete
+
++ Request (application/ld+json)
+
++ Response 200 (application/ld+json)
+
+    + Body
+    
+            { "status": "success" }
+            
+## Organization account [/organization/{organization_id}/account/{id}]
+            
+### Create an account identifier [POST /organization/{organization_id}/account]
+
++ Parameters
+    + organization_id (number, required) - ID of the organization that owns this account
+
++ Request (application/ld+json)
+
+        {            
+            "@context": {
+                "foaf": "http://xmlns.com/foaf/0.1/",
+                "dc": "http://purl.org/dc/elements/1.1/"
+            },
+            "@type": "foaf:OnlineAccount",
+            "dc:title": "Website",
+            "foaf:accountName": "http://library.dartmouth.edu",
+            "foaf:accountServiceHomepage": "http://www.dartmouth.edu/"
+        }
+        
++ Response 201 (application/ld+json)
+
+    + Headers
+            
+            Location: /organization/1#account1
+
+    + Body
+
+            {
+                "@context": {
+                    "foaf": "http://xmlns.com/foaf/0.1/",
+                    "dc": "http://purl.org/dc/elements/1.1/"
+                },
+                "status": "success",
+                "@id": "http://lna.dartmouth.edu/organization/1/account/account1",
+                "@type": "foaf:OnlineAccount",
+                "dc:title": "Website",
+                "foaf:accountName": "http://library.dartmouth.edu",
+                "foaf:accountServiceHomepage": "http://www.dartmouth.edu/"
+            }
+
+### Update an account identifier [PUT /organization/{organization_id}/account/{id}]]
+
++ Parameters
+    + organization_id (number, required) - ID of the organziation that owns this account
+    + id (number, required) - ID of the account to update
+
++ Request (application/ld+json)
+
+        {            
+            "@context": {
+                "foaf": "http://xmlns.com/foaf/0.1/",
+                "dc": "http://purl.org/dc/elements/1.1/"
+            },
+            "dc:title": "Website",
+            "foaf:accountName": "http://library.dartmouth.edu",
+            "foaf:accountServiceHomepage": "http://www.dartmouth.edu/"
+        }
+        
++ Response 200 (application/ld+json)
+
+    + Body
+
+            {
+                "@context": {
+                    "foaf": "http://xmlns.com/foaf/0.1/",
+                    "dc": "http://purl.org/dc/elements/1.1/"
+                },
+                "status": "success",
+                "@id": "http://lna.dartmouth.edu/organization/1/account/account1",
+                "@type": "foaf:OnlineAccount",
+                "dc:title": "Website",
+                "foaf:accountName": "http://library.dartmouth.edu",
+                "foaf:accountServiceHomepage": "http://www.dartmouth.edu/"
+            }
+
+### Delete an account identifier [DELETE]
+
++ Parameters
+    + organization_id (number, required) - ID of the person that owns this account
+    + id (number, required) - ID of the account to delete
+
++ Request (application/ld+json)
+        
++ Response 200 (application/ld+json)
+
+    + Body
+
+            {
+                "status": "success",
+            }
+
+## Change Events [/organization/{id_from}/change_to/{id_to}]
+
+Change Events trigger conversion of one (or more) organizations to another (or more than one) organization(s). Both orgs must already exist. Some logic applies to {id_from} and {id_to}:
+
+- if {id_from} already has an org:changedBy relationship associated with it, that ChangeEvent is associated with the new {id_to} org using org:resultedFrom.
+- if {id_to} already has an org:resultedFrom relationship associated with it, that ChangeEvent is associated with {id_from} using org:changedBy so long as {id_from} does not have an org:changedBy relationship as well.
+- if neither {id_from} or {id_to} have no currently associated ChangeEvents, a new ChangeEvent is created.
+
+ex: Math splits and becomes Math and CS (order is important here):
+
+/organization/#oldMath/change_to/#newMath - makes #oldMath historic, creates a change event linking #oldMath and #newMath, migrates Memberships from #oldMath to #newMath
+
+/organziation/#oldMath/change_to/#CS - #oldMath has an org:changedBy already so #CS is associated with that change event using org:resultedFrom. No migration occurs.
+
+ex: Math absorbs CS (order isn't as important):
+
+/organization/#oldMath/change_to/#newMath - makes #oldMath historic, creates a change event linking #oldMath and #newMath, migrates Memberships from #oldMath to #newMath
+
+/organziation/#CS/change_to/#newMath - #newMath has an org:resultedFrom already so #CS is associated with that change event using org:changedBy. Migrates memberships from #CS to #oldMath.
+
+### Migrate one Ogranization to Another [POST]
+
++ Parameters
+    + id_from (number, required) - ID of the historic Organization
+    + id_to (number, required) - ID of the new Organization
+
++ Request (application/ld+json)
+
+        {            
+            "@context": {
+                "org": "http://www.w3.org/ns/org#",
+                "dc": "http://purl.org/dc/elements/1.1/",
+                "prov": "http://www.w3.org/ns/prov#"
+            },
+            "prov:atTime": "2012-12-01",
+            "dc:description": "A wild organziation appeared",
+        }
+        
++ Response 201 (application/ld+json)
+
+    + Headers
+            
+            Location: /organzation/{id_to}#change1
+
+    + Body
+
+            {
+                "@context": {
+                    "org": "http://www.w3.org/ns/org#",
+                    "dc": "http://purl.org/dc/elements/1.1/",
+                    "prov": "http://www.w3.org/ns/prov#"
+                },
+                "@id": "#change1",
+                "@type": "org:ChangeEvent",
+                "org:originalOrganization": ["{id_from}"],
+                "org:resultingOrganization": ["{id_to}"],
+                "prov:atTime": "2012-12-01",
+                "dc:description": "A wild organziation appeared"
+            }
+            
+## Ending Change [/organization/{organization_id}/end]
+
+### Ending an Organization [POST]
+
++ Parameters
+    + organization_id (number, required) - ID of the ending Organization
+
++ Request (application/ld+json)
+
+        {            
+            "@context": {
+                "org": "http://www.w3.org/ns/org#",
+                "dc": "http://purl.org/dc/elements/1.1/",
+                "prov": "http://www.w3.org/ns/prov#"
+            },
+            "prov:atTime": "2012-12-01",
+            "dc:description": "A wild organziation ended",
+        }
+        
++ Response 201 (application/ld+json)
+
+    + Headers
+            
+            Location: /organzation/{organization_id}
+
+    + Body
+
+            {
+                "@context": {
+                    "skos": "http://www.w3.org/2004/02/skos/core#",
+                    "org": "http://www.w3.org/ns/org#",
+                    "owltime": "http://www.w3.org/TR/owl-time#"
+                    "vcard": "http://www.w3.org/2006/vcard/ns#"
+                },
+                "@type": "org:Organization",
+                "@id": "http://lna.dartmouth.edu/organization/1",
+                "status": "success",
+                "org:identifier": "its",
+                "skos:prefLabel": "Dartmouth Information Technology Services",
+                "skos:altLabel": ["ITS"],
+                "vcard:post-office-box": "1223",
+                "org:purpose": "unit",
+                "owltime:hasBeginning": "2013-06-01",
+                "owltime:hasEnd": "2016-05-09",
+                "lna:historicPlacement": "serializationGoesHere"
+            }

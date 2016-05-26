@@ -16,7 +16,62 @@
 # users commonly want.
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+
+require 'active_fedora/cleaner'
+require 'coveralls'
+
+# Adding Coveralls.
+Coveralls.wear!
+
 RSpec.configure do |config|
+  config.before(:suite) do
+    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.clean_with(:truncation)
+  end
+  
+  # Cleaning Fedora and Solr before each context. Removing the need to continuously delete objects.
+  config.before(:context) do
+    ActiveFedora::Cleaner.clean!
+  end
+
+  # Cleaning SQL database
+  config.around(:context) do |example|
+    DatabaseCleaner.cleaning do
+      example.run
+    end
+  end
+  
+  # Forces HTTPS requests.
+  config.before(:context, https: true) do
+    https!
+  end
+
+  # Authenticates User
+  config.before(:context, authenticated: true) do
+    OmniAuth.config.test_mode = true
+    Rails.application.env_config['devise.mapping'] = Devise.mappings[:user]
+    Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:cas]
+    OmniAuth.config.mock_auth[:cas] = FactoryGirl.create(:omniauth_hash)
+    get_via_redirect '/sign_in'
+  end
+
+  # Authorize User as an Editor
+  config.before(:context, editor: true) do
+    netid = FactoryGirl.create(:omniauth_hash).extra.netid
+    editor = Role.find_or_initialize_by(name: 'editor')
+    User.find_by(netid: netid).roles << editor
+  end
+  
+  # Remove Editor Role
+  config.after(:context, editor: true) do
+    Role.find_by(name: "editor").destroy
+  end
+                       
+  # Signs User out
+  config.after(:context, authenticated: true) do
+    get '/sign_out'
+  end
+  
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.

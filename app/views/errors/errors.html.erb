@@ -1,0 +1,26 @@
+<nav class="centered breadcrumbs" role="navigation">
+  <%= link_to(root_path, class: "crumbStop crumbHere") do %><span>Home</span><% end %>
+</nav>
+
+<main class="centered content">
+  
+  <section class="details">
+  <h1>Error: <%= @rescue_response.to_s.humanize %></h1>
+  <% case @exception.class.to_s %>
+  <% when 'RSolr::Error::Http' %>
+	<p>Query Invalid.<br>
+  <% else %>
+	<p><%= @exception.message %><br>
+  <% end %>
+  Please correct the error and try again.</p>
+
+  <% if Rails.env.development? || Rails.env.test? %>
+	<div>Original exception (only displayed in <strong>development</strong> and <strong>test</strong> environment):
+	
+		<pre>
+		  <code><%= @exception.inspect %></code>
+		</pre>
+	</div>
+  <% end %>
+  </section>
+</main>

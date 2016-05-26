@@ -1,0 +1,22 @@
+<div class="modal fade newWorkModal formModal" id="newAffiliationModal" tabindex="-1" role="dialog" aria-labelledby="newAffiliationModal" title="Add an Affiliation to LNA">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form data-lna-query="newAffiliation" accept-charset="UTF-8" class="formTwoColumn" data-opt="<%= @short_id %>/membership" data-no-ajax="true">
+          <div><label>Organization</label><input name="skos:prefLabel" class="autocompleteBehavior" data-autocomplete-type="org"></input></div>          
+          <div><label>Title</label><input name="vcard:title"></input></div> 
+          <div><label>Street Address</label><input name="vcard:street-address"></input></div>
+          <div><label>Hinman Box</label><input name="vcard:post-office-box"></input></div>    
+          <div><label>Zip Code</label><input name="vcard:postal-code"></input></div> 
+          <div><label>Town, State</label><input name="vcard:locality"></input></div> 
+          <div><label>Begin Date</label><input name="owltime:hasBeginning" class="dateBehavior"></input></div> 
+          <div><label>End Date</label><input name="owltime:hasEnd" class="dateBehavior"></input></div> 
+          <%= hidden_field_tag "org:organization", nil, {:id => nil} %>
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token, {:id => nil} %>
+          <%= hidden_field_tag "foaf:person", "https://jb.dac.dartmouth.edu/lna/person/" + @short_id, {:id => nil} %>
+          <button type="submit" title="submit">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

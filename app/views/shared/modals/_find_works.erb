@@ -1,0 +1,14 @@
+<div class="modal fade findWorksModal formModal" id="findWorksModal" tabindex="-1" role="dialog" aria-labelledby="findWorksModal" title="Find Works">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form data-lna-query="findWorks" accept-charset="UTF-8" class="formSingleColumn" data-no-ajax="true">
+          <label>Title</label><input name="dc:title"></input>
+          <label>Author</label><input name="bibo:authorList"></input>
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+          <button type="submit" title="submit">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

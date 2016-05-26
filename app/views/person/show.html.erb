@@ -1,0 +1,77 @@
+		<nav class="centered breadcrumbs" role="navigation">
+            <%= link_to(root_path, class: "crumbContinue") do %><span>Home</span><% end %><%= link_to(persons_path, class: "crumbContinue") do %><span>Person</span><% end %><a href="#" class="crumbHere crumbStop"><span>Loading...</span></a>
+        </nav>
+        <main class="centered content">
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+            <section class="sidebar">
+                <%= image_tag "unknownPerson.svg" %>
+                <div>
+                    <h1></h1>
+                    <div><span class="spinner"></span></div>
+                    <ul class="iconList">
+                    </ul>
+                    <button title="add account" id="newAccount" data-toggle="modal" data-target="#newAccountModal"><span class="add"></span>Add New ID</button>
+                </div>
+            </section>
+            <section class="details">
+                <div class="personData">
+                    <h1>About <button class="fa fa-pencil fa-lg edit" title="edit person" data-toggle="modal" data-target="#editPersonModal"><span class="helpText">edit this person</span></button></h1>
+                    <p>
+                        <span class="title">Name</span><br>
+                        <span class="personName"></span>
+                    </p>
+                    <p>
+                        <span class="title">Email Address</span><br>
+                        <span class="personEmail"></span>
+                    </p>
+                    <p>
+                        <span class="title">Image URL</span><br>
+                        <span class="personImage"></span>
+                    </p>
+                    <p>
+                        <span class="title">Homepage URL(s)</span><br>
+                        <span class="personHomepage"></span>
+                    </p>                    
+                    <p class="parent">
+                        <span class="title">Primary Affiliation</span><br>
+                        <button class="fa fa-external-link-square fa-lg view" title="view parent"><span class="helpText">view primary affiliation</span></button>
+                        <span class="personPrimary"></span>
+                    </p>  
+                </div>
+                <div class="affiliations">
+                    <h1>Affiliations</h1>
+                    <ul class="iconList">
+                        <li><span class='spinner'></span></li>
+                    </ul>
+                    <button title="add affiliation" id="newAffiliation" data-toggle="modal" data-target="#newAffiliationModal"><span class="add"></span>Add New Affiliation</button>
+                </div>
+                <div class="works">
+                <h1>Works</h1>                    
+                    <ul class="iconList">
+                        <li><span class='spinner'></span></li>
+                    </ul>
+                    <button title="add work" id="newWork" data-toggle="modal" data-target="#newWorkModal"><span class="add"></span>Add New Work</button>
+                </div>
+            </section>
+        </main>
+        <section id="templates">
+        <%= render "shared/templates/lists_affiliation" %>
+        <%= render "shared/templates/lists_person_work" %>
+        <%= render "shared/templates/lists_account" %>
+        </section>
+        <section id="modals">
+        <%= render "shared/modals/new_work" %>
+        <%= render "shared/modals/new_affiliation" %>
+        <%= render "shared/modals/new_account" %>
+        <%= render "shared/modals/edit_account" %>
+        <%= render "shared/modals/edit_affiliation" %>
+        <%= render "shared/modals/edit_person" %>
+        </section>        
+		<script>
+        $(document).ready(function(){
+            $().LNAGateway().loadPerson(LNA.loadPerson, "<%= @short_id %>");
+            $().LNAGateway().loadPersonWorks(LNA.loadPersonWorks, "<%= @short_id %>");
+        });
+        </script>
