@@ -106,13 +106,3 @@ For qa and production environments, these additional variables are needed.
 # Required
 SECRET_KEY_BASE=******************
 ```
-
-## Deleting Fedora and Solr **(ONLY FOR DEVELOPMENT)**
-1. Open a console for the correct environment: `rails c development`
-2. In the console run:
-   
-   ```
-   require 'active_fedora/cleaner'
-   ActiveFedora::Cleaner.clean!
-   ```
-   
