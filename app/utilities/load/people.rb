@@ -10,16 +10,6 @@ module Load
     NEW_ACCOUNT = 'new account'
     CHANGE_PRIMARY_ORG = 'changes primary org'
     
-    def self.from_hr_faculty_view
-      batch_load(HR_FACULTY) do |loader|
-        Oracle::Faculty.find_each do |person|
-          loader.into_lna(person.to_hash)
-        end
-      end
-    rescue => e
-      log_error(e, "Error loading #{HR_FACULTY} in Oracle")
-    end
-
     def self.from_hr
       batch_load(HR_EMPLOYEE) do |loader|
         Oracle::Employee.with_title.order(:primary_flag).find_each do |person|
