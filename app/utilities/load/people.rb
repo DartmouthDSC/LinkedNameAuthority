@@ -17,12 +17,12 @@ module Load
           # Returns employees with a "valid" title (not Temporary or Non-Paid) that have been
           # modified since the last load, primary memberships are listed first.
           last_import = Import.last_successful_import(HR_EMPLOYEE)
-          Oracle::Employee.with_title.modified_after(last_import).order(:primary_flag)
+          Oracle::Employee.with_title(modified_since: last_import).order(:primary_flag)
             .find_each do |person|
             loader.into_lna(person.to_hash)
           end
         rescue => e
-          log_error(e, "Error loading #{HR_EMPLOYEE} in Oracle")
+          loader.log_error(e, "Error loading #{HR_EMPLOYEE} in Oracle")
         end
       end
     end
