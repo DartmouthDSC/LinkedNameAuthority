@@ -81,6 +81,10 @@ module Oracle
       where.not({ title: ['Temporary', 'Non-Paid', nil] })
     end
 
+    def self.modified_after(date)
+      where('last_modified_date > ?', date) unless date.nil?
+    end
+    
     def self.primary
       where({ primary_flag: ['Y', 'y'] })
     end
