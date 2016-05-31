@@ -76,11 +76,18 @@ module Oracle
       }
     end
 
-    # Filter out employees with title of Non-Paid, Temporary and nil.
-    def self.with_title
-      where.not({ title: ['Temporary', 'Non-Paid', nil] })
+    # Filter out employees with title of Non-Paid, Temporary and nil. If modified_since set
+    # only return employee records modified after the date given.
+    def self.with_title(modified_since: nil)
+      results = where.not({ title: ['Temporary', 'Non-Paid', nil] })
+      
+      unless modified_since.nil?
+        results = results.where('last_modified_date > ?', modified_since)
+      end
+      
+      results
     end
-
+    
     def self.primary
       where({ primary_flag: ['Y', 'y'] })
     end
