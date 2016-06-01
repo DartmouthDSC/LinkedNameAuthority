@@ -20,11 +20,14 @@ gem 'hydra-role-management'
 gem 'jbuilder', '~> 2.0'
 gem 'net-dnd', github: 'dartmouth-dltg/net-dnd'
 gem 'omniauth-cas'
-gem 'pg'
 gem 'rdf-vocab'
 gem 'turbolinks' # Turbolinks makes following links in your web application faster.
 gem 'therubyracer', platforms: :ruby # Embed the V8 JavaScript interpreter into Ruby
 gem 'whenever' # Used to run cron jobs.
+
+group :pg do
+  gem 'pg'
+end
 
 group :oracle do 
   gem 'activerecord-oracle_enhanced-adapter', '~> 1.6.0'

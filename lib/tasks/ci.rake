@@ -6,11 +6,9 @@ task ci: :environment do
   require 'fcrepo_wrapper'
   require 'solr_wrapper'
   
-  solr_params = { version: '5.5.1', verbose: true, managed: true }
-  fedora_params = { version: '4.5.1', verbose: true, managed: true }
-  SolrWrapper.wrap(solr_params) do |solr|
+  SolrWrapper.wrap do |solr|
     solr.with_collection(name: 'lna_test', dir: File.join(File.expand_path('../..', File.dirname(__FILE__)), 'solr', 'config')) do
-      FcrepoWrapper.wrap(fedora_params) do
+      FcrepoWrapper.wrap do
         RSpec::Core::RakeTask.new(:specs_minus_oracle) do |t|
           t.exclude_pattern = '**/models/oracle/*_spec.rb'
           t.rspec_opts = '--color'
