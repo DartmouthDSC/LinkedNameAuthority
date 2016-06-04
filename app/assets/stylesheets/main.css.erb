@@ -552,7 +552,7 @@ input[readonly]{
     border: .1em solid black;
 }
 
-.sectionCard h1{ margin: 0 auto .4em auto; font-size: 1.4em; font-weight: normal;}
+.sectionCard h1, .baton h1{ margin: 0 auto .4em auto; font-size: 1.4em; font-weight: normal;}
 .sectionCard p { margin: 0 auto; text-align: center; max-width: 80%; line-height: 1.2em;}
 .sectionCard img{
     width: 60%;
@@ -620,6 +620,47 @@ input[readonly]{
     font-size:1.1em;
     text-decoration:none;
     cursor: pointer;
+}
+
+.baton{
+    display: block;
+    width: 100%;
+    padding: 1em;
+    margin: 0 1em 1em;
+    border: .1em solid black;
+    box-shadow: 0 .2em .2em rgba(0,0,0,.5);
+}
+
+.baton table{
+    width: 100%;
+    margin-bottom: 1em;
+}
+.baton .fa{
+    font-size: 1.4em;
+}
+.baton th{
+    text-align: left;
+    font-size: 1.2em;
+    font-weight: 600;
+    margin: 0;
+    padding: 0 .2em .2em 1.6em;
+    background-image: url(<%= image_path('icon_downArrow.svg') %>);
+    background-size: 1.4em;
+    background-repeat: no-repeat;
+    min-height: 1.6em;
+    z-index: 1;
+    background-color: #D2DAD6;    
+}
+.baton td:nth-child(4), .baton td:nth-child(5), .baton td:nth-child(1){
+    width: 1.5em;
+    text-align: center;
+}
+.baton td:nth-child(3){
+    width: 5em;
+}
+.baton .progress{
+    width: 100%;
+    height: 1.4em;
 }
 
 .sidebar{
@@ -984,7 +1025,7 @@ a.fa{
         display: flex;
         -webkit-flex: 0 1 calc(50% - 3em);
         flex: 0 1 calc(50% - 3em);
-        margin-bottom: 2em;
+        margin-bottom: .5em;
     }
 
     .sectionCard .roundButtonCircle roundButton, .sectionCard .roundButtonCircle a{
@@ -1026,7 +1067,7 @@ a.fa{
     .sectionCard{
         -webkit-flex: 0 1 calc(33% - 3em);
         flex: 0 1 calc(33% - .9em);
-        margin-bottom: 1.75em;
+        margin-bottom: .75em;
         padding: .3em;
     }
     .sectionCard h1{

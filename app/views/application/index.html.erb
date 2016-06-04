@@ -68,8 +68,67 @@
                 </div>
 
             </div>
-
+            <div class="baton">
+            	<h1>Todo's for John Bell</h1>
+            	<table>
+            		<tr>
+            			<th colspan="5">Workflow: Curate Article Metadata</th>
+            		<tr>
+            			<td><i class="fa fa-square-o" aria-hidden="true"></i></td>
+            			<td>Online Access for Scholars Adds Value to Media Archives<br />John Bell, ITS</td>
+            			<td><div class="progress"></div></td>
+            			<td><i class="fa fa-clock-o" aria-hidden="true" style="background-color: red"></i></td>
+            			<td><i class="fa fa-pencil" aria-hidden="true"></i></td>
+            		</tr>
+            		<tr>
+            			<td><i class="fa fa-square-o" aria-hidden="true"></i></td>
+            			<td>Diffused Museums–Networked, Augmented, and Self-Organized Collections<br />John Bell, ITS</td>
+            			<td><div class="progress"></div></td>
+            			<td><i class="fa fa-clock-o" aria-hidden="true" style="background-color: yellow"></i></td>
+            			<td><i class="fa fa-pencil" aria-hidden="true"></i></td>
+            		</tr>
+            		<tr>
+            			<td><i class="fa fa-square-o" aria-hidden="true"></i></td>
+            			<td>A Collaborative Model for PhDs<br />John Bell, ITS</td>
+            			<td><div class="progress"></div></td>
+            			<td><i class="fa fa-clock-o" aria-hidden="true"></i></td>
+            			<td><i class="fa fa-pencil" aria-hidden="true"></i></td>
+            		</tr>
+            	</table>
+            	<table>
+            		<tr>
+            			<th colspan="5">Workflow: Verify Person Record Updates</th>
+            		<tr>
+            			<td><i class="fa fa-square-o" aria-hidden="true"></i></td>
+            			<td>John Bell</td>
+            			<td><div class="progress"></div></td>
+            			<td><i class="fa fa-clock-o" aria-hidden="true"></i></td>
+            			<td><i class="fa fa-pencil" aria-hidden="true"></i></td>
+            		</tr>
+            		<tr>
+            			<td><i class="fa fa-square-o" aria-hidden="true"></i></td>
+            			<td>Jennifer Green</td>
+            			<td><div class="progress"</div></td>
+            			<td><i class="fa fa-clock-o" aria-hidden="true"></i></td>
+            			<td><i class="fa fa-pencil" aria-hidden="true"></i></td>
+            		</tr>
+            		<tr>
+            			<td><i class="fa fa-square-o" aria-hidden="true"></i></td>
+            			<td>Carole Meyers</td>
+            			<td><div class="progress"></div></td>
+            			<td><i class="fa fa-clock-o" aria-hidden="true"></i></td>
+            			<td><i class="fa fa-pencil" aria-hidden="true"></i></td>
+            		</tr>
+            	</table>            	
+            </div>
         </main>
+        <script>
+        	$(function(){
+        		$.each($('.progress'), function(i, v){
+        			$(v).progressbar({'value': Math.floor((Math.random() * 10))*10});
+        		})
+        	});
+        </script>
         <section id="modals">
     		<%= render "shared/modals/new_person" %>
             <%= render "shared/modals/new_organization" %>
