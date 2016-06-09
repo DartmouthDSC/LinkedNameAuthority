@@ -3,6 +3,9 @@ require 'owl_time'
 module Lna
   class Membership < ActiveFedora::Base
     include Lna::DateHelper
+
+    SOURCE_HRMS = 'HRMS'
+    SOURCE_MANUAL = 'Manual'
     
     belongs_to :person, class_name: 'Lna::Person',
                predicate: ::RDF::Vocab::ORG.hasMember
@@ -56,6 +59,10 @@ module Lna
       index.as :stored_searchable
     end
 
+    property :source, predicate: ::RDF::Vocab::VCARD.hasSource, multiple: false do |index|
+      index.as :stored_searchable
+    end
+    
     def begin_date=(d)
       date_setter('begin_date', d)
     end

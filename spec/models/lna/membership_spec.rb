@@ -60,6 +60,10 @@ RSpec.describe Lna::Membership, type: :model do
       expect(subject.end_date).to be_instance_of Date
       expect(subject.end_date.to_s).to eql Date.tomorrow.to_s
     end
+
+    it 'sets source' do
+      expect(subject.source).to eql 'Manual'
+    end
   end
 
   describe '#organization' do
