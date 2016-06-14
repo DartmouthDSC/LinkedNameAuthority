@@ -30,7 +30,8 @@ add_admins(
   [
     { name: 'Carla M. Galarza', netid: 'd31309k', realm: 'dartmouth.edu' },
     { name: 'Eric J. Bivona',   netid: 'd28584r', realm: 'dartmouth.edu' },
-    { name: 'John P. Bell',     netid: 'f001m9b', realm: 'dartmouth.edu' }
+    { name: 'John P. Bell',     netid: 'f001m9b', realm: 'dartmouth.edu' },
+    { name: 'David L. Green',   netid: 'f000bj0', realm: 'dartmouth.edu' },
   ]
 )
 
