@@ -1,6 +1,5 @@
 module Load
   class People < Loader
-    HR_FACULTY = 'People from HR faculty view'
     HR_EMPLOYEE = 'People from HR'
     
     # Keys for warnings hash.
@@ -9,25 +8,23 @@ module Load
     NEW_MEM = 'new membership'
     NEW_ACCOUNT = 'new account'
     CHANGE_PRIMARY_ORG = 'changes primary org'
-    
-    def self.from_hr_faculty_view
-      batch_load(HR_FACULTY) do |loader|
-        Oracle::Faculty.find_each do |person|
-          loader.into_lna(person.to_hash)
-        end
-      end
-    rescue => e
-      log_error(e, "Error loading #{HR_FACULTY} in Oracle")
-    end
+    UPDATING_MEMBERSHIP = 'updating membership'
 
+    # Load appointments/memberships from view into a Human Resources table.
     def self.from_hr
       batch_load(HR_EMPLOYEE) do |loader|
-        Oracle::Employee.with_title.order(:primary_flag).find_each do |person|
-          loader.into_lna(person.to_hash)
+        begin
+          # Returns employees with a "valid" title (not Temporary or Non-Paid) that have been
+          # modified since the last load, primary memberships are listed first.
+          last_import = Import.last_successful_import(HR_EMPLOYEE)
+          Oracle::Employee.with_title(modified_since: last_import).order(:primary_flag)
+            .find_each do |person|
+            loader.into_lna(person.to_hash)
+          end
+        rescue => e
+          loader.log_error(e, "Error loading #{HR_EMPLOYEE} in Oracle")
         end
       end
-    rescue => e
-      log_error(e, "Error loading #{HR_EMPLOYEE} in Oracle")
     end
 
     def self.from_netid(netid)
@@ -119,14 +116,14 @@ module Load
         
         if mem = person.matching_membership(hash[:membership]) # matching on title and hr_id.
           mem.update(mem_hash)
-          # TODO: Logging updated membership
+          log_warning(UPDATING_MEMBERSHIP, "'#{mem.title}' for #{person.full_name} (#{netid})")
         else
           mem = Lna::Membership.create!(mem_hash) do |m|
             m.person = person
             m.organization = find_organization!(hash[:membership][:org])
           end
           person.save!
-          log_warning(NEW_MEM, "'#{mem.title}' for #{person.full_name}(#{netid})")
+          log_warning(NEW_MEM, "'#{mem.title}' for #{person.full_name} (#{netid})")
         end
       else   # Create new person.
         # Checking arguments.
@@ -144,7 +141,7 @@ module Load
           p.primary_org = org
         end
         
-        log_warning(NEW_PERSON, "#{person.full_name}(#{netid})")
+        log_warning(NEW_PERSON, "#{person.full_name} (#{netid})")
         
         # Make account and set as account for person.
         accnt = Lna::Account.create!(dart_account_hash(netid)) do |a|

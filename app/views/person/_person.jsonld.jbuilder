@@ -7,7 +7,7 @@ json.set! 'foaf:name', person['full_name_tesi']
 json.set! 'foaf:givenName', person['given_name_tesi']
 json.set! 'foaf:familyName', person['family_name_tesi']
 json.set! 'foaf:title', person['title_ss'] || ''
-json.set! 'foaf:mbox', person['mbox_ss']
+json.set! 'foaf:mbox', person['mbox_ss'] || ''
 
 if full
   json.set! 'foaf:mbox_sha1sim', person['mbox_sha1sum_tesi'] || ''
