@@ -52,18 +52,17 @@ module Load
                                               department_id: mem.organization.hr_id)
 
             if matching.count.zero?
-              to_be_terminated << "#{mem.title}, #{mem.id}"
-              # set end_date = Date.today
-              hash = {
-                netid: netid,
-                membership: {
-                  title: mem.title,
-                  hr_id: mem.organization.hr_id,
-                  end_date: Date.today
-                }
-              }
-                
+              terminated << "#{mem.person.full_name}, #{mem.title}, #{mem.id}"
               loader.into_lna(
+                {
+                  netid: netid,
+                  membership: {
+                    title: mem.title,
+                    hr_id: mem.organization.hr_id,
+                    end_date: Date.today
+                  }
+                }
+              )
             end
           end
 
