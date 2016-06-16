@@ -72,12 +72,15 @@ module Lna
     def end_date=(d)
       date_setter('end_date', d)
 
-      return if d.nil? || person.nil?
+      return if d.blank? || person.nil?
       
       # Check to see if primary membership matches membership's organization, if so look for a
       # more accurate primary membership.
       if organization == person.primary_org
-        mems = person.memberships.select { |m| m.active_on?(d) && m.organization.active? }
+        mems = person.memberships.select do |m|
+          m.active_on?(self.end_date) && m.organization.active?
+        end
+        
         if mems.count > 0
           person.primary_org = mems.first.organization
           person.save!
