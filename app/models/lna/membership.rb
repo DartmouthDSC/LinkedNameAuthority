@@ -72,7 +72,7 @@ module Lna
     def end_date=(d)
       date_setter('end_date', d)
 
-      return if d.nil?
+      return if d.nil? || person.nil?
       
       # Check to see if primary membership matches membership's organization, if so look for a
       # more accurate primary membership.
