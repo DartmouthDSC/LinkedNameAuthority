@@ -93,7 +93,7 @@ module Oracle
     end
 
     def self.not_primary
-      self.primary.not
+      where.not({ primary_flag: ['Y', 'y'] })
     end
   end
 end

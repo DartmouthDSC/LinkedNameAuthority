@@ -15,19 +15,20 @@ module Load
     def self.from_hr
       batch_load(HR_EMPLOYEE) do |loader|
         begin
-          #
-          # Returns employees with a "valid" title (not Temporary or Non-Paid) that have been
-          # modified since the last load, primary memberships are listed first.
-          #
+          # Loads memberships with a "valid" title (not Temporary or Non-Paid) that have been
+          # modified since the last load. Primary memberships are loaded first.
+
           last_import = Import.last_successful_import(HR_EMPLOYEE)
-          Oracle::Employee.with_title(modified_since: last_import).order(:primary_flag)
-            .find_each do |person|
-            loader.into_lna(person.to_hash)
+          
+          Oracle::Employee.with_title(modified_since: last_import).primary.find_each do |p|
+            loader.into_lna(p.to_hash)
           end
 
-          #
+          Oracle::Employee.with_title(modified_since: last_import).not_primary.find_each do |p|
+            loader.into_lna(p.to_hash)
+          end
+
           # Add an end date of Date.today to memberships that have disapeared from the table.
-          #
           
           # Search for memberships that were loaded from HRMS and don't have an end date.
           q = ActiveFedora::SolrQueryBuilder.construct_query(
@@ -58,8 +59,8 @@ module Load
                   netid: netid,
                   membership: {
                     title: mem.title,
-                    hr_id: mem.organization.hr_id,
-                    end_date: Date.today
+                    end_date: Date.today,
+                    org: { hr_id: mem.organization.hr_id }
                   }
                 }
               )
