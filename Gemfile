@@ -25,10 +25,12 @@ gem 'turbolinks' # Turbolinks makes following links in your web application fast
 gem 'therubyracer', platforms: :ruby # Embed the V8 JavaScript interpreter into Ruby
 gem 'whenever' # Used to run cron jobs.
 
+# Used to bundle gems without pg in local environments that may not have postgresql.
 group :pg do
   gem 'pg'
 end
 
+# Used to bundle gems without oracle in travis environment.
 group :oracle do 
   gem 'activerecord-oracle_enhanced-adapter', '~> 1.6.0'
   gem 'ruby-oci8' # Oracle

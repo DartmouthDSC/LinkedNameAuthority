@@ -9,17 +9,60 @@ module Load
     NEW_ACCOUNT = 'new account'
     CHANGE_PRIMARY_ORG = 'changes primary org'
     UPDATING_MEMBERSHIP = 'updating membership'
+    ENDED_MEMBERSHIP = 'ended membership'
 
-    # Load appointments/memberships from view into a Human Resources table.
+    # Load appointments/memberships from view into a Human Resources table. Memberships that have
+    # vanished from the view are ended.
     def self.from_hr
       batch_load(HR_EMPLOYEE) do |loader|
         begin
-          # Returns employees with a "valid" title (not Temporary or Non-Paid) that have been
-          # modified since the last load, primary memberships are listed first.
+          # Loads memberships with a "valid" title (not Temporary or Non-Paid) that have been
+          # modified since the last load. Primary memberships are loaded first.
+
           last_import = Import.last_successful_import(HR_EMPLOYEE)
-          Oracle::Employee.with_title(modified_since: last_import).order(:primary_flag)
-            .find_each do |person|
-            loader.into_lna(person.to_hash)
+          
+          Oracle::Employee.with_title(modified_since: last_import).primary.find_each do |p|
+            loader.into_lna(p.to_hash)
+          end
+
+          Oracle::Employee.with_title(modified_since: last_import).not_primary.find_each do |p|
+            loader.into_lna(p.to_hash)
+          end
+
+          # Add an end date of Date.today to memberships that have disappeared from the table.
+          
+          # Search for memberships that were loaded from HRMS and don't have an end date.
+          q = ActiveFedora::SolrQueryBuilder.construct_query(
+            [
+              ['source_tesi', 'HRMS'],
+              ['has_model_ssim', 'Lna::Membership'],
+              ['end_date_dtsi', nil]
+            ]
+          )
+          docs = ActiveFedora::SolrService.query(q, rows: 10000)
+
+          # Iterate through each membership and check to see if its still in the Oracle table.
+          # Matching based on netid, title and org id.
+          docs.each do |doc|
+            mem = Lna::Membership.load_instance_from_solr(doc['id'], doc)
+            
+            netid = mem.person.accounts.where(title: Lna::Account::DART_PROPERTIES[:title])
+                    .first.account_name
+            matching = Oracle::Employee.where(netid: netid, title: mem.title,
+                                              department_id: mem.organization.hr_id)
+
+            if matching.count.zero?
+              loader.into_lna(
+                {
+                  netid: netid,
+                  membership: {
+                    title: mem.title,
+                    end_date: Date.today,
+                    org: { hr_id: mem.organization.hr_id }
+                  }
+                }
+              )
+            end
           end
         rescue => e
           loader.log_error(e, "Error loading #{HR_EMPLOYEE} in Oracle")
@@ -115,8 +158,11 @@ module Load
         mem_hash = clean_mem_hash(hash[:membership])
         
         if mem = person.matching_membership(hash[:membership]) # matching on title and hr_id.
+          info = "'#{mem.title}' for #{person.full_name} (#{netid})"
+          log_warning(ENDED_MEMBERSHIP, info) if mem.end_date == nil && mem_hash[:end_date]
           mem.update(mem_hash)
-          log_warning(UPDATING_MEMBERSHIP, "'#{mem.title}' for #{person.full_name} (#{netid})")
+          mem.save!
+          log_warning(UPDATING_MEMBERSHIP, info)
         else
           mem = Lna::Membership.create!(mem_hash) do |m|
             m.person = person
