@@ -4,6 +4,8 @@ module Lna
   class Membership < ActiveFedora::Base
     include Lna::DateHelper
 
+    after_save :update_primary_org
+    
     SOURCE_HRMS = 'HRMS'
     SOURCE_MANUAL = 'Manual'
     
@@ -67,25 +69,8 @@ module Lna
       date_setter('begin_date', d)
     end
 
-    # Sets end_date and if there is another active membership with an active organization
-    # updates the person's primary organization.
     def end_date=(d)
       date_setter('end_date', d)
-
-      return if d.blank? || person.nil?
-      
-      # Check to see if primary membership matches membership's organization, if so look for a
-      # more accurate primary membership.
-      if organization == person.primary_org
-        mems = person.memberships.select do |m|
-          m.active_on?(self.end_date) && m.organization.active?
-        end
-        
-        if mems.count > 0
-          person.primary_org = mems.first.organization
-          person.save!
-        end
-      end
     end
 
     # Checks whether or not an end_date is set, ignores what the date actually is.
@@ -105,6 +90,9 @@ module Lna
     end
 
     # Returns whether or not this membership is active today.
+    #
+    # @return [false] if membership is not active today
+    # @return [true] if membership is active today
     def active?
       active_on?(Date.today)
     end
@@ -117,6 +105,32 @@ module Lna
     # @return [true] if the date is before but not on the end_date
     def active_on?(date)
       begin_date <= date && (end_date == nil || end_date > date)
+    end
+
+
+    private
+
+    # Update person's primary organization if there is another active membership with an active
+    # organization. 
+    def update_primary_org
+      return if self.end_date.blank? || person.nil?
+
+      person.reload # Make sure we have the most accurate version.
+      
+      if self.previous_changes.include?(:end_date) 
+        # Check to see if primary membership matches membership's organization, if so look for a
+        # more accurate primary membership.
+        if organization == person.primary_org
+          mems = person.memberships.select do |m|
+            m.active_on?(self.end_date) && m.organization.active?
+          end
+        
+          if mems.count > 0
+            person.primary_org = mems.first.organization
+            person.save!
+          end
+        end
+      end
     end
   end
 end
