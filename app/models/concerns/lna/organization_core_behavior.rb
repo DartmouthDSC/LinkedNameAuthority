@@ -53,14 +53,8 @@ module Lna
       end
  
       def self.where(values)
-        values = values.clone
-        # Change keys for dates and convert date string to a solr friendly format. 
-        [:begin_date, :end_date].each do |key|
-          if values.key?(key) && values[key].is_a?(String)
-            date = values.delete(key)
-            values[key.to_s.concat('_dtsi').to_sym] = Date.parse(date).strftime('%FT%TZ')
-          end
-        end
+        # Change key for dates.
+        values = Lna::DateHelper.solr_date(values.clone, [:begin_date, :end_date])
         
         # Change key for alt_label.
         values[:alt_label_tesim] = values.delete(:alt_label) if values.key?(:alt_label)
