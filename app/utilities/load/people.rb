@@ -9,6 +9,7 @@ module Load
     NEW_ACCOUNT = 'new account'
     CHANGE_PRIMARY_ORG = 'changes primary org'
     UPDATING_MEMBERSHIP = 'updating membership'
+    ENDED_MEMBERSHIP = 'ended membership'
 
     # Load appointments/memberships from view into a Human Resources table. Memberships that have
     # vanished from the view are ended.
@@ -28,7 +29,7 @@ module Load
             loader.into_lna(p.to_hash)
           end
 
-          # Add an end date of Date.today to memberships that have disapeared from the table.
+          # Add an end date of Date.today to memberships that have disappeared from the table.
           
           # Search for memberships that were loaded from HRMS and don't have an end date.
           q = ActiveFedora::SolrQueryBuilder.construct_query(
@@ -39,8 +40,6 @@ module Load
             ]
           )
           docs = ActiveFedora::SolrService.query(q, rows: 10000)
-
-          terminated = []
 
           # Iterate through each membership and check to see if its still in the Oracle table.
           # Matching based on netid, title and org id.
@@ -53,7 +52,6 @@ module Load
                                               department_id: mem.organization.hr_id)
 
             if matching.count.zero?
-              terminated << "#{mem.person.full_name}, #{mem.title}, #{mem.id}"
               loader.into_lna(
                 {
                   netid: netid,
@@ -66,8 +64,6 @@ module Load
               )
             end
           end
-
-          puts terminated.join("\n")           
         rescue => e
           loader.log_error(e, "Error loading #{HR_EMPLOYEE} in Oracle")
         end
@@ -162,8 +158,11 @@ module Load
         mem_hash = clean_mem_hash(hash[:membership])
         
         if mem = person.matching_membership(hash[:membership]) # matching on title and hr_id.
+          info = "'#{mem.title}' for #{person.full_name} (#{netid})"
+          log_warning(ENDED_MEMBERSHIP, info) if mem.end_date == nil && mem_hash[:end_date]
           mem.update(mem_hash)
-          log_warning(UPDATING_MEMBERSHIP, "'#{mem.title}' for #{person.full_name} (#{netid})")
+          mem.save!
+          log_warning(UPDATING_MEMBERSHIP, info)
         else
           mem = Lna::Membership.create!(mem_hash) do |m|
             m.person = person
