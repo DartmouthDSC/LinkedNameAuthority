@@ -107,7 +107,11 @@ module Lna
       begin_date <= date && (end_date == nil || end_date > date)
     end
 
-
+    def self.where(values)
+      values = Lna::DateHelper.solr_date(values.clone, [:begin_date, :end_date])
+      super(values)
+    end
+    
     private
 
     # Update person's primary organization if there is another active membership with an active
