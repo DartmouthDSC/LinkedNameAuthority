@@ -10,7 +10,7 @@ RSpec.describe Symplectic::Elements::Api do
     it { is_expected.to be_kind_of Faraday::Connection }
 
     its(:url_prefix) {
-      is_expected.to eq URI('https://elements-api-dev.dartmouth.edu:9002/elements-secure-api/')
+      is_expected.to eq URI('https://elements-api-dev.dartmouth.edu:9002/elements-secure-api')
     }
 
     it 'sets username' do
@@ -23,7 +23,7 @@ RSpec.describe Symplectic::Elements::Api do
 
     it 'sets api_root' do
       expect(subject.config[:api_root])
-        .to eq 'https://elements-api-dev.dartmouth.edu:9002/elements-secure-api/'
+        .to eq 'https://elements-api-dev.dartmouth.edu:9002/elements-secure-api'
     end
     
     it 'sets basic authentication' do
