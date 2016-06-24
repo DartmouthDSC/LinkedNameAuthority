@@ -5,7 +5,6 @@ RSpec.describe Symplectic::Elements::Publication do
   before :all do
      api_object = Nokogiri::XML(fixture('publication.xml')).elements.first.children[1]
      @publication = Symplectic::Elements::Publication.new(api_object)
-     puts @publication.to_hash.to_s
   end
   
   describe '.new' do
@@ -28,7 +27,17 @@ RSpec.describe Symplectic::Elements::Publication do
     its(:doi)         { is_expected.to eq 'http://dx.doi.org/10.1097/00000000-200607000-00004' }
     its(:subject)     { is_expected.to eq ['Computers'] }
     its(:journal)     { is_expected.to eq 'TEST JOURNAL' }
-    its(:abstract)    { is_expected.to eq 'This book takes a single line of code -- the extremely concise BASIC program for the Commodore 64 inscribed in the title -- and uses it as a lens through which to consider the phenomenon of creative computing and the way computer programs ...' }    
+    its(:abstract)    { is_expected.to eq 'This book takes a single line of code -- the extremely concise BASIC program for the Commodore 64 inscribed in the title -- and uses it as a lens through which to consider the phenomenon of creative computing and the way computer programs ...' }
+
+    it 'raises error if api object is empty' do
+      expect { Symplectic::Elements::Publication.new }.to raise_error ArgumentError
+      expect { Symplectic::Elements::Publication.new(nil) }.to raise_error ArgumentError
+    end
+
+    it 'raises error if api object is not valid' do
+      node = Nokogiri::XML(fixture('error.xml')).elements
+      expect { Symplectic::Elements::Publication.new(node) }.to raise_error ArgumentError
+    end
   end
 
   describe '.to_hash' do

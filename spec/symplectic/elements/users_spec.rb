@@ -76,6 +76,12 @@ RSpec.describe Symplectic::Elements::Users do
         ).to have_been_made
       end
     end
+
+    it 'raises error if querying with modified since and netid' do
+      expect {
+        Symplectic::Elements::Users.get(modified_since: DateTime.now, netid: 'd0000f')
+      }.to raise_error Symplectic::Elements::RequestError
+    end
   end
 
   describe '.get_all' do
