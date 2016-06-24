@@ -19,9 +19,13 @@
 
 require 'active_fedora/cleaner'
 require 'coveralls'
+require 'webmock/rspec'
 
 # Adding Coveralls.
 Coveralls.wear!
+
+# Allowing connections to localhost.
+WebMock.disable_net_connect!(allow_localhost: true)
 
 RSpec.configure do |config|
   config.before(:suite) do

@@ -50,6 +50,7 @@ group :development, :test, :ci do
   gem 'rspec-its'
   gem 'rspec-rails'
   gem 'spring'  # Spring speeds up development.
+  gem 'webmock'
 end
 
 group :development do
