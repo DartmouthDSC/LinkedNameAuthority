@@ -12,6 +12,15 @@ class PersonsController < CollectionController
       page: @page
     )
     @persons = result['response']['docs']
+
+    if @persons.count.zero? && result['response']['numFound'] > 0
+      last = last_page(result['response']['numFound'], MAX_ROWS)
+      if @page > last
+        redirect_to(persons_path(page: last, format: params[:format]),
+                    status: :temporary_redirect) and return
+      end
+    end
+    
     @organizations = get_primary_orgs(@persons)
 
     respond_to do |format|
@@ -39,7 +48,8 @@ class PersonsController < CollectionController
       page:      page,
       docs_only: false
     )
-    @persons = result['response']['docs']
+    @persons = result['response']['docs']    
+    
     @organizations = get_primary_orgs(@persons)
     
     respond_to do |format|
