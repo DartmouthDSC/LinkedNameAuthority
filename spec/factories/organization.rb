@@ -49,4 +49,12 @@ FactoryGirl.define do
     hinman_box '0000'
     begin_date '1970-01-01'
   end
+
+  factory :its, class: Lna::Organization do
+    label      'ITS'
+    alt_label  ['Computing']
+    hr_id      '9876'
+    kind       'SUBDIV'
+    begin_date '1988-01-01'
+  end
 end

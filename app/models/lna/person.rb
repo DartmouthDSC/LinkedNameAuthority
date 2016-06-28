@@ -52,12 +52,12 @@ module Lna
     end  
 
     # Find memberships for this person that match based on the given hash.
-    # Only two fields are used as matching points. Any other fields are
-    # ignored.
+    # Only two fields are used as matching points, title of membership and hr_id of the
+    # organization. Any other fields are ignored.
     #
     # @example Usage
     #   m = { title: 'Programmer/Analyst',
-    #         org: { label: 'Library' }
+    #         org: { hr_id: '1234' }
     #       }
     #   person.matching_membership(m)
     #
@@ -68,7 +68,7 @@ module Lna
     def matching_membership(hash)
       matching = self.memberships.to_a.select do |m|
         m.title.casecmp(hash[:title]).zero? &&
-          m.organization.label.casecmp(hash[:org][:label]).zero?
+          m.organization.hr_id.casecmp(hash[:org][:hr_id]).zero?
       end
       raise 'More than one membership was a match for the given hash.' if matching.count > 1
       return matching.count == 1 ? matching.first : false

@@ -10,7 +10,7 @@ module Lna
     has_and_belongs_to_many :super_organizations, class_name: 'Lna::Organization',
                             predicate: ::RDF::Vocab::ORG.subOrganizationOf,
                             after_add: :reindex_sub, after_remove: :reindex_sub
-
+    
     # Because has many associations are not usually indexed into solr, reindex the super
     # organization when its added or removed. That way the solr document includes the relationship.
     def reindex_sub(r)
@@ -75,130 +75,53 @@ module Lna
     end
     
     # Converts given active organization to a historic organization and deletes
-    # active organization.
+    # active organization. Both the active organizations and historic organization will have the
+    # same ID.
     #
     # All fields except accounts, sub_organizations, and super_organizations are moved over to
-    # the historic organization. Changed_by is set, if a change event is passed in. 
+    # the historic organization.
     #
     # @param [Lna::Organization] active
     # @param [Date] end_date
-    # @param [Lna::Organization::ChangeEvent] changed_by
-    def self.convert_to_historic(active, end_date = Date.today, changed_by = nil)
-      raise 'Cannot convert because organization still has accounts' if active.accounts.count > 0
-      
-      attrs = active.attributes.slice('memberships', 'people', 'resulted_from', 'hr_id',
-                                      'alt_label', 'label', 'begin_date', 'kind', 'hinman_box')
-
-      historic = Lna::Organization::Historic.create!(attrs) do |h|
-        h.historic_placement = active.json_serialization
-        h.end_date = end_date
-        h.changed_by = changed_by
+    # @return [Lna::Organization::Historic] historic organization
+    def self.convert_to_historic(active, end_date = Date.today)
+      active.reload
+      if active.accounts.count > 0
+        raise ArgumentError, 'Cannot convert because organization still has accounts'
       end
+      
+      attrs = active.attributes.slice('resulted_from_id', 'hr_id', 'alt_label', 'label',
+                                      'begin_date', 'kind', 'hinman_box')
+      serialization = active.json_serialization
 
+      # Temp organization object to temporarily hold memberships and people.
+      temp = Lna::Organization.create!(attrs) do |t|
+        t.people = active.people
+        t.memberships = active.memberships
+      end
+        
       # Remove all related objects and destroy active.
+      id = active.id
+      active.reload
       active.sub_organizations = []
       active.super_organizations = []
-      active.resulted_from = nil
       active.save!
-      active.destroy
+      active.destroy(eradicate: true)
+
+      # Create historic.
+      historic = Lna::Organization::Historic.create!(attrs) do |h|
+        h.id = id
+        h.people = temp.people
+        h.memberships = temp.memberships
+        h.historic_placement = serialization
+        h.end_date = end_date
+      end
+
+      # Destroy temp object.
+      temp.reload
+      temp.destroy(eradicate: true)
       
       historic
-    end
-
-    # Link two organizations through a change event.
-    #
-    # If the old organization has a changed by event or if the new organization has a result from
-    # event, use that change event. Otherwise create a new one based using the description and
-    # date given. Date and description are ignored if a change event is already present.
-    #
-    # If old is an active organization then:
-    #   - all accounts are migreated to the new organization
-    #   - all sub organizations and super organizations are copied over to the new organizations
-    #   - memberships
-    #       - that do not have an end date will be migrated to the new organization
-    #       - that do have an end date will be move to the historic organization
-    #   - people
-    #       - that do not have any active memberships will move to the historic organization
-    #       - that have an active membership related to old will be moved to the new organization
-    #       - otherwise, person will be moved to the organization of the first active membership
-    #   - change_by is set
-    #
-    # If old is a historic organization then:
-    #   - change_by is set
-    #
-    # @param [Lna::Organization::Historic|Lna::Organization] old
-    # @param [Lna::Organization] new
-    # @param [String] description
-    # @param [Date] date
-    # @return [Lna::Organization::ChangeEvent]
-    def self.trigger_change_event(old, new, description: nil, date: Date.today)
-      if old.changed_by && new.resulted_from
-        unless old.changed_by == new.resulted_from
-          raise ArgumentError, 'old.changed_by and new.resulted_from events must be the same'
-        end
-      end
-      
-      change_event = if old.changed_by
-                       old.changed_by
-                     elsif new.resulted_from
-                       new.resulted_from
-                     else
-                       Lna::Organization::ChangeEvent.new(
-                         description: description,
-                         at_time:     date
-                       )
-                     end
-
-      # If old is an active organization it needs to be converted to a historic organization.
-      if old.instance_of? Lna::Organization
-
-        # Migrate people from old -> new, if there's an active membership still related to org. If
-        # there are no active memberships, the person stays with the historic org. Otherwise it is
-        # moved to one of the orgs for which it still has an active membership.
-        old.people.each do |person|
-          active_mems_orgs = person.memberships.select(&:active?).map(&:organization)
-          
-          next if active_mems_orgs.count.zero?
-
-          person.primary_org = (active_mems_orgs.include? old) ?
-                                 new : active_mems_orgs.first
-          person.save!
-        end
-        new.reload!
-        old.reload!
-        
-        # Migrate memberships that have not ended from old -> new.
-        old.memberships.each do |mem|
-          if mem.active?
-            mem.organization = new
-            mem.save!
-          end
-        end
-        old.reload!
-        new.reload!
-        
-        # Copy sub_organizations and super_organization from old -> new.
-        new.super_organizations.concat(old.super_organizations)
-        new.sub_organization.contact(old.sub_organizations)
-        new.reload!
-        
-        # Migrate accounts from old -> new.
-        new.accounts = old.accounts
-        new.reload!
-        old.reload!
-        
-        # Make old historic.
-        old_historic = convert_to_historic(old, date, change_event)
-      else
-        old.changed_by = change_event
-      end
-      
-      # Set change event in new.
-      new.resulted_from = change_event
-      new.save!
-      change_event.save!
-      
-      change_event
     end
   end
 end

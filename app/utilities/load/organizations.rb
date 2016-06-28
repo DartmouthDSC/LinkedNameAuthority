@@ -19,26 +19,27 @@ module Load
     # is not removed, and its not filtered by date last modified.
     def self.from_hr
       batch_load(HR_ORG_LOADER) do |loader|
-        i = Import.last_successful_import(loader.title)
-        last_import = (i) ? i.time_started : nil
-
-        # Loading organization in order from highest to lowest in the hierarchy, without
-        # an end date.
-        Oracle::Organization::ORDERED_ORG_TYPES.reverse.each do |type|
-          Oracle::Organization.find_by_type(type, last_import).each do |org|
-            loader.into_lna(org.to_hash.except(:end_date))
+        begin
+          last_import = Import.last_successful_import(loader.title)
+          
+          # Loading organization in order from highest to lowest in the hierarchy, without
+          # an end date.
+          Oracle::Organization::ORDERED_ORG_TYPES.reverse.each do |type|
+            Oracle::Organization.find_by_type(type, last_import).each do |org|
+              loader.into_lna(org.to_hash.except(:end_date))
+            end
           end
-        end
-
-        # Loading organizations that have an end date set.
-        Oracle::Organization::ORDERED_ORG_TYPES.each do |type|
-          Oracle::Organization.find_ended_orgs_by_type(type).each do |org|
-            loader.into_lna(org.to_hash.except(:super_organization))
+          
+          # Loading organizations that have an end date set and the end date not after today.
+          Oracle::Organization::ORDERED_ORG_TYPES.each do |type|
+            Oracle::Organization.find_ended_orgs_by_type(type).each do |org|
+              loader.into_lna(org.to_hash.except(:super_organization))
+            end
           end
+        rescue => e
+          loader.log_error(e, "Error loading #{HR_ORG_LOADER} in Oracle")
         end
       end
-    rescue => e
-      log_error(e, "Error loading #{HR_ORG_LOADER} in Oracle")
     end
 
     # Creates or updates the organization described by the hash. This method will catch any

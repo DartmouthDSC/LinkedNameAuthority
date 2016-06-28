@@ -1,6 +1,6 @@
 module Load
   class People < Loader
-    HR_FACULTY = 'People from HR faculty view'
+    HR_EMPLOYEE = 'People from HR'
     
     # Keys for warnings hash.
     NEW_ORG = 'new organization'
@@ -8,16 +8,76 @@ module Load
     NEW_MEM = 'new membership'
     NEW_ACCOUNT = 'new account'
     CHANGE_PRIMARY_ORG = 'changes primary org'
-    
-    def self.from_hr_faculty_view
-      batch_load(HR_FACULTY) do |loader|
-        Oracle::Faculty.find_each do |person|
+    UPDATING_MEMBERSHIP = 'updating membership'
+    ENDED_MEMBERSHIP = 'ended membership'
+
+    # Load appointments/memberships from view into a Human Resources table. Memberships that have
+    # vanished from the view are ended.
+    def self.from_hr
+      batch_load(HR_EMPLOYEE) do |loader|
+        begin
+          # Loads memberships with a "valid" title (not Temporary or Non-Paid) that have been
+          # modified since the last load. Primary memberships are loaded first.
+
+          last_import = Import.last_successful_import(HR_EMPLOYEE)
+          
+          Oracle::Employee.with_title(modified_since: last_import).primary.find_each do |p|
+            loader.into_lna(p.to_hash)
+          end
+
+          Oracle::Employee.with_title(modified_since: last_import).not_primary.find_each do |p|
+            loader.into_lna(p.to_hash)
+          end
+
+          # Add an end date of Date.today to memberships that have disappeared from the table.
+          
+          # Search for memberships that were loaded from HRMS and don't have an end date.
+          q = ActiveFedora::SolrQueryBuilder.construct_query(
+            [
+              ['source_tesi', 'HRMS'],
+              ['has_model_ssim', 'Lna::Membership'],
+              ['end_date_dtsi', nil]
+            ]
+          )
+          docs = ActiveFedora::SolrService.query(q, rows: 10000)
+
+          # Iterate through each membership and check to see if its still in the Oracle table.
+          # Matching based on netid, title and org id.
+          docs.each do |doc|
+            mem = Lna::Membership.load_instance_from_solr(doc['id'], doc)
+            
+            netid = mem.person.accounts.where(title: Lna::Account::DART_PROPERTIES[:title])
+                    .first.account_name
+            matching = Oracle::Employee.where(netid: netid, title: mem.title,
+                                              department_id: mem.organization.hr_id)
+
+            if matching.count.zero?
+              loader.into_lna(
+                {
+                  netid: netid,
+                  membership: {
+                    title: mem.title,
+                    end_date: Date.today,
+                    org: { hr_id: mem.organization.hr_id }
+                  }
+                }
+              )
+            end
+          end
+        rescue => e
+          loader.log_error(e, "Error loading #{HR_EMPLOYEE} in Oracle")
+        end
+      end
+    end
+
+    def self.from_netid(netid)
+      batch_load(HR_EMPLOYEE) do |loader|
+        Oracle::Employee.where(netid: netid).order(:primary_flag).each do |person|
           loader.into_lna(person.to_hash)
         end
       end
-    rescue => e
-      log_error(e, "Error loading #{HR_FACULTY} in Oracle")
     end
+    
     
     # Creates or updates Lna objects for the person described by the given hash.
     #
@@ -33,6 +93,7 @@ module Load
     #                membership: {
     #                              primary: true
     #                              title: 'Programmer/Analyst',
+    #                              begin_date: '2001-01-01',
     #                              org: {
     #                                     label: 'Library',
     #                                     alt_label: ['DLC']
@@ -88,7 +149,7 @@ module Load
           org = find_organization!(hash[:membership][:org])
           unless org.id == person.primary_org.id
             person.primary_org = org
-            log_warning(CHANGE_PRIMARY_ORG, "#{person.full_name}(#{netid})")
+            log_warning(CHANGE_PRIMARY_ORG, "#{person.full_name} (#{netid})")
           end
           person.save
         end
@@ -96,16 +157,19 @@ module Load
         # Create or update memberships.
         mem_hash = clean_mem_hash(hash[:membership])
         
-        if mem = person.matching_membership(hash[:membership])
+        if mem = person.matching_membership(hash[:membership]) # matching on title and hr_id.
+          info = "'#{mem.title}' for #{person.full_name} (#{netid})"
+          log_warning(ENDED_MEMBERSHIP, info) if mem.end_date == nil && mem_hash[:end_date]
           mem.update(mem_hash)
+          mem.save!
+          log_warning(UPDATING_MEMBERSHIP, info)
         else
           mem = Lna::Membership.create!(mem_hash) do |m|
             m.person = person
             m.organization = find_organization!(hash[:membership][:org])
-            m.begin_date = Date.today
           end
           person.save!
-          log_warning(NEW_MEM, "'#{mem.title}' for #{person.full_name}(#{netid})")
+          log_warning(NEW_MEM, "'#{mem.title}' for #{person.full_name} (#{netid})")
         end
       else   # Create new person.
         # Checking arguments.
@@ -123,22 +187,21 @@ module Load
           p.primary_org = org
         end
         
-        log_warning(NEW_PERSON, "#{person.full_name}(#{netid})")
+        log_warning(NEW_PERSON, "#{person.full_name} (#{netid})")
         
         # Make account and set as account for person.
         accnt = Lna::Account.create!(dart_account_hash(netid)) do |a|
           a.account_holder = person
         end
-        log_warning(NEW_ACCOUNT, "#{accnt.title} account for #{person.full_name}(#{netid})")
+        log_warning(NEW_ACCOUNT, "#{accnt.title} account for #{person.full_name} (#{netid})")
       
         # Make membership, belonging to org and person.
         mem_hash = clean_mem_hash(hash[:membership])
         mem = Lna::Membership.create!(mem_hash) do |m|
           m.person = person
           m.organization = org
-          m.begin_date = Date.today
         end
-        log_warning(NEW_MEM, "'#{mem.title}' for #{person.full_name}(#{netid})")
+        log_warning(NEW_MEM, "'#{mem.title}' for #{person.full_name} (#{netid})")
 
         person.save!
       end

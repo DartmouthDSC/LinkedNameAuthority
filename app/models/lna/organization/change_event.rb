@@ -35,104 +35,109 @@ module Lna
           end
         end
       end
-      
-      def self.trigger_change_event(active, description, update, end_date = Date.today)
-        # active must be a Lna::Organization
-        raise ArgumentError, 'first parameter must be a Lna::Organization' unless active.is_a?(Lna::Organization)
 
-        # update must contain one of the following keys
-        # this check might happen in historic.
-        valid_keys = [:sub_organizations, :super_organizations, :code, :alt_label, :label]
-        includes_keys = update.keys.select { |k| valid_keys.include? k }
-        if includes_keys.empty?
-          raise ArgumentError, "update must include one of the following keys: #{valid_keys.join(", ")}."
-        end
-        
-        historic_mems = active.memberships.to_a.select { |m| m.ended? }
-
-        # filter out id, *_id, *_ids
-        attr = active.attributes.select { |k, _| !(/(^id|.+_ids?)$/ =~ k) }
-        
-        # Create historic organization
-        historic = Lna::Organization::Historic.create!(attr) do |h|
-          h.end_date = end_date
-          h.historic_placement = active.json_serialization
-          h.memberships = historic_mems
-        end
-
-        # Update active organization
-        active.reload # historic_memberships should be removed
-        active.update_attributes(update)
-        # Remove historic memberships, that are now associated with the historic organization
-        
-        # Make updates as requested in the hash
-        
-        # Create change_event
-        Lna::Organization::ChangeEvent.create! do |c|
-          c.at_time = end_date
-          c.description = description
-          c.original_organizations << historic
-          c.resulting_organizations << active # sets resulted_from in active
-        end
-
-        active #return change_event object?, historic object, active?
-      end
-
-      # Method to combine two or more organizations. Converts all organization into historic
-      # organizations, creates a new active organization and creates a change event.
+      # Link two organizations through a change event.
       #
-      # Active memberships of all the organizations are combined and moved to the new active
-      # organizations. All accounts are combined and moved to the new active organization.
-      # All the historic organizations are set to be the originating organizations of the
-      # change_event, the new active organization are set to be the resulting organizations.
+      # If the old organization has a changed by event or if the new organization has a result from
+      # event, use that change event. Otherwise create a new one based using the description and
+      # date given. Date and description are ignored if a change event is already present.
       #
-      # @param [Array<Lna::Organization>] active_orgs Active organization to be combined. Length
-      #   of array needs to be greater than one.
-      # @param [String] description Description of change; will be used in change_event object.
-      # @param [Hash] new_org_attr 
-      # @param [Date] end_date End_date of organization, will also be set as the time the change
-      #   event occured. Defaults to today's date, if none is provided.
-      # @return
-      def self.combine_orgs(active_orgs, description, new_org_attr, end_date = Date.today)
-
-        raise ArgumentError, 'there must be more than one active org.' if active_orgs.length < 2
-
-        active_mems, accounts = [], []
-        active_orgs.each do |o|
-          # collect all active memberhips
-          active_mems << o.memberships.select { |m| m.active? }
-          accounts << o.accounts # collect accounts
-        end
-
-        # people?
-
-        # Create active organization
-        new_active = Lna::Organization.create!(new_org_attr) do |o|
-          o.memberships << active_mems
-          o.accounts << accounts
-        end
+      # If old is an active organization then:
+      #   - all accounts are migreated to the new organization
+      #   - all sub organizations and super organizations are copied over to the new organizations
+      #   - memberships
+      #       - that do not have an end date will be migrated to the new organization
+      #       - that do have an end date will be move to the historic organization
+      #   - people
+      #       - that do not have any active memberships will move to the historic organization
+      #       - that have an active membership related to old will be moved to the new organization
+      #       - otherwise, person will be moved to the organization of the first active membership
+      #   - change_by is set
+      #
+      # If old is a historic organization then:
+      #   - change_by is set
+      #
+      # @param [Lna::Organization::Historic|Lna::Organization] old
+      # @param [Lna::Organization] new
+      # @param [String] description
+      # @param [Date] date
+      # @return [Lna::Organization::ChangeEvent]
+      def self.trigger_event(old, new, description: nil, date: Date.today)
+        old.reload
+        new.reload
         
-        # Create historic organization and destroy active
-        historic_orgs = active_orgs.map do |current|
-          Lna::Organization.convert_to_historic(current) 
+        if old.instance_of?(Lna::Organization::Historic) && old.changed_by && new.resulted_from
+          unless old.changed_by == new.resulted_from
+            raise ArgumentError, 'old.changed_by and new.resulted_from events must be the same'
+          end
         end
 
-        # Create change_event
-        Lna::Organization::ChangeEvent.create! do |o|
-          o.at_time = end_date
-          o.description = description
-          o.resulting_organization << new_active
-          o.original_organizations << historic_orgs
-        end
-
-        # return new active org or change event
-      end
-
-      # split only into two, how would a split for more than one work?
-      def self.split_orgs(active, description, main_new_args, second_new_args, end_date)
+        change_event = if old.instance_of?(Lna::Organization::Historic) && old.changed_by
+                         old.changed_by
+                       elsif new.resulted_from
+                         new.resulted_from
+                       else
+                         Lna::Organization::ChangeEvent.new(
+                           description: description,
+                           at_time:     date
+                         )
+                       end
         
+        # If old is an active organization it needs to be converted to a historic organization.
+        if old.instance_of? Lna::Organization
+
+          # Migrate people from old -> new, if there's an active membership still related to org.
+          # If there are no active memberships, the person stays with the historic org. Otherwise,
+          # it is moved to one of the orgs for which it still has an active membership.
+          old.people.each do |person|
+            active_mems_orgs = person.memberships
+                               .select { |m| m.active_on? change_event.at_time }
+                               .map(&:organization)
+
+            next if active_mems_orgs.count.zero?
+
+            person.primary_org = (active_mems_orgs.include? old) ?
+                                   new : active_mems_orgs.first
+            person.save!
+          end
+
+          # Migrate memberships that have not ended from old -> new.
+          old.memberships.each do |mem|
+            if mem.active_on? date
+              mem.organization = new
+              mem.save!
+            end
+          end
+
+          # Copy sub_organizations and super_organization from old -> new.
+          new.super_organizations.concat(old.super_organizations)
+          new.sub_organizations.concat(old.sub_organizations)
+
+          # Migrate accounts from old -> new.
+          new.accounts = old.accounts
+          
+          new.save!
+
+          # Make old historic
+          old = Lna::Organization.convert_to_historic(old, date)
+         end
+
+        #byebug
+        
+        # Add historic to original organizations
+        change_event.original_organizations << old
+        old.changed_by = change_event
+        
+        # Add new to resulting organizations.
+        new.update(resulted_from: change_event)
+        new.save!
+
+        change_event.save!
+        
+#        puts change_event.original_organizations.inspect
+       
+        change_event
       end
-      
     end
   end
 end

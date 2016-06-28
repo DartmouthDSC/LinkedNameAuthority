@@ -3,9 +3,9 @@
 # Defines a single server with a list of roles and multiple properties.
 # You can define all roles on a single server, or split them:
 
-# server 'lna.dartmouth.edu', user: 'dsc', roles: %w{app db web}
+server 'lna.dartmouth.edu', user: 'dsc', roles: %w{app db web}
 
-# set :branch, 'master'
+set :branch, 'master'
 
 # role-based syntax
 # ==================

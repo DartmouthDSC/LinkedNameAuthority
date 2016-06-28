@@ -16,7 +16,11 @@ module Symplectic
         raise ArgumentError,
               "Trying to initialize #{self.class.name} with empty object." unless api_object
 
-        @id = api_object.attribute('id').text
+        if id = api_object.attribute('id')
+          @id = id.text
+        else
+          raise ArgumentError, "Could not locate valid id in record"
+        end
         
         if record = api_object.at_xpath("api:records/api:record[@format='native']/api:native")
           load_from_record(record)
@@ -30,7 +34,7 @@ module Symplectic
       # @params record [Nokogiri::XML::Element]
       def load_from_record(record)
         xpath_queries = {
-          publisher:  "api:field[@name='issue']/api:text",
+          publisher:  "api:field[@name='publisher']/api:text",
           title:      "api:field[@name='title']/api:text",
           volume:     "api:field[@name='volume']/api:text",
           abstract:   "api:field[@name='abstract']/api:text",

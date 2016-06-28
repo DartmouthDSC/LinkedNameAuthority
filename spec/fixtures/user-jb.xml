@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:api="http://www.symplectic.co.uk/publications/api">
+  <api:schema-version>4.9</api:schema-version>
+  <category scheme="http://www.symplectic.co.uk/publications/atom/feeds/" term="item" label="Item"/>
+  <id>tag:elements@organisation,5.1:/elements-secure-api/feeds//users/12</id>
+  <updated>2016-06-13T07:29:32.833-04:00</updated>
+  <generator uri="https://elements-dev.dartmouth.edu/" version="5.1">Symplectic Elements</generator>
+  <icon>https://localhost:9002/elements-secure-api/symplectic.ico</icon>
+  <rights>This data is the property of the Organisation, and can only be used with permission.</rights>
+  <subtitle>This feed represents a single user.</subtitle>
+  <link type="application/atom+xml" rel="self" href="https://localhost:9002/elements-secure-api/users/12"/>
+  <title>BELL, John P</title>
+  <author>
+	<name>Symplectic Elements at Organisation</name>
+  </author>
+  <entry>
+	<id>tag:elements@organisation,5.1:/elements-secure-api//users/12</id>
+	<category scheme="http://www.symplectic.co.uk/publications/atom/entries/" term="item" label="Item"/>
+	<updated>2016-06-13T07:29:32.833-04:00</updated>
+	<link type="application/atom+xml" rel="alternate" href="https://localhost:9002/elements-secure-api/users/12"/>
+	<title>BELL, John P</title>
+	<content type="xhtml">
+	  <div xmlns="http://www.w3.org/1999/xhtml">
+		<p>User</p>
+		<a href="https://localhost:9002/elements-secure-api/users/12/photo">Photo</a>
+		<p>
+		  <a href="https://localhost:9002/elements-secure-api/users/12/relationships">Relationships</a> with other data
+		</p>
+	  </div>
+	</content>
+	<api:object category="user" id="12" proprietary-id="f001m9b" authenticating-authority="Dartmouth-WebAuth" username="f001m9b" last-modified-when="2016-06-13T07:29:32.833-04:00" href="https://localhost:9002/elements-secure-api/users/12" created-when="2015-03-31T11:53:36.1-04:00" type-id="1" type="person">
+	  <!--User type 1 is "person"-->
+	  <api:ever-approved>true</api:ever-approved>
+	  <api:is-current-staff>true</api:is-current-staff>
+	  <api:is-academic>true</api:is-academic>
+	  <api:is-login-allowed>true</api:is-login-allowed>
+	  <api:initials>JP</api:initials>
+	  <api:last-name>Bell</api:last-name>
+	  <api:first-name>John</api:first-name>
+	  <api:email-address>John.P.Bell@Dartmouth.edu</api:email-address>
+	  <api:department>CS  Administration</api:department>
+	  <api:organisation-defined-data field-number="10" field-name="Last non-HR field"/>
+	  <api:organisation-defined-data field-number="11" field-name="First HR field"/>
+	  <api:organisation-defined-data field-number="12" field-name="Second HR field"/>
+	  <api:records>
+		<api:record format="native" id="6749" source-id="1" source-name="manual" source-display-name="Manual" id-at-source="86D73063-4365-4C74-8499-29208F2D63D7">
+		  <api:native>
+			<api:field name="academic-appointments" type="academic-appointment-list" display-name="Academic appointments">
+			  <api:academic-appointments>
+				<api:academic-appointment privacy="public">
+				  <api:institution iso-country-code="US">
+					<api:line type="organisation">University of Maine</api:line>
+					<api:line type="suborganisation">Digital Curation</api:line>
+					<api:line type="city">Orono</api:line>
+					<api:line type="country">United States</api:line>
+				  </api:institution>
+				  <api:position>Assistant Professor</api:position>
+				  <api:start-date>
+					<api:day>2</api:day>
+					<api:month>9</api:month>
+					<api:year>2013</api:year>
+				  </api:start-date>
+				</api:academic-appointment>
+			  </api:academic-appointments>
+			</api:field>
+		  </api:native>
+		</api:record>
+	  </api:records>
+	  <api:fields/>
+	  <api:relationships href="https://localhost:9002/elements-secure-api/users/12/relationships"/>
+	</api:object>
+  </entry>
+</feed>

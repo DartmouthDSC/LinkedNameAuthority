@@ -10,6 +10,8 @@ module Lna
                  predicate: ::RDF::Vocab::ORG.changedBy
 
       validates_presence_of :end_date
+
+      validates :end_date, date: { on_or_after: :begin_date }
       
       # Serialization of sub and super organizations.
       property :historic_placement, multiple: false, predicate: Vocabs::LNA.historicPlacement do |index|

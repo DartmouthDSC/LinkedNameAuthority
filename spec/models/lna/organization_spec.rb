@@ -167,4 +167,40 @@ RSpec.describe Lna::Organization, type: :model do
       expect(JSON.parse(subject)).to be_instance_of Hash
     end
   end
+
+  describe '.convert_to_historic' do
+    before :context do
+      @change_event = FactoryGirl.create(:hb_change)
+      @org = @change_event.resulting_organizations.first
+      @jane = FactoryGirl.create(:jane, primary_org: @org)
+      @prof = FactoryGirl.create(:thayer_prof, organization: @org)
+      @john = FactoryGirl.create(:jane, given_name: 'John', primary_org: @org)
+      
+      @historic_org = Lna::Organization.convert_to_historic(@org, Date.yesterday)
+    end
+
+    subject { @historic_org }
+
+    its(:id)         { is_expected.to eq @org.id }
+    its(:label)      { is_expected.to eq 'Thayer School of Engineering' }
+    its(:hr_id)      { is_expected.to eq '1234' }
+    its(:alt_label)  { is_expected.to match_array ['Engineering School', 'Thayer'] }
+    its(:begin_date) { is_expected.to eq Date.parse('2000-01-01') }
+    its(:end_date)   { is_expected.to eq Date.yesterday }
+    its(:kind)       { is_expected.to eq 'SCH' }
+    its(:hinman_box) { is_expected.to eq '1000' }
+
+    its(:people)        { is_expected.to include @jane, @john }
+    its(:memberships)   { is_expected.to include @prof }
+    its(:resulted_from) { is_expected.to eq @change_event } 
+
+    it 'historic_placement is valid json' do
+      expect(JSON.parse(subject.historic_placement)).to be_instance_of Hash
+    end
+    
+    it 'throws error is account are still attached' do
+      org = FactoryGirl.create(:orcid_for_org).account_holder
+      expect { Lna::Organization.convert_to_historic(org) }.to raise_error ArgumentError 
+    end
+  end
 end

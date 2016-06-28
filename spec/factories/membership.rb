@@ -9,6 +9,7 @@ FactoryGirl.define do
     country_name   'United States'
     begin_date     Date.today
     end_date       Date.tomorrow
+    source         Lna::Membership::SOURCE_MANUAL
     
     association    :organization, factory: :thayer
 

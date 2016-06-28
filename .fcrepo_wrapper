@@ -1,0 +1,5 @@
+# Defaults for fcrepo_wrapper
+port: 8080
+version: 4.5.1
+enable_jms: false
+verbose: true

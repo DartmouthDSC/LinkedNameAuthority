@@ -20,9 +20,9 @@ end
 
 def add_role_to_users(role, users)
   users.each do |attrs|
-    User.find_or_create_by!(attrs) do |u|
-      u.roles << role
-    end
+    user = User.find_or_create_by!(attrs)
+    user.roles << role
+    user.save!
   end
 end
 
@@ -30,7 +30,8 @@ add_admins(
   [
     { name: 'Carla M. Galarza', netid: 'd31309k', realm: 'dartmouth.edu' },
     { name: 'Eric J. Bivona',   netid: 'd28584r', realm: 'dartmouth.edu' },
-    { name: 'John P. Bell',     netid: 'f001m9b', realm: 'dartmouth.edu' }
+    { name: 'John P. Bell',     netid: 'f001m9b', realm: 'dartmouth.edu' },
+    { name: 'David L. Green',   netid: 'f000bj0', realm: 'dartmouth.edu' },
   ]
 )
 

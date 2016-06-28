@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:api="http://www.symplectic.co.uk/publications/api">
+  <api:schema-version>4.9</api:schema-version>
+  <category scheme="http://www.symplectic.co.uk/publications/atom/feeds/" term="relationship-list" label="Relationship list"/>
+  <id>tag:elements@organisation,5.1:/elements-secure-api/feeds/users/username-f001m9b/publications?detail=full</id>
+  <updated>2016-06-22T11:02:35.799067-04:00</updated>
+  <generator uri="https://elements-dev.dartmouth.edu/" version="5.1">Symplectic Elements</generator>
+  <icon>https://localhost:9002/elements-secure-api/symplectic.ico</icon>
+  <rights>This data is the property of the Organisation, and can only be used with permission.</rights>
+  <subtitle>This feed represents page 2 of 2 listing a total of 26 results from the following search query: https://localhost:9002/elements-secure-api/users/username-f001m9b/publications?detail=full</subtitle>
+  <api:pagination results-count="26" items-per-page="25">
+	<api:page position="this" number="2" href="https://localhost:9002/elements-secure-api/users/username-f001m9b/publications?detail=full&amp;page=2"/>
+	<api:page position="first" number="1" href="https://localhost:9002/elements-secure-api/users/username-f001m9b/publications?detail=full"/>
+	<api:page position="previous" number="1" href="https://localhost:9002/elements-secure-api/users/username-f001m9b/publications?detail=full"/>
+	<api:page position="last" number="2" href="https://localhost:9002/elements-secure-api/users/username-f001m9b/publications?detail=full&amp;page=2"/>
+  </api:pagination>
+  <link type="application/atom+xml" rel="first" href="https://localhost:9002/elements-secure-api/users/username-f001m9b/publications?detail=full"/>
+  <link type="application/atom+xml" rel="previous" href="https://localhost:9002/elements-secure-api/users/usernames-f001m9b/publications?detail=full"/>
+  <link type="application/atom+xml" rel="last" href="https://localhost:9002/elements-secure-api/users/username-f001m9b/publications?detail=full&amp;page=2"/>
+  <link type="application/atom+xml" rel="self" href="https://localhost:9002/elements-secure-api/users/username-f001m9b/publications?detail=full"/>
+  <title>Publications related to the user: BELL, John P</title>
+  <author>
+	<name>Symplectic Elements at Organisation</name>
+  </author>
+  <entry>
+	<id>tag:elements@organisation,5.1:/elements-secure-api//users/username-f001m9b/publications?detail=full</id>
+	<category scheme="http://www.symplectic.co.uk/publications/atom/entries/" term="relationship" label="Relationship"/>
+	<updated>2016-02-22T13:21:01.49-05:00</updated>
+	<link type="application/atom+xml" rel="alternate" href="https://localhost:9002/elements-secure-api/users/username-f001m9b/publications?detail=full"/>
+	<link type="application/atom+xml" rel="related" title="Object 1" href="https://localhost:9002/elements-secure-api/publications/1"/>
+	<link type="application/atom+xml" rel="related" title="Object 2" href="https://localhost:9002/elements-secure-api/users/12"/>
+	<title>Author of: BELL, John P</title>
+	<content type="xhtml">
+	  <div xmlns="http://www.w3.org/1999/xhtml">
+		<p>Involving
+		<a href="https://localhost:9002/elements-secure-api/users/12">BELL, John P</a>
+		</p>
+	  </div>
+	</content>
+	<api:relationship id="1" type-id="8" type="publication-user-authorship" href="https://localhost:9002/elements-secure-api/relationships/1">
+	  <api:is-visible>true</api:is-visible>
+	  <api:is-favourite>false</api:is-favourite>
+	  <api:related direction="from" category="publication" id="1">
+		<api:object category="publication" id="142658" last-modified-when="2016-02-22T13:21:01.683-05:00" href="https://localhost:9002/elements-secure-api/publications/1" created-when="2016-02-22T13:21:00.973-05:00" type-id="2" type="book">
+		  <!--Publication type 2 is "book"-->
+		  <api:ever-approved>true</api:ever-approved>
+		  <api:reporting-date-1>2014-05-09</api:reporting-date-1>
+		  <api:records>
+			<api:record format="native" id="1" source-id="16" source-name="google-books" source-display-name="Google Books" id-at-source="c4yToAEACAAJ" is-preferred-record="true">
+			  <api:native>
+				<api:field name="abstract" type="text" display-name="Abstract">
+				  <api:text>This is a test publication.</api:text>
+				</api:field>
+				<api:field name="authors" type="person-list" display-name="Authors">
+				  <api:people>
+					<api:person>
+					  <api:links>
+						<api:link type="elements/user" id="12" href="https://localhost:9002/elements-secure-api/users/12"/>
+					  </api:links>
+					  <api:last-name>Bell</api:last-name>
+					  <api:initials>J</api:initials>
+					  <api:first-names>John</api:first-names>
+					</api:person>
+				  </api:people>
+				</api:field>
+				<api:field name="keywords" type="keyword-list" display-name="Keywords">
+				  <api:keywords>
+					<api:keyword>Computers</api:keyword>
+				  </api:keywords>
+				</api:field>
+				<api:field name="publication-date" type="date" display-name="Publication date">
+				  <api:date>
+					<api:day>1</api:day>
+					<api:month>1</api:month>
+					<api:year>2016</api:year>
+				  </api:date>
+				</api:field>
+				<api:field name="publication-status" type="text" display-name="Status">
+				  <api:text>Published</api:text>
+				</api:field>
+				<api:field name="publisher" type="text" display-name="Publisher">
+				  <api:text>MIT Press (MA)</api:text>
+				</api:field>
+				<api:field name="title" type="text" display-name="Title">
+				  <api:text>Test publication</api:text>
+				</api:field>
+			  </api:native>
+			</api:record>
+		  </api:records>
+		  <api:relationships href="https://localhost:9002/elements-secure-api/publications/1/relationships"/>
+		</api:object>
+	  </api:related>
+	</api:relationship>
+  </entry>
+</feed>

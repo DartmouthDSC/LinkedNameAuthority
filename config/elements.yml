@@ -1,0 +1,18 @@
+default: &default
+  username: <%= ENV['ELEMENTS_USERNAME'] %>
+  password: <%= ENV['ELEMENTS_PASSWORD'] %>
+  
+development: &dev
+  <<: *default
+  api_root: https://elements-api-dev.dartmouth.edu:9002/elements-secure-api
+
+test: &test
+  username: testperson
+  password: testpassword
+  api_root: https://elements-api-dev.dartmouth.edu:9002/elements-secure-api
+ci: *test
+
+production: &prod
+  <<: *default
+  api_root: https://elements-api.dartmouth.edu:9002/elements-secure-api
+qa: *prod

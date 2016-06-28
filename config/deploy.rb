@@ -21,7 +21,7 @@ set :deploy_to, "/opt/deploy/#{fetch(:application)}"
 # Default value for :pty is false
 # set :pty, true
 
-set :linked_files, fetch(:linked_files, []).push('.env', 'db/production.sqlite3')
+set :linked_files, fetch(:linked_files, []).push('.env')
 
 set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets',
                                                'public/system')
@@ -29,7 +29,8 @@ set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', '
 set :default_env, {
       'LD_LIBRARY_PATH' => '/usr/lib/oracle/12.1/client64/lib:$LD_LIBRARY_PATH',
       'ORACLE_HOME'     => '/usr/lib/oracle/12.1/client64',
-      'NLS_LANG'        => 'AMERICAN_AMERICA.WE8ISO8859P1'
+      'NLS_LANG'        => 'AMERICAN_AMERICA.WE8ISO8859P1',
+      'PATH'            => '$PATH:/usr/pgsql-9.5/bin'
     }
 
 set :keep_releases, 5
@@ -38,5 +39,4 @@ set :bundle_without, %w{development test ci}.join(' ')
 
 namespace :deploy do
   after :finished, "deploy:restart_apache"
-  after :finished, "deploy:write_crontab"
 end

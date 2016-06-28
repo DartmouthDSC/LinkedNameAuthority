@@ -4,18 +4,11 @@ RSpec.describe Lna::Membership, type: :model do
   it 'has a valid factory' do
     prof = FactoryGirl.create(:thayer_prof)
     expect(prof).to be_truthy
-    prof.person.destroy
-    prof.organization.destroy
   end
 
   describe '.create' do
     before :context do
       @prof = FactoryGirl.create(:thayer_prof)
-    end
-
-    after :context do
-      @prof.person.destroy
-      @prof.organization.destroy
     end
     
     subject { @prof }
@@ -60,17 +53,15 @@ RSpec.describe Lna::Membership, type: :model do
       expect(subject.end_date).to be_instance_of Date
       expect(subject.end_date.to_s).to eql Date.tomorrow.to_s
     end
+
+    it 'sets source' do
+      expect(subject.source).to eql 'Manual'
+    end
   end
 
   describe '#organization' do
     before :context do
       @prof = FactoryGirl.create(:thayer_prof)
-      @prof.organization.save
-    end
-    
-    after :context do
-      @prof.person.destroy
-      @prof.organization.destroy
     end
 
     subject { @prof }
@@ -100,11 +91,6 @@ RSpec.describe Lna::Membership, type: :model do
       @prof = FactoryGirl.create(:thayer_prof)
     end
 
-    after :context do
-      @prof.person.destroy
-      @prof.organization.destroy
-    end
-
     subject { @prof }
     
     it 'is a Lna::Person' do
@@ -115,19 +101,131 @@ RSpec.describe Lna::Membership, type: :model do
       expect(subject.person.memberships).to include @prof
     end
   end
+
+  describe '#end_date=' do
+    let!(:prof) { FactoryGirl.create(:thayer_prof, end_date: nil)  }
+    let!(:primary_org) { prof.person.primary_org }
+
+    it 'sets end date' do
+      prof.update(end_date: Date.today)
+      expect(prof.end_date).to eq Date.today
+    end
+  end
   
-  describe 'validations' do
-    before :example do
-      @prof = FactoryGirl.create(:thayer_prof)
+  describe '#update_primary_org' do
+    let!(:prof) { FactoryGirl.create(:thayer_prof, end_date: nil)  }
+    let!(:primary_org) { prof.person.primary_org }
+    
+    context 'updates the person\'s primary organization' do
+      it 'when there are other active memberships with active organizations' do
+        new_mem = FactoryGirl.create(:thayer_prof, person: prof.person)
+        new_primary_org = new_mem.organization
+        prof.person.memberships << new_mem
+        prof.person.save
+        prof.end_date = Date.today
+        prof.save
+        expect(prof.person.primary_org).to eq new_primary_org
+      end
+    end
+    
+    context 'does not update the person\'s primary organization' do
+      it 'when there are no other membership' do
+        prof.end_date = Date.today
+        prof.save
+        expect(prof.person.primary_org).to eq primary_org
+      end
+      
+      it 'when there are no other active memberships' do
+        prof.person.memberships << FactoryGirl.create(:thayer_prof, person: prof.person,
+                                                      end_date: Date.today)
+        prof.person.save
+        prof.person.reload
+        prof.end_date = Date.today
+        prof.save
+        expect(prof.person.primary_org).to eq primary_org
+      end
+
+      it 'when there are active memberships with historical organizations' do
+        old_thayer = FactoryGirl.create(:old_thayer)
+        prof.person.memberships << FactoryGirl.create(:thayer_prof, person: prof.person,
+                                                      organization: old_thayer)
+        prof.person.save
+        prof.person.reload
+        prof.end_date = Date.today
+        prof.save
+        expect(prof.person.primary_org).to eq primary_org
+      end
+    end
+  end
+
+  describe '#end_date_set?' do
+    it 'when end_date set return true' do
+      prof = FactoryGirl.create(:thayer_prof)
+      expect(prof.end_date_set?).to be true
     end
 
-    after :example do
-      @prof.reload
-      @prof.person.destroy
-      @prof.organization.destroy
+    it 'when end_date not set return false' do
+      prof = FactoryGirl.create(:thayer_prof, end_date: nil)
+      expect(prof.end_date_set?).to be false
+    end
+  end
+  
+  describe '#ended?' do
+    it 'returns true if membership ended on or before today' do
+      prof = FactoryGirl.create(:thayer_prof, end_date: Date.today)
+      expect(prof.ended?).to be true
+    end
+
+    it 'returns false is membership still active' do
+      prof = FactoryGirl.create(:thayer_prof)
+      expect(prof.ended?).to be false
+    end
+  end
+
+  describe '#active?' do
+    it 'returns true if membership active on today' do
+      prof = FactoryGirl.create(:thayer_prof)
+      expect(prof.active?).to be true
+    end
+
+    it 'returns false if membership not active today' do
+      prof = FactoryGirl.create(:thayer_prof, end_date: Date.today)
+      expect(prof.active?).to be false
+    end
+  end
+  
+  describe '#active_on?' do
+    before :context do
+      @prof = FactoryGirl.create(:thayer_prof, begin_date: Date.yesterday)
     end
 
     subject { @prof }
+    
+    it 'returns true if date is the same as begin_date' do
+      expect(@prof.active_on? Date.yesterday).to be true
+    end
+
+    it 'returns true if the date is between begin_date and end_date' do
+      expect(@prof.active_on? Date.today).to be true
+    end
+
+    it 'return false if date is before begin_date' do
+      expect(@prof.active_on? Date.yesterday - 1).to be false
+    end
+
+    it 'return false if date is on end_date' do
+      expect(@prof.active_on? Date.tomorrow).to be false
+    end
+
+    it 'returns false if date is after end_date' do
+      expect(@prof.active_on? Date.tomorrow + 1).to be false
+    end
+  end
+  
+  describe 'validations' do
+    let(:prof) { FactoryGirl.create(:thayer_prof) }
+    
+    subject { prof }
     
     it 'assure title is set' do
       subject.title = nil

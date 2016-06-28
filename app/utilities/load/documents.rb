@@ -25,9 +25,7 @@ module Load
       batch_load(ELEMENTS_LOADER) do |load|
         begin
           # Get the last import.
-          i = Import.last_successful_import(load.title)
-          last_import = (i) ? i.time_started : nil
-          
+          last_import = Import.last_successful_import(load.title)          
           users = Symplectic::Elements::Users.get_all(modified_since: last_import)
         rescue StandardError => e
           load.log_error(e, 'while retrieving users.')

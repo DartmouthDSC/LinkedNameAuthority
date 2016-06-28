@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.2.4'
+gem 'rails', '4.2.6'
 
 # Hydra dependencies
 gem 'active-fedora', '~> 9.12.0'
@@ -21,11 +21,16 @@ gem 'jbuilder', '~> 2.0'
 gem 'net-dnd', github: 'dartmouth-dltg/net-dnd'
 gem 'omniauth-cas'
 gem 'rdf-vocab'
-gem 'sqlite3' # used for ActiveRecord
 gem 'turbolinks' # Turbolinks makes following links in your web application faster.
 gem 'therubyracer', platforms: :ruby # Embed the V8 JavaScript interpreter into Ruby
 gem 'whenever' # Used to run cron jobs.
 
+# Used to bundle gems without pg in local environments that may not have postgresql.
+group :pg do
+  gem 'pg'
+end
+
+# Used to bundle gems without oracle in travis environment.
 group :oracle do 
   gem 'activerecord-oracle_enhanced-adapter', '~> 1.6.0'
   gem 'ruby-oci8' # Oracle
@@ -39,23 +44,26 @@ gem 'uglifier', '>= 1.3.0' # Use Uglifier as compressor for JavaScript assets
 group :development, :test, :ci do
   gem 'airborne'
   gem 'byebug'  # Call 'byebug' anywhere in the code to stop to get a debugger console.
+  gem 'database_cleaner'
   gem 'factory_girl_rails'
   gem 'pry-nav'
   gem 'rspec-its'
   gem 'rspec-rails'
   gem 'spring'  # Spring speeds up development.
+  gem 'webmock'
 end
 
 group :development do
   gem 'capistrano-rails', '~> 1.1'
   gem 'capistrano-rvm'
   gem 'rack-mini-profiler'
+  gem 'pry-rails'
   gem 'ruby-debug-passenger'
   gem 'web-console', '2.3.0' # Can remove this once we go to ruby 2.2.2
 end
 
 group :ci do
   gem 'coveralls', require: false
-  gem 'fcrepo_wrapper', '~> 0.2.1'
-  gem 'solr_wrapper', '~> 0.5.0'
+  gem 'fcrepo_wrapper'
+  gem 'solr_wrapper'
 end
