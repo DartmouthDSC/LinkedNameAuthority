@@ -15,4 +15,9 @@ namespace :load do
   task people: :environment do
     Load::People.from_hr
   end
+
+  desc "Load documents from Elements."
+  task documents: :environment do
+    Load::Documents.from_elements
+  end
 end
