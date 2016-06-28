@@ -33,11 +33,29 @@ RSpec.describe Oracle::Employee, type: :model do
       it 'has at least one matching row' do
         expect(Oracle::Employee.not_primary.count).to be > 1
       end
+
+      it 'has the correct number of rows' do
+        primary = Oracle::Employee.primary.count
+        not_primary = Oracle::Employee.not_primary.count
+        expect(primary + not_primary).to eq Oracle::Employee.count
+      end      
     end
 
     describe '.valid_title' do
       it 'has at least one matching row' do
         expect(Oracle::Employee.valid_title.count).to be > 1
+      end
+    end
+
+    describe '.modified_since' do
+      it 'has at least one matching row' do
+        expect(Oracle::Employee.modified_since(Date.today - 2.years).count).to be > 1
+      end
+      # if modified since is blank returns all results
+      it 'if date blank returns all results' do
+        total = Oracle::Employee.count
+        expect(Oracle::Employee.modified_since('').count).to eq total
+        expect(Oracle::Employee.modified_since(nil).count).to eq total
       end
     end
   end
