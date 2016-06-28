@@ -19,6 +19,7 @@ RSpec.describe Oracle::Organization, type: :model do
         query = Oracle::Organization.modified_since(nil)
         expect(query.where_values).to eq []
         expect(query.where_values_hash).to eql({})
+        expect(query.count).to eq Oracle::Organization.count
       end
       
       it 'returns error if date not a time object' do
@@ -33,9 +34,15 @@ RSpec.describe Oracle::Organization, type: :model do
     end
 
     describe '.ended' do
-      
+      it 'returns at least one organization' do
+        expect(Oracle::Organization.ended.count).to be > 1
+      end
+
+      it 'returns pension department' do
+        results = Oracle::Organization.ended.where(organization: "Pension")
+        expect(results.count).to eq 1
+        expect(results.first.organization_id).to eq 5744
+      end
     end
-    
   end
-  
 end

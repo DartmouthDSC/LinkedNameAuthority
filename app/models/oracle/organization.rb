@@ -59,22 +59,5 @@ module Oracle
         end_date:           self.org_end_date.to_s,
       }
     end
-
-    # @param type [String]
-    # @param last_modified [Time] 
-    def self.find_by_type(type, last_modified = nil)
-      r = where(org_type: type)
-      if last_modified
-        raise 'last_modified date must be a Time object' unless last_modified.is_a? Time
-        r = r.where('last_system_update > ?', last_modified)
-      end
-      r
-    end
-
-    # Queries for organizations ended (ended by today) by org type. Results are returned in
-    # ascending date order.
-    def self.find_ended_orgs_by_type(type)
-      where('org_type = ? AND org_end_date <= ?', type, Date.today)
-    end
   end
 end
