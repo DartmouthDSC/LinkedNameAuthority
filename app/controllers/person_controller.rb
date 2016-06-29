@@ -42,7 +42,7 @@ class PersonController < CrudController
     respond_to do |format|
       format.jsonld { render :create, status: :created, location: location,
                              content_type: 'application/ld+json' }
-      format.html { redirect_to location }
+#      format.html { redirect_to location }
     end
   end
 

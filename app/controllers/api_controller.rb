@@ -1,7 +1,5 @@
 require 'fedora_id'
 class ApiController < ApplicationController
-  before_action :redirect_to_admin
-
   include SolrSearchBehavior
 
   MAX_ROWS = 100.freeze
@@ -46,13 +44,6 @@ class ApiController < ApplicationController
       end
     end
     return false
-  end
-
-  def redirect_to_admin
-    if request.format == :html
-      path = root_url + 'admin/' + request.original_url.gsub(root_url, '')
-      redirect_to path, action: params[:action]
-    end
   end
   
   # see (#org_uri_to_fedora_id)

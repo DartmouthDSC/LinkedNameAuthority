@@ -17,7 +17,6 @@ class OrganizationsController < CollectionController
     respond_to do |format|
       response.headers['Link'] = link_headers(result['response']['numFound'], MAX_ROWS, @page)
       format.jsonld { render :index, content_type: 'application/ld+json' }
-      format.html
     end
   end
 
@@ -44,7 +43,6 @@ class OrganizationsController < CollectionController
     respond_to do |f|
       response.headers['Link'] = link_headers(result['response']['numFound'], MAX_ROWS, @page)
       f.jsonld { render :search, content_type: 'application/ld+json' }
-      f.html
     end
   end
 
