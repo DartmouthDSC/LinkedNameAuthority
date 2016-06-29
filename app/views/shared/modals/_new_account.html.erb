@@ -2,7 +2,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-body">
-        <form data-lna-query="newAccount" accept-charset="UTF-8" class="formTwoColumn" data-opt="<%= @short_id %>/account" data-no-ajax="true">
+        <form data-lna-query="newAccount" accept-charset="UTF-8" class="formTwoColumn" data-opt="<%= FedoraID.shorten(params[:id]) %>/account" data-no-ajax="true">
           <div><label>Template</label><select name="template" class="dropdownBehavior changeBehavior" data-opt="onlineAccounts" data-onchange="prefillAccounts">
             <option></option>
           </select></div>          
@@ -11,7 +11,7 @@
            <div><label>Service Link</label><input name="foaf:accountServiceHomepage"></input></div>
           <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
           <%= hidden_field_tag "foaf:accountName" %>
-          <%= hidden_field_tag "dc:creator", "https://jb.dac.dartmouth.edu/lna/person/" + @short_id %>
+          <%= hidden_field_tag "dc:creator", root_url + "person/" + FedoraID.shorten(params[:id]), {:id => nil} %>          
           <button type="submit" title="submit">Submit</button>
         </form>
       </div>
