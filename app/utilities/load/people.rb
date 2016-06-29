@@ -21,11 +21,11 @@ module Load
 
           last_import = Import.last_successful_import(HR_EMPLOYEE)
           
-          Oracle::Employee.distinct.valid_title.modified_since(last_import).primary.find_each do |p|
+          Oracle::Employee.valid_title.modified_since(last_import).primary.find_each do |p|
             loader.into_lna(p.to_hash)
           end
 
-          Oracle::Employee.distinct.valid_title.modified_since(last_import).not_primary.find_each do |p|
+          Oracle::Employee.valid_title.modified_since(last_import).not_primary.find_each do |p|
             loader.into_lna(p.to_hash)
           end
 
