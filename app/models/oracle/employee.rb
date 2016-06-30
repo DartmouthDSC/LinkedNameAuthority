@@ -3,59 +3,52 @@ module Oracle
     self.table_name = 'DARTHR.DC_ACAD_COMMONS_EMP_V'
     self.primary_key = 'netid'
 
-#   Here are the columns in this view:
-##  INITIALS           VARCHAR2(6)
-##  FIRST_NAME         VARCHAR2(150)
-##  LAST_NAME          NOT NULL VARCHAR2(150)
-##  SUFFIX             VARCHAR2(30)
-##  EMAIL              VARCHAR2(256 CHAR)
-##  NETID              VARCHAR2(150)
-##  SCHOOL             VARCHAR2(4000 CHAR)
-##  TITLE              VARCHAR2(484)
-##  FACULTY_RANK       VARCHAR2(150)
-##  DEPARTMENT         NOT NULL VARCHAR2(240)
-##  DEPARTMENT_ID      NOT NULL NUMBER(15)
-##  KNOWNAS            VARCHAR2(150)
-##  PERSON_ID          NOT NULL NUMBER(10)
-##  LASTEST_START_DATE NOT NULL DATE
-##  SCHOOL_START_DATE  DATE
-##  DEPT_START_DATE    DATE
-##  PRIMARY_FLAG       VARCHAR2(1 CHAR)
-##  LAST_MODIFIED_DATE DATE
+    # Filter out employees with title of Non-Paid, Temporary and nil.    
+    scope :valid_title, -> { where.not({ title: ['Temporary', 'Non-Paid', nil] }) }
+    
+    # Limit to employee records modified after the date given. If date is blank, query is
+    # not limited any further.
+    scope :modified_since, -> (date) { where('last_modified_date > ?', date) unless date.blank? }
 
-#   Return a hash in a connonical form for the Lna Person Loader.
+    scope :primary, -> { where({ primary_flag: ['Y', 'y'] }) }
+    
+    scope :not_primary, -> {
+      where('(primary_flag != ? and primary_flag != ?) or primary_flag is null', 'Y', 'y')
+    }
+
+    # Return a hash in a connonical form for the Lna Person Loader.
     def to_hash
       unless (self.netid)
         raise ArgumentError.new("#{self.last_name}: No NetID (#{self})")
       end
 
-#     Generate a person's full name.
+      # Generate a person's full name.
       nameParts = []
-#     See if we have a first name to work with.
+      # See if we have a first name to work with.
       if ((firstname = self.first_name))
-#	If there are multiple parts to the first name, work through them.
+        # If there are multiple parts to the first name, work through them.
         if ((firsts = firstname.split(' ')) && firsts.count > 1)
           firsts.each do |part|
-#	    If true the person has an initial as part of their first
-#	    name, so we want to append a period to it.
+            # If true the person has an initial as part of their first
+            # name, so we want to append a period to it.
             if (part.length == 1 && part.upcase == part)
               part.concat('.')
             end
           end
-#	  Put their first name back together.
+          #	Put their first name back together.
           firstname = firsts.join(' ')
         end
       end
       nameParts.push(firstname) if (firstname)
-#     The initials field includes the initial of the first name, so we
-#     skip it in constructing the full name.
+      # The initials field includes the initial of the first name, so we
+      # skip it in constructing the full name.
       if (self.initials[1..-1] != '')
         nameParts.push(self.initials[1..-1].split(//).join('.') + '.')
       end
       nameParts.push(self.last_name)
       nameParts.push(self.suffix) if (self.suffix)
-
-#     Our full hash.
+      
+      # Our full hash.
       {
         netid: self.netid,
         person: {
@@ -76,24 +69,11 @@ module Oracle
       }
     end
 
-    # Filter out employees with title of Non-Paid, Temporary and nil. If modified_since set
-    # only return employee records modified after the date given.
-    def self.with_title(modified_since: nil)
-      results = where.not({ title: ['Temporary', 'Non-Paid', nil] })
-      
-      unless modified_since.nil?
-        results = results.where('last_modified_date > ?', modified_since)
-      end
-      
-      results
-    end
-    
-    def self.primary
-      where({ primary_flag: ['Y', 'y'] })
-    end
-
-    def self.not_primary
-      where.not({ primary_flag: ['Y', 'y'] })
+    # Query for records that contain a distinct netid, title and department_id and have a valid
+    # title (a title not eql not nil, Temporary or Non-Paid). This query should not be chained.
+    # Mostly used to test that all records were correctly loaded.
+    def self.distinct_with_valid_title
+      find_by_sql('SELECT DISTINCT netid, title, department_id FROM "DARTHR"."DC_ACAD_COMMONS_EMP_V" WHERE (NOT ((title IN (\'Temporary\', \'Non-Paid\') OR title IS NULL)))')
     end
   end
 end
