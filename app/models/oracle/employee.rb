@@ -68,5 +68,12 @@ module Oracle
         }
       }
     end
+
+    # Query for records that contain a distinct netid, title and department_id and have a valid
+    # title (a title not eql not nil, Temporary or Non-Paid). This query should not be chained.
+    # Mostly used to test that all records were correctly loaded.
+    def self.distinct_with_valid_title
+      find_by_sql('SELECT DISTINCT netid, title, department_id FROM "DARTHR"."DC_ACAD_COMMONS_EMP_V" WHERE (NOT ((title IN (\'Temporary\', \'Non-Paid\') OR title IS NULL)))')
+    end
   end
 end
