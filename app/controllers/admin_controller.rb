@@ -3,6 +3,9 @@ class AdminController < ApplicationController
 
   before_action :default_to_first_page, only: [:index, :search]
 
+  def index
+  end
+  
   def default_to_first_page
     params['page'] = (params['page'].blank?) ? 1 : params['page'].to_i
   end

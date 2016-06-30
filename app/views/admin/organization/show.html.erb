@@ -53,6 +53,6 @@
 		<script>
         $(document).ready(function(){
             $().LNAGateway().loadOrg(LNA.loadOrg, "<%= params[:id] %>");
-            $().LNAGateway().findOrgPersons(LNA.loadOrgPersons, "<%= @organization['id'] %>");
+            $().LNAGateway().findOrgPersons(LNA.loadOrgPersons, _base_url + 'organization/' + "<%= params[:id] %>");
         });
         </script>

@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  root to: "application#index"
+  root to: redirect('admin')
 
   devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
 
@@ -37,6 +37,7 @@ Rails.application.routes.draw do
   end  
 
   namespace :admin do
+    get action: 'index'
     get '/person', to: redirect('persons')
     get '/work', to: redirect('works')
     get '/organization', to: redirect('organizations')
