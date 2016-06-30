@@ -24,15 +24,15 @@ module Load
           
           # Loading organization in order from highest to lowest in the hierarchy, without
           # an end date.
-          Oracle::Organization::ORDERED_ORG_TYPES.reverse.each do |type|
-            Oracle::Organization.find_by_type(type, last_import).each do |org|
+          Oracle::Organization::ORDERED_ORG_TYPES.reverse.each do |t|
+            Oracle::Organization.type(t).modified_since(last_import).each do |org|
               loader.into_lna(org.to_hash.except(:end_date))
             end
           end
           
           # Loading organizations that have an end date set and the end date not after today.
-          Oracle::Organization::ORDERED_ORG_TYPES.each do |type|
-            Oracle::Organization.find_ended_orgs_by_type(type).each do |org|
+          Oracle::Organization::ORDERED_ORG_TYPES.each do |t|
+            Oracle::Organization.type(t).ended.each do |org|
               loader.into_lna(org.to_hash.except(:super_organization))
             end
           end
