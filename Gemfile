@@ -13,6 +13,8 @@ gem 'om', '~> 3.1.0'
 gem 'rsolr', '~> 1.0.13'
 gem 'solrizer', '~> 3.4.0'
 
+gem 'citeproc-ruby'
+gem 'csl-styles'
 gem 'devise'
 gem 'dotenv-rails'
 gem 'gaffe'
