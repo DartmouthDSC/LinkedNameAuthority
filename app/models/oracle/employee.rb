@@ -2,6 +2,9 @@ module Oracle
   class Employee < OracleDatabase
     self.table_name = 'DARTHR.DC_ACAD_COMMONS_EMP_V'
     self.primary_key = 'netid'
+    
+    set_date_columns     :latest_start_date, :school_start_date, :dept_start_date
+    set_datetime_columns :last_modified_date
 
     # Filter out employees with title of Non-Paid, Temporary and nil.    
     scope :valid_title, -> { where.not({ title: ['Temporary', 'Non-Paid', nil] }) }

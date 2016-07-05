@@ -4,21 +4,24 @@ module Oracle
     ORDERED_ORG_TYPES = [ 'SUBUNIT', 'UNIT', 'DEPT', 'SUBDIV', 'ACAD DIV', 'SCH', 'DIV'].freeze
 
     self.table_name = 'DARTHR.DC_ACAD_COMMONS_ORG_V'
+    self.primary_key = 'organization' # Could be organization_id...
 
-    # Could be organization_id...
-    self.primary_key = 'organization'
-
+    set_date_columns :org_begin_date, :org_end_date, :last_system_update
+    
     # Limit results by type.
     scope :type, -> (t) { where(org_type: t) }
 
     # Limit results to organization ended before or on today.
     scope :ended, -> { where('org_end_date <= ?', Date.today) }
 
-    # Limit results to records modified on or after the time given
+    # Limit results to records modified on or after the date given
     def self.modified_since(d)
-      return all if d.nil?
-      raise ArgumentError, 'date must be a Time object' unless d.is_a? Time
-      where('last_system_update > ?', d)
+      if d.nil?
+        return all
+      elsif d.respond_to?(:to_date)
+        d = d.to_date
+      end
+      where('last_system_update >= ?', d)
     end
     
 
