@@ -9,7 +9,7 @@ class Import < ActiveRecord::Base
   # @return [nil] if there is not a last successful load return nil
   def self.last_successful_import(title)
     result = where(load: title, success: true)
-              .order(time_started: :asc)
+              .order(time_started: :desc)
               .first
     (result) ? result.time_started : nil
   end
