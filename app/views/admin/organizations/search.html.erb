@@ -1,5 +1,5 @@
         <nav class="centered breadcrumbs" role="navigation">
-            <%= link_to(admin_root_path, class: "crumbContinue") do %><span>Home</span><% end %><%= link_to(organizations_path, class: "crumbStop crumbHere") do %><span>Organizations</span><% end %>
+            <%= link_to(admin_root_path, class: "crumbContinue") do %><span>Home</span><% end %><%= link_to(admin_organizations_path, class: "crumbStop crumbHere") do %><span>Organizations</span><% end %>
         </nav>
         <main class="centered content cards">
         <%= render "shared/controls" %>     
