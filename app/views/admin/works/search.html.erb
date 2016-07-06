@@ -16,6 +16,6 @@
         </section>
         <script>
         $(document).ready(function(){
-            LNA.loadWorkCards(<%= raw render(:template => "works/search.jsonld", :locals => { :works => @works }) %>);
+            $().LNAGateway().findWorks(LNA.loadWorkCards, {'bibo:authorList': '<%= params['bibo:authorList'] %>', 'dc:title': '<%= params['dc:title'] %>'}, <%= params['page'] %>, true);
         });
         </script>

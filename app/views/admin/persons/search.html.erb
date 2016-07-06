@@ -15,6 +15,6 @@
         </section>
         <script>
         $(document).ready(function(){
-            LNA.loadPersonCards(<%= raw render(:template => "persons/search.jsonld", :locals => { :persons => @persons }) %>);
+            $().LNAGateway().findPersons(LNA.loadPersonCards, '<%= params['foaf:name'] %>', <%= params['page'] %>, true);
         });
         </script>

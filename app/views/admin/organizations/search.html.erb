@@ -19,6 +19,6 @@
 
 
         $(document).ready(function(){
-            LNA.loadOrgCards(<%= raw render(:template => "organizations/search.jsonld", :locals => { :organizations => @organizations }) %>);
+            $().LNAGateway().findOrgs(LNA.loadOrgCards, '<%= params['skos:prefLabel'] %>', <%= params['page'] %>, true);
         });
         </script>
