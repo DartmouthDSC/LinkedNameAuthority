@@ -593,7 +593,7 @@ LNA = {
 					var newArray = $.map(orgArray, function(item){ return {'label': item['skos:prefLabel'], 'value': item['@id']}});
 					response(newArray)
 					return newArray;
-				}, this.element[0].value + LNA.constants.fuzzySearch) 
+				}, this.element[0].value + LNA.constants.fuzzySearch, 1, true) 
 			},
 			'select': function(e, ui){
 				e.preventDefault();
@@ -608,7 +608,7 @@ LNA = {
 					var newArray = $.map(orgArray, function(item){ return {'label': item['skos:prefLabel'], 'value': item['@id']}});
 					response(newArray);
 					return newArray;
-				}, this.element[0].value + LNA.constants.fuzzySearch) 
+				}, this.element[0].value + LNA.constants.fuzzySearch, 1, true) 
 			},
 			'select': function(e, ui){
 				e.preventDefault();
@@ -623,7 +623,7 @@ LNA = {
 					var newArray = $.map(personArray.persons, function(item){ return {'label': item['foaf:name'], 'value': item['@id']}});
 					response(newArray);
 					return newArray;
-				}, this.element[0].value + LNA.constants.fuzzySearch) 
+				}, this.element[0].value + LNA.constants.fuzzySearch, 1, true) 
 			},
 			'select': function(e, ui){
 				e.preventDefault();
