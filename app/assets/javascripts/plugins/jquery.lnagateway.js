@@ -394,7 +394,7 @@
 			        "success": fn
 	      		});
 	    	} else {
-	      		$.form(this.options.baseURL + queryData.path + opt, formData, queryData.method).submit();
+	      		$.form(this.options.baseURL + 'admin/' + queryData.path + opt, formData, queryData.method).submit();
 	      	}
     	},
 
