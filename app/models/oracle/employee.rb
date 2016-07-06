@@ -63,11 +63,12 @@ module Oracle
         membership: {
           primary: (self.primary_flag == 'Y' || self.primary_flag == 'y'),
           title:   self.title,
+          begin_date: self.dept_start_date || self.latest_start_date,
+          source: Lna::Membership::SOURCE_HRMS, 
           org:     {
             label: self.department,
             hr_id: self.department_id.to_s,
-          },
-          begin_date: self.dept_start_date || self.latest_start_date
+          }
         }
       }
     end
