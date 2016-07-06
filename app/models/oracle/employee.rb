@@ -2,6 +2,9 @@ module Oracle
   class Employee < OracleDatabase
     self.table_name = 'DARTHR.DC_ACAD_COMMONS_EMP_V'
     self.primary_key = 'netid'
+    
+    set_date_columns     :latest_start_date, :school_start_date, :dept_start_date
+    set_datetime_columns :last_modified_date
 
     # Filter out employees with title of Non-Paid, Temporary and nil.    
     scope :valid_title, -> { where.not({ title: ['Temporary', 'Non-Paid', nil] }) }
@@ -60,11 +63,12 @@ module Oracle
         membership: {
           primary: (self.primary_flag == 'Y' || self.primary_flag == 'y'),
           title:   self.title,
+          begin_date: self.dept_start_date || self.latest_start_date,
+          source: Lna::Membership::SOURCE_HRMS, 
           org:     {
             label: self.department,
             hr_id: self.department_id.to_s,
-          },
-          begin_date: self.dept_start_date || self.latest_start_date
+          }
         }
       }
     end
