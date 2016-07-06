@@ -34,8 +34,8 @@ module Load
           # Search for memberships that were loaded from HRMS and don't have an end date.
           q = ActiveFedora::SolrQueryBuilder.construct_query(
             [
-              ['source_tesi', 'HRMS'],
-              ['has_model_ssim', 'Lna::Membership'],
+              ['source_tesi', Lna::Membership::SOURCE_HRMS],
+              ['has_model_ssim', Lna::Membership.to_s],
               ['end_date_dtsi', nil]
             ]
           )
