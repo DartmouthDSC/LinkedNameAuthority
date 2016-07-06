@@ -47,6 +47,7 @@ Rails.application.routes.draw do
     # Person's Works Collection
     get '/works(/:start_date)', to: 'person/works#index', as: :works,
         constraints: { start_date: /\d{4}-\d{2}-\d{2}/ }
+    get '/works/feed', to: 'person/works#feed', as: :works_feed
   end
 
   # Work, Work License
