@@ -434,6 +434,10 @@ LNA = {
 		location.href=LNA.convertPath(_base_url);
 	},
 
+	'goToID': function(pid){
+		location.href=LNA.convertPath(pid);	
+	},
+
 	'replaceOptPlaceholder': function(targetForm, id){
 		var $targetForm = $(targetForm);
 		var oldOpt = $targetForm.data('opt').split('/');

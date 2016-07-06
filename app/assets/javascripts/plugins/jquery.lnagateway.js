@@ -333,6 +333,7 @@
 	       		var fn=null;
 	       		if(typeof $formElement.data('refresh') != "undefined") fn = function(){location.reload()};
 	       		if(typeof $formElement.data('handler') != "undefined") fn = LNA[$formElement.data('handler')];
+	       		if(typeof $formElement.data('forward') != "undefined") fn = function(data){LNA.goToID(data['@id'])};
 
 	        	handle.submitQuery(query, formData, fn, opt, ajax);
 
