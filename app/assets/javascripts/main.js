@@ -61,7 +61,7 @@ LNA = {
 			if(person['foaf:image'] != ''){
 				node.find('img').attr('src', person['foaf:image']);
 			}
-			node.attr('href', person['@id']);
+			node.attr('href', LNA.convertPath(person['@id']));
 			if(person['foaf:title']!=''){
 				node.find('p[property="title"]').text(person['foaf:title']+', '+person['orgLabel']);
 			} else {
@@ -77,7 +77,7 @@ LNA = {
 		$(dataArray).each(function(i, org){
 			var node = $('#templates .org').clone();
 			node.find('h1').text(org['skos:prefLabel']);
-			node.attr('href', org['@id']);
+			node.attr('href', LNA.convertPath(org['@id']));
 			if(org['skos:altLabel'].length > 0){
 				node.find('p[property="altLabels"]').text(org['skos:altLabel'].join(', '));
 			} 
@@ -97,7 +97,7 @@ LNA = {
 		$(dataArray).each(function(i, work){
 			var node = $('#templates .work').clone();
 			node.find('h1').text(work['dc:title']);
-			node.attr('href', work['@id']);
+			node.attr('href', LNA.convertPath(work['@id']));
 			if(work['bibo:authorList'].length > 0){
 				node.find('p[property="authors"]').text(work['bibo:authorList'].join(', '));
 			} 
@@ -118,7 +118,7 @@ LNA = {
 		$('.orgPurpose').text(dataArray.org['org:purpose']);
 		if(typeof dataArray.parent['skos:prefLabel'] != "undefined"){
 			$('.orgParent').text(dataArray.parent['skos:prefLabel']);
-			$('.parent button').click(function(e){LNA.openLink(e, dataArray.parent['@id'])});
+			$('.parent button').click(function(e){LNA.openLink(e, LNA.convertPath(dataArray.parent['@id']))});
 		} else {
 			$('.parent').hide();
 		}
@@ -161,10 +161,10 @@ LNA = {
 		$('.crumbHere').children().first().text(dataArray.work['dc:title'].slice(0,10)+ellipsis);
 		$('h3').text(dataArray.work['dc:title']);
 		$('.workCreator').text(dataArray.person['foaf:name']);
-		$('.creator button').click(function(e){ LNA.openLink(e, dataArray.person['@id'])});
+		$('.creator button').click(function(e){ LNA.openLink(e, LNA.convertPath(dataArray.person['@id']))});
 		$('.workAuthorList').text(dataArray.work['bibo:authorList'].join(', '));
 		$('.workDate').text(dataArray.work['dc:date'].slice(0,10));
-		$('.workDOI').append($('<a>').attr('href', dataArray.work['bibo:doi']).text(dataArray.work['bibo:doi']));
+		$('.workDOI').append($('<a>').attr('href', LNA.convertPath(dataArray.work['bibo:doi'])).text(dataArray.work['bibo:doi']));
 		$('.workAbstract').text(dataArray.work['dc:abstract']);
 		$('.workPublisher').text(dataArray.work['dc:publisher']);
 		$('.workCitation').text(dataArray.work['dc:bibliographicCitation']);
@@ -197,7 +197,7 @@ LNA = {
 		$('.personHomepage').html(dataArray.person['foaf:homepage'].join('<br />'));
 
 		$('.personPrimary').text(dataArray.person['orgLabel']);
-		$('.parent button').click(function(e){LNA.openLink(e, dataArray.person['org:reportsTo'])});
+		$('.parent button').click(function(e){LNA.openLink(e, LNA.convertPath(dataArray.person['org:reportsTo']))});
 
 		//clear all spinners
 		$('.sidebar .spinner, .affiliations .spinner').parent().remove();
@@ -245,7 +245,7 @@ LNA = {
 		label.text(hrStart +'–' + hrStop + ': ' + data['vcard:title'] + ', ' + data['orgLabel']);
 		viewButton.attr('title', 'view '+ data['orgLabel'] + ' organization');
 		viewButton.children('.helpText').text('view '+ data['orgLabel'] + ' organization');
-		viewButton.click(function(e){ LNA.openLink(e, data['org:organization'])});
+		viewButton.click(function(e){ LNA.openLink(e, LNA.convertPath(data['org:organization']))});
 		editButton.attr('title', 'edit '+ data['orgLabel'] + ' affiliation');
 		editButton.children('.helpText').text('edit '+ data['orgLabel'] + ' affiliation');
 		editButton.data('formData', data);
@@ -266,7 +266,7 @@ LNA = {
 	'fillSuborgs': function(parent, data){
 		var node = $('#templates .subOrg').clone();
 		node.find('[property="name"]').text(data['skos:prefLabel']);
-		node.find('button').click(function(e){ LNA.openLink(e, data['@id']) });
+		node.find('button').click(function(e){ LNA.openLink(e, LNA.convertPath(data['@id'])) });
 
 		parent.append(node);
 	},		
@@ -279,7 +279,7 @@ LNA = {
 
 		var date = data['dc:date'].substr(0,4);
 		var authors = data['bibo:authorList'].join(', ');
-		viewButton.click(function(e){ LNA.openLink(e, data['@id'])});
+		viewButton.click(function(e){ LNA.openLink(e, LNA.convertPath(data['@id']))});
 
 		title.text(data['dc:title'] + ' (' + date + ')');
 		authorList.text(authors);
@@ -290,7 +290,7 @@ LNA = {
 	'fillPersons': function(parent, data){
 		var node = $('#templates .person').clone();
 		node.find('[property="name"]').text(data['foaf:givenName']+' '+data['foaf:familyName']);
-		node.find('button').click(function(e){ LNA.openLink(e, data['@id']) });
+		node.find('button').click(function(e){ LNA.openLink(e, LNA.convertPath(data['@id'])) });
 
 		$(parent).append(node);
 	},
@@ -299,18 +299,18 @@ LNA = {
 		if(typeof pageArray == "undefined" || pageArray.total == 1) {
 			return true;
 		}
-		if(pageArray.current > 1) $('.firstPage').attr('href', pageArray.first);
+		if(pageArray.current > 1) $('.firstPage').attr('href', LNA.convertPath(pageArray.first));
 		else $('.firstPage').hide();
 
-		if(pageArray.current < pageArray.total) $('.lastPage').attr('href', pageArray.last);
+		if(pageArray.current < pageArray.total) $('.lastPage').attr('href', LNA.convertPath(pageArray.last));
 		else $('.lastPage').hide();
 
 		$('.currentPage').find('span').text(pageArray.current + ' of ' + pageArray.total);
 		
-		if(pageArray.prev && pageArray.first != pageArray.prev) $('.previousPage').attr('href', pageArray.prev)
+		if(pageArray.prev && pageArray.first != pageArray.prev) $('.previousPage').attr('href', LNA.convertPath(pageArray.prev))
 		else $('.previousPage').hide();
 		
-		if(pageArray.next && pageArray.next != pageArray.last) $('.nextPage').attr('href', pageArray.next);
+		if(pageArray.next && pageArray.next != pageArray.last) $('.nextPage').attr('href', LNA.convertPath(pageArray.next));
 		else $('.nextPage').hide();
 
 		$('.pager').show();
@@ -416,6 +416,13 @@ LNA = {
 
 
 	//helpers
+	'convertPath': function(pid){
+		//This takes an LNA ID (which is a path on the same system as this app) and turns it into a link to the corresponding admin page
+		var len = _base_url.length;
+		if(pid.substring(0,len) == _base_url && pid.indexOf('admin') == -1) pid = _base_url + 'admin/' + pid.substring(len);
+		return(pid);
+	},
+
 	'openLink': function(e, link){
 		if(e.ctrlKey || e.metaKey){
 			window.open(link, '_new');
@@ -424,7 +431,7 @@ LNA = {
 	},
 
 	'goHome': function(){
-		location.href=_base_url;
+		location.href=LNA.convertPath(_base_url);
 	},
 
 	'replaceOptPlaceholder': function(targetForm, id){
