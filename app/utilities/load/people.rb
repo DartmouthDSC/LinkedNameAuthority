@@ -39,7 +39,7 @@ module Load
               ['end_date_dtsi', nil]
             ]
           )
-          docs = ActiveFedora::SolrService.query(q, rows: 10000)
+          docs = ActiveFedora::SolrService.query(q, rows: 1000000)
 
           # Iterate through each membership and check to see if its still in the Oracle table.
           # Matching based on netid, title and org id.
