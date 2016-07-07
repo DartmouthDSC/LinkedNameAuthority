@@ -1,9 +1,9 @@
 Rails.application.routes.draw do
   root to: redirect('admin')
 
-  devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
+  mount Hydra::RoleManagement::Engine => '/admin'
 
-  mount Hydra::RoleManagement::Engine => '/'
+  devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
               
   devise_scope :user do
     get '/sign_in', to: 'users/sessions#new', as: :new_user_session
@@ -37,6 +37,7 @@ Rails.application.routes.draw do
   end  
 
   namespace :admin do
+
     root action: 'index'
     get '/person', to: redirect('persons')
     get '/work', to: redirect('works')
