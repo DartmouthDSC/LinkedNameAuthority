@@ -1,8 +1,6 @@
 Rails.application.routes.draw do
   root to: redirect('admin')
 
-  mount Hydra::RoleManagement::Engine => '/admin'
-
   devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
               
   devise_scope :user do
@@ -37,7 +35,6 @@ Rails.application.routes.draw do
   end  
 
   namespace :admin do
-
     root action: 'index'
     get '/person', to: redirect('persons')
     get '/work', to: redirect('works')
@@ -46,8 +43,10 @@ Rails.application.routes.draw do
     concerns :collections
 
     resources :person, :organization, :work, only: :show
+    
+    mount Hydra::RoleManagement::Engine => '/'
   end
-
+  
   concerns :collections
   
   # Person, Person Accounts, Person Memberships, Person ORCID account
