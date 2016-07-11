@@ -50,10 +50,12 @@ LNA = {
 		],		
 		'fuzzySearch' : ''		//Add ~2 or something here to make some searches fuzzy by default
 	},
+	'errors': [],
+
 	//this set of functions are callbacks for LNAGateway.*()
 	'loadPersonCards': function(data, textStatus, xhr){
-		var dataArray = $().LNAGateway().readLD.persons(data);
-		if(typeof xhr != "undefined") var links = $().LNAGateway().parseLink(xhr.getResponseHeader('link'));
+		var dataArray = $.fn['LNAGateway']().readLD.persons(data);
+		if(typeof xhr != "undefined") var links = $.fn['LNAGateway']().parseLink(xhr.getResponseHeader('link'));
 		LNA.fillPager(links);
 		$(dataArray.persons).each(function(i, person){
 			var node = $('#templates .person').clone();
@@ -71,8 +73,8 @@ LNA = {
 		});
 	},
 	'loadOrgCards': function(data, textStatus, xhr){
-		var dataArray = $().LNAGateway().readLD.orgs(data);
-		if(typeof xhr != "undefined") var links = $().LNAGateway().parseLink(xhr.getResponseHeader('link'));	
+		var dataArray = $.fn['LNAGateway']().readLD.orgs(data);
+		if(typeof xhr != "undefined") var links = $.fn['LNAGateway']().parseLink(xhr.getResponseHeader('link'));	
 		LNA.fillPager(links);
 		$(dataArray).each(function(i, org){
 			var node = $('#templates .org').clone();
@@ -91,8 +93,8 @@ LNA = {
 	},	
 
 	'loadWorkCards': function(data, textStatus, xhr){
-		var dataArray = $().LNAGateway().readLD.works(data);
-		if(typeof xhr != "undefined") var links = $().LNAGateway().parseLink(xhr.getResponseHeader('link'));
+		var dataArray = $.fn['LNAGateway']().readLD.works(data);
+		if(typeof xhr != "undefined") var links = $.fn['LNAGateway']().parseLink(xhr.getResponseHeader('link'));
 		LNA.fillPager(links);
 		$(dataArray).each(function(i, work){
 			var node = $('#templates .work').clone();
@@ -109,7 +111,7 @@ LNA = {
 	},	
 
 	'loadOrg': function(data, textStatus, xhr){
-		var dataArray = $().LNAGateway().readLD.org(data);	
+		var dataArray = $.fn['LNAGateway']().readLD.org(data);	
 
 		//render org record
 		$('.crumbHere').children().first().text(dataArray.org['skos:prefLabel']);
@@ -142,7 +144,7 @@ LNA = {
 	},
 
 	'loadOrgPersons': function(data, textStatus, xhr){
-		var dataArray = $().LNAGateway().readLD.persons(data);		
+		var dataArray = $.fn['LNAGateway']().readLD.persons(data);		
 
 		//clear all spinners
 		$('.related .spinner').parent().remove();
@@ -154,7 +156,7 @@ LNA = {
 	},
 
 	'loadWork': function(data, textStatus, xhr){
-		var dataArray = $().LNAGateway().readLD.work(data);	
+		var dataArray = $.fn['LNAGateway']().readLD.work(data);	
 
 		//render work record
 		var ellipsis = dataArray.work['dc:title'].length > 10 ? '...' : '';
@@ -182,7 +184,7 @@ LNA = {
 	},
 
 	'loadPerson': function(data, textStatus, xhr){
-		var dataArray = $().LNAGateway().readLD.person(data);		
+		var dataArray = $.fn['LNAGateway']().readLD.person(data);		
 
 		//render person data
 		$('.sidebar h1').text(dataArray.person['foaf:name']);
@@ -211,7 +213,7 @@ LNA = {
 		LNA.activateModals();
 	},
 	'loadPersonWorks': function(data, textStatus, xhr){
-		var dataArray = $().LNAGateway().readLD.personWorks(data);	
+		var dataArray = $.fn['LNAGateway']().readLD.personWorks(data);	
 
 		//clear all spinners
 		$('.works .spinner').parent().remove();
@@ -438,6 +440,15 @@ LNA = {
 		location.href=LNA.convertPath(pid);	
 	},
 
+	'checkErrors': function(){
+		if(LNA.errors.length > 0){
+			var errors = LNA.errors.join('<br>');
+			$('#errorModalBody').html(errors);
+			$('#errorModal').dialog("open");
+			return false;
+		} else return true;
+	},
+
 	'replaceOptPlaceholder': function(targetForm, id){
 		var $targetForm = $(targetForm);
 		var oldOpt = $targetForm.data('opt').split('/');
@@ -476,7 +487,7 @@ LNA = {
 			forms.each(function(i, v){
 				if(typeof $(v).data('load') != "undefined"){
 					LNA[$(v).data('load')]($(v), formData);
-				}
+			}
 			});
 		});
 		$('[data-toggle="modal"]').attr('data-ready', 'true');
@@ -592,8 +603,8 @@ LNA = {
 	'autocompletes': {
 		'org': {
 			'source': function(request, response){
-				$().LNAGateway().findOrgs(function(data){
-					var orgArray = $().LNAGateway().readLD.orgs(data);
+				$.fn['LNAGateway']().findOrgs(function(data){
+					var orgArray = $.fn['LNAGateway']().readLD.orgs(data);
 					var newArray = $.map(orgArray, function(item){ return {'label': item['skos:prefLabel'], 'value': item['@id']}});
 					response(newArray)
 					return newArray;
@@ -607,8 +618,8 @@ LNA = {
 		},
 		'reportsTo': {
 			'source': function(request, response){
-				$().LNAGateway().findOrgs(function(data){
-					var orgArray = $().LNAGateway().readLD.orgs(data);
+				$.fn['LNAGateway']().findOrgs(function(data){
+					var orgArray = $.fn['LNAGateway']().readLD.orgs(data);
 					var newArray = $.map(orgArray, function(item){ return {'label': item['skos:prefLabel'], 'value': item['@id']}});
 					response(newArray);
 					return newArray;
@@ -622,8 +633,8 @@ LNA = {
 		},
 		'person': {
 			'source': function(request, response){
-				$().LNAGateway().findPersons(function(data){
-					var personArray = $().LNAGateway().readLD.persons(data);
+				$.fn['LNAGateway']().findPersons(function(data){
+					var personArray = $.fn['LNAGateway']().readLD.persons(data);
 					var newArray = $.map(personArray.persons, function(item){ return {'label': item['foaf:name'], 'value': item['@id']}});
 					response(newArray);
 					return newArray;
@@ -667,7 +678,10 @@ LNA = {
 		LNA.activateAutocompletes();
 		LNA.activateDropdowns();
 		LNA.activateOnChanges();
-		$().LNAGateway().extendForms();
+
+		$.fn['LNAGateway']().extendForms();
+
+		LNA.checkErrors();
 	}
 }
 
