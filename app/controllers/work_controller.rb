@@ -24,8 +24,6 @@ class WorkController < CrudController
     @licenses = search_for_licenses(document_id: params[:id])
     @person = search_for_persons(id: @work['creator_id_ssi'])
 
-    @short_id = FedoraID.shorten(@work['id'])
-
     super
   end
   
@@ -39,7 +37,6 @@ class WorkController < CrudController
     respond_to do |f|
       f.jsonld { render :create, status: :created, location: location,
                         content_type: 'application/ld+json' }
-      f.html { redirect_to location }
     end
   end
 

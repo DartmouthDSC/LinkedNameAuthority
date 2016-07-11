@@ -2,12 +2,12 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-body">
-        <form data-lna-query="newOrg" accept-charset="UTF-8" class="formTwoColumn" data-no-ajax="true" data-tag-delimiter=";;;">
-          <div><label>Unique ID</label><input name="org:identifier"></input></div>
-          <div><label>Preferred Label</label><input name="skos:prefLabel"></input></div>
+        <form data-lna-query="newOrg" accept-charset="UTF-8" class="formTwoColumn" data-forward="true" data-tag-delimiter=";;;">
+          <div><label>Unique ID</label><input name="org:identifier" required></input></div>
+          <div><label>Preferred Label</label><input name="skos:prefLabel" required></input></div>
           <div><label>Other Labels</label><input name="skos:altLabel" class="tagBehavior"></input></div>
           <div><label>Purpose</label><input name="org:purpose"></input></div>
-          <div><label>Date Begun</label><input name="owltime:hasBeginning" class="dateBehavior"></input></div>
+          <div><label>Date Begun</label><input name="owltime:hasBeginning" class="dateBehavior" required></input></div>
           <div><label>Date Ended</label><input name="owltime:hasEnd" class="dateBehavior"></input></div>
           <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
           <button type="submit" title="submit">Submit</button>

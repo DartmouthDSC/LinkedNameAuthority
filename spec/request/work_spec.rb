@@ -122,11 +122,11 @@ RSpec.describe "Work API", type: :request, https: true do
     end
   end
 
-  describe 'GET work/' do
-    subject { get work_index_path }
+  describe 'GET admin/work/' do
+    subject { get admin_work_path }
 
-    it 'redirects to GET works/' do
-      expect(subject).to redirect_to('/works')
+    it 'redirects to GET admin/works/' do
+      expect(subject).to redirect_to('/admin/works')
     end
   end
   

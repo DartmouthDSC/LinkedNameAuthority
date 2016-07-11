@@ -2,12 +2,12 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-body">
-        <form data-lna-query="editWork" data-tag-delimiter=";;;" accept-charset="UTF-8" class="formTwoColumn" data-opt="<%= @short_id %>" data-refresh="true" data-load="editWork">
-          <div><label>Title</label><input name="dc:title"></input></div>
-          <div><label>Attributed To</label><input name="foaf:name" class="autocompleteBehavior" autocomplete="off" data-autocomplete-type="person"></input></div> 
+        <form data-lna-query="editWork" data-tag-delimiter=";;;" accept-charset="UTF-8" class="formTwoColumn" data-opt="<%= params[:id] %>" data-refresh="true" data-load="editWork">
+          <div><label>Title</label><input name="dc:title" required></input></div>
+          <div><label>Attributed To</label><input name="foaf:name" class="autocompleteBehavior" autocomplete="off" data-autocomplete-type="person" required></input></div> 
           <%= hidden_field_tag "dc:creator", nil, {:id=>nil} %>        
-          <div><label>Author(s)</label><input name="bibo:authorList" class="tagBehavior"></input></div> 
-          <div><label>Abstract</label><textarea name="dc:abstract"></textarea></div>
+          <div><label>Author(s)</label><input name="bibo:authorList" class="tagBehavior" required></input></div> 
+          <div><label>Abstract</label><textarea name="dc:abstract" required></textarea></div>
           <div><label>Date</label><input name="dc:date" class="dateBehavior"></input></div>    
           <div><label>DOI</label><input name="bibo:doi"></input></div> 
           <div><label>URI(s)</label><input name="bibo:uri" class="tagBehavior"></input></div> 
@@ -22,7 +22,7 @@
           <button type="submit" title="submit">Update</button>
           <div class="centered">OR</div>
         </form>
-        <form data-lna-query="deleteWork" accept-charset="UTF-8" class="formTwoColumn" data-confirm="true" data-opt="<%= @short_id %>" data-handler="goHome">
+        <form data-lna-query="deleteWork" accept-charset="UTF-8" class="formTwoColumn" data-confirm="true" data-opt="<%= params[:id] %>" data-handler="goHome">
         <%= hidden_field_tag :authenticity_token, form_authenticity_token, {:id => nil} %>
         <button type="submit" title="Delete" class="warning" name="delete">Delete Work</button>
         </form>

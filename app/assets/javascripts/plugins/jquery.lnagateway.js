@@ -4,6 +4,7 @@
  *    Linked Name Authority server.
  *  Author: John Bell (@nmdjohn), Dartmouth College
  *  License: MIT License ( https://opensource.org/licenses/MIT )
+ *  Todo: refactor the places where it refers to the LNA object explicitly
  */
 
 ;(function ($, window, document, undefined){
@@ -24,7 +25,6 @@
 	      'authenticity_token': true                         //whether or not to add auth token field to all queries
 	    };
 	    this.options = this.defaults;
-	    this.errors = [];
 
 	    /*
 	     * For all forms, data-lna-query must be set to a key in this array
@@ -215,13 +215,21 @@
 	        forms.each(function(){ handle.extendForm(this) });
 	    },
 
-	    //tk decide if I'm going to use these
+	    //TODO: Errors should be handled internally, but it seems like the jquery plugin isn't mutable? Maybe try $.extend...
 	    'clearErrors': function(){
-	      this.errors = [];
+	      	LNA.errors = [];
+	    },
+
+	    'addError': function(err){
+	    	LNA.errors.push(err);
 	    },
 
 	    'getErrors': function(){
-	      return this.errors;
+	      	return LNA.errors;
+	    },
+
+	    'checkErrors': function(){
+	    	return LNA.errors.length > 0;
 	    },
 
 	    //Queries associated with forms are mostly handled using extendForm below.
@@ -259,11 +267,12 @@
 	    },
 
 	    //Search queries
-	    'findOrgs': function(callback, term, page){
+	    'findOrgs': function(callback, term, page, ajax){
 	    	if(typeof term === "undefined") return false;
 	    	if(typeof page === "undefined") page = 1;
+	    	if(typeof ajax === "undefined") ajax = false;
 	    	var searchTerm = {'skos:prefLabel': term}
-	    	this.submitQuery('findOrgs', searchTerm, callback, page);
+	    	this.submitQuery('findOrgs', searchTerm, callback, page, ajax);
 	    },
 	    'findOrgPersons': function(callback, uid, page){
 	    	if(typeof uid === "undefined") return false;
@@ -271,13 +280,21 @@
 	    	var searchTerm = {'org:member': uid};
 	    	this.submitQuery('findOrgPersons', searchTerm, callback, page);
 	    }, 
-	    'findPersons': function(callback, term, page){
+	    'findPersons': function(callback, term, page, ajax){
 	    	if(typeof term === "undefined") return false;
 	    	if(typeof page === "undefined") page = 1;
+	    	if(typeof ajax === "undefined") ajax = false;
 	    	var searchTerm = {'foaf:name': term};
-	    	this.submitQuery('findPersons', searchTerm, callback, page);
+	    	this.submitQuery('findPersons', searchTerm, callback, page, ajax);
 	    	return false;
 	    },
+	    'findWorks': function(callback, term, page, ajax){
+	    	if(typeof term === "undefined") return false;
+	    	if(typeof page === "undefined") page = 1;
+	    	if(typeof ajax === "undefined") ajax = false;
+	    	this.submitQuery('findWorks', term, callback, page, ajax);
+	    	return false;
+	    },	    
 
 	    //extendForm is called on all forms that have data-lna-query set on init
 	    //it can also be run manually.
@@ -288,11 +305,11 @@
 			//Validation
 		    var query = $formElement.data('lna-query');
 		    if(typeof query ==="undefined"){
-		    	console.log('Tried to extend a form without an lna-query set');
+		    	LNA.errors.push('Tried to extend a form without an lna-query set');
 		        return false;
 		    }
 		    if(typeof this.queries[query] === 'undefined'){
-		        console.log('Tried to extend a form for which there is no query: '+query);
+		        LNA.errors.push('Tried to extend a form for which there is no query: '+query);
 		        return false;
 		    }
       
@@ -310,7 +327,8 @@
 	        	var formData = handle.readForm(this);
 
 	        	if(!formData) {
-	        		console.log(handle.getErrors());    //tk do something useful with errors
+	        		$("body").css("cursor", "pointer");
+	        		$formElement.closest('.modal').dialog("open");
 	        		return false;
 	       		}
 
@@ -323,6 +341,7 @@
 	       		var fn=null;
 	       		if(typeof $formElement.data('refresh') != "undefined") fn = function(){location.reload()};
 	       		if(typeof $formElement.data('handler') != "undefined") fn = LNA[$formElement.data('handler')];
+	       		if(typeof $formElement.data('forward') != "undefined") fn = function(data){LNA.goToID(data['@id'])};
 
 	        	handle.submitQuery(query, formData, fn, opt, ajax);
 
@@ -339,11 +358,11 @@
     		//Validation
     		var query = $formElement.data('lna-query');
     		if(typeof query === 'undefined'){
-       			console.log('Form element needs a data-lna-query value.');
+       			LNA.errors.push('Form element needs a data-lna-query value.');
         		return false;
       		}
       		if(typeof this.queries[query] === 'undefined'){
-        		console.log('Tried to read a form for which there is no query');
+        		LNA.errors.push('Tried to read a form for which there is no query');
         		return false;
       		}
 
@@ -368,18 +387,23 @@
       		var fail = false;
       		$.each(data, function(k,v){
         		if(data[k]===null){
-          			console.log("Form missing required field: "+k);
-          			handle.errors.push("Missing required field, submission stopped.");
+          			LNA.errors.push("Form missing required field: "+k)+". Submission stopped";
+          			LNA.errors.push("Missing required field, submission stopped.");
           			fail = true;
         		}
       		});
 
-      		if(fail) return false;
+      		if(fail){
+      			LNA.checkErrors();
+      			return false;
+      		}
 
       		return data;
     	},
 
     	'submitQuery': function(query, formData, fn, opt, ajax){
+    		if(!LNA.checkErrors()) return false;
+
     		if(typeof fn == "undefined" || fn == null) fn = function(){ return false };
     		if(typeof opt == "undefined") opt = '';
     		if(typeof ajax == "undefined") ajax = true;
@@ -394,7 +418,7 @@
 			        "success": fn
 	      		});
 	    	} else {
-	      		$.form(this.options.baseURL + queryData.path + opt, formData, queryData.method).submit();
+	      		$.form(this.options.baseURL + 'admin/' + queryData.path + opt, formData, queryData.method).submit();
 	      	}
     	},
 
@@ -498,7 +522,7 @@
 			$.each(parts, function(i, p) {
 				var section = p.split(';');
 				if (section.length != 2) {
-					console.log("section could not be split on ';'");
+					LNA.errors.push("section could not be split on ';'");
 				}
 				var url = section[0].replace(/<(.*)>/, '$1').trim();
 				var name = section[1].replace(/rel="(.*)"/, '$1').trim();

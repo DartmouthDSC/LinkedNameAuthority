@@ -1,4 +1,4 @@
-class UserRolesController < ApplicationController
+class Admin::UserRolesController < ApplicationController
   include Hydra::RoleManagement::UserRolesBehavior
 
   def create

@@ -67,11 +67,11 @@ RSpec.describe "Person API", type: :request, https: true do
     end
   end
 
-  describe 'GET person/' do      
-    subject { get person_index_path }
+  describe 'GET admin/person/' do      
+    subject { get admin_person_path }
     
-    it 'redirects to GET persons/' do
-      expect(subject).to redirect_to('/persons')
+    it 'redirects to GET admin/persons/' do
+      expect(subject).to redirect_to('/admin/persons')
     end
   end
   

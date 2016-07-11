@@ -1,9 +1,9 @@
         <nav class="centered breadcrumbs" role="navigation">
-            <%= link_to(root_path, class: "crumbContinue") do %><span>Home</span><% end %><%= link_to(persons_path, class: "crumbStop crumbHere") do %><span>Persons</span><% end %>
+            <%= link_to(admin_root_path, class: "crumbContinue") do %><span>Home</span><% end %><%= link_to(admin_persons_path, class: "crumbStop crumbHere") do %><span>Persons</span><% end %>
         </nav>
         <main class="centered content cards">
-        <%= render "shared/controls" %>
-        <div class="cardContainer">        
+        <%= render "shared/controls" %> 
+        <div class="cardContainer">       
         <!--[if lt IE 8]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
@@ -15,6 +15,6 @@
         </section>
         <script>
         $(document).ready(function(){
-            LNA.loadPersonCards(<%= raw render(:template => "persons/search.jsonld", :locals => { :persons => @persons }) %>);
+            $().LNAGateway().listPersons(LNA.loadPersonCards, <%= @page %>);
         });
         </script>
