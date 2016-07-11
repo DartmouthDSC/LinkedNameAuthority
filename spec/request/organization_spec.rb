@@ -106,11 +106,11 @@ RSpec.describe "Organization API", type: :request, https: true do
     end
   end
 
-  describe 'GET organization/' do
-    subject { get organization_index_path }
+  describe 'GET admin/organization/' do
+    subject { get admin_organization_path }
     
-    it 'redirects to GET organizations/' do
-      expect(subject).to redirect_to('/organizations')
+    it 'redirects to GET admin/organizations/' do
+      expect(subject).to redirect_to('/admin/organizations')
     end
   end
   

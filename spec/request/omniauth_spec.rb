@@ -38,7 +38,7 @@ RSpec.describe 'OmniAuth integration', :type => :request do
     end
 
     it 'does terminate session' do
-      get '/'
+      get '/admin'
       expect(response.body).to include("Log In")
      end  
   end

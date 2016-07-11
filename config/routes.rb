@@ -36,9 +36,9 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root action: 'index'
-    get '/person', to: redirect('persons')
-    get '/work', to: redirect('works')
-    get '/organization', to: redirect('organizations')
+    get '/person', to: redirect('admin/persons')
+    get '/work', to: redirect('admin/works')
+    get '/organization', to: redirect('admin/organizations')
     
     concerns :collections
 
@@ -77,12 +77,4 @@ Rails.application.routes.draw do
   
   # Change Events
   post '/organization/:id_from/change_to/:id_to', to: 'change_event#create', as: :change_event
-
-
-  # Redirects for html requests.
-  # constraints format: 'html' do
-  #   get '/person', to: redirect('persons')
-  #   get '/work', to: redirect('works')
-  #   get '/organization', to: redirect('organizations')
-  # end
 end
