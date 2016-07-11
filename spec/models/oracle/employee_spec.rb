@@ -51,11 +51,19 @@ RSpec.describe Oracle::Employee, type: :model do
       it 'has at least one matching row' do
         expect(Oracle::Employee.modified_since(Date.today - 2.years).count).to be > 1
       end
-      # if modified since is blank returns all results
-      it 'if date blank returns all results' do
+      
+      it 'returns all results if date blank' do
         total = Oracle::Employee.count
         expect(Oracle::Employee.modified_since('').count).to eq total
         expect(Oracle::Employee.modified_since(nil).count).to eq total
+      end
+
+      it 'can accept Time, Date and DateTime objects' do
+        date = Date.today - 2.years
+        num_results = Oracle::Employee.modified_since(date).count
+        expect(num_results).to be > 1
+        expect(Oracle::Employee.modified_since(date.to_time).count).to eq num_results
+        expect(Oracle::Employee.modified_since(date.to_datetime).count).to eq num_results
       end
     end
   end

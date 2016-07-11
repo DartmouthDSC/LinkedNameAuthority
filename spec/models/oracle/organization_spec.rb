@@ -21,11 +21,14 @@ RSpec.describe Oracle::Organization, type: :model do
         expect(query.where_values_hash).to eql({})
         expect(query.count).to eq Oracle::Organization.count
       end
-      
-      it 'returns error if date not a time object' do
-        expect { Oracle::Organization.modified_since(Date.today) }.to raise_error ArgumentError
+
+      it 'accepts Date, Time and DateTime objects' do
+        num_results = Oracle::Organization.modified_since(Date.today - 10.years).count
+        expect(num_results).to be > 1
+        expect(Oracle::Organization.modified_since(Time.now - 10.years).count).to eq num_results
+        expect(Oracle::Organization.modified_since(DateTime.now - 10.years).count).to eq num_results
       end
-      
+            
       it 'returns correct number of results' do
         expect(
           Oracle::Organization.modified_since(Time.now - 100.years).count
