@@ -1,5 +1,5 @@
 		<nav class="centered breadcrumbs" role="navigation">
-            <%= link_to(root_path, class: "crumbContinue") do %><span>Home</span><% end %><%= link_to(organizations_path, class: "crumbContinue") do %><span>Organization</span><% end %><a href="#" class="crumbHere crumbStop"><span>Loading...</span></a>
+            <%= link_to(admin_root_path, class: "crumbContinue") do %><span>Home</span><% end %><%= link_to(admin_organizations_path, class: "crumbContinue") do %><span>Organization</span><% end %><a href="#" class="crumbHere crumbStop"><span>Loading...</span></a>
         </nav>
         <main class="centered content">
         <!--[if lt IE 8]>
@@ -52,7 +52,7 @@
         </section>        
 		<script>
         $(document).ready(function(){
-            $().LNAGateway().loadOrg(LNA.loadOrg, "<%= @short_id %>");
-            $().LNAGateway().findOrgPersons(LNA.loadOrgPersons, "<%= @organization['id'] %>");
+            $().LNAGateway().loadOrg(LNA.loadOrg, "<%= params[:id] %>");
+            $().LNAGateway().findOrgPersons(LNA.loadOrgPersons, _base_url + 'organization/' + "<%= params[:id] %>");
         });
         </script>

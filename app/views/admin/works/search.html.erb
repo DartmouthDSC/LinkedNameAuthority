@@ -1,24 +1,21 @@
         <nav class="centered breadcrumbs" role="navigation">
-            <%= link_to(root_path, class: "crumbContinue") do %><span>Home</span><% end %><%= link_to(organizations_path, class: "crumbStop crumbHere") do %><span>Organizations</span><% end %>
+            <%= link_to(admin_root_path, class: "crumbContinue") do %><span>Home</span><% end %><%= link_to(admin_works_path, class: "crumbStop crumbHere") do %><span>Works</span><% end %>
         </nav>
         <main class="centered content cards">
-        <%= render "shared/controls" %>     
+        <%= render "shared/controls" %>        
         <div class="cardContainer">
-
-        </div>   
         <!--[if lt IE 8]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-        <%= render "shared/controls" %>        
+        </div>
+        <%= render "shared/controls" %>
         </main>
+
         <section id="templates">
-        <%= render "shared/templates/cards_organization" %>
+        <%= render "shared/templates/cards_work" %>
         </section>
         <script>
-        
-
-
         $(document).ready(function(){
-            LNA.loadOrgCards(<%= raw render(:template => "organizations/search.jsonld", :locals => { :organizations => @organizations }) %>);
+            $().LNAGateway().findWorks(LNA.loadWorkCards, {'bibo:authorList': '<%= params['bibo:authorList'] %>', 'dc:title': '<%= params['dc:title'] %>'}, <%= params['page'] %>, true);
         });
         </script>

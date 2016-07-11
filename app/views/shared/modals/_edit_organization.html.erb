@@ -2,18 +2,18 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-body">
-        <form data-lna-query="editOrg" class="formTwoColumn" accept-charset="UTF-8" data-opt="<%= @short_id %>" data-refresh="true" data-tag-delimiter=";;;" data-load="editOrg">
-          <div><label>Unique ID</label><input name="org:identifier"></input></div>
-          <div><label>Preferred Label</label><input name="skos:prefLabel"></input></div>
+        <form data-lna-query="editOrg" class="formTwoColumn" accept-charset="UTF-8" data-opt="<%= params[:id] %>" data-refresh="true" data-tag-delimiter=";;;" data-load="editOrg">
+          <div><label>Unique ID</label><input name="org:identifier" required></input></div>
+          <div><label>Preferred Label</label><input name="skos:prefLabel" required></input></div>
           <div><label>Other Labels</label><input name="skos:altLabel" class="tagBehavior"></input></div>
           <div><label>Purpose</label><input name="org:purpose"></input></div>
-          <div><label>Date Begun</label><input name="owltime:hasBeginning" class="dateBehavior"></input></div>
+          <div><label>Date Begun</label><input name="owltime:hasBeginning" class="dateBehavior" required></input></div>
           <div><label>Date Ended</label><input name="owltime:hasEnd" class="dateBehavior"></input></div>
           <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
           <button type="submit" title="submit">Update</button>
           <div class="centered">OR</div>
         </form>
-        <form data-lna-query="deleteOrg" accept-charset="UTF-8" class="formTwoColumn" data-confirm="true" data-opt="<%= @short_id %>" data-handler="goHome">
+        <form data-lna-query="deleteOrg" accept-charset="UTF-8" class="formTwoColumn" data-confirm="true" data-opt="<%= params[:id] %>" data-handler="goHome">
         <%= hidden_field_tag :authenticity_token, form_authenticity_token, {:id => nil} %>
         <button type="submit" title="Delete" class="warning" name="delete">Delete Organization</button>
         </form>

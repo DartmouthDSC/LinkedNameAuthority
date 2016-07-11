@@ -1,21 +1,24 @@
         <nav class="centered breadcrumbs" role="navigation">
-            <%= link_to(root_path, class: "crumbContinue") do %><span>Home</span><% end %><%= link_to(works_path, class: "crumbStop crumbHere") do %><span>Works</span><% end %>
+            <%= link_to(admin_root_path, class: "crumbContinue") do %><span>Home</span><% end %><%= link_to(admin_organizations_path, class: "crumbStop crumbHere") do %><span>Organizations</span><% end %>
         </nav>
         <main class="centered content cards">
-        <%= render "shared/controls" %>        
+        <%= render "shared/controls" %>     
         <div class="cardContainer">
+
+        </div>   
         <!--[if lt IE 8]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-        </div>
-        <%= render "shared/controls" %>
+        <%= render "shared/controls" %>        
         </main>
-
         <section id="templates">
-        <%= render "shared/templates/cards_work" %>
+        <%= render "shared/templates/cards_organization" %>
         </section>
         <script>
+        
+
+
         $(document).ready(function(){
-            LNA.loadWorkCards(<%= raw render(:template => "works/search.jsonld", :locals => { :works => @works }) %>);
+            $().LNAGateway().findOrgs(LNA.loadOrgCards, '<%= params['skos:prefLabel'] %>', <%= params['page'] %>, true);
         });
         </script>

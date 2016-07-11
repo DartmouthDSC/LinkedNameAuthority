@@ -1,9 +1,7 @@
 Rails.application.routes.draw do
-  root to: "application#index"
+  root to: redirect('admin')
 
   devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
-
-  mount Hydra::RoleManagement::Engine => '/'
               
   devise_scope :user do
     get '/sign_in', to: 'users/sessions#new', as: :new_user_session
@@ -14,13 +12,13 @@ Rails.application.routes.draw do
   concern :updateable do
     put :update, on: :member
   end
-
+    
   # Collections
-  constraints page: /\d+/ do 
+  concern :collections do 
     # Persons Collection
     get '/persons(/:page)', to: 'persons#index', as: :persons
     post '/persons(/:page)', to: 'persons#search'
-    
+
     # Organizations
     get '/organizations(/:page)', to: 'organizations#index', as: :organizations
     post '/organizations(/:page)', to: 'organizations#search'
@@ -28,13 +26,28 @@ Rails.application.routes.draw do
     # Works
     get '/works(/:page)', to: 'works#index', as: :works
     post '/works(/:page)', to: 'works#search'
-
+    
     # Recent Works Collections convenience function
     constraints start_date:  /\d{4}-\d{2}-\d{2}/ do 
       get '/works/:start_date(/:page)', to: 'works#index'
       post '/works/:start_date(/:page)', to:'works#search'
     end
+  end  
+
+  namespace :admin do
+    root action: 'index'
+    get '/person', to: redirect('persons')
+    get '/work', to: redirect('works')
+    get '/organization', to: redirect('organizations')
+    
+    concerns :collections
+
+    resources :person, :organization, :work, only: :show
+    
+    mount Hydra::RoleManagement::Engine => '/'
   end
+  
+  concerns :collections
   
   # Person, Person Accounts, Person Memberships, Person ORCID account
   resources :person, only: [:show, :create, :destroy], concerns: :updateable do
@@ -67,9 +80,9 @@ Rails.application.routes.draw do
 
 
   # Redirects for html requests.
-  constraints format: 'html' do
-    get '/person', to: redirect('persons')
-    get '/work', to: redirect('works')
-    get '/organization', to: redirect('organizations')
-  end
+  # constraints format: 'html' do
+  #   get '/person', to: redirect('persons')
+  #   get '/work', to: redirect('works')
+  #   get '/organization', to: redirect('organizations')
+  # end
 end

@@ -6,7 +6,6 @@ class CrudController < ApiController
   def show
     respond_to do |f|
       f.jsonld { render :show, content_type: 'application/ld+json' }
-      f.html
     end
   end
 

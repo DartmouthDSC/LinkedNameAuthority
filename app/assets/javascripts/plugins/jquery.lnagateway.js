@@ -259,11 +259,12 @@
 	    },
 
 	    //Search queries
-	    'findOrgs': function(callback, term, page){
+	    'findOrgs': function(callback, term, page, ajax){
 	    	if(typeof term === "undefined") return false;
 	    	if(typeof page === "undefined") page = 1;
+	    	if(typeof ajax === "undefined") ajax = false;
 	    	var searchTerm = {'skos:prefLabel': term}
-	    	this.submitQuery('findOrgs', searchTerm, callback, page);
+	    	this.submitQuery('findOrgs', searchTerm, callback, page, ajax);
 	    },
 	    'findOrgPersons': function(callback, uid, page){
 	    	if(typeof uid === "undefined") return false;
@@ -271,13 +272,22 @@
 	    	var searchTerm = {'org:member': uid};
 	    	this.submitQuery('findOrgPersons', searchTerm, callback, page);
 	    }, 
-	    'findPersons': function(callback, term, page){
+	    'findPersons': function(callback, term, page, ajax){
 	    	if(typeof term === "undefined") return false;
 	    	if(typeof page === "undefined") page = 1;
+	    	if(typeof ajax === "undefined") ajax = false;
 	    	var searchTerm = {'foaf:name': term};
-	    	this.submitQuery('findPersons', searchTerm, callback, page);
+	    	this.submitQuery('findPersons', searchTerm, callback, page, ajax);
 	    	return false;
 	    },
+	    'findWorks': function(callback, term, page, ajax){
+	    	if(typeof term === "undefined") return false;
+	    	if(typeof page === "undefined") page = 1;
+	    	if(typeof ajax === "undefined") ajax = false;
+	    	console.log('ok')
+	    	this.submitQuery('findWorks', term, callback, page, ajax);
+	    	return false;
+	    },	    
 
 	    //extendForm is called on all forms that have data-lna-query set on init
 	    //it can also be run manually.
@@ -323,6 +333,7 @@
 	       		var fn=null;
 	       		if(typeof $formElement.data('refresh') != "undefined") fn = function(){location.reload()};
 	       		if(typeof $formElement.data('handler') != "undefined") fn = LNA[$formElement.data('handler')];
+	       		if(typeof $formElement.data('forward') != "undefined") fn = function(data){LNA.goToID(data['@id'])};
 
 	        	handle.submitQuery(query, formData, fn, opt, ajax);
 
@@ -394,7 +405,7 @@
 			        "success": fn
 	      		});
 	    	} else {
-	      		$.form(this.options.baseURL + queryData.path + opt, formData, queryData.method).submit();
+	      		$.form(this.options.baseURL + 'admin/' + queryData.path + opt, formData, queryData.method).submit();
 	      	}
     	},
 

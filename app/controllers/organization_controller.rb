@@ -22,7 +22,6 @@ class OrganizationController < CrudController
 
     ids = ['resultedFrom_ssim', 'changedBy_ssim'].map{ |i| @organization[i] }.compact.flatten
     @change_events = search_for_ids(ids)
-    @short_id = FedoraID.shorten(@organization['id'])
     super
   end
 
@@ -47,7 +46,6 @@ class OrganizationController < CrudController
     respond_to do |f|
       f.jsonld { render :create, status: :created, location: location,
                         content_type: 'application/ld+json'}
-      f.html {redirect_to location}
     end
   end
 

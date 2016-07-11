@@ -12,10 +12,8 @@ class ApplicationController < ActionController::Base
     new_user_session_path
   end
 
-  def index
-  end
-
   def after_sign_out_path_for(resource_or_scope)
+#    request.referrer 
     "https://login.dartmouth.edu/logout.php?app=LNA&url=#{root_url}"
   end
 
