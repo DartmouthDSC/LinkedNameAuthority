@@ -4,7 +4,7 @@
       <div class="modal-body">
         <form data-lna-query="editAccount" class="formTwoColumn" accept-charset="UTF-8" data-opt="<%= FedoraID.shorten(params[:id]) %>/account/;;;" data-refresh="true" data-load="editAccount">
           <div><label>Title</label><input name="dc:title" readonly="readonly"></input></div>          
-          <div><label>ID</label><input name="accountID" class="changeBehavior" data-onchange="mergeAccountName"></input></div>
+          <div><label>ID</label><input name="accountID" class="changeBehavior" data-onchange="mergeAccountName" required></input></div>
           <div><label>Service Link</label><input name="foaf:accountServiceHomepage" readonly="readonly"></input></div>
           <%= hidden_field_tag :authenticity_token, form_authenticity_token, {:id => nil} %>
           <%= hidden_field_tag "foaf:accountName", {:id => nil} %>

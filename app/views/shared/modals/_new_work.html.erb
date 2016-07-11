@@ -3,15 +3,15 @@
     <div class="modal-content">
       <div class="modal-body">
         <form data-lna-query="newWork" accept-charset="UTF-8" data-tag-delimiter=";;;" class="formTwoColumn" data-forward="true">
-          <div><label>Title</label><input name="dc:title"></input></div>
+          <div><label>Title</label><input name="dc:title" required></input></div>
           <% if params[:id] %>
             <%= hidden_field_tag "dc:creator", person_url(params[:id]) %>
           <% else %>
-          <div><label>Attributed To</label><input name="foaf:name" class="autocompleteBehavior" autocomplete="off" data-autocomplete-type="person"></input></div> 
+          <div><label>Attributed To</label><input name="foaf:name" class="autocompleteBehavior" autocomplete="off" data-autocomplete-type="person"  required></input></div> 
           <%= hidden_field_tag "dc:creator", nil, {:id=>nil} %>
           <% end %>              
-          <div><label>Author(s)</label><input name="bibo:authorList" class="tagBehavior"></input></div> 
-          <div><label>Abstract</label><textarea name="dc:abstract"></textarea></div>
+          <div><label>Author(s)</label><input name="bibo:authorList" class="tagBehavior" required></input></div> 
+          <div><label>Abstract</label><textarea name="dc:abstract" required></textarea></div>
           <div><label>Date</label><input name="dc:date" class="dateBehavior"></input></div>    
           <div><label>DOI</label><input name="bibo:doi"></input></div> 
           <div><label>URI(s)</label><input name="bibo:uri" class="tagBehavior"></input></div> 

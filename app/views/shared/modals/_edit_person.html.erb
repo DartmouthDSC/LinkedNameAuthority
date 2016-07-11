@@ -3,12 +3,12 @@
     <div class="modal-content">
       <div class="modal-body">
         <form data-lna-query="editPerson" class="formTwoColumn" accept-charset="UTF-8" data-load="editPerson" data-refresh="true" data-tag-delimiter=";;;" data-opt="<%= params[:id] %>">
-          <div><label>Given Name</label><input name="foaf:givenName"></input></div>
-          <div><label>Family Name</label><input name="foaf:familyName"></input></div>
-          <div><label>Written Name</label><input name="foaf:name"></input></div>
+          <div><label>Given Name</label><input name="foaf:givenName" required></input></div>
+          <div><label>Family Name</label><input name="foaf:familyName" required></input></div>
+          <div><label>Written Name</label><input name="foaf:name" required></input></div>
           <div><label>Title</label><input name="foaf:title"></input></div>
-          <div><label>Reports To</label><input name="skos:prefLabel" class="autocompleteBehavior" autocomplete="off" data-autocomplete-type="reportsTo"></input></div>
-          <div><label>Email</label><input name="foaf:mbox"></input></div>
+          <div><label>Reports To</label><input name="skos:prefLabel" class="autocompleteBehavior" autocomplete="off" data-autocomplete-type="reportsTo" required></input></div>
+          <div><label>Email</label><input name="foaf:mbox" required></input></div>
           <div><label>Photo URL</label><input name="foaf:image"></input></div>
           <div><label>Homepage URL</label><input name="foaf:homepage" class="tagBehavior"></input></div>
           <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
