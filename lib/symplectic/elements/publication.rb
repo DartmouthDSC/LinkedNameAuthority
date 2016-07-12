@@ -35,7 +35,7 @@ module Symplectic
         
         xpath_queries = {
           doc_type:   "../../../@type",
-          id:         "../../../@id"
+          id:         "../../../@id",
           publisher:  "api:field[@name='publisher']/api:text",
           title:      "api:field[@name='title']/api:text",
           volume:     "api:field[@name='volume']/api:text",
