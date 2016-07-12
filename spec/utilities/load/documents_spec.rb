@@ -54,6 +54,7 @@ RSpec.describe Load::Documents do
         its(:issue)       { is_expected.to eq @hash[:issue] }
         its(:number)      { is_expected.to eq @hash[:number] }
         its(:doi)         { is_expected.to eq @hash[:doi] }
+        its(:doc_type)    { is_expected.to eq @hash[:doc_type] }
         its(:abstract)    { is_expected.to eq @hash[:abstract] }
         its(:elements_id) { is_expected.to eq @hash[:elements_id] }
       end
