@@ -15,6 +15,7 @@ FactoryGirl.define do
     doi           'http://dx.doi.org/19.1409/ddlp.1490'
     abstract      'Lorem ipsum...'
     subject       ['Environment', 'Global Warming']
+    doc_type      Lna::Collection::Document::TYPE_ARTICLE
     bibliographic_citation 'other citation...'
 
     before(:create) do |document|
@@ -40,5 +41,6 @@ FactoryGirl.define do
     doi           'http://dx.doi.org/29.1093/dslp.1338'
     subject       ['Global Warming']
     abstract      'Lorem ipsum...'
+    doc_type      Lna::Collection::Document::TYPE_ARTICLE
   end
 end

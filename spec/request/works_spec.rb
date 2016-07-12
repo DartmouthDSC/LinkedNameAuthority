@@ -51,6 +51,10 @@ RSpec.describe 'Works API', type: :request, https: true do
       
     end
 
+    it 'returns doc_type' do
+      expect_json('@graph.0', :'dc:type' => @work.doc_type)
+    end
+
     it 'include link headers' do
       expect_header('Link', "<#{works_url(page: 1)}>; rel=\"first\", <#{works_url(page: 1)}>; rel=\"last\"")
     end

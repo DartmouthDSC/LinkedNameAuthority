@@ -97,6 +97,10 @@ RSpec.describe Lna::Collection::Document, type: :model do
     it 'sets subject' do
       expect(subject.subject).to match_array ['Environment', 'Global Warming']
     end
+
+    it 'set doc_type' do
+      expect(subject.doc_type).to eq Lna::Collection::Document::TYPE_ARTICLE
+    end
     
     it 'sets bibliographic citation' do
       expect(subject.bibliographic_citation).to eql 'other citation...'
@@ -211,6 +215,11 @@ RSpec.describe Lna::Collection::Document, type: :model do
     
     it 'assures author_list is set' do
       subject.author_list = nil
+      expect(subject.save).to be false
+    end
+
+    it 'assures doc_type is set' do
+      subject.doc_type = nil
       expect(subject.save).to be false
     end
 

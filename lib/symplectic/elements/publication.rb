@@ -3,7 +3,8 @@ module Symplectic
   module Elements
     class Publication
       attr_accessor :id, :author_list, :publisher, :date, :title, :page_start, :page_end, :pages,
-                    :volume, :issue, :number, :canonical_url, :doi, :abstract, :subject, :journal
+                    :volume, :issue, :number, :canonical_url, :doi, :abstract, :subject, :journal,
+                    :doc_type
 
       # Creates publication object from <api:object> element returned from the Elements API.
       #
@@ -16,24 +17,25 @@ module Symplectic
         raise ArgumentError,
               "Trying to initialize #{self.class.name} with empty object." unless api_object
 
-        if id = api_object.attribute('id')
-          @id = id.text
-        else
-          raise ArgumentError, "Could not locate valid id in record"
-        end
+        load_from_record(api_object)
         
-        if record = api_object.at_xpath("api:records/api:record[@format='native']/api:native")
-          load_from_record(record)
-        else
-          raise ArgumentError, "Object given did not contain the nodes expected of a publication record."
-        end
+        raise ArgumentError, "Could not locate valid id in record" if @id.blank?
       end
 
       # Sets all instance variables with the xml element given.
       #
-      # @params record [Nokogiri::XML::Element]
-      def load_from_record(record)
+      # @params api_object [Nokogiri::XML::Element]
+      def load_from_record(api_object)
+        record = api_object.at_xpath("api:records/api:record[@format='native']/api:native")
+
+        unless record 
+          raise ArgumentError,
+                "Object given did not contain the nodes expected of a publication record."
+        end
+        
         xpath_queries = {
+          doc_type:   "../../../@type",
+          id:         "../../../@id"
           publisher:  "api:field[@name='publisher']/api:text",
           title:      "api:field[@name='title']/api:text",
           volume:     "api:field[@name='volume']/api:text",
@@ -44,7 +46,8 @@ module Symplectic
           pages:      "api:field[@name='pagination']/api:pagination/api:page-count",
           number:     "api:field[@name='number']/api:text",
           doi:        "api:field[@name='doi']/api:links/api:link[@type='doi']/@href",
-          journal:    "api:field[@name='journal']/api:text"
+          journal:    "api:field[@name='journal']/api:text",
+
         }
 
         # Loop through all the xpath queries.

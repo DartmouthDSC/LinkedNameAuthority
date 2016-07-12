@@ -15,6 +15,7 @@ class WorkController < CrudController
       'dc:publisher'     => 'publisher',
       'dc:date'          => 'date',
       'dc:subject'       => 'subject',
+      'dc:type'          => 'doc_type',
       'dc:bibliographicCitation' => 'bibliographic_citation'
   }.freeze
 
@@ -89,8 +90,9 @@ class WorkController < CrudController
     params.require('dc:creator')
     params.require('bibo:authorList')
     params.require('dc:title')
+    params.require('dc:type')
     params.permit('id', 'bibo:doi', 'dc:creator', 'bibo:volume', 'bibo:pages', 'bibo:pageStart',
-                  'bibo:pageEnd', 'dc:title', 'dc:abstract', 'dc:publisher', 'dc:date',
+                  'bibo:pageEnd', 'dc:title', 'dc:abstract', 'dc:publisher', 'dc:date', 'dc:type',
                   'dc:bibliographicCitation', 'authenticity_token', 'bibo:authorList' => [],
                   'bibo:uri' => [], 'dc:subject' => [])
   end

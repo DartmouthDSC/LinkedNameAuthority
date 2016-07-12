@@ -7,6 +7,7 @@ RSpec.describe "Work API", type: :request, https: true do
     {
       "bibo:authorList" => ["Bell, John", "Ippolito, Jon"],
       "dc:title"        => "Diffused Museums and Making the Title Longer",
+      "dc:type"         => "Book",
       "dc:creator"      => person_url(id: FedoraID.shorten(@jane.id))
     }.to_json
   }
@@ -49,6 +50,7 @@ RSpec.describe "Work API", type: :request, https: true do
             "dc:publisher" => "Wiley",
             "dc:date" => "2015",
             "dc:subject" => ["Art"],
+            "dc:type"    => "Book",
             "dc:creator" => person_url(id: FedoraID.shorten(@jane.id))
           }
           
@@ -119,6 +121,10 @@ RSpec.describe "Work API", type: :request, https: true do
       it 'contains subjects' do
         expect_json('@graph.0', :'dc:subject' => ["Art"])
       end
+
+      it 'contains type' do
+        expect_json('@graph.0', :'dc:type' => 'Book')
+      end
     end
   end
 
@@ -163,6 +169,7 @@ ract"],
               "dc:publisher" => "Wiley",
               "dc:date" => "2015",
               "dc:subject" => ["Art"],
+              "dc:type" => "Book",
               "dc:creator" => person_url(id: FedoraID.shorten(@jane.id))
           }
           put @path, body.to_json, {
