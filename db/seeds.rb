@@ -21,7 +21,7 @@ end
 def add_role_to_users(role, users)
   users.each do |attrs|
     user = User.find_or_create_by!(attrs)
-    user.roles << role
+    user.roles << role unless user.roles.include? role
     user.save!
   end
 end
