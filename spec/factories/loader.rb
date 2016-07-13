@@ -46,6 +46,7 @@ FactoryGirl.define do
     issue            '1'
     number           '2'
     doi              'http://dx.doi.org/11.1047/02.slr.0400437526.63978.vc'
+    doc_type         'Article'
     abstract         'Lorem ipsum...'
     elements_id      '12345'
     
