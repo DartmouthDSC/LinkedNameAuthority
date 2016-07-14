@@ -11,8 +11,17 @@ class Ability
       can [:show, :add_user, :remove_user, :index, :edit], Role
     end
 
-    # Permission for editors and admins to make changes to fedora objects.
-    if user.editor? || user.admin?
+    # Permission for editors to make changes to fedora objects.
+    if user.editor?
+      can :update, ActiveFedora::Base
+      can :create, [Lna::Membership, Lna::Collection::FreeToRead, Lna::Collection::LicenseReference, Lna::Account]
+    end
+
+    if user.creator?
+      can [:create, :update], ActiveFedora::Base
+    end
+
+    if user.admin?
       can [:create, :update, :destroy], ActiveFedora::Base
     end
   end

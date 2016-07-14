@@ -53,4 +53,12 @@ class User < ActiveRecord::Base
   def editor?
     roles.where(name: 'editor').exists?
   end
+
+  def creator?
+    roles.where(name: 'creator').exists?
+  end
+
+  def viewer?
+    roles.where(name: 'viewer').exists?
+  end
 end

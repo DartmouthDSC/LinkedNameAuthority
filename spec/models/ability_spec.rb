@@ -26,15 +26,29 @@ RSpec.describe Ability, type: :model do
       it { is_expected.to be_able_to(:destroy, fedora_obj) }
     end
 
-    context "when is an editor" do
+    context "when is a editor" do
       let(:editor) { Role.create(name: 'editor') }
       let(:user) { FactoryGirl.create(:user, roles: [editor]) }
+
+      it { is_expected.to be_able_to(:update, fedora_obj) }
+      it { is_expected.to be_able_to(:create, Lna::Membership.new) }
+      it { is_expected.to be_able_to(:create, Lna::Account.new) }
+      it { is_expected.to be_able_to(:create, Lna::Collection::FreeToRead.new) }
+      it { is_expected.to be_able_to(:create, Lna::Collection::LicenseReference.new) }
+      it { is_expected.not_to be_able_to(:create, fedora_obj) }
+      it { is_expected.not_to be_able_to(:destroy, Lna::Membership.new) }
+      it { is_expected.not_to be_able_to(:destroy, fedora_obj) }
+    end
+    
+    context "when is an creator" do
+      let(:creator) { Role.create(name: 'creator') }
+      let(:user) { FactoryGirl.create(:user, roles: [creator]) }
 
       it { is_expected.not_to be_able_to(:edit, role) }
       it { is_expected.not_to be_able_to(:show, role) }
       it { is_expected.to be_able_to(:create, fedora_obj) }
       it { is_expected.to be_able_to(:update, fedora_obj) }
-      it { is_expected.to be_able_to(:destroy, fedora_obj) }
+      it { is_expected.not_to be_able_to(:destroy, fedora_obj) }
     end
   end
 end

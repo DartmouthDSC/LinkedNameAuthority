@@ -23,7 +23,7 @@ RSpec.describe "Change Event API", type: :request, https: true do
       let(:body)   { required_body }
     end
     
-    describe 'when authorized', authenticated: true, editor: true do 
+    describe 'when authorized', authenticated: true, admin: true do 
       include_examples 'throws error when fields missing' do
         let(:path) { @path }
         let(:action) { 'post' }
@@ -102,7 +102,7 @@ RSpec.describe "Change Event API", type: :request, https: true do
       let(:body)   { required_body }
     end
 
-    describe 'when authorized', authenticated: true, editor: true do
+    describe 'when authorized', authenticated: true, admin: true do
       include_examples 'throws error when fields missing' do
         let(:path) { @path }
         let(:action) { 'post' }
