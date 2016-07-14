@@ -1,17 +1,20 @@
-class Admin::UserRolesController < ApplicationController
+class UserRolesController < ApplicationController
   include Hydra::RoleManagement::UserRolesBehavior
 
   def create
     authorize! :add_user, @role
 
     params[:user_key] = params[:user_key].downcase
+    u = find_or_create_user(params[:user_key])
     
-    if u = find_or_create_user(params[:user_key])
+    if u.nil?
+      redirect_to role_management.role_path(@role), :flash => { :error => "Unable to find the user #{params[:user_key]}" }
+    elsif u.roles.include?(@role)
+      redirect_to role_management.role_path(@role), :flash => { :error => "User already assigned to this role" }
+    else
       u.roles << @role
       u.save!
       redirect_to role_management.role_path(@role)
-    else
-      redirect_to role_management.role_path(@role), :flash => { :error => "Unable to find the user #{params[:user_key]}" }
     end
   end
 

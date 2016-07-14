@@ -9,6 +9,8 @@
 
 @admin  = Role.find_or_create_by!(name: "admin")
 @editor = Role.find_or_create_by!(name: "editor")
+@creator = Role.find_or_create_by!(name: "creator")
+@viewer = Role.find_or_create_by!(name: "viewer")
 
 def add_admins(admins)
   add_role_to_users(@admin, admins)
@@ -21,7 +23,7 @@ end
 def add_role_to_users(role, users)
   users.each do |attrs|
     user = User.find_or_create_by!(attrs)
-    user.roles << role
+    user.roles << role unless user.roles.include? role
     user.save!
   end
 end
@@ -43,6 +45,3 @@ if Rails.env == 'production' || Rails.env == 'qa'
     ]
   )
 end
-
-
-

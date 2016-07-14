@@ -18,7 +18,7 @@
       <ul class="iconList">
         <% @role.users.each do |user| %>
         <li>
-          <p><%= user.user_key %></p>
+          <p><%= user.name %> (<%= user.netid %>)</p>
           <% if can? :remove_user, Role %>
           <%= button_to role_management.role_user_path(@role, user), :method=>:delete do %><i class='fa fa-minus-circle fa-2x'></i><% end %>
           <% end %>

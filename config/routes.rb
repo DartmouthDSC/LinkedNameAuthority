@@ -43,9 +43,9 @@ Rails.application.routes.draw do
     concerns :collections
 
     resources :person, :organization, :work, only: :show
-    
-    mount Hydra::RoleManagement::Engine => '/'
   end
+
+  mount Hydra::RoleManagement::Engine, at: '/admin'
   
   concerns :collections
   

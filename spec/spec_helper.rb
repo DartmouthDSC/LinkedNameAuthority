@@ -60,15 +60,15 @@ RSpec.configure do |config|
   end
 
   # Authorize User as an Editor
-  config.before(:context, editor: true) do
+  config.before(:context, admin: true) do
     netid = FactoryGirl.create(:omniauth_hash).extra.netid
-    editor = Role.find_or_initialize_by(name: 'editor')
+    editor = Role.find_or_initialize_by(name: 'admin')
     User.find_by(netid: netid).roles << editor
   end
   
   # Remove Editor Role
-  config.after(:context, editor: true) do
-    Role.find_by(name: "editor").destroy
+  config.after(:context, admin: true) do
+    Role.find_by(name: "admin").destroy
   end
                        
   # Signs User out

@@ -27,6 +27,7 @@ RSpec.describe Symplectic::Elements::Publication do
     its(:doi)         { is_expected.to eq 'http://dx.doi.org/10.1097/00000000-200607000-00004' }
     its(:subject)     { is_expected.to eq ['Computers'] }
     its(:journal)     { is_expected.to eq 'TEST JOURNAL' }
+    its(:doc_type)    { is_expected.to eq 'book' }
     its(:abstract)    { is_expected.to eq 'This book takes a single line of code -- the extremely concise BASIC program for the Commodore 64 inscribed in the title -- and uses it as a lens through which to consider the phenomenon of creative computing and the way computer programs ...' }
 
     it 'raises error if api object is empty' do
@@ -43,8 +44,8 @@ RSpec.describe Symplectic::Elements::Publication do
   describe '.to_hash' do
     subject { @publication.to_hash }
 
-    # make sure it has the right number of keys\
-    its(:size) { is_expected.to eq 15 }
+    # Make sure it has the right number of keys.
+    its(:size) { is_expected.to eq 16 }
     
     its([:id])          { is_expected.to eq '142658' }
     its([:author_list]) {
@@ -63,6 +64,7 @@ RSpec.describe Symplectic::Elements::Publication do
     its([:doi])         { is_expected.to eq 'http://dx.doi.org/10.1097/00000000-200607000-00004' }
     its([:subject])     { is_expected.to eq ['Computers'] }
     its([:journal])     { is_expected.to eq 'TEST JOURNAL' }
+    its([:doc_type])    { is_expected.to eq 'book' }
     its([:abstract])    { is_expected.to eq 'This book takes a single line of code -- the extremely concise BASIC program for the Commodore 64 inscribed in the title -- and uses it as a lens through which to consider the phenomenon of creative computing and the way computer programs ...' }  
   end  
 end
