@@ -193,7 +193,6 @@ RSpec.describe 'Works API', type: :request, https: true do
 
         it 'returns 1 result' do
           request
-          puts json_body
           expect_status :ok
           expect_json_sizes(:@graph => 2)
         end
