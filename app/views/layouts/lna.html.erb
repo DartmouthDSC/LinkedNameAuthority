@@ -54,6 +54,15 @@
           </div>
         </div>
 
+        <% if flash[:error] %>
+        <script>
+        	$(document).ready(function(){
+        		LNA.errors.push('<%= flash[:error] %>');
+        		LNA.checkErrors();
+        	});
+        </script>
+        <% end %>
+
         <footer>
         Linked Name Authority - Dartmouth College
         </footer>
