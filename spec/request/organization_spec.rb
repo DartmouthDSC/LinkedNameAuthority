@@ -122,7 +122,7 @@ RSpec.describe "Organization API", type: :request, https: true do
       let(:body)   { required_body }
     end
     
-    describe 'when authorized', authenticated: true, editor: true do 
+    describe 'when authorized', authenticated: true, admin: true do 
       include_examples 'throws error when fields missing' do
         let(:path) { organization_index_path }
         let(:action) { 'post' }
@@ -130,7 +130,6 @@ RSpec.describe "Organization API", type: :request, https: true do
       
       describe 'adds new organization' do
         include_examples 'successful POST request'
-
         
         before :context do
           @count = Lna::Organization.count
@@ -203,7 +202,7 @@ RSpec.describe "Organization API", type: :request, https: true do
       let(:body)   { required_body }
     end
 
-    describe 'when authorized', authenticated: true, editor: true do
+    describe 'when authorized', authenticated: true, admin: true do
       include_examples 'throws error when fields missing' do
         let(:path) { @path }
         let(:action) { 'put' }
@@ -258,7 +257,7 @@ RSpec.describe "Organization API", type: :request, https: true do
       let(:body)   { required_body }
     end
 
-    describe 'when authorized', authenticated: true, editor: true do
+    describe 'when authorized', authenticated: true, admin: true do
       describe 'succesfully deletes organization' do
         include_examples 'successful request'
 

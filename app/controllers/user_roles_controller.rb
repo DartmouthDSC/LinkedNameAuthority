@@ -7,10 +7,10 @@ class UserRolesController < ApplicationController
     params[:user_key] = params[:user_key].downcase
     u = find_or_create_user(params[:user_key])
     
-    if u.roles.include?(@role)
-      redirect_to role_management.role_path(@role), :flash => { :error => "User already assigned to this role" }
-    elsif u.nil?
+    if u.nil?
       redirect_to role_management.role_path(@role), :flash => { :error => "Unable to find the user #{params[:user_key]}" }
+    elsif u.roles.include?(@role)
+      redirect_to role_management.role_path(@role), :flash => { :error => "User already assigned to this role" }
     else
       u.roles << @role
       u.save!
