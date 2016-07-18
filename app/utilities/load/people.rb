@@ -151,7 +151,7 @@ module Load
             person.primary_org = org
             log_warning(CHANGE_PRIMARY_ORG, "#{person.full_name} (#{netid})")
           end
-          person.save
+          person.save!
         end
         
         # Create or update memberships.
