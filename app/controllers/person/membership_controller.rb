@@ -55,7 +55,7 @@ class Person::MembershipController < CrudController
   end
   
   def attributes
-    extra = {}
+    extra = { source: Lna::Membership::SOURCE_MANUAL }
     extra[:person_id] = params[:person_id] if params[:action] == 'create'
 
     params_to_attributes(membership_params, extra)
