@@ -7,7 +7,10 @@ atom_feed do |feed|
     feed.updated @works.map{ |w| DateTime.parse(w['system_modified_dtsi']) }.max
   end
 
-  cp = CiteProc::Processor.new(style: 'apa', format: 'text')
+  params[:style] = 'apa' unless params[:style]
+  params[:style] = 'modern-language-association' if params[:style] == 'mla'
+  
+  cp = CiteProc::Processor.new(style: params[:style], format: 'text')
 
   # TODO: Map the rest of the fields.
   elements_type_to_csl_type = {
