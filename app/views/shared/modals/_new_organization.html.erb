@@ -1,4 +1,4 @@
-<% if current_user.admin? || current_user.creator? %>
+<% if current_user && (current_user.admin? || current_user.creator?) %>
 <div class="modal fade newOrgModal formModal" id="newOrgModal" tabindex="-1" role="dialog" aria-labelledby="newOrgModal" title="Add an Organization to LNA">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">

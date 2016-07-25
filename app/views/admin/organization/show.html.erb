@@ -7,7 +7,7 @@
         <![endif]-->
             <section class="record">
                 <div class="orgData">
-                    <h1>Organization <% if current_user.admin? || current_user.creator? || current_user.editor? %><button class="fa fa-pencil fa-lg edit" title="edit organization" data-toggle="modal" data-target="#editOrganizationModal"><span class="helpText">edit this organization</span></button><% end %></h1>
+                    <h1>Organization <% if current_user && (current_user.admin? || current_user.creator? || current_user.editor?) %><button class="fa fa-pencil fa-lg edit" title="edit organization" data-toggle="modal" data-target="#editOrganizationModal"><span class="helpText">edit this organization</span></button><% end %></h1>
                     <h3></h3>
                     <p>
                         <span class="title">Also Known As</span><br>
@@ -47,7 +47,7 @@
             <%= render "shared/templates/lists_suborganization" %>
         </section>
         <section id="modals">
-        <% if current_user.admin? || current_user.editor? || current_user.creator? %>
+        <% if current_user && (current_user.admin? || current_user.editor? || current_user.creator?) %>
             <%= render "shared/modals/edit_organization" %>
         <% end %>
 

@@ -1,4 +1,4 @@
-<% if current_user.admin? || current_user.creator? || current_user.editor? %>
+<% if current_user && (current_user.admin? || current_user.creator? || current_user.editor?) %>
 <div class="modal fade editAffiliationModal formModal" id="editAffiliationModal" tabindex="-1" role="dialog" aria-labelledby="editAffiliationModal" title="Edit an Affiliation">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">

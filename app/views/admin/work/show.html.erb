@@ -11,14 +11,14 @@
                     <div><span class="spinner"></span></div>
                     <ul class="iconList">
                     </ul>
-                    <% if current_user.admin? || current_user.creator? || current_user.editor? %>
+                    <% if current_user && (current_user.admin? || current_user.creator? || current_user.editor?) %>
                     <button title="add license" id="newLicense" data-toggle="modal" data-target="#newLicenseModal"><span class="add"></span>Add License</button>
                     <% end %>
                 </div>
             </section>
             <section class="details">
                 <div class="workData">
-                    <h1><% if current_user.admin? || current_user.editor? || current_user.creator? %><button class="fa fa-pencil fa-lg edit" title="edit work" data-toggle="modal" data-target="#editWorkModal"><span class="helpText">edit this work</span></button> <% end %>Work</h1>
+                    <h1><% if current_user && (current_user.admin? || current_user.editor? || current_user.creator?) %><button class="fa fa-pencil fa-lg edit" title="edit work" data-toggle="modal" data-target="#editWorkModal"><span class="helpText">edit this work</span></button> <% end %>Work</h1>
                     <h3></h3>
                     <p class="creator">
                         <span class="title">Creator</span><br>
@@ -57,10 +57,8 @@
         </section>
         <section id="modals">
             <%= render "shared/modals/new_license" %>
-            <% if current_user.admin? || current_user.editor? || current_user.creator? %>
             <%= render "shared/modals/edit_license" %>
             <%= render "shared/modals/edit_work" %>
-            <% end %>
         </section>        
         <script>
         $(document).ready(function(){
