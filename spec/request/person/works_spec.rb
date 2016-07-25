@@ -52,6 +52,44 @@ RSpec.describe "Person/Works API", type: :request, https: true do
     end
   end
 
+  describe 'GET person/:person_id/works/feed.atom' do
+    
+    before :context do
+      get person_works_path(person_id: @jane_short_id) << "/feed.atom", format: :atom
+      @xml_document = Nokogiri::XML.parse(response.body)
+    end
+
+    context 'response body' do 
+      it 'contains id' do
+        expect(@xml_document.css("feed > id").children.first.text).to include(@jane_short_id)
+      end
+
+      it 'contains self' do
+        expect(@xml_document.css("feed > link[rel=self]").attr("href").value).to include(person_works_path(person_id: @jane_short_id) << "/feed.atom")
+      end   
+
+      it 'matches feed title' do
+        expect(@xml_document.css("feed > title").children.first.text).to eql("Works for " << @jane.full_name)
+      end  
+
+      it 'matches work title' do
+        expect(@xml_document.css("feed > entry > title").children.first.text).to eql(@article.title)
+      end
+
+      it 'matches work id' do
+        expect(@xml_document.css("feed > entry > id").children.first.text).to eql(work_url(id: FedoraID.shorten(@article.id)))
+      end
+
+      it 'matches summary' do
+        expect(@xml_document.css("feed > entry > summary").children.first.text).to eql(@article.abstract)
+      end
+
+      it 'matches author name' do
+        expect(@xml_document.css("feed > entry > author > name").children.first.text).to eql(@jane.family_name << ", " << @jane.given_name)
+      end
+    end
+  end  
+
   describe 'GET persons/:person_id/works/:start_date' do
     before :context do
       @article2 = FactoryGirl.create(:article, date: 'February 15, 2001',
