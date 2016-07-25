@@ -25,6 +25,7 @@ class Person::WorksController < ApiController
 
     respond_to do |f|
       f.atom
+      f.all {render 'feed.atom.builder', content_type: 'application/atom+xml'}
     end
   end
 end
