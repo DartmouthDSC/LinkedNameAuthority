@@ -1,3 +1,4 @@
+<% if current_user.admin? || current_user.creator? || current_user.editor? %>
 <div class="modal fade newLicenseModal formModal" id="newLicenseModal" tabindex="-1" role="dialog" aria-labelledby="newLicenseModal" title="Add an License for this Work to LNA">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -18,3 +19,4 @@
     </div>
   </div>
 </div>
+<% end %>

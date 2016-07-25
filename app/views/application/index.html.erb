@@ -19,11 +19,13 @@
                                 <roundButton class="roundButton"><i class="fa fa-2x fa-search" aria-hidden="true"></i><br />Find</roundButton>
                             </div>
                         </div>
+                        <% if current_user.admin? || current_user.creator? %>
                         <div class="roundButton" data-toggle="modal" data-target="#newOrgModal">
                             <div class="roundButtonCircle">
                                 <roundButton class="roundButton"><i class="fa fa-2x fa-plus" aria-hidden="true"></i><br />Add</roundButton>
                             </div>
                         </div>
+                        <% end %>
                     </div>
                 </div>
                 <div class="sectionCard">
@@ -39,11 +41,13 @@
                                 <roundButton class="roundButton"><i class="fa fa-2x fa-search" aria-hidden="true"></i><br />Find</roundButton>
                             </div>
                         </div>
+                        <% if current_user.admin? || current_user.creator? %>
                         <div class="roundButton" data-toggle="modal" data-target="#newPersonModal">
                             <div class="roundButtonCircle">
                                 <roundButton class="roundButton"><i class="fa fa-2x fa-plus" aria-hidden="true"></i><br />Add</roundButton>
                             </div>
                         </div>
+                        <% end %>
                     </div>                    
                 </div>
                 <div class="sectionCard">
@@ -59,11 +63,13 @@
                                 <roundButton class="roundButton"><i class="fa fa-2x fa-search" aria-hidden="true"></i><br />Find</roundButton>
                             </div>
                         </div>
+                        <% if current_user.admin? || current_user.creator? %>
                         <div class="roundButton" data-toggle="modal" data-target="#newWorkModal">
                             <div class="roundButtonCircle">
                                 <roundButton class="roundButton"><i class="fa fa-2x fa-plus" aria-hidden="true"></i><br />Add</roundButton>
                             </div>
                         </div>
+                        <% end %>
                     </div>                    
                 </div>
 
