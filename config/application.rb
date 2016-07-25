@@ -40,12 +40,5 @@ module HydraTest
       'RSolr::Error::Http'                => :bad_request,
     )
     
-    # Adding Vary header to ensure correct content type headers are used.
-    config.action_dispatch.default_headers.merge!(
-      'Vary'          => 'Content-Type',
-      'Pragma'        => 'no-cache',
-      'Cache-Control' => 'no-cache, no-store',
-      'Expires'       => 'Sat, 01 Jan 2000 12:00:00 GMT'
-    )
   end
 end

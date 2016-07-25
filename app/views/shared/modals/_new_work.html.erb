@@ -1,3 +1,4 @@
+<% if current_user && (current_user.admin? || current_user.creator?) %>
 <div class="modal fade newWorkModal formModal" id="newWorkModal" tabindex="-1" role="dialog" aria-labelledby="newWorkModal" title="Add a Work to LNA">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -29,3 +30,4 @@
     </div>
   </div>
 </div>
+<% end %>

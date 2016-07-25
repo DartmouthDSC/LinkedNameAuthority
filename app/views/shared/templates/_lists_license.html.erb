@@ -1,1 +1,1 @@
-						<li class="license"><span class="licenseName"></span><button class="fa fa-pencil fa-lg edit" title="edit license" data-toggle="modal" data-target="#editLicenseModal"></li>
+						<li class="license"><span class="licenseName"></span><% if current_user && (current_user.admin? || current_user.creator? || current_user.editor?) %><button class="fa fa-pencil fa-lg edit" title="edit license" data-toggle="modal" data-target="#editLicenseModal"><% end %></li>

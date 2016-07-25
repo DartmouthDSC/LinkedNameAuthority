@@ -14,8 +14,8 @@
   <% end %>
   Please correct the error and try again.</p>
 
-  <% if Rails.env.development? || Rails.env.test? %>
-	<div>Original exception (only displayed in <strong>development</strong> and <strong>test</strong> environment):
+  <% if user.admin? %>
+	<div>Original exception (only displayed to admins):
 	
 		<pre>
 		  <code><%= @exception.inspect %></code>

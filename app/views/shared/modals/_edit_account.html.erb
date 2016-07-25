@@ -1,3 +1,4 @@
+<% if current_user && (current_user.admin? || current_user.creator? || current_user.editor?) %>
 <div class="modal fade editAccountModal formModal" id="editAccountModal" tabindex="-1" role="dialog" aria-labelledby="editAccountModal" title="Edit an Account for this Person">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -12,13 +13,16 @@
           <%= hidden_field_tag "template", {:id => nil} %>
           <%= hidden_field_tag "dc:creator", root_url + "person/" + FedoraID.shorten(params[:id]), {:id => nil} %>
           <button type="submit" title="Update">Update</button>
-          <div class="centered">OR</div>
         </form>
+        <% if current_user.admin? %>
         <form data-lna-query="deleteAccount" accept-charset="UTF-8" class="formTwoColumn" data-confirm="true" data-opt="<%= FedoraID.shorten(params[:id]) %>/account/;;;" data-refresh="true" data-load="deleteAccount">
+        <div class="centered">OR</div>
         <%= hidden_field_tag :authenticity_token, form_authenticity_token, {:id => nil} %>
         <button type="submit" title="Delete" class="warning" name="delete">Delete Account</button>
         </form>
+        <% end %>
       </div>
     </div>
   </div>
 </div>
+<% end %>
