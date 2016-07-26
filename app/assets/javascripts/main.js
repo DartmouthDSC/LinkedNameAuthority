@@ -456,6 +456,7 @@ LNA = {
 			var errors = LNA.errors.join('<br>');
 			$('#errorModalBody').html(errors);
 			$('#errorModal').dialog("open");
+			LNA.errors = [];
 			return false;
 		} else return true;
 	},
@@ -541,6 +542,7 @@ LNA = {
 				'source': LNA.autocompletes[$(field).data('autocomplete-type')].source,
 				'select': LNA.autocompletes[$(field).data('autocomplete-type')].select
 			});
+			$(field).focusout(function(e){ LNA.autocompletes[$(field).data('autocomplete-type')].verify(e, field); });
 		});
 		$('.autocompleteBehavior').attr('data-ready', 'true');
 	},
@@ -625,6 +627,13 @@ LNA = {
 				e.preventDefault();
 				$(this).val(ui.item.label);
 				$(this).parents('form').children('input[name="org:organization"]').val(ui.item.value);
+			},
+			'verify': function(e, field){
+				e.preventDefault();
+				if($(field).parents('form').children('input[name="org:organization"]').val() == ''){
+					LNA.errors.push('You must click on an item from the dropdown list to select the organization. Typed names will not be accepted.');
+					LNA.checkErrors();
+				}
 			}
 		},
 		'reportsTo': {
@@ -640,7 +649,14 @@ LNA = {
 				e.preventDefault();
 				$(this).val(ui.item.label);
 				$(this).parents('form').children('input[name="org:reportsTo"]').val(ui.item.value);
-			}
+			},
+			'verify': function(e, field){
+				e.preventDefault();
+				if($(field).parents('form').children('input[name="org:reportsTo"]').val() == ''){
+					LNA.errors.push('You must click on an item from the dropdown list to select the reporting organization. Typed names will not be accepted.');
+					LNA.checkErrors();
+				}
+			}			
 		},
 		'person': {
 			'source': function(request, response){
@@ -655,7 +671,14 @@ LNA = {
 				e.preventDefault();
 				$(this).val(ui.item.label);
 				$(this).parents('form').children('input[name="dc:creator"]').val(ui.item.value);
-			}
+			},
+			'verify': function(e, field){
+				e.preventDefault();
+				if($(field).parents('form').children('input[name="dc:creator"]').val() == ''){
+					LNA.errors.push('You must click on an item from the dropdown list to select the creator. Typed names will not be accepted.');
+					LNA.checkErrors();
+				}
+			}			
 		}		
 	},
 
