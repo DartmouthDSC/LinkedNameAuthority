@@ -51,6 +51,7 @@ LNA = {
 		'fuzzySearch' : ''		//Add ~2 or something here to make some searches fuzzy by default
 	},
 	'errors': [],
+	'params': {},
 
 	//this set of functions are callbacks for LNAGateway.*()
 	'loadPersonCards': function(data, textStatus, xhr){
@@ -300,19 +301,29 @@ LNA = {
 	'fillPager': function(pageArray){
 		if(typeof pageArray == "undefined" || pageArray.total == 1) {
 			return true;
-		}
-		if(pageArray.current > 1) $('.firstPage').attr('href', LNA.convertPath(pageArray.first));
+		};
+
+		//We can't just use the links because a search will have form data that needs to be resubmitted.
+		//This handler overrides the standard anchor tags and submits the form for the correct page of search results.
+		var pageHandler = function(e, path){
+			e.preventDefault();
+			$('#pagerForm').attr('method', 'POST');
+			$('#pagerForm').attr('action', path);
+			$('#pagerForm').submit();
+		};
+
+		if(pageArray.current > 1) $('.firstPage').click(function(e){ pageHandler(e, LNA.convertPath(pageArray.first))});
 		else $('.firstPage').hide();
 
-		if(pageArray.current < pageArray.total) $('.lastPage').attr('href', LNA.convertPath(pageArray.last));
+		if(pageArray.current < pageArray.total) $('.lastPage').click(function(e){ pageHandler(e, LNA.convertPath(pageArray.last))});
 		else $('.lastPage').hide();
 
 		$('.currentPage').find('span').text(pageArray.current + ' of ' + pageArray.total);
 		
-		if(pageArray.prev && pageArray.first != pageArray.prev) $('.previousPage').attr('href', LNA.convertPath(pageArray.prev))
+		if(pageArray.prev && pageArray.first != pageArray.prev) $('.previousPage').click(function(e){ pageHandler(e, LNA.convertPath(pageArray.prev))});
 		else $('.previousPage').hide();
 		
-		if(pageArray.next && pageArray.next != pageArray.last) $('.nextPage').attr('href', LNA.convertPath(pageArray.next));
+		if(pageArray.next && pageArray.next != pageArray.last) $('.nextPage').click(function(e){ pageHandler(e, LNA.convertPath(pageArray.next))});
 		else $('.nextPage').hide();
 
 		$('.pager').show();
