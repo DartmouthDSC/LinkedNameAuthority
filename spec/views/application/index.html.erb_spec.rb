@@ -2,11 +2,7 @@ require 'rails_helper'
 
 describe 'application/index' do
 	context 'Anonymous user' do
-		it 'Shows login button to anonymous users' do
-			render(:template => 'application/index', :layout => 'layouts/lna')
-
-			expect(rendered).to include('Log In')
-		end
+		include_examples 'Shows login as needed'
 	end
 
 	context 'Logged in user' do
@@ -32,6 +28,34 @@ describe 'application/index' do
 			end				
 		end
 
+		context 'Editor user' do
+			before(:example) do
+				allow(@user).to receive(:editor?).and_return(true)
+				render(:template => 'application/index', :layout => 'layouts/lna')
+			end
+
+			it 'Hides roles link from editor users' do
+				expect(rendered).not_to include(role_management.roles_path)
+			end		
+			it 'Hides an add form from editor users' do
+				expect(rendered).not_to render_template(:partial => 'shared/modals/_new_work')
+			end			
+		end	
+
+		context 'Creator user' do
+			before(:example) do
+				allow(@user).to receive(:creator?).and_return(true)
+				render(:template => 'application/index', :layout => 'layouts/lna')
+			end
+
+			it 'Hides roles link from creator users' do
+				expect(rendered).not_to include(role_management.roles_path)
+			end		
+			it 'Shows an add form to creator users' do
+				expect(rendered).to render_template(:partial => 'shared/modals/_new_work')
+			end			
+		end					
+
 		context 'Admin user' do
 			before(:example) do
 				allow(@user).to receive(:admin?).and_return(true)
@@ -46,32 +70,5 @@ describe 'application/index' do
 			end			
 		end
 
-		context 'Creator user' do
-			before(:example) do
-				allow(@user).to receive(:creator?).and_return(true)
-				render(:template => 'application/index', :layout => 'layouts/lna')
-			end
-
-			it 'Hides roles link from creator users' do
-				expect(rendered).not_to include(role_management.roles_path)
-			end		
-			it 'Shows an add form to creator users' do
-				expect(rendered).to render_template(:partial => 'shared/modals/_new_work')
-			end			
-		end	
-
-		context 'Editor user' do
-			before(:example) do
-				allow(@user).to receive(:editor?).and_return(true)
-				render(:template => 'application/index', :layout => 'layouts/lna')
-			end
-
-			it 'Hides roles link from editor users' do
-				expect(rendered).not_to include(role_management.roles_path)
-			end		
-			it 'Hides an add form from editor users' do
-				expect(rendered).not_to render_template(:partial => 'shared/modals/_new_work')
-			end			
-		end	
 	end
 end
