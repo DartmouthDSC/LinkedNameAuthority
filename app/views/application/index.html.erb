@@ -136,9 +136,11 @@
         	});
         </script>
         <section id="modals">
+            <% if current_user && (current_user.admin? || current_user.creator?) %>
     		<%= render "shared/modals/new_person" %>
             <%= render "shared/modals/new_organization" %>
             <%= render "shared/modals/new_work" %>
+            <% end %>
             <%= render "shared/modals/find_persons" %>
             <%= render "shared/modals/find_organizations" %>
             <%= render "shared/modals/find_works" %>
