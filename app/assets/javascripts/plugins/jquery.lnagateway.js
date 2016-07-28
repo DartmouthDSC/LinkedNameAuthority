@@ -415,7 +415,8 @@
 			        "accepts": {"json": "application/ld+json"},
 			        "data": formData,
 			        "dataType": "json",
-			        "success": fn
+			        "success": fn,
+			        "error": function(xhr, status, err){ LNA.errors.push('Problem loading data: '+status+' - '+err+'<br>Please contact an administrator for assistance'); LNA.checkErrors(); }
 	      		});
 	    	} else {
 	      		$.form(this.options.baseURL + 'admin/' + queryData.path + opt, formData, queryData.method).submit();

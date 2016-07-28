@@ -59,14 +59,14 @@ RSpec.configure do |config|
     get_via_redirect '/sign_in'
   end
 
-  # Authorize User as an Editor
+  # Authorize User as an Admin
   config.before(:context, admin: true) do
     netid = FactoryGirl.create(:omniauth_hash).extra.netid
     editor = Role.find_or_initialize_by(name: 'admin')
     User.find_by(netid: netid).roles << editor
   end
   
-  # Remove Editor Role
+  # Remove Admin Role
   config.after(:context, admin: true) do
     Role.find_by(name: "admin").destroy
   end

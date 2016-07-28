@@ -51,6 +51,7 @@ LNA = {
 		'fuzzySearch' : ''		//Add ~2 or something here to make some searches fuzzy by default
 	},
 	'errors': [],
+	'params': {},
 
 	//this set of functions are callbacks for LNAGateway.*()
 	'loadPersonCards': function(data, textStatus, xhr){
@@ -300,19 +301,29 @@ LNA = {
 	'fillPager': function(pageArray){
 		if(typeof pageArray == "undefined" || pageArray.total == 1) {
 			return true;
-		}
-		if(pageArray.current > 1) $('.firstPage').attr('href', LNA.convertPath(pageArray.first));
+		};
+
+		//We can't just use the links because a search will have form data that needs to be resubmitted.
+		//This handler overrides the standard anchor tags and submits the form for the correct page of search results.
+		var pageHandler = function(e, path){
+			e.preventDefault();
+			$('#pagerForm').attr('method', 'POST');
+			$('#pagerForm').attr('action', path);
+			$('#pagerForm').submit();
+		};
+
+		if(pageArray.current > 1) $('.firstPage').click(function(e){ pageHandler(e, LNA.convertPath(pageArray.first))});
 		else $('.firstPage').hide();
 
-		if(pageArray.current < pageArray.total) $('.lastPage').attr('href', LNA.convertPath(pageArray.last));
+		if(pageArray.current < pageArray.total) $('.lastPage').click(function(e){ pageHandler(e, LNA.convertPath(pageArray.last))});
 		else $('.lastPage').hide();
 
 		$('.currentPage').find('span').text(pageArray.current + ' of ' + pageArray.total);
 		
-		if(pageArray.prev && pageArray.first != pageArray.prev) $('.previousPage').attr('href', LNA.convertPath(pageArray.prev))
+		if(pageArray.prev && pageArray.first != pageArray.prev) $('.previousPage').click(function(e){ pageHandler(e, LNA.convertPath(pageArray.prev))});
 		else $('.previousPage').hide();
 		
-		if(pageArray.next && pageArray.next != pageArray.last) $('.nextPage').attr('href', LNA.convertPath(pageArray.next));
+		if(pageArray.next && pageArray.next != pageArray.last) $('.nextPage').click(function(e){ pageHandler(e, LNA.convertPath(pageArray.next))});
 		else $('.nextPage').hide();
 
 		$('.pager').show();
@@ -445,6 +456,7 @@ LNA = {
 			var errors = LNA.errors.join('<br>');
 			$('#errorModalBody').html(errors);
 			$('#errorModal').dialog("open");
+			LNA.errors = [];
 			return false;
 		} else return true;
 	},
@@ -530,6 +542,7 @@ LNA = {
 				'source': LNA.autocompletes[$(field).data('autocomplete-type')].source,
 				'select': LNA.autocompletes[$(field).data('autocomplete-type')].select
 			});
+			$(field).focusout(function(e){ LNA.autocompletes[$(field).data('autocomplete-type')].verify(e, field); });
 		});
 		$('.autocompleteBehavior').attr('data-ready', 'true');
 	},
@@ -614,6 +627,13 @@ LNA = {
 				e.preventDefault();
 				$(this).val(ui.item.label);
 				$(this).parents('form').children('input[name="org:organization"]').val(ui.item.value);
+			},
+			'verify': function(e, field){
+				e.preventDefault();
+				if($(field).parents('form').children('input[name="org:organization"]').val() == ''){
+					LNA.errors.push('You must click on an item from the dropdown list to select the organization. Typed names will not be accepted.');
+					LNA.checkErrors();
+				}
 			}
 		},
 		'reportsTo': {
@@ -629,7 +649,14 @@ LNA = {
 				e.preventDefault();
 				$(this).val(ui.item.label);
 				$(this).parents('form').children('input[name="org:reportsTo"]').val(ui.item.value);
-			}
+			},
+			'verify': function(e, field){
+				e.preventDefault();
+				if($(field).parents('form').children('input[name="org:reportsTo"]').val() == ''){
+					LNA.errors.push('You must click on an item from the dropdown list to select the reporting organization. Typed names will not be accepted.');
+					LNA.checkErrors();
+				}
+			}			
 		},
 		'person': {
 			'source': function(request, response){
@@ -644,7 +671,14 @@ LNA = {
 				e.preventDefault();
 				$(this).val(ui.item.label);
 				$(this).parents('form').children('input[name="dc:creator"]').val(ui.item.value);
-			}
+			},
+			'verify': function(e, field){
+				e.preventDefault();
+				if($(field).parents('form').children('input[name="dc:creator"]').val() == ''){
+					LNA.errors.push('You must click on an item from the dropdown list to select the creator. Typed names will not be accepted.');
+					LNA.checkErrors();
+				}
+			}			
 		}		
 	},
 

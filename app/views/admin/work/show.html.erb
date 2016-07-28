@@ -56,9 +56,11 @@
             <%= render "shared/templates/lists_license" %>
         </section>
         <section id="modals">
+            <% if current_user && (current_user.admin? || current_user.editor? || current_user.creator?) %>
             <%= render "shared/modals/new_license" %>
             <%= render "shared/modals/edit_license" %>
             <%= render "shared/modals/edit_work" %>
+            <% end %>
         </section>        
         <script>
         $(document).ready(function(){
