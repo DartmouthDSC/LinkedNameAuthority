@@ -18,6 +18,6 @@
         </section>
         <script>
         $(document).ready(function(){
-            $().LNAGateway().listOrgs(LNA.loadOrgCards, <%= @page %>);
+            $().LNAGateway().listOrgs(LNA.loadOrgCards, <%= params['page'] %>);
         });
         </script>

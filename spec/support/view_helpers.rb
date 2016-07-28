@@ -12,7 +12,17 @@ end
 
 shared_context 'Mock generic params' do
 	before do
-		@params = {:id => '999999'}
+		@params = {:id => '999999', :page => 369}
+		allow(controller).to (receive(:params).and_return(@params))
+	end
+end
+
+shared_context 'Mock search params' do
+	before do
+		@params = {'skos:pref_label' => 'Information Technologies',
+					'foaf:full_name' => 'John Bell',
+					'dc:title' => 'Great Article',
+					'page' => 369}
 		allow(controller).to (receive(:params).and_return(@params))
 	end
 end

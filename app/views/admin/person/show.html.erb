@@ -68,12 +68,16 @@
         <%= render "shared/templates/lists_account" %>
         </section>
         <section id="modals">
-        <%= render "shared/modals/new_work" %>
+        <% if current_user && (current_user.admin? || current_user.creator? || current_user.editor?) %>
         <%= render "shared/modals/new_affiliation" %>
         <%= render "shared/modals/new_account" %>
         <%= render "shared/modals/edit_account" %>
         <%= render "shared/modals/edit_affiliation" %>
-        <%= render "shared/modals/edit_person" %>
+        <%= render "shared/modals/edit_person" %>        
+        <% end %>
+        <% if current_user && (current_user.admin? || current_user.creator?) %>
+        <%= render "shared/modals/new_work" %>
+        <% end %>
         </section>        
 		<script>
         $(document).ready(function(){
