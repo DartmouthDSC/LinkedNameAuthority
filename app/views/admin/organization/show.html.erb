@@ -28,18 +28,14 @@
                     </p>   
                     <p class="createdFrom">
                         <span class="title">Created From</span><br>
-                        <% if current_user && (current_user.admin? || current_user.creator?) %>
-                        <button title="add change event" id="newResultedFrom" data-toggle="modal" data-target="#newResultedFromModal"><span class="add"></span>Add Change Event</button>
-                        <% end %>
-                        <span class="resultedFrom"></span>
-                        <br clear="both">
+                        <span class="resultedFrom iconList"><em>To record which organization(s) preceded this one, find the preceding organization(s) and add change events there.</em></span>
                     </p>
                     <p class="turnedInto">
                         <span class="title">Turned Into</span><br>
+                        <span class="changedBy iconList"></span>
                         <% if current_user && (current_user.admin? || current_user.creator?) %>
-                        <button title="add change event" id="newChangedBy" data-toggle="modal" data-target="#newChangedByModal"><span class="add"></span>Add Change Event</button>
+                        <button title="add change event" id="newChangedBy" data-toggle="modal" data-target="#newChangedByModal"><span class="add"></span>Add Resulting Organization</button>
                         <% end %>
-                        <span class="changedBy"></span>
                         <br clear="both">
                     </p>                    
                 </div>
@@ -66,7 +62,9 @@
         <% if current_user && (current_user.admin? || current_user.editor? || current_user.creator?) %>
             <%= render "shared/modals/edit_organization" %>
         <% end %>
-
+        <% if current_user && (current_user.admin? || current_user.creator?) %>
+            <%= render "shared/modals/new_changedBy" %>
+        <% end %>
         </section>        
 		<script>
         $(document).ready(function(){
