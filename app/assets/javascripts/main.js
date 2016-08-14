@@ -187,8 +187,11 @@ LNA = {
 	'loadPerson': function(data, textStatus, xhr){
 		var dataArray = $.fn['LNAGateway']().readLD.person(data);		
 
+		console.log(dataArray)
+
 		//render person data
 		$('.sidebar h1').text(dataArray.person['foaf:name']);
+		$('#rssLink').attr('href', dataArray.person['@id'] + '/works/feed.atom')
 		$('.crumbHere').children().first().text(dataArray.person['foaf:name']);
 		if(dataArray.person['foaf:image'] != '') $('.sidebar img').attr('src', dataArray.person['foaf:image']);
 
