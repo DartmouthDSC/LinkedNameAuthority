@@ -29,4 +29,9 @@ json.set! '@graph' do
   json.array! @change_events do |event|
     json.partial! 'change_event/change_event', event: event
   end
+
+  json.array! @change_orgs do |org|
+    json.partial! 'organization/organization', org: org, full: false
+  end
+
 end

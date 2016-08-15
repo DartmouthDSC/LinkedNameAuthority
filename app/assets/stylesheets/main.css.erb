@@ -342,13 +342,7 @@ footer{
     content: " ";
     -moz-border-radius: 1em;
     -webkit-border-radius: 1em;
-    position: absolute;
     z-index: 0;
-}
-@-moz-document url-prefix(){
-    .breadcrumbs .crumbStop::after{
-        margin-top: -1em;
-    } 
 }
 .breadcrumbs a span{
     font-size: 1em;
@@ -399,7 +393,7 @@ input:required, textarea:required{
     background: lightyellow;
 }
 
-.formSingleColumn label, input{
+.formSingleColumn label, input, textarea{
     display: block;
     width: 90%;
     margin: .1em auto;
@@ -682,6 +676,10 @@ input[readonly]{
     -webkit-flex-wrap: no-wrap;
     flex-wrap: no-wrap;
 }
+.sidebar hr{
+    padding: 0;
+    margin: .4em 0 0;
+}
 .sidebar img{
     width: 50%;
     max-width: 150px;
@@ -758,11 +756,12 @@ input[readonly]{
     max-height: 4em;
     max-width: 4em;
 }
-
+.resultedFrom em{
+    font-size: smaller;
+}
 #templates{
     display: none !important;
 }
-
 
 /* icons */
 a.fa{
@@ -813,14 +812,14 @@ a.fa{
 .details li button:first-of-type{
     margin-left: 1em;
 }
-.details .add, .sidebar .add{
+.details .add, .sidebar .add, .orgData .add{
     display: inline-block;
     height: 1.7em;
     width: 2.2em;
     background-size: 1.7em;
     background-repeat: no-repeat;
 }
-.details button, .iconList button, .record button{
+.details button, .iconList button, .record button, .orgData button{
     display: -webkit-flex;
     display: flex;
     -webkit-align-items: center;
@@ -836,7 +835,7 @@ a.fa{
     display: block;
     float: left;
 }
-.details div > button, .sidebar div > button{
+.details div > button, .sidebar div > button, .orgData p > button{
     display: -webkit-flex;
     display: flex;
     -webkit-flex: 1 1 auto;
@@ -898,6 +897,9 @@ a.fa{
 }
 .closedAccess{
     background-image: url(<%= image_path('icon_closed.svg') %>);
+}
+#rssLink i{
+    color: #F60;
 }
 
 /* pagination */

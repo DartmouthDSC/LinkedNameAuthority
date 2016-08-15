@@ -132,6 +132,14 @@
 	        			  'foaf:accountName': null,
 	        			  'foaf:accountServiceHomepage': ''}
 	        			},
+	        'newResultedFrom': {'method': 'POST', 'path': 'organization/', 'template':{
+	        			  'dc:description': null,
+	        			  'prov:atTime': null}
+	        			},
+	        'newChangedBy': {'method': 'POST', 'path': 'organization/', 'template':{
+	        			  'dc:description': null,
+	        			  'prov:atTime': null}
+	        			},	        
 	        'editAccount': {'method': 'PUT', 'path': 'person/', 'template':{
 	        			  'dc:title': null,
 	        			  'foaf:accountName': null,
@@ -201,7 +209,7 @@
 	        'deleteOrg': {'method': 'DELETE', 'path': 'organization/', 'template':{ }
 	        			}	
 
-	    };
+	    }
 	};
 
   	Plugin.prototype = {
@@ -465,20 +473,64 @@
 	    		return data;
 	    	},
 	    	'org': function(xhrData){
-	    		var data = {'org': {}, 'accounts': [], 'parent': {}, 'children': []};
+	    		var data = {'org': {}, 'accounts': [], 'parent': {}, 'children': [], 'resultedFrom': {}, 'changedBy': {}};
 	    		$.each(xhrData['@graph'], function(i, v){
 	    			if(v['@type']=='org:Organization') {
 	    				if(xhrData['foaf:primaryTopic'] == v['@id']) data.org = v;
 	    			}
-	    			if(v['@type']=='foaf:OnlineAccount') data.accounts.push(v)
+	    			if(v['@type']=='foaf:OnlineAccount') data.accounts.push(v);
+
+	    			//Filter list of change events to only record orgs in opposition to the primary topic
+	    			if(v['@type']=='org:ChangeEvent'){
+	    				var changeType = 'from';
+	    				$.each(v['org:resultingOrganization'], function(j, o){
+	    					console.log(o)
+	    					if(xhrData['foaf:primaryTopic'] == o) changeType = 'to';
+	    					console.log(xhrData['foaf:primaryTopic'])
+	    				});
+	    				if(changeType == 'from'){
+		    				$.each(v['org:resultingOrganization'], function(j, o){
+		    					if(xhrData['foaf:primaryTopic'] != o) data.changedBy[o] = null;
+		    				});
+	    				}
+	    				else {
+		    				$.each(v['org:originalOrganization'], function(j, o){
+		    					if(xhrData['foaf:primaryTopic'] != o) data.resultedFrom[o] = null;
+		    				});
+	    				}
+	    			}
 	    		});
+	    		$.each(data.changedBy, function(k, v){
+	    			$.each(xhrData['@graph'], function(i, node){
+	    				if(node['@type']=='org:Organization' && node['@id'] == k){
+	    					data.changedBy[k] = node['skos:prefLabel'];
+	    					return false;
+	    				}
+	    			});
+	    		});
+	    		$.each(data.resultedFrom, function(k, v){
+	    			$.each(xhrData['@graph'], function(i, node){
+	    				if(node['@type']=='org:Organization' && node['@id'] == k){
+	    					data.resultedFrom[k] = node['skos:prefLabel'];
+	    					return false;
+	    				}
+	    			});
+	    		});	    		
+	    		//items delayed until we know we found the primary topic
 	    		$.each(xhrData['@graph'], function(i, v){
 	    			if(v['@type']=='org:Organization') {
 	    				if(data.org['org:subOrganizationOf'] == v['@id']) data.parent = v;
-	    				else if(xhrData['foaf:primaryTopic'] != v['@id']) data.children.push(v);
+	    				else if(data.org['org:hasSubOrganization']){
+	    					$.each(data.org['org:hasSubOrganization'], function(j, orgID){
+	    						if(v['@id'] == orgID) data.children.push(v);
+	    					});
+	    				}
 	    			}
-	    			if(v['@type']=='foaf:OnlineAccount') data.accounts.push(v)
-	    		});	    		
+	    		});	 
+
+	    		//fill in the names for changeEvent orgs
+	    		//this will be completed once the names are returned as part of the data array
+
 	    		return data;
 	    	},
 	    	'work': function(xhrData){
