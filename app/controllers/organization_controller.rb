@@ -6,7 +6,7 @@ class OrganizationController < CrudController
     'skos:prefLabel'         => 'label',
     'skos:altLabel'          => 'alt_label',
     'owltime:hasBeginning'   => 'begin_date',
-    'vcard:post-office-box' => 'hinman_box',
+    'vcard:post-office-box'  => 'hinman_box',
     'org:purpose'            => 'kind'
   }.freeze
 
@@ -22,6 +22,14 @@ class OrganizationController < CrudController
 
     ids = ['resultedFrom_ssim', 'changedBy_ssim'].map{ |i| @organization[i] }.compact.flatten
     @change_events = search_for_ids(ids)
+
+    ids = []
+    @change_events.each { |ev|
+      ids.concat ['resultingOrganization_ssim', 'originalOrganization_ssim'].map{ |i| ev[i] }.compact.flatten
+    }
+    @change_orgs = search_for_ids(ids)
+
+
     super
   end
 

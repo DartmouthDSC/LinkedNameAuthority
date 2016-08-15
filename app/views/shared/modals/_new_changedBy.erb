@@ -1,0 +1,19 @@
+<% if current_user && (current_user.admin? || current_user.creator?) %>
+<div class="modal fade newChangedByModal formModal" id="newChangedByModal" tabindex="-1" role="dialog" aria-labelledby="newChangedByModal" title="Add Organization History to LNA">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form data-lna-query="newChangedBy" accept-charset="UTF-8" class="formSingleColumn" data-opt="<%= params[:id] %>/change_to/;;;" data-refresh="true">
+          <div><label>Original Organization</label><input name="origName" id="changedFromField" disabled required></input></div>
+          <div><label>Resulting Organization</label><input name="skos:prefName" class="autocompleteBehavior" autocomplete="off" data-autocomplete-type="changeOrg" required></input></div>
+          <%= hidden_field_tag "resultingOrg", nil, {:id=>nil} %>
+          <div><label>Description</label><textarea name="dc:description" required></textarea></div> 
+          <div><label>Date</label><input name="prov:atTime" class="dateBehavior" required></input></div> 
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>          
+          <button type="submit" title="submit">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<% end %>

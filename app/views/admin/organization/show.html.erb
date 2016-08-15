@@ -25,7 +25,19 @@
                         <span class="title">Suborganization Of</span><br>
                         <button class="fa fa-external-link-square fa-lg view" title="view parent"><span class="helpText">view parent organization</span></button>
                         <span class="orgParent"></span>
-                    </p>        
+                    </p>   
+                    <p class="createdFrom">
+                        <span class="title">Created From</span><br>
+                        <span class="resultedFrom iconList"><em>To record which organization(s) preceded this one, find the preceding organization(s) and add change events there.</em></span>
+                    </p>
+                    <p class="turnedInto">
+                        <span class="title">Turned Into</span><br>
+                        <span class="changedBy iconList"></span>
+                        <% if current_user && (current_user.admin? || current_user.creator?) %>
+                        <button title="add change event" id="newChangedBy" data-toggle="modal" data-target="#newChangedByModal"><span class="add"></span>Add Resulting Organization</button>
+                        <% end %>
+                        <br clear="both">
+                    </p>                    
                 </div>
                 <div class="related children">
                     <h1>Suborganizations</h1>                    
@@ -50,7 +62,9 @@
         <% if current_user && (current_user.admin? || current_user.editor? || current_user.creator?) %>
             <%= render "shared/modals/edit_organization" %>
         <% end %>
-
+        <% if current_user && (current_user.admin? || current_user.creator?) %>
+            <%= render "shared/modals/new_changedBy" %>
+        <% end %>
         </section>        
 		<script>
         $(document).ready(function(){
