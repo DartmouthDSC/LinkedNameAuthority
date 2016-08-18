@@ -561,18 +561,20 @@ input[readonly]{
 .sectionCard div{
 	display: -webkit-flex;
     display: flex;
-    -webkit-flex-direction: row;
-    flex-direction: row;
     padding: 0;
-    width: 100%;
+    flex: 1 1 33%;
+    /*width: 30%;*/
     text-decoration: none;
     justify-content: space-between;
 }
 
 .sectionCard .roundButton{
-	display: -webkit-inline-flex;
+/*	display: -webkit-inline-flex;
     display: inline-flex;
-    width: 30%;
+    -webkit-flex: 1 1 33%;
+    flex: 1 1 33%;*/
+    display: block;
+    width: 33%;
     padding: 0 2% 2% 2%;
     margin-left: 3%;
 }
@@ -1043,6 +1045,12 @@ a.fa{
     .sectionCard .roundButtonCircle{
         border: .5em solid #cfdcec;  
     }  
+	/* Mozilla has a bug-not-bug that doesn't respect padding-top percentages in some cases...this is an ugly approximation*/
+	@-moz-document url-prefix() { 
+	  .sectionCard .roundButtonCircle roundButton, .sectionCard .roundButtonCircle a {
+	     margin-top: 1.4em;
+	  }
+	}    
 
 
     .sidebar{
@@ -1087,7 +1095,13 @@ a.fa{
     }    
     .sectionCard .roundButtonCircle{
         border: .25em solid #cfdcec;  
-    }      
+    }     
+	/* Mozilla has a bug-not-bug that doesn't respect padding-top percentages in some cases...this is an ugly approximation*/
+	@-moz-document url-prefix() { 
+	  .sectionCard .roundButtonCircle roundButton, .sectionCard .roundButtonCircle a {
+	     margin-top: 1.2em;
+	  }
+	}         
 }
 
 
