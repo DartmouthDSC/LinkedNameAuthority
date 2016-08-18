@@ -548,7 +548,7 @@ input[readonly]{
     border: .1em solid black;
 }
 
-.sectionCard h1, .baton h1{ margin: 0 auto .4em auto; font-size: 1.4em; font-weight: normal;}
+.sectionCard h1, .baton h1{ margin: 0 auto .4em auto; font-size: 1.4em; font-weight: normal; text-align: center;}
 .sectionCard p { margin: 0 auto; text-align: center; max-width: 80%; line-height: 1.2em;}
 .sectionCard img{
     width: 60%;
@@ -559,11 +559,10 @@ input[readonly]{
 }
 
 .sectionCard div{
+	display: -webkit-flex;
     display: flex;
     -webkit-flex-direction: row;
     flex-direction: row;
-    -webkit-flex: 0 1 100%;
-    flex: 0 1 100%;
     padding: 0;
     width: 100%;
     text-decoration: none;
@@ -571,9 +570,10 @@ input[readonly]{
 }
 
 .sectionCard .roundButton{
+	display: -webkit-inline-flex;
     display: inline-flex;
     width: 30%;
-    padding: 0 2% 2%;
+    padding: 0 2% 2% 2%;
     margin-left: 3%;
 }
 .sectionCard div.roundButton:hover{
@@ -1072,7 +1072,7 @@ a.fa{
     }
 
     .sectionCard{
-        -webkit-flex: 0 1 calc(33% - 3em);
+        -webkit-flex: 0 1 calc(33% - .9em);
         flex: 0 1 calc(33% - .9em);
         margin-bottom: .75em;
         padding: .3em;
