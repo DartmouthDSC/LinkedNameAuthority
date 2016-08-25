@@ -26,6 +26,7 @@ gem 'rdf-vocab'
 gem 'turbolinks' # Turbolinks makes following links in your web application faster.
 gem 'therubyracer', platforms: :ruby # Embed the V8 JavaScript interpreter into Ruby
 gem 'whenever' # Used to run cron jobs.
+gem 'coffee-script'
 
 # Used to bundle gems without pg in local environments that may not have postgresql.
 group :pg do
