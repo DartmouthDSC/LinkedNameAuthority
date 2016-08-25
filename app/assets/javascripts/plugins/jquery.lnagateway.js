@@ -106,7 +106,8 @@
 	        			  'dc:publisher': '',
 	        			  'dc:subject': [],
 	        			  'dc:bibliographicCitation': '',
-	        			  'dc:creator': null}
+	        			  'dc:creator': null,
+	        			  'dc:type': null}
 	        			},
 	        'newLicense': {'method': 'POST', 'path': 'work/', 'template':{
 	        			  'dc:title': null,
@@ -189,7 +190,8 @@
 	        			  'dc:publisher': '',
 	        			  'dc:subject': [],
 	        			  'dc:bibliographicCitation': '',
-	        			  'dc:creator': null}
+	        			  'dc:creator': null,
+	        			  'dc:type': null}
 	        			},	                    
 	        'editLicense': {'method': 'PUT', 'path': 'work/', 'template':{
 	        			  'dc:title': null,
