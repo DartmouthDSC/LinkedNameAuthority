@@ -9,8 +9,7 @@ class CollectionController < ApiController
   end
   
   def link_headers(total, rows, page)
-    links = { first: 1, last: total.fdiv(rows).ceil }
-    links[:last] = 1 if links[:last].zero?
+    links = { first: 1, last: last_page(total, rows) }
 
     if page > links[:last]
       links[:prev] = links[:last]
@@ -23,5 +22,10 @@ class CollectionController < ApiController
     links.map do |k, v|
       "<#{url_for controller: controller_name, page: v}>; rel=\"#{k}\""
     end.join(', ')
+  end
+
+  def last_page(total, rows)
+    last = total.fdiv(rows).ceil
+    (last.zero?) ? 1 : last
   end
 end

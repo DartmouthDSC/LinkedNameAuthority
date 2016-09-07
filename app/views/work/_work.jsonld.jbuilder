@@ -11,6 +11,7 @@ json.set! 'dc:isPartOf', "#{creator_uri}/works"
 json.set! 'dc:bibliographicCitation',  work['bibliographic_citation_ss'] || ''
 json.set! 'dc:subject', work['subject_tesim'] || []
 json.set! 'dc:creator', creator_uri
+json.set! 'dc:type',    work['doc_type_tesi']
 
 if full
   json.set! 'bibo:doi', work['doi_tesi'] || ''

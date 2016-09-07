@@ -15,6 +15,7 @@ class WorkController < CrudController
       'dc:publisher'     => 'publisher',
       'dc:date'          => 'date',
       'dc:subject'       => 'subject',
+      'dc:type'          => 'doc_type',
       'dc:bibliographicCitation' => 'bibliographic_citation'
   }.freeze
 
@@ -23,8 +24,6 @@ class WorkController < CrudController
     @work = search_for_works(id: params[:id])
     @licenses = search_for_licenses(document_id: params[:id])
     @person = search_for_persons(id: @work['creator_id_ssi'])
-
-    @short_id = FedoraID.shorten(@work['id'])
 
     super
   end
@@ -39,7 +38,6 @@ class WorkController < CrudController
     respond_to do |f|
       f.jsonld { render :create, status: :created, location: location,
                         content_type: 'application/ld+json' }
-      f.html { redirect_to location }
     end
   end
 
@@ -92,8 +90,9 @@ class WorkController < CrudController
     params.require('dc:creator')
     params.require('bibo:authorList')
     params.require('dc:title')
+    params.require('dc:type')
     params.permit('id', 'bibo:doi', 'dc:creator', 'bibo:volume', 'bibo:pages', 'bibo:pageStart',
-                  'bibo:pageEnd', 'dc:title', 'dc:abstract', 'dc:publisher', 'dc:date',
+                  'bibo:pageEnd', 'dc:title', 'dc:abstract', 'dc:publisher', 'dc:date', 'dc:type',
                   'dc:bibliographicCitation', 'authenticity_token', 'bibo:authorList' => [],
                   'bibo:uri' => [], 'dc:subject' => [])
   end

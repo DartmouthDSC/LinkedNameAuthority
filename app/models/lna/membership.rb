@@ -3,6 +3,11 @@ require 'owl_time'
 module Lna
   class Membership < ActiveFedora::Base
     include Lna::DateHelper
+
+    after_save :update_primary_org
+    
+    SOURCE_HRMS = 'HRMS'
+    SOURCE_MANUAL = 'Manual'
     
     belongs_to :person, class_name: 'Lna::Person',
                predicate: ::RDF::Vocab::ORG.hasMember
@@ -56,6 +61,10 @@ module Lna
       index.as :stored_searchable
     end
 
+    property :source, predicate: ::RDF::Vocab::VCARD.hasSource, multiple: false do |index|
+      index.as :stored_searchable
+    end
+    
     def begin_date=(d)
       date_setter('begin_date', d)
     end
@@ -64,20 +73,68 @@ module Lna
       date_setter('end_date', d)
     end
 
+    # Checks whether or not an end_date is set, ignores what the date actually is.
+    #
+    # @return [false] if date is not set.
+    # @return [true] if date is set
     def end_date_set?
       end_date != nil
     end
-    
+
+    # Returns whether or not this membership was ended.
+    #
+    # @return [false] if the membership was active
+    # @return [true] if the membership was not active
     def ended?
       !active_on?(Date.today)
     end
 
+    # Returns whether or not this membership is active today.
+    #
+    # @return [false] if membership is not active today
+    # @return [true] if membership is active today
     def active?
-      active_on? Date.today
+      active_on?(Date.today)
     end
 
+    # Returns whether or not this membership was active on the date specified.
+    #
+    # @param [Date] date to be checked
+    # @return [false] if the date given is after or on the end_date or before the begin_date
+    # @return [true] if the end_date is not set and the date given is after or on the begin_date
+    # @return [true] if the date is before but not on the end_date
     def active_on?(date)
       begin_date <= date && (end_date == nil || end_date > date)
+    end
+
+    def self.where(values)
+      values = Lna::DateHelper.solr_date(values.clone, [:begin_date, :end_date])
+      super(values)
+    end
+    
+    private
+
+    # Update person's primary organization if there is another active membership with an active
+    # organization. 
+    def update_primary_org
+      return if self.end_date.blank? || person.nil?
+
+      person.reload # Make sure we have the most accurate version.
+      
+      if self.previous_changes.include?(:end_date) 
+        # Check to see if primary membership matches membership's organization, if so look for a
+        # more accurate primary membership.
+        if organization == person.primary_org
+          mems = person.memberships.select do |m|
+            m.active_on?(self.end_date) && m.organization.active?
+          end
+        
+          if mems.count > 0
+            person.primary_org = mems.first.organization
+            person.save!
+          end
+        end
+      end
     end
   end
 end

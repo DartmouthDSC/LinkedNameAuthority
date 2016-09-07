@@ -20,7 +20,6 @@ class AccountController < CrudController
     respond_to do |f|
       f.jsonld { render :create, status: :created, location: location,
                         content_type: 'application/ld+json' }
-      f.html {redirect_to (@request_path == 'person') ? person_path(FedoraID.shorten(@account_holder.id)) : organization_path(FedoraID.shorten(@account_holder.id))}
     end
   end
 

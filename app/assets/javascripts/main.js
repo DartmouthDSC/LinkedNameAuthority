@@ -32,11 +32,6 @@ LNA = {
 			 'class': 'openAccess',
 			 'type': 'ali:license_ref',
 			 'uri': 'https://creativecommons.org/licenses/by-nc/4.0/'},
-			{'title': 'CC-BY 2.0', 
-			 'value': 'CC-BY 2.0', 
-			 'class': 'openAccess',
-			 'type': 'ali:license_ref',
-			 'uri': 'https://creativecommons.org/licenses/by/2.0/'},
 			{'title': 'All Rights Reserved', 
 			 'value': 'All Rights Reserved',
 			 'class': 'closedAccess', 
@@ -46,14 +41,47 @@ LNA = {
 			 'value': 'Embargoed',
 			 'class': 'closedAccess', 
 			 'type': 'ali:license_ref',
-			 'uri': 'http://www.copyright.gov/title17/'}			 
+			 'uri': 'http://www.copyright.gov/title17/'},
+			 {'title': 'CC-BY 2.0', 
+			 'value': 'CC-BY 2.0', 
+			 'class': 'openAccess',
+			 'type': 'ali:license_ref',
+			 'uri': 'https://creativecommons.org/licenses/by/2.0/'},
+			 {'title': 'CC-BY-NC 2.0', 
+			 'value': 'CC-BY-NC 2.0', 
+			 'class': 'openAccess',
+			 'type': 'ali:license_ref',
+			 'uri': 'https://creativecommons.org/licenses/by-nc/2.0/'},
+			 {'title': 'CC-BY-ND 2.0', 
+			 'value': 'CC-BY-ND 2.0', 
+			 'class': 'openAccess',
+			 'type': 'ali:license_ref',
+			 'uri': 'https://creativecommons.org/licenses/by-nd/2.0/'},
+			 {'title': 'CC-BY 4.0', 
+			 'value': 'CC-BY 4.0', 
+			 'class': 'openAccess',
+			 'type': 'ali:license_ref',
+			 'uri': 'https://creativecommons.org/licenses/by/4.0/'},
+			 {'title': 'CC-BY-NC 4.0', 
+			 'value': 'CC-BY-NC 4.0', 
+			 'class': 'openAccess',
+			 'type': 'ali:license_ref',
+			 'uri': 'https://creativecommons.org/licenses/by-nc/4.0/'},
+			 {'title': 'CC-BY-ND 4.0', 
+			 'value': 'CC-BY-ND 4.0', 
+			 'class': 'openAccess',
+			 'type': 'ali:license_ref',
+			 'uri': 'https://creativecommons.org/licenses/by-nd/4.0/'}
 		],		
 		'fuzzySearch' : ''		//Add ~2 or something here to make some searches fuzzy by default
 	},
+	'errors': [],
+	'params': {},
+
 	//this set of functions are callbacks for LNAGateway.*()
 	'loadPersonCards': function(data, textStatus, xhr){
-		var dataArray = $().LNAGateway().readLD.persons(data);
-		if(typeof xhr != "undefined") var links = $().LNAGateway().parseLink(xhr.getResponseHeader('link'));
+		var dataArray = $.fn['LNAGateway']().readLD.persons(data);
+		if(typeof xhr != "undefined") var links = $.fn['LNAGateway']().parseLink(xhr.getResponseHeader('link'));
 		LNA.fillPager(links);
 		$(dataArray.persons).each(function(i, person){
 			var node = $('#templates .person').clone();
@@ -61,7 +89,7 @@ LNA = {
 			if(person['foaf:image'] != ''){
 				node.find('img').attr('src', person['foaf:image']);
 			}
-			node.attr('href', person['@id']);
+			node.attr('href', LNA.convertPath(person['@id']));
 			if(person['foaf:title']!=''){
 				node.find('p[property="title"]').text(person['foaf:title']+', '+person['orgLabel']);
 			} else {
@@ -71,13 +99,13 @@ LNA = {
 		});
 	},
 	'loadOrgCards': function(data, textStatus, xhr){
-		var dataArray = $().LNAGateway().readLD.orgs(data);
-		if(typeof xhr != "undefined") var links = $().LNAGateway().parseLink(xhr.getResponseHeader('link'));	
+		var dataArray = $.fn['LNAGateway']().readLD.orgs(data);
+		if(typeof xhr != "undefined") var links = $.fn['LNAGateway']().parseLink(xhr.getResponseHeader('link'));	
 		LNA.fillPager(links);
 		$(dataArray).each(function(i, org){
 			var node = $('#templates .org').clone();
 			node.find('h1').text(org['skos:prefLabel']);
-			node.attr('href', org['@id']);
+			node.attr('href', LNA.convertPath(org['@id']));
 			if(org['skos:altLabel'].length > 0){
 				node.find('p[property="altLabels"]').text(org['skos:altLabel'].join(', '));
 			} 
@@ -91,13 +119,13 @@ LNA = {
 	},	
 
 	'loadWorkCards': function(data, textStatus, xhr){
-		var dataArray = $().LNAGateway().readLD.works(data);
-		if(typeof xhr != "undefined") var links = $().LNAGateway().parseLink(xhr.getResponseHeader('link'));
+		var dataArray = $.fn['LNAGateway']().readLD.works(data);
+		if(typeof xhr != "undefined") var links = $.fn['LNAGateway']().parseLink(xhr.getResponseHeader('link'));
 		LNA.fillPager(links);
 		$(dataArray).each(function(i, work){
 			var node = $('#templates .work').clone();
 			node.find('h1').text(work['dc:title']);
-			node.attr('href', work['@id']);
+			node.attr('href', LNA.convertPath(work['@id']));
 			if(work['bibo:authorList'].length > 0){
 				node.find('p[property="authors"]').text(work['bibo:authorList'].join(', '));
 			} 
@@ -109,7 +137,9 @@ LNA = {
 	},	
 
 	'loadOrg': function(data, textStatus, xhr){
-		var dataArray = $().LNAGateway().readLD.org(data);	
+		var dataArray = $.fn['LNAGateway']().readLD.org(data);	
+
+		console.log(dataArray)
 
 		//render org record
 		$('.crumbHere').children().first().text(dataArray.org['skos:prefLabel']);
@@ -118,7 +148,7 @@ LNA = {
 		$('.orgPurpose').text(dataArray.org['org:purpose']);
 		if(typeof dataArray.parent['skos:prefLabel'] != "undefined"){
 			$('.orgParent').text(dataArray.parent['skos:prefLabel']);
-			$('.parent button').click(function(e){LNA.openLink(e, dataArray.parent['@id'])});
+			$('.parent button').click(function(e){LNA.openLink(e, LNA.convertPath(dataArray.parent['@id']))});
 		} else {
 			$('.parent').hide();
 		}
@@ -132,6 +162,14 @@ LNA = {
 		//clear all spinners
 		$('main .spinner').parent().remove();
 
+		//If it exists, insert the name of the org in the changeEvent form field
+		$('#changedFromField').val(dataArray.org['skos:prefLabel']);
+
+		//render change event names
+		if(Object.keys(dataArray.resultedFrom).length > 0) $('.resultedFrom').empty();
+		$.each(dataArray.resultedFrom, function(k, v){ LNA.fillChange($('.resultedFrom'), k, v)});
+		$.each(dataArray.changedBy, function(k, v){ LNA.fillChange($('.changedBy'), k, v)});
+
 		//render OnlineAccounts
 		$.each(dataArray.accounts, function(k, v){ LNA.fillAccount($('.orgData .iconList'), v) });
 
@@ -142,7 +180,7 @@ LNA = {
 	},
 
 	'loadOrgPersons': function(data, textStatus, xhr){
-		var dataArray = $().LNAGateway().readLD.persons(data);		
+		var dataArray = $.fn['LNAGateway']().readLD.persons(data);		
 
 		//clear all spinners
 		$('.related .spinner').parent().remove();
@@ -154,17 +192,17 @@ LNA = {
 	},
 
 	'loadWork': function(data, textStatus, xhr){
-		var dataArray = $().LNAGateway().readLD.work(data);	
+		var dataArray = $.fn['LNAGateway']().readLD.work(data);	
 
 		//render work record
 		var ellipsis = dataArray.work['dc:title'].length > 10 ? '...' : '';
 		$('.crumbHere').children().first().text(dataArray.work['dc:title'].slice(0,10)+ellipsis);
 		$('h3').text(dataArray.work['dc:title']);
 		$('.workCreator').text(dataArray.person['foaf:name']);
-		$('.creator button').click(function(e){ LNA.openLink(e, dataArray.person['@id'])});
+		$('.creator button').click(function(e){ LNA.openLink(e, LNA.convertPath(dataArray.person['@id']))});
 		$('.workAuthorList').text(dataArray.work['bibo:authorList'].join(', '));
 		$('.workDate').text(dataArray.work['dc:date'].slice(0,10));
-		$('.workDOI').append($('<a>').attr('href', dataArray.work['bibo:doi']).text(dataArray.work['bibo:doi']));
+		$('.workDOI').append($('<a>').attr('href', LNA.convertPath(dataArray.work['bibo:doi'])).text(dataArray.work['bibo:doi']));
 		$('.workAbstract').text(dataArray.work['dc:abstract']);
 		$('.workPublisher').text(dataArray.work['dc:publisher']);
 		$('.workCitation').text(dataArray.work['dc:bibliographicCitation']);
@@ -182,10 +220,13 @@ LNA = {
 	},
 
 	'loadPerson': function(data, textStatus, xhr){
-		var dataArray = $().LNAGateway().readLD.person(data);		
+		var dataArray = $.fn['LNAGateway']().readLD.person(data);		
+
+		console.log(dataArray)
 
 		//render person data
 		$('.sidebar h1').text(dataArray.person['foaf:name']);
+		$('#rssLink').attr('href', dataArray.person['@id'] + '/works/feed.atom')
 		$('.crumbHere').children().first().text(dataArray.person['foaf:name']);
 		if(dataArray.person['foaf:image'] != '') $('.sidebar img').attr('src', dataArray.person['foaf:image']);
 
@@ -197,7 +238,7 @@ LNA = {
 		$('.personHomepage').html(dataArray.person['foaf:homepage'].join('<br />'));
 
 		$('.personPrimary').text(dataArray.person['orgLabel']);
-		$('.parent button').click(function(e){LNA.openLink(e, dataArray.person['org:reportsTo'])});
+		$('.parent button').click(function(e){LNA.openLink(e, LNA.convertPath(dataArray.person['org:reportsTo']))});
 
 		//clear all spinners
 		$('.sidebar .spinner, .affiliations .spinner').parent().remove();
@@ -211,7 +252,7 @@ LNA = {
 		LNA.activateModals();
 	},
 	'loadPersonWorks': function(data, textStatus, xhr){
-		var dataArray = $().LNAGateway().readLD.personWorks(data);	
+		var dataArray = $.fn['LNAGateway']().readLD.personWorks(data);	
 
 		//clear all spinners
 		$('.works .spinner').parent().remove();
@@ -245,7 +286,7 @@ LNA = {
 		label.text(hrStart +'–' + hrStop + ': ' + data['vcard:title'] + ', ' + data['orgLabel']);
 		viewButton.attr('title', 'view '+ data['orgLabel'] + ' organization');
 		viewButton.children('.helpText').text('view '+ data['orgLabel'] + ' organization');
-		viewButton.click(function(e){ LNA.openLink(e, data['org:organization'])});
+		viewButton.click(function(e){ LNA.openLink(e, LNA.convertPath(data['org:organization']))});
 		editButton.attr('title', 'edit '+ data['orgLabel'] + ' affiliation');
 		editButton.children('.helpText').text('edit '+ data['orgLabel'] + ' affiliation');
 		editButton.data('formData', data);
@@ -266,10 +307,18 @@ LNA = {
 	'fillSuborgs': function(parent, data){
 		var node = $('#templates .subOrg').clone();
 		node.find('[property="name"]').text(data['skos:prefLabel']);
-		node.find('button').click(function(e){ LNA.openLink(e, data['@id']) });
+		node.find('button').click(function(e){ LNA.openLink(e, LNA.convertPath(data['@id'])) });
 
 		parent.append(node);
 	},		
+
+	'fillChange': function(parent, id, written){
+		var node = $('#templates .subOrg').clone();
+		node.find('[property="name"]').text(written);
+		node.find('button').click(function(e){ LNA.openLink(e, LNA.convertPath(id)) });
+
+		parent.append(node);
+	},	
 
 	'fillPersonWorks': function(parent, data){
 		var node = $('#templates .work').clone();
@@ -279,7 +328,7 @@ LNA = {
 
 		var date = data['dc:date'].substr(0,4);
 		var authors = data['bibo:authorList'].join(', ');
-		viewButton.click(function(e){ LNA.openLink(e, data['@id'])});
+		viewButton.click(function(e){ LNA.openLink(e, LNA.convertPath(data['@id']))});
 
 		title.text(data['dc:title'] + ' (' + date + ')');
 		authorList.text(authors);
@@ -290,7 +339,7 @@ LNA = {
 	'fillPersons': function(parent, data){
 		var node = $('#templates .person').clone();
 		node.find('[property="name"]').text(data['foaf:givenName']+' '+data['foaf:familyName']);
-		node.find('button').click(function(e){ LNA.openLink(e, data['@id']) });
+		node.find('button').click(function(e){ LNA.openLink(e, LNA.convertPath(data['@id'])) });
 
 		$(parent).append(node);
 	},
@@ -298,19 +347,29 @@ LNA = {
 	'fillPager': function(pageArray){
 		if(typeof pageArray == "undefined" || pageArray.total == 1) {
 			return true;
-		}
-		if(pageArray.current > 1) $('.firstPage').attr('href', pageArray.first);
+		};
+
+		//We can't just use the links because a search will have form data that needs to be resubmitted.
+		//This handler overrides the standard anchor tags and submits the form for the correct page of search results.
+		var pageHandler = function(e, path){
+			e.preventDefault();
+			$('#pagerForm').attr('method', 'POST');
+			$('#pagerForm').attr('action', path);
+			$('#pagerForm').submit();
+		};
+
+		if(pageArray.current > 1) $('.firstPage').click(function(e){ pageHandler(e, LNA.convertPath(pageArray.first))});
 		else $('.firstPage').hide();
 
-		if(pageArray.current < pageArray.total) $('.lastPage').attr('href', pageArray.last);
+		if(pageArray.current < pageArray.total) $('.lastPage').click(function(e){ pageHandler(e, LNA.convertPath(pageArray.last))});
 		else $('.lastPage').hide();
 
 		$('.currentPage').find('span').text(pageArray.current + ' of ' + pageArray.total);
 		
-		if(pageArray.prev && pageArray.first != pageArray.prev) $('.previousPage').attr('href', pageArray.prev)
+		if(pageArray.prev && pageArray.first != pageArray.prev) $('.previousPage').click(function(e){ pageHandler(e, LNA.convertPath(pageArray.prev))});
 		else $('.previousPage').hide();
 		
-		if(pageArray.next && pageArray.next != pageArray.last) $('.nextPage').attr('href', pageArray.next);
+		if(pageArray.next && pageArray.next != pageArray.last) $('.nextPage').click(function(e){ pageHandler(e, LNA.convertPath(pageArray.next))});
 		else $('.nextPage').hide();
 
 		$('.pager').show();
@@ -416,6 +475,13 @@ LNA = {
 
 
 	//helpers
+	'convertPath': function(pid){
+		//This takes an LNA ID (which is a path on the same system as this app) and turns it into a link to the corresponding admin page
+		var len = _base_url.length;
+		if(pid.substring(0,len) == _base_url && pid.indexOf('admin') == -1) pid = _base_url + 'admin/' + pid.substring(len);
+		return(pid);
+	},
+
 	'openLink': function(e, link){
 		if(e.ctrlKey || e.metaKey){
 			window.open(link, '_new');
@@ -424,7 +490,21 @@ LNA = {
 	},
 
 	'goHome': function(){
-		location.href=_base_url;
+		location.href=LNA.convertPath(_base_url);
+	},
+
+	'goToID': function(pid){
+		location.href=LNA.convertPath(pid);	
+	},
+
+	'checkErrors': function(){
+		if(LNA.errors.length > 0){
+			var errors = LNA.errors.join('<br>');
+			$('#errorModalBody').html(errors);
+			$('#errorModal').dialog("open");
+			LNA.errors = [];
+			return false;
+		} else return true;
 	},
 
 	'replaceOptPlaceholder': function(targetForm, id){
@@ -465,7 +545,7 @@ LNA = {
 			forms.each(function(i, v){
 				if(typeof $(v).data('load') != "undefined"){
 					LNA[$(v).data('load')]($(v), formData);
-				}
+			}
 			});
 		});
 		$('[data-toggle="modal"]').attr('data-ready', 'true');
@@ -489,6 +569,17 @@ LNA = {
 		});
 		$('.tagBehavior').attr('data-ready', 'true');
 	},
+	//Find any inputs that use tag suggestion behavior and activate them
+	'activateSuggestionTags': function(){
+		$('.tagSuggestionBehavior').not('[data-ready="true"]').tagsInput({
+			'delimiter': ';;;',
+			'width': '90%',
+			'height': '3em',
+			'defaultText': '',
+			'autocomplete': {'organization1': '1', 'organization2': '2'}
+		});
+		$('.tagSuggestionBehavior').attr('data-ready', 'true');
+	},	
 	'activateWidgets': function(){
 		$('.dateBehavior').not('[data-ready="true"]').datepicker({
 			'dateFormat': 'yy-mm-dd',
@@ -508,6 +599,7 @@ LNA = {
 				'source': LNA.autocompletes[$(field).data('autocomplete-type')].source,
 				'select': LNA.autocompletes[$(field).data('autocomplete-type')].select
 			});
+			$(field).focusout(function(e){ LNA.autocompletes[$(field).data('autocomplete-type')].verify(e, field); });
 		});
 		$('.autocompleteBehavior').attr('data-ready', 'true');
 	},
@@ -574,6 +666,12 @@ LNA = {
 				merge = formNode.find('input[name="accountRoot"]').val() + '/' + merge;
 			}
 			formNode.find('input[name="foaf:accountName"]').val(merge);
+		},
+		'setChangeEventTarget': function(e){
+			var selected = $(e.target);
+			var formNode = selected.parents('form');
+
+			// LNA.replaceOptPlaceholder
 		}
 	},
 
@@ -581,48 +679,92 @@ LNA = {
 	'autocompletes': {
 		'org': {
 			'source': function(request, response){
-				$().LNAGateway().findOrgs(function(data){
-					var orgArray = $().LNAGateway().readLD.orgs(data);
+				$.fn['LNAGateway']().findOrgs(function(data){
+					var orgArray = $.fn['LNAGateway']().readLD.orgs(data);
 					var newArray = $.map(orgArray, function(item){ return {'label': item['skos:prefLabel'], 'value': item['@id']}});
 					response(newArray)
 					return newArray;
-				}, this.element[0].value + LNA.constants.fuzzySearch) 
+				}, this.element[0].value + LNA.constants.fuzzySearch, 1, true) 
 			},
 			'select': function(e, ui){
 				e.preventDefault();
 				$(this).val(ui.item.label);
 				$(this).parents('form').children('input[name="org:organization"]').val(ui.item.value);
+			},
+			'verify': function(e, field){
+				e.preventDefault();
+				if($(field).parents('form').children('input[name="org:organization"]').val() == ''){
+					LNA.errors.push('You must click on an item from the dropdown list to select the organization. Typed names will not be accepted.');
+					LNA.checkErrors();
+				}
 			}
 		},
+		'changeOrg': {
+			'source': function(request, response){
+				$.fn['LNAGateway']().findOrgs(function(data){
+					var orgArray = $.fn['LNAGateway']().readLD.orgs(data);
+					var newArray = $.map(orgArray, function(item){ return {'label': item['skos:prefLabel'], 'value': item['@id']}});
+					response(newArray)
+					return newArray;
+				}, this.element[0].value + LNA.constants.fuzzySearch, 1, true) 
+			},
+			'select': function(e, ui){
+				e.preventDefault();
+				var orgID = ui.item.value.split('/').pop()
+				$(this).val(ui.item.label);
+				LNA.replaceOptPlaceholder($(this).parents('form'), orgID);
+			},
+			'verify': function(e, field){
+				e.preventDefault();
+				if($(field).parents('form').data('opt').slice(-3) == ';;;'){
+					LNA.errors.push('You must click on an item from the dropdown list to select the organization. Typed names will not be accepted.');
+					LNA.checkErrors();
+				}
+			}
+		},		
 		'reportsTo': {
 			'source': function(request, response){
-				$().LNAGateway().findOrgs(function(data){
-					var orgArray = $().LNAGateway().readLD.orgs(data);
+				$.fn['LNAGateway']().findOrgs(function(data){
+					var orgArray = $.fn['LNAGateway']().readLD.orgs(data);
 					var newArray = $.map(orgArray, function(item){ return {'label': item['skos:prefLabel'], 'value': item['@id']}});
 					response(newArray);
 					return newArray;
-				}, this.element[0].value + LNA.constants.fuzzySearch) 
+				}, this.element[0].value + LNA.constants.fuzzySearch, 1, true) 
 			},
 			'select': function(e, ui){
 				e.preventDefault();
 				$(this).val(ui.item.label);
 				$(this).parents('form').children('input[name="org:reportsTo"]').val(ui.item.value);
-			}
+			},
+			'verify': function(e, field){
+				e.preventDefault();
+				if($(field).parents('form').children('input[name="org:reportsTo"]').val() == ''){
+					LNA.errors.push('You must click on an item from the dropdown list to select the reporting organization. Typed names will not be accepted.');
+					LNA.checkErrors();
+				}
+			}			
 		},
 		'person': {
 			'source': function(request, response){
-				$().LNAGateway().findPersons(function(data){
-					var personArray = $().LNAGateway().readLD.persons(data);
+				$.fn['LNAGateway']().findPersons(function(data){
+					var personArray = $.fn['LNAGateway']().readLD.persons(data);
 					var newArray = $.map(personArray.persons, function(item){ return {'label': item['foaf:name'], 'value': item['@id']}});
 					response(newArray);
 					return newArray;
-				}, this.element[0].value + LNA.constants.fuzzySearch) 
+				}, this.element[0].value + LNA.constants.fuzzySearch, 1, true) 
 			},
 			'select': function(e, ui){
 				e.preventDefault();
 				$(this).val(ui.item.label);
 				$(this).parents('form').children('input[name="dc:creator"]').val(ui.item.value);
-			}
+			},
+			'verify': function(e, field){
+				e.preventDefault();
+				if($(field).parents('form').children('input[name="dc:creator"]').val() == ''){
+					LNA.errors.push('You must click on an item from the dropdown list to select the creator. Typed names will not be accepted.');
+					LNA.checkErrors();
+				}
+			}			
 		}		
 	},
 
@@ -654,9 +796,13 @@ LNA = {
 		LNA.activateControls();
 		LNA.activateWidgets();
 		LNA.activateAutocompletes();
+		LNA.activateSuggestionTags();
 		LNA.activateDropdowns();
 		LNA.activateOnChanges();
-		$().LNAGateway().extendForms();
+
+		$.fn['LNAGateway']().extendForms();
+
+		LNA.checkErrors();
 	}
 }
 

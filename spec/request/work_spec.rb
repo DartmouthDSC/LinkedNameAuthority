@@ -7,6 +7,7 @@ RSpec.describe "Work API", type: :request, https: true do
     {
       "bibo:authorList" => ["Bell, John", "Ippolito, Jon"],
       "dc:title"        => "Diffused Museums and Making the Title Longer",
+      "dc:type"         => "Book",
       "dc:creator"      => person_url(id: FedoraID.shorten(@jane.id))
     }.to_json
   }
@@ -26,7 +27,7 @@ RSpec.describe "Work API", type: :request, https: true do
       let(:body)   { required_body }
     end
         
-    describe 'when authenticated', authenticated: true, editor: true do
+    describe 'when authenticated', authenticated: true, admin: true do
       include_examples 'throws error when fields missing' do
         let(:path)   { work_index_path }
         let(:action) { 'post' }
@@ -49,6 +50,7 @@ RSpec.describe "Work API", type: :request, https: true do
             "dc:publisher" => "Wiley",
             "dc:date" => "2015",
             "dc:subject" => ["Art"],
+            "dc:type"    => "Book",
             "dc:creator" => person_url(id: FedoraID.shorten(@jane.id))
           }
           
@@ -119,14 +121,18 @@ RSpec.describe "Work API", type: :request, https: true do
       it 'contains subjects' do
         expect_json('@graph.0', :'dc:subject' => ["Art"])
       end
+
+      it 'contains type' do
+        expect_json('@graph.0', :'dc:type' => 'Book')
+      end
     end
   end
 
-  describe 'GET work/' do
-    subject { get work_index_path }
+  describe 'GET admin/work/' do
+    subject { get admin_work_path }
 
-    it 'redirects to GET works/' do
-      expect(subject).to redirect_to('/works')
+    it 'redirects to GET admin/works/' do
+      expect(subject).to redirect_to('/admin/works')
     end
   end
   
@@ -139,7 +145,7 @@ RSpec.describe "Work API", type: :request, https: true do
       let(:body)   { required_body }
     end
     
-    describe 'when authenticated', authenticated: true, editor: true do
+    describe 'when authenticated', authenticated: true, admin: true do
       include_examples 'throws error when fields missing' do
         let(:path) { @path }
         let(:action) { 'put' }
@@ -163,6 +169,7 @@ ract"],
               "dc:publisher" => "Wiley",
               "dc:date" => "2015",
               "dc:subject" => ["Art"],
+              "dc:type" => "Book",
               "dc:creator" => person_url(id: FedoraID.shorten(@jane.id))
           }
           put @path, body.to_json, {
@@ -201,7 +208,7 @@ ract"],
       let(:body)   { {}.to_json }
     end
     
-    describe 'when authenticated', authenticated: true, editor: true do
+    describe 'when authenticated', authenticated: true, admin: true do
       describe 'succesfully deletes work' do
         include_examples 'successful request'
         

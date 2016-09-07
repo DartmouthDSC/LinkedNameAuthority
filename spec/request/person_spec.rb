@@ -67,11 +67,11 @@ RSpec.describe "Person API", type: :request, https: true do
     end
   end
 
-  describe 'GET person/' do      
-    subject { get person_index_path }
+  describe 'GET admin/person/' do      
+    subject { get admin_person_path }
     
-    it 'redirects to GET persons/' do
-      expect(subject).to redirect_to('/persons')
+    it 'redirects to GET admin/persons/' do
+      expect(subject).to redirect_to('/admin/persons')
     end
   end
   
@@ -82,7 +82,7 @@ RSpec.describe "Person API", type: :request, https: true do
       let(:body)   { required_body }
     end
     
-    describe 'when authorized', authenticated: true, editor: true do
+    describe 'when authorized', authenticated: true, admin: true do
       include_examples 'throws error when fields missing' do
         let(:path) { person_index_path }
         let(:action) { 'post' }
@@ -136,7 +136,7 @@ RSpec.describe "Person API", type: :request, https: true do
       let(:body)   { required_body }
     end
 
-    describe 'when authorized', authenticated: true, editor: true do
+    describe 'when authorized', authenticated: true, admin: true do
       include_examples 'throws error when fields missing' do
         let(:path) { @path }
         let(:action) { 'put' }
@@ -183,7 +183,7 @@ RSpec.describe "Person API", type: :request, https: true do
       let(:body)   { {}.to_json }
     end
 
-    describe 'when authorized', authenticated: true, editor: true do
+    describe 'when authorized', authenticated: true, admin: true do
       describe 'succesfully deletes person' do
         include_examples 'successful request'
 

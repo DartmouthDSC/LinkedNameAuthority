@@ -1,5 +1,5 @@
         <nav class="centered breadcrumbs" role="navigation">
-            <%= link_to(root_path, class: "crumbContinue") do %><span>Home</span><% end %><%= link_to(works_path, class: "crumbContinue") do %><span>Work</span><% end %><a href="#" class="crumbHere crumbStop"><span>Loading...</span></a>
+            <%= link_to(admin_root_path, class: "crumbContinue") do %><span>Home</span><% end %><%= link_to(admin_works_path, class: "crumbContinue") do %><span>Work</span><% end %><a href="#" class="crumbHere crumbStop"><span>Loading...</span></a>
         </nav>
         <main class="centered content">
         <!--[if lt IE 8]>
@@ -11,12 +11,14 @@
                     <div><span class="spinner"></span></div>
                     <ul class="iconList">
                     </ul>
+                    <% if current_user && (current_user.admin? || current_user.creator? || current_user.editor?) %>
                     <button title="add license" id="newLicense" data-toggle="modal" data-target="#newLicenseModal"><span class="add"></span>Add License</button>
+                    <% end %>
                 </div>
             </section>
             <section class="details">
                 <div class="workData">
-                    <h1><button class="fa fa-pencil fa-lg edit" title="edit work" data-toggle="modal" data-target="#editWorkModal"><span class="helpText">edit this work</span></button> Work</h1>
+                    <h1><% if current_user && (current_user.admin? || current_user.editor? || current_user.creator?) %><button class="fa fa-pencil fa-lg edit" title="edit work" data-toggle="modal" data-target="#editWorkModal"><span class="helpText">edit this work</span></button> <% end %>Work</h1>
                     <h3></h3>
                     <p class="creator">
                         <span class="title">Creator</span><br>
@@ -28,11 +30,11 @@
                         <span class="workAuthorList"></span>
                     </p>
                     <p>
-                        <span class="title">Date</span><br>
+                        <span class="title">Pub. Date</span><br>
                         <span class="workDate"></span>
                     </p>  
                     <p>
-                        <span class="title">Citation</span><br>
+                        <span class="title">Journal Title</span><br>
                         <span class="workCitation"></span>
                     </p>    
                     <p>
@@ -54,12 +56,14 @@
             <%= render "shared/templates/lists_license" %>
         </section>
         <section id="modals">
+            <% if current_user && (current_user.admin? || current_user.editor? || current_user.creator?) %>
             <%= render "shared/modals/new_license" %>
             <%= render "shared/modals/edit_license" %>
             <%= render "shared/modals/edit_work" %>
+            <% end %>
         </section>        
         <script>
         $(document).ready(function(){
-            $().LNAGateway().loadWork(LNA.loadWork, "<%= @short_id %>");
+            $().LNAGateway().loadWork(LNA.loadWork, "<%= params[:id] %>");
         });
         </script>

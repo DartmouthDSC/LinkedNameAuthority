@@ -342,13 +342,7 @@ footer{
     content: " ";
     -moz-border-radius: 1em;
     -webkit-border-radius: 1em;
-    position: absolute;
     z-index: 0;
-}
-@-moz-document url-prefix(){
-    .breadcrumbs .crumbStop::after{
-        margin-top: -1em;
-    } 
 }
 .breadcrumbs a span{
     font-size: 1em;
@@ -395,9 +389,11 @@ footer{
 
 
 
+input:required, textarea:required{
+    background: lightyellow;
+}
 
-
-.formSingleColumn label, input{
+.formSingleColumn label, input, textarea{
     display: block;
     width: 90%;
     margin: .1em auto;
@@ -446,6 +442,9 @@ input[readonly]{
 .formTwoColumn textarea{
     width: 100%;
     height: 4em;
+}
+.formTwoColumn select{
+    width: 100%;
 }
 .formTwoColumn button{
     margin: 1em 2em .4em;
@@ -518,8 +517,9 @@ input[readonly]{
     padding-right: 1em;
 }
 .card, .sectionCard{
-    display: -webkit-flex;
+    /*display: -webkit-flex;
     display: flex;
+    */display: block;
     border: 1px solid black;
     -webkit-flex-direction: column;
     flex-direction: column;
@@ -552,7 +552,7 @@ input[readonly]{
     border: .1em solid black;
 }
 
-.sectionCard h1{ margin: 0 auto 1em auto; font-size: 1.4em; font-weight: normal;}
+.sectionCard h1, .baton h1{ margin: 0 auto .4em auto; font-size: 1.4em; font-weight: normal; text-align: center;}
 .sectionCard p { margin: 0 auto; text-align: center; max-width: 80%; line-height: 1.2em;}
 .sectionCard img{
     width: 60%;
@@ -561,15 +561,30 @@ input[readonly]{
     margin: 0 auto;
     border: .1em solid black;
 }
+
+.sectionCard div{
+	display: -webkit-flex;
+    display: flex;
+    padding: 0;
+    flex: 1 1 33%;
+    /*width: 30%;*/
+    text-decoration: none;
+    justify-content: space-between;
+}
+
 .sectionCard .roundButton{
-    width: 50%;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 1em;
+/*	display: -webkit-inline-flex;
+    display: inline-flex;
+    -webkit-flex: 1 1 33%;
+    flex: 1 1 33%;*/
+    display: block;
+    width: 33%;
+    padding: 0 2% 2% 2%;
+    margin-left: 3%;
 }
 .sectionCard div.roundButton:hover{
     margin-top: -.2em;
-    margin-bottom: 1.2em;
+    margin-bottom: .2em;
 }
 .sectionCard .roundButtonCircle:hover{
     box-shadow: 0 .3em .3em rgba(0,0,0,.5);
@@ -600,13 +615,60 @@ input[readonly]{
     padding-top:50%;
     padding-bottom:50%;
     line-height:1em;
-    margin-top:-1.6em;
+    margin-top:-1.4em;
     
     text-align:center;
     color: white;
-    font-size:1.2em;
+    font-size:1.1em;
     text-decoration:none;
     cursor: pointer;
+}
+
+@supports (-ms-ime-align:auto){
+    .sectionCard .roundButtonCircle roundButton, .sectionCard .roundButtonCircle a {
+        margin-top: 1.4em;
+    }
+}	
+
+.baton{
+    display: block;
+    width: 100%;
+    padding: 1em;
+    margin: 0 1em 1em;
+    border: .1em solid black;
+    box-shadow: 0 .2em .2em rgba(0,0,0,.5);
+}
+
+.baton table{
+    width: 100%;
+    margin-bottom: 1em;
+}
+.baton .fa{
+    font-size: 1.4em;
+}
+.baton th{
+    text-align: left;
+    font-size: 1.2em;
+    font-weight: 600;
+    margin: 0;
+    padding: 0 .2em .2em 1.6em;
+    background-image: url(<%= image_path('icon_downArrow.svg') %>);
+    background-size: 1.4em;
+    background-repeat: no-repeat;
+    min-height: 1.6em;
+    z-index: 1;
+    background-color: #D2DAD6;    
+}
+.baton td:nth-child(4), .baton td:nth-child(5), .baton td:nth-child(1){
+    width: 1.5em;
+    text-align: center;
+}
+.baton td:nth-child(3){
+    width: 5em;
+}
+.baton .progress{
+    width: 100%;
+    height: 1.4em;
 }
 
 .sidebar{
@@ -625,6 +687,10 @@ input[readonly]{
     flex-direction: column;
     -webkit-flex-wrap: no-wrap;
     flex-wrap: no-wrap;
+}
+.sidebar hr{
+    padding: 0;
+    margin: .4em 0 0;
 }
 .sidebar img{
     width: 50%;
@@ -702,11 +768,12 @@ input[readonly]{
     max-height: 4em;
     max-width: 4em;
 }
-
+.resultedFrom em{
+    font-size: smaller;
+}
 #templates{
     display: none !important;
 }
-
 
 /* icons */
 a.fa{
@@ -757,14 +824,14 @@ a.fa{
 .details li button:first-of-type{
     margin-left: 1em;
 }
-.details .add, .sidebar .add{
+.details .add, .sidebar .add, .orgData .add{
     display: inline-block;
     height: 1.7em;
     width: 2.2em;
     background-size: 1.7em;
     background-repeat: no-repeat;
 }
-.details button, .iconList button, .record button{
+.details button, .iconList button, .record button, .orgData button{
     display: -webkit-flex;
     display: flex;
     -webkit-align-items: center;
@@ -780,7 +847,7 @@ a.fa{
     display: block;
     float: left;
 }
-.details div > button, .sidebar div > button{
+.details div > button, .sidebar div > button, .orgData p > button{
     display: -webkit-flex;
     display: flex;
     -webkit-flex: 1 1 auto;
@@ -843,6 +910,9 @@ a.fa{
 .closedAccess{
     background-image: url(<%= image_path('icon_closed.svg') %>);
 }
+#rssLink i{
+    color: #F60;
+}
 
 /* pagination */
 .pager{
@@ -850,6 +920,9 @@ a.fa{
     display: none;
     text-align: center;
     margin-bottom: 1em;
+}
+.pager a{
+    cursor: pointer;
 }
 .pager a, .pager span{
     background-color: #95AFA2;
@@ -946,8 +1019,6 @@ a.fa{
     .card img{
         display: -webkit-inline-flex;
         display: inline-flex;
-        -webkit-flex: 0 1;
-        flex: 0 1;
         max-height: 80px;
         max-width: 80px;
         -webkit-justify-content: flex-start;
@@ -967,13 +1038,35 @@ a.fa{
     }
 
     .sectionCard{
-        display: -webkit-flex;
-        display: flex;
+/*        display: -webkit-flex;
+        display: flex;*/
+        display: block;
         -webkit-flex: 0 1 calc(50% - 3em);
         flex: 0 1 calc(50% - 3em);
-        margin-bottom: 2em;
+        margin-bottom: .5em;
     }
 
+    .sectionCard .roundButtonCircle roundButton, .sectionCard .roundButtonCircle a{
+        line-height:.8em;
+        margin-top:-1.4em;
+        font-size:.9em;
+    }    
+    .sectionCard .roundButtonCircle{
+        border: .5em solid #cfdcec;  
+    }  
+
+	@supports (-ms-ime-align:auto){
+	    .sectionCard .roundButtonCircle roundButton, .sectionCard .roundButtonCircle a {
+	        margin-top: 1.4em;
+	    }
+	}
+
+	/* Mozilla has a bug-not-bug that doesn't respect padding-top percentages in some cases...this is an ugly approximation*/
+	@-moz-document url-prefix(){ 
+	  .sectionCard .roundButtonCircle roundButton, .sectionCard .roundButtonCircle a {
+	     margin-top: 1.4em;
+	  }
+	}    
 
     .sidebar{
         -webkit-flex: 0 0 12em;
@@ -1002,10 +1095,33 @@ a.fa{
     }
 
     .sectionCard{
-        -webkit-flex: 0 1 calc(33% - 3em);
-        flex: 0 1 calc(33% - 3em);
-        margin-bottom: 1.75em;
+        -webkit-flex: 0 1 calc(33% - .9em);
+        flex: 0 1 calc(33% - .9em);
+        margin-bottom: .75em;
+        padding: .3em;
     }
+    .sectionCard h1{
+        margin-bottom: .2em;
+    }
+    .sectionCard .roundButtonCircle roundButton, .sectionCard .roundButtonCircle a{
+        line-height:.8em;
+        margin-top:-1.6em;
+        font-size:.8em;
+    }    
+    .sectionCard .roundButtonCircle{
+        border: .25em solid #cfdcec;  
+    }     
+	/* Mozilla has a bug-not-bug that doesn't respect padding-top percentages in some cases...this is an ugly approximation*/
+	@-moz-document url-prefix() { 
+	  .sectionCard .roundButtonCircle roundButton, .sectionCard .roundButtonCircle a {
+	     margin-top: 1.2em;
+	  }
+	}   
+	@supports (-ms-ime-align:auto) {
+	    .sectionCard .roundButtonCircle roundButton, .sectionCard .roundButtonCircle a{
+	        margin-top: 1.2em;
+	    }
+	}	      
 }
 
 

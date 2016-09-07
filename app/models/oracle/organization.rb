@@ -4,27 +4,26 @@ module Oracle
     ORDERED_ORG_TYPES = [ 'SUBUNIT', 'UNIT', 'DEPT', 'SUBDIV', 'ACAD DIV', 'SCH', 'DIV'].freeze
 
     self.table_name = 'DARTHR.DC_ACAD_COMMONS_ORG_V'
-#   Could be organization_id...
-    self.primary_key = 'organization'
+    self.primary_key = 'organization' # Could be organization_id...
 
-#   Here are the columns in this view:
-##  ORGANIZATION	NOT NULL VARCHAR2(240)
-##  ORG_LONG_NAME	VARCHAR2(150)
-##  ORG_SHORT_CODE	VARCHAR2(150)
-##  ORG_TYPE		VARCHAR2(30)
-##  HB			VARCHAR2(80)
-##  GL_ORG_VALUE	VARCHAR2(150)
-##  DIVISION		VARCHAR2(4000 CHAR)
-##  SCHOOL		VARCHAR2(4000 CHAR)
-##  SUB_DIVISION	VARCHAR2(4000 CHAR)
-##  DEPARTMENT		VARCHAR2(4000 CHAR)
-##  UNIT		VARCHAR2(4000 CHAR)
-##  SUB_UNIT		VARCHAR2(4000 CHAR)
-##  ORG_BEGIN_DATE	NOT NULL DATE
-##  ORG_END_DATE	DATE
-##  LAST_SYSTEM_UPDATE	DATE
-##  ORGANIZATION_ID	NOT NULL NUMBER(15)
+    set_date_columns :org_begin_date, :org_end_date, :last_system_update
+    
+    # Limit results by type.
+    scope :type, -> (t) { where(org_type: t) }
 
+    # Limit results to organization ended before or on today.
+    scope :ended, -> { where('org_end_date <= ?', Date.today) }
+
+    # Limit results to records modified on or after the date given
+    def self.modified_since(d)
+      if d.nil?
+        return all
+      elsif d.respond_to?(:to_date)
+        d = d.to_date
+      end
+      where('last_system_update >= ?', d)
+    end
+    
 
     # Return a hash in a connonical form for the Lna Organization Loader.
     def to_hash
@@ -62,23 +61,6 @@ module Oracle
         begin_date:         self.org_begin_date.to_s,
         end_date:           self.org_end_date.to_s,
       }
-    end
-
-    # @param type [String]
-    # @param last_modified [Time] 
-    def self.find_by_type(type, last_modified = nil)
-      r = where(org_type: type)
-      if last_modified
-        raise 'last_modified date must be a Time object' unless last_modified.is_a? Time
-        r = r.where('last_system_update > ?', last_modified)
-      end
-      r
-    end
-
-    # Queries for organizations ended (ended by today) by org type. Results are returned in
-    # ascending date order.
-    def self.find_ended_orgs_by_type(type)
-      where('org_type = ? AND org_end_date <= ?', type, Date.today)
     end
   end
 end

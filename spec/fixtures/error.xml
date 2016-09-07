@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:api="http://www.symplectic.co.uk/publications/api">
+  <api:schema-version>4.9</api:schema-version>
+  <category scheme="http://www.symplectic.co.uk/publications/atom/feeds/" term="error-list" label="Error list"/>
+  <id>tag:elements@organisation,5.1:/elements-secure-api/last-errors</id>
+  <updated>2016-06-24T09:35:54.8765207-04:00</updated>
+  <generator uri="https://elements-dev.dartmouth.edu/" version="5.1">Symplectic Elements</generator>
+  <icon>https://localhost:9002/elements-secure-api/symplectic.ico</icon>
+  <rights>This data is the property of the Organisation, and can only be used with permission.</rights>
+  <subtitle type="xhtml">
+	<div xmlns="http://www.w3.org/1999/xhtml">
+	  <p>This feed describes the errors that occurred during the processing of the last request.</p>
+	</div>
+  </subtitle>
+  <title>Errors</title>
+  <author>
+	<name>Symplectic Elements at Organisation</name>
+  </author>
+  <entry>
+	<id>tag:elements@organisation,5.1:/elements-secure-api/last-errors/1</id>
+	<category scheme="http://www.symplectic.co.uk/publications/atom/entries/" term="error" label="Error"/>
+	<updated>2016-06-24T09:35:54.8765207-04:00</updated>
+	<title>Error: resource not found</title>
+	<content type="xhtml">
+	  <div xmlns="http://www.w3.org/1999/xhtml">
+		<p>The resource you have requested does not exist.</p>
+	  </div>
+	</content>
+	<api:error code="resource not found">The resource you have requested does not exist.</api:error>
+  </entry>
+</feed>

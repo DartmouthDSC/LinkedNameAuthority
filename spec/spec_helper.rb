@@ -19,9 +19,13 @@
 
 require 'active_fedora/cleaner'
 require 'coveralls'
+require 'webmock/rspec'
 
 # Adding Coveralls.
 Coveralls.wear!
+
+# Allowing connections to localhost.
+WebMock.disable_net_connect!(allow_localhost: true)
 
 RSpec.configure do |config|
   config.before(:suite) do
@@ -55,16 +59,16 @@ RSpec.configure do |config|
     get_via_redirect '/sign_in'
   end
 
-  # Authorize User as an Editor
-  config.before(:context, editor: true) do
+  # Authorize User as an Admin
+  config.before(:context, admin: true) do
     netid = FactoryGirl.create(:omniauth_hash).extra.netid
-    editor = Role.find_or_initialize_by(name: 'editor')
+    editor = Role.find_or_initialize_by(name: 'admin')
     User.find_by(netid: netid).roles << editor
   end
   
-  # Remove Editor Role
-  config.after(:context, editor: true) do
-    Role.find_by(name: "editor").destroy
+  # Remove Admin Role
+  config.after(:context, admin: true) do
+    Role.find_by(name: "admin").destroy
   end
                        
   # Signs User out

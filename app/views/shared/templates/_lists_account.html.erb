@@ -1,1 +1,1 @@
-						<li class="onlineAccount"><span class="accountName"></span><button class="fa fa-pencil fa-lg edit" title="edit account" data-toggle="modal" data-target="#editAccountModal"></li>
+						<li class="onlineAccount"><span class="accountName"></span><% if current_user && (current_user.admin? || current_user.creator? || current_user.editor?) %><button class="fa fa-pencil fa-lg edit" title="edit account" data-toggle="modal" data-target="#editAccountModal"><% end %></li>

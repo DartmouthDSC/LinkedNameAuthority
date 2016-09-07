@@ -3,6 +3,9 @@ module Lna
     class Document < ActiveFedora::Base
       include DateHelper
 
+      TYPE_ARTICLE = 'Article'
+      TYPE_BOOK = 'Book'
+
       has_many :license_refs, class_name: 'Lna::Collection::LicenseReference', dependent: :destroy
       has_many :free_to_read_refs, class_name: 'Lna::Collection::FreeToRead', dependent: :destroy
       
@@ -19,7 +22,7 @@ module Lna
       # Assures that a document is part of a collection or a review of a document, but not both.
       validate :part_of_collection_or_review_of
 
-      validates_presence_of :author_list, :title
+      validates_presence_of :author_list, :title, :doc_type
             
       type ::RDF::Vocab::BIBO.Document
       
@@ -86,6 +89,10 @@ module Lna
       end
       
       property :elements_id, predicate: Vocabs::LNA.elementsID, multiple: false do |index|
+        index.as :stored_searchable
+      end
+
+      property :doc_type, predicate: ::RDF::Vocab::DC.type, multiple: false do |index|
         index.as :stored_searchable
       end
       

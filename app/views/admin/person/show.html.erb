@@ -1,5 +1,5 @@
 		<nav class="centered breadcrumbs" role="navigation">
-            <%= link_to(root_path, class: "crumbContinue") do %><span>Home</span><% end %><%= link_to(persons_path, class: "crumbContinue") do %><span>Person</span><% end %><a href="#" class="crumbHere crumbStop"><span>Loading...</span></a>
+            <%= link_to(admin_root_path, class: "crumbContinue") do %><span>Home</span><% end %><%= link_to(admin_persons_path, class: "crumbContinue") do %><span>Person</span><% end %><a href="#" class="crumbHere crumbStop"><span>Loading...</span></a>
         </nav>
         <main class="centered content">
         <!--[if lt IE 8]>
@@ -9,15 +9,19 @@
                 <%= image_tag "unknownPerson.svg" %>
                 <div>
                     <h1></h1>
+                    <div><a id="rssLink"><i class="fa fa-rss-square" aria-hidden="true"></i> Works Feed</a></div>
+                    <hr>
                     <div><span class="spinner"></span></div>
                     <ul class="iconList">
                     </ul>
+                    <% if current_user && (current_user.admin? || current_user.creator? || current_user.editor?) %>
                     <button title="add account" id="newAccount" data-toggle="modal" data-target="#newAccountModal"><span class="add"></span>Add New ID</button>
+                    <% end %>
                 </div>
             </section>
             <section class="details">
                 <div class="personData">
-                    <h1>About <button class="fa fa-pencil fa-lg edit" title="edit person" data-toggle="modal" data-target="#editPersonModal"><span class="helpText">edit this person</span></button></h1>
+                    <h1>About <% if current_user && (current_user.admin? || current_user.editor? || current_user.creator?) %><button class="fa fa-pencil fa-lg edit" title="edit person" data-toggle="modal" data-target="#editPersonModal"><span class="helpText">edit this person</span></button><% end %></h1>
                     <p>
                         <span class="title">Name</span><br>
                         <span class="personName"></span>
@@ -45,14 +49,18 @@
                     <ul class="iconList">
                         <li><span class='spinner'></span></li>
                     </ul>
+                    <% if current_user && (current_user.admin? || current_user.creator? || current_user.editor?) %>
                     <button title="add affiliation" id="newAffiliation" data-toggle="modal" data-target="#newAffiliationModal"><span class="add"></span>Add New Affiliation</button>
+                    <% end %>
                 </div>
                 <div class="works">
                 <h1>Works</h1>                    
                     <ul class="iconList">
                         <li><span class='spinner'></span></li>
                     </ul>
+                    <% if current_user && (current_user.admin? || current_user.creator?) %>
                     <button title="add work" id="newWork" data-toggle="modal" data-target="#newWorkModal"><span class="add"></span>Add New Work</button>
+                    <% end %>
                 </div>
             </section>
         </main>
@@ -62,16 +70,20 @@
         <%= render "shared/templates/lists_account" %>
         </section>
         <section id="modals">
-        <%= render "shared/modals/new_work" %>
+        <% if current_user && (current_user.admin? || current_user.creator? || current_user.editor?) %>
         <%= render "shared/modals/new_affiliation" %>
         <%= render "shared/modals/new_account" %>
         <%= render "shared/modals/edit_account" %>
         <%= render "shared/modals/edit_affiliation" %>
-        <%= render "shared/modals/edit_person" %>
+        <%= render "shared/modals/edit_person" %>        
+        <% end %>
+        <% if current_user && (current_user.admin? || current_user.creator?) %>
+        <%= render "shared/modals/new_work" %>
+        <% end %>
         </section>        
 		<script>
         $(document).ready(function(){
-            $().LNAGateway().loadPerson(LNA.loadPerson, "<%= @short_id %>");
-            $().LNAGateway().loadPersonWorks(LNA.loadPersonWorks, "<%= @short_id %>");
+            $().LNAGateway().loadPerson(LNA.loadPerson, "<%= params[:id] %>");
+            $().LNAGateway().loadPersonWorks(LNA.loadPersonWorks, "<%= params[:id] %>");
         });
         </script>

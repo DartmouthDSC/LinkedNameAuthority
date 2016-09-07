@@ -16,7 +16,6 @@ class WorksController < CollectionController
     respond_to do |f|
       response.headers['Link'] = link_headers(result['response']['numFound'], MAX_ROWS, @page)
       f.jsonld { render :index, content_type: 'application/ld+json' }
-      f.html
     end
   end
 
@@ -45,7 +44,6 @@ class WorksController < CollectionController
     respond_to do |f|
       response.headers['Link'] = link_headers(result['response']['numFound'], MAX_ROWS, @page)
       f.jsonld { render :search, content_type: 'application/ld+json' }
-      f.html
     end
   end
 end

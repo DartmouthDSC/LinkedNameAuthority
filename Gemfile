@@ -13,6 +13,8 @@ gem 'om', '~> 3.1.0'
 gem 'rsolr', '~> 1.0.13'
 gem 'solrizer', '~> 3.4.0'
 
+gem 'citeproc-ruby'
+gem 'csl-styles'
 gem 'devise'
 gem 'dotenv-rails'
 gem 'gaffe'
@@ -24,11 +26,14 @@ gem 'rdf-vocab'
 gem 'turbolinks' # Turbolinks makes following links in your web application faster.
 gem 'therubyracer', platforms: :ruby # Embed the V8 JavaScript interpreter into Ruby
 gem 'whenever' # Used to run cron jobs.
+gem 'coffee-rails'
 
+# Used to bundle gems without pg in local environments that may not have postgresql.
 group :pg do
   gem 'pg'
 end
 
+# Used to bundle gems without oracle in travis environment.
 group :oracle do 
   gem 'activerecord-oracle_enhanced-adapter', '~> 1.6.0'
   gem 'ruby-oci8' # Oracle
@@ -48,11 +53,13 @@ group :development, :test, :ci do
   gem 'rspec-its'
   gem 'rspec-rails'
   gem 'spring'  # Spring speeds up development.
+  gem 'webmock'
 end
 
 group :development do
   gem 'capistrano-rails', '~> 1.1'
   gem 'capistrano-rvm'
+#  gem 'rack-mini-profiler'
   gem 'pry-rails'
   gem 'ruby-debug-passenger'
   gem 'web-console', '2.3.0' # Can remove this once we go to ruby 2.2.2

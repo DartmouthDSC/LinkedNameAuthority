@@ -51,6 +51,10 @@ RSpec.describe 'Works API', type: :request, https: true do
       
     end
 
+    it 'returns doc_type' do
+      expect_json('@graph.0', :'dc:type' => @work.doc_type)
+    end
+
     it 'include link headers' do
       expect_header('Link', "<#{works_url(page: 1)}>; rel=\"first\", <#{works_url(page: 1)}>; rel=\"last\"")
     end
@@ -60,6 +64,7 @@ RSpec.describe 'Works API', type: :request, https: true do
   describe 'POST works/' do
     before :context do
       Lna::Collection::Document.create(title: 'Glaciers in the South Pole',
+                                       doc_type: 'journal-article',
                                        author_list: ['Jane, Doe'],
                                        collection: @work.collection)
     end

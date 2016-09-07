@@ -106,11 +106,11 @@ RSpec.describe "Organization API", type: :request, https: true do
     end
   end
 
-  describe 'GET organization/' do
-    subject { get organization_index_path }
+  describe 'GET admin/organization/' do
+    subject { get admin_organization_path }
     
-    it 'redirects to GET organizations/' do
-      expect(subject).to redirect_to('/organizations')
+    it 'redirects to GET admin/organizations/' do
+      expect(subject).to redirect_to('/admin/organizations')
     end
   end
   
@@ -122,7 +122,7 @@ RSpec.describe "Organization API", type: :request, https: true do
       let(:body)   { required_body }
     end
     
-    describe 'when authorized', authenticated: true, editor: true do 
+    describe 'when authorized', authenticated: true, admin: true do 
       include_examples 'throws error when fields missing' do
         let(:path) { organization_index_path }
         let(:action) { 'post' }
@@ -130,7 +130,6 @@ RSpec.describe "Organization API", type: :request, https: true do
       
       describe 'adds new organization' do
         include_examples 'successful POST request'
-
         
         before :context do
           @count = Lna::Organization.count
@@ -203,7 +202,7 @@ RSpec.describe "Organization API", type: :request, https: true do
       let(:body)   { required_body }
     end
 
-    describe 'when authorized', authenticated: true, editor: true do
+    describe 'when authorized', authenticated: true, admin: true do
       include_examples 'throws error when fields missing' do
         let(:path) { @path }
         let(:action) { 'put' }
@@ -258,7 +257,7 @@ RSpec.describe "Organization API", type: :request, https: true do
       let(:body)   { required_body }
     end
 
-    describe 'when authorized', authenticated: true, editor: true do
+    describe 'when authorized', authenticated: true, admin: true do
       describe 'succesfully deletes organization' do
         include_examples 'successful request'
 

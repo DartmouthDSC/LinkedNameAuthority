@@ -134,9 +134,9 @@ RSpec.describe Lna::Organization::ChangeEvent, type: :model do
       before :context do
         @thayer = FactoryGirl.create(:thayer)
         @old_thayer = FactoryGirl.create(:old_thayer)
-        @change_event = Lna::Organization::ChangeEvent.trigger_event(@old_thayer, @thayer,
-                                                                     description: 'HB change',
-                                                                     date: Date.parse('2000-01-01'))
+        @change_event = Lna::Organization::ChangeEvent.trigger_event(
+          @old_thayer, @thayer, description: 'HB change', date: Date.parse('2000-01-01')
+        )
       end
       
       subject { @change_event }

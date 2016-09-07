@@ -1,11 +1,12 @@
 require 'uri'
+require 'faraday'
 
 module Symplectic
   module Elements
     class ApiError < StandardError; end # Request returns, but an error message is present.
     class RequestError < StandardError; end # Params for request invalid.
     
-    class Api < Faraday::Connection
+    class Api < ::Faraday::Connection
 
       attr_reader :config
       
@@ -16,6 +17,12 @@ module Symplectic
         self.basic_auth(self.config[:username], self.config[:password])
       end
 
+      def self.config
+        Rails.application.config_for(:elements).symbolize_keys
+      end
+      
+      private
+      
       # Load configuration from yaml file containing api_root, username and password for each
       # environment.
       #
@@ -30,7 +37,7 @@ module Symplectic
       #     api_root: https://example.com/api
       #
       def load_config
-        c = Rails.application.config_for(:elements).symbolize_keys
+        c = Symplectic::Elements::Api.config
 
         # Assure the keys we need are present.
         [:password, :username, :api_root].each do |k|

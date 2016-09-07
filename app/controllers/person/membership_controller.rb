@@ -28,7 +28,6 @@ class Person::MembershipController < CrudController
     respond_to do |f|
       f.jsonld { render :create, status: :created, location: location,
                         content_type: 'application/ld+json' }
-      f.html { redirect_to person_path(FedoraID.shorten(@person.id)) }
     end
   end
 
@@ -56,7 +55,7 @@ class Person::MembershipController < CrudController
   end
   
   def attributes
-    extra = {}
+    extra = { source: Lna::Membership::SOURCE_MANUAL }
     extra[:person_id] = params[:person_id] if params[:action] == 'create'
 
     params_to_attributes(membership_params, extra)

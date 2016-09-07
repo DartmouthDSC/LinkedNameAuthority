@@ -1,5 +1,5 @@
         <nav class="centered breadcrumbs" role="navigation">
-			<%= link_to(root_path, class: "crumbStop crumbHere") do %><span>Home</span><% end %>
+			<%= link_to(admin_root_path, class: "crumbStop crumbHere") do %><span>Home</span><% end %>
         </nav>
         <main class="centered content">
         <!--[if lt IE 8]>
@@ -11,7 +11,7 @@
                     <div>
                         <div class="roundButton">
                             <div class="roundButtonCircle">
-                                <%= link_to(organizations_path, class: "roundButton") do%><i class="fa fa-2x fa-list" aria-hidden="true"></i><br />Browse<% end %>
+                                <%= link_to(admin_organizations_path, class: "roundButton") do%><i class="fa fa-2x fa-list" aria-hidden="true"></i><br />Browse<% end %>
                             </div>
                         </div>
                         <div class="roundButton" data-toggle="modal" data-target="#findOrgsModal">
@@ -19,11 +19,13 @@
                                 <roundButton class="roundButton"><i class="fa fa-2x fa-search" aria-hidden="true"></i><br />Find</roundButton>
                             </div>
                         </div>
+                        <% if current_user && (current_user.admin? || current_user.creator?) %>
                         <div class="roundButton" data-toggle="modal" data-target="#newOrgModal">
                             <div class="roundButtonCircle">
                                 <roundButton class="roundButton"><i class="fa fa-2x fa-plus" aria-hidden="true"></i><br />Add</roundButton>
                             </div>
                         </div>
+                        <% end %>
                     </div>
                 </div>
                 <div class="sectionCard">
@@ -31,7 +33,7 @@
                     <div>
                         <div class="roundButton">
                             <div class="roundButtonCircle">
-                                <%= link_to(persons_path, class: "roundButton") do%><i class="fa fa-2x fa-list" aria-hidden="true"></i><br />Browse<% end %>
+                                <%= link_to(admin_persons_path, class: "roundButton") do%><i class="fa fa-2x fa-list" aria-hidden="true"></i><br />Browse<% end %>
                             </div>
                         </div>
                         <div class="roundButton" data-toggle="modal" data-target="#findPersonsModal">
@@ -39,11 +41,13 @@
                                 <roundButton class="roundButton"><i class="fa fa-2x fa-search" aria-hidden="true"></i><br />Find</roundButton>
                             </div>
                         </div>
+                        <% if current_user && (current_user.admin? || current_user.creator?) %>
                         <div class="roundButton" data-toggle="modal" data-target="#newPersonModal">
                             <div class="roundButtonCircle">
                                 <roundButton class="roundButton"><i class="fa fa-2x fa-plus" aria-hidden="true"></i><br />Add</roundButton>
                             </div>
                         </div>
+                        <% end %>
                     </div>                    
                 </div>
                 <div class="sectionCard">
@@ -51,7 +55,7 @@
                     <div>
                         <div class="roundButton">
                             <div class="roundButtonCircle">
-                                <%= link_to(works_path, class: "roundButton") do%><i class="fa fa-2x fa-list" aria-hidden="true"></i><br />Browse<% end %>
+                                <%= link_to(admin_works_path, class: "roundButton") do%><i class="fa fa-2x fa-list" aria-hidden="true"></i><br />Browse<% end %>
                             </div>
                         </div>
                         <div class="roundButton" data-toggle="modal" data-target="#findWorksModal">
@@ -59,21 +63,84 @@
                                 <roundButton class="roundButton"><i class="fa fa-2x fa-search" aria-hidden="true"></i><br />Find</roundButton>
                             </div>
                         </div>
+                        <% if current_user && (current_user.admin? || current_user.creator?) %>
                         <div class="roundButton" data-toggle="modal" data-target="#newWorkModal">
                             <div class="roundButtonCircle">
                                 <roundButton class="roundButton"><i class="fa fa-2x fa-plus" aria-hidden="true"></i><br />Add</roundButton>
                             </div>
                         </div>
+                        <% end %>
                     </div>                    
                 </div>
 
             </div>
-
+            <div class="baton">
+            	<h1>Todo's for John Bell</h1>
+            	<table>
+            		<tr>
+            			<th colspan="5">Workflow: Curate Article Metadata</th>
+            		<tr>
+            			<td><i class="fa fa-square-o" aria-hidden="true"></i></td>
+            			<td>Online Access for Scholars Adds Value to Media Archives<br />John Bell, ITS</td>
+            			<td><div class="progress"></div></td>
+            			<td><i class="fa fa-clock-o" aria-hidden="true" style="background-color: red"></i></td>
+            			<td><i class="fa fa-pencil" aria-hidden="true"></i></td>
+            		</tr>
+            		<tr>
+            			<td><i class="fa fa-square-o" aria-hidden="true"></i></td>
+            			<td>Diffused Museums–Networked, Augmented, and Self-Organized Collections<br />John Bell, ITS</td>
+            			<td><div class="progress"></div></td>
+            			<td><i class="fa fa-clock-o" aria-hidden="true" style="background-color: yellow"></i></td>
+            			<td><i class="fa fa-pencil" aria-hidden="true"></i></td>
+            		</tr>
+            		<tr>
+            			<td><i class="fa fa-square-o" aria-hidden="true"></i></td>
+            			<td>A Collaborative Model for PhDs<br />John Bell, ITS</td>
+            			<td><div class="progress"></div></td>
+            			<td><i class="fa fa-clock-o" aria-hidden="true"></i></td>
+            			<td><i class="fa fa-pencil" aria-hidden="true"></i></td>
+            		</tr>
+            	</table>
+            	<table>
+            		<tr>
+            			<th colspan="5">Workflow: Verify Person Record Updates</th>
+            		<tr>
+            			<td><i class="fa fa-square-o" aria-hidden="true"></i></td>
+            			<td>John Bell</td>
+            			<td><div class="progress"></div></td>
+            			<td><i class="fa fa-clock-o" aria-hidden="true"></i></td>
+            			<td><i class="fa fa-pencil" aria-hidden="true"></i></td>
+            		</tr>
+            		<tr>
+            			<td><i class="fa fa-square-o" aria-hidden="true"></i></td>
+            			<td>Jennifer Green</td>
+            			<td><div class="progress"</div></td>
+            			<td><i class="fa fa-clock-o" aria-hidden="true"></i></td>
+            			<td><i class="fa fa-pencil" aria-hidden="true"></i></td>
+            		</tr>
+            		<tr>
+            			<td><i class="fa fa-square-o" aria-hidden="true"></i></td>
+            			<td>Carole Meyers</td>
+            			<td><div class="progress"></div></td>
+            			<td><i class="fa fa-clock-o" aria-hidden="true"></i></td>
+            			<td><i class="fa fa-pencil" aria-hidden="true"></i></td>
+            		</tr>
+            	</table>            	
+            </div>
         </main>
+        <script>
+        	$(function(){
+        		$.each($('.progress'), function(i, v){
+        			$(v).progressbar({'value': Math.floor((Math.random() * 10))*10});
+        		})
+        	});
+        </script>
         <section id="modals">
+            <% if current_user && (current_user.admin? || current_user.creator?) %>
     		<%= render "shared/modals/new_person" %>
             <%= render "shared/modals/new_organization" %>
             <%= render "shared/modals/new_work" %>
+            <% end %>
             <%= render "shared/modals/find_persons" %>
             <%= render "shared/modals/find_organizations" %>
             <%= render "shared/modals/find_works" %>

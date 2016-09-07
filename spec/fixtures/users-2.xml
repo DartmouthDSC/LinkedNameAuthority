@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:api="http://www.symplectic.co.uk/publications/api">
+  <api:schema-version>4.9</api:schema-version>
+  <category scheme="http://www.symplectic.co.uk/publications/atom/feeds/" term="item-list" label="Item list"/>
+  <id>tag:elements@organisation,5.1:/elements-secure-api/feeds//users?page=2</id>
+  <updated>2016-06-21T13:25:09.3690293-04:00</updated>
+  <generator uri="https://elements-dev.dartmouth.edu/" version="5.1">Symplectic Elements</generator>
+  <icon>https://localhost:9002/elements-secure-api/symplectic.ico</icon>
+  <rights>This data is the property of the Organisation, and can only be used with permission.</rights>
+  <subtitle>This feed represents page 2 of 2 listing a total of 49 results from the following search query: https://localhost:9002/elements-secure-api/users</subtitle>
+  <api:pagination results-count="49" items-per-page="25">
+	<api:page position="this" number="2" href="https://localhost:9002/elements-secure-api/users?page=2"/>
+	<api:page position="first" number="1" href="https://localhost:9002/elements-secure-api/users"/>
+	<api:page position="previous" number="1" href="https://localhost:9002/elements-secure-api/users"/>
+	<api:page position="last" number="2" href="https://localhost:9002/elements-secure-api/users?page=2"/>
+  </api:pagination>
+  <link type="application/atom+xml" rel="first" href="https://localhost:9002/elements-secure-api/users"/>
+  <link type="application/atom+xml" rel="previous" href="https://localhost:9002/elements-secure-api/users"/>
+  <link type="application/atom+xml" rel="last" href="https://localhost:9002/elements-secure-api/users?page=2"/>
+  <link type="application/atom+xml" rel="self" href="https://localhost:9002/elements-secure-api/users?page=2"/>
+  <title>User search results</title>
+  <author>
+	<name>Symplectic Elements at Organisation</name>
+  </author>
+  <entry>
+	<id>tag:elements@organisation,5.1:/elements-secure-api//users/2148?detail=ref</id>
+	<category scheme="http://www.symplectic.co.uk/publications/atom/entries/" term="item" label="Item"/>
+	<updated>2016-06-15T23:16:01.067-04:00</updated>
+	<link type="application/atom+xml" rel="alternate" href="https://localhost:9002/elements-secure-api/users/2148?detail=ref"/>
+	<title>KHAN, Shahzeb A</title>
+	<content type="xhtml">
+	  <div xmlns="http://www.w3.org/1999/xhtml">
+		<p>User</p>
+		<a href="https://localhost:9002/elements-secure-api/users/2148/photo">Photo</a>
+		<p>
+		  <a href="https://localhost:9002/elements-secure-api/users/2148/relationships">Relationships</a> with other data
+		</p>
+	  </div>
+	</content>
+	<api:object category="user" id="2148" proprietary-id="F0027KN" authenticating-authority="Dartmouth-WebAuth" username="F0027KN" last-modified-when="2016-06-15T23:16:01.067-04:00" href="https://localhost:9002/elements-secure-api/users/2148?detail=ref" created-when="2015-10-30T17:01:42.437-04:00" type-id="1" type="person">
+	  <api:relationships href="https://localhost:9002/elements-secure-api/users/2148/relationships"/>
+	</api:object>
+  </entry>
+  <entry>
+	<id>tag:elements@organisation,5.1:/elements-secure-api//users/1941?detail=ref</id>
+	<category scheme="http://www.symplectic.co.uk/publications/atom/entries/" term="item" label="Item"/>
+	<updated>2016-06-15T22:24:47.79-04:00</updated>
+	<link type="application/atom+xml" rel="alternate" href="https://localhost:9002/elements-secure-api/users/1941?detail=ref"/>
+	<title>BHATIA, Richa</title>
+	<content type="xhtml">
+	  <div xmlns="http://www.w3.org/1999/xhtml">
+		<p>User</p>
+		<a href="https://localhost:9002/elements-secure-api/users/1941/photo">Photo</a>
+		<p>
+		  <a href="https://localhost:9002/elements-secure-api/users/1941/relationships">Relationships</a> with other data
+		</p>
+	  </div>
+	</content>
+	<api:object category="user" id="1941" proprietary-id="F002MGY" authenticating-authority="Dartmouth-WebAuth" username="F002MGY" last-modified-when="2016-06-15T22:24:47.79-04:00" href="https://localhost:9002/elements-secure-api/users/1941?detail=ref" created-when="2015-10-30T17:01:39.597-04:00" type-id="1" type="person">
+	  <api:relationships href="https://localhost:9002/elements-secure-api/users/1941/relationships"/>
+	</api:object>
+  </entry>
+  <entry>
+	<id>tag:elements@organisation,5.1:/elements-secure-api//users/679?detail=ref</id>
+	<category scheme="http://www.symplectic.co.uk/publications/atom/entries/" term="item" label="Item"/>
+	<updated>2016-06-15T22:16:09.45-04:00</updated>
+	<link type="application/atom+xml" rel="alternate" href="https://localhost:9002/elements-secure-api/users/679?detail=ref"/>
+	<title>BRADLEY, Elizabeth</title>
+	<content type="xhtml">
+	  <div xmlns="http://www.w3.org/1999/xhtml">
+		<p>User</p>
+		<a href="https://localhost:9002/elements-secure-api/users/679/photo">Photo</a>
+		<p>
+		  <a href="https://localhost:9002/elements-secure-api/users/679/relationships">Relationships</a> with other data
+		</p>
+	  </div>
+	</content>
+	<api:object category="user" id="679" proprietary-id="D33667R" authenticating-authority="Dartmouth-WebAuth" username="D33667R" last-modified-when="2016-06-15T22:16:09.45-04:00" href="https://localhost:9002/elements-secure-api/users/679?detail=ref" created-when="2015-10-30T17:01:20.087-04:00" type-id="1" type="person">
+	  <api:relationships href="https://localhost:9002/elements-secure-api/users/679/relationships"/>
+	</api:object>
+  </entry>
+  <entry>
+	<id>tag:elements@organisation,5.1:/elements-secure-api//users/1132?detail=ref</id>
+	<category scheme="http://www.symplectic.co.uk/publications/atom/entries/" term="item" label="Item"/>
+	<updated>2016-06-15T21:53:39.427-04:00</updated>
+	<link type="application/atom+xml" rel="alternate" href="https://localhost:9002/elements-secure-api/users/1132?detail=ref"/>
+	<title>WASSON, John H</title>
+	<content type="xhtml">
+	  <div xmlns="http://www.w3.org/1999/xhtml">
+		<p>User</p>
+		<a href="https://localhost:9002/elements-secure-api/users/1132/photo">Photo</a>
+		<p>
+		  <a href="https://localhost:9002/elements-secure-api/users/1132/relationships">Relationships</a> with other data
+		</p>
+	  </div>
+	</content>
+	<api:object category="user" id="1132" proprietary-id="D14511Q" authenticating-authority="Dartmouth-WebAuth" username="D14511Q" last-modified-when="2016-06-15T21:53:39.427-04:00" href="https://localhost:9002/elements-secure-api/users/1132?detail=ref" created-when="2015-10-30T17:01:26.2-04:00" type-id="1" type="person">
+	  <api:relationships href="https://localhost:9002/elements-secure-api/users/1132/relationships"/>
+	</api:object>
+  </entry>
+  <entry>
+	<id>tag:elements@organisation,5.1:/elements-secure-api//users/1399?detail=ref</id>
+	<category scheme="http://www.symplectic.co.uk/publications/atom/entries/" term="item" label="Item"/>
+	<updated>2016-06-15T21:42:27.777-04:00</updated>
+	<link type="application/atom+xml" rel="alternate" href="https://localhost:9002/elements-secure-api/users/1399?detail=ref"/>
+	<title>DUMONT, Larry</title>
+	<content type="xhtml">
+	  <div xmlns="http://www.w3.org/1999/xhtml">
+		<p>User</p>
+		<a href="https://localhost:9002/elements-secure-api/users/1399/photo">Photo</a>
+		<p>
+		  <a href="https://localhost:9002/elements-secure-api/users/1399/relationships">Relationships</a> with other data
+		</p>
+	  </div>
+	</content>
+	<api:object category="user" id="1399" proprietary-id="D22515C" authenticating-authority="Dartmouth-WebAuth" username="D22515C" last-modified-when="2016-06-15T21:42:27.777-04:00" href="https://localhost:9002/elements-secure-api/users/1399?detail=ref" created-when="2015-10-30T17:01:32.217-04:00" type-id="1" type="person">
+	  <api:relationships href="https://localhost:9002/elements-secure-api/users/1399/relationships"/>
+	</api:object>
+  </entry>
+  <entry>
+	<id>tag:elements@organisation,5.1:/elements-secure-api//users/1307?detail=ref</id>
+	<category scheme="http://www.symplectic.co.uk/publications/atom/entries/" term="item" label="Item"/>
+	<updated>2016-06-15T20:00:17.173-04:00</updated>
+	<link type="application/atom+xml" rel="alternate" href="https://localhost:9002/elements-secure-api/users/1307?detail=ref"/>
+	<title>JOHNSON, Kay A</title>
+	<content type="xhtml">
+	  <div xmlns="http://www.w3.org/1999/xhtml">
+		<p>User</p>
+		<a href="https://localhost:9002/elements-secure-api/users/1307/photo">Photo</a>
+		<p>
+		  <a href="https://localhost:9002/elements-secure-api/users/1307/relationships">Relationships</a> with other data
+		</p>
+	  </div>
+	</content>
+	<api:object category="user" id="1307" proprietary-id="D1056D5" authenticating-authority="Dartmouth-WebAuth" username="D1056D5" last-modified-when="2016-06-15T20:00:17.173-04:00" href="https://localhost:9002/elements-secure-api/users/1307?detail=ref" created-when="2015-10-30T17:01:30.983-04:00" type-id="1" type="person">
+	  <api:relationships href="https://localhost:9002/elements-secure-api/users/1307/relationships"/>
+	</api:object>
+  </entry>
+  <entry>
+	<id>tag:elements@organisation,5.1:/elements-secure-api//users/1306?detail=ref</id>
+	<category scheme="http://www.symplectic.co.uk/publications/atom/entries/" term="item" label="Item"/>
+	<updated>2016-06-15T19:49:36.663-04:00</updated>
+	<link type="application/atom+xml" rel="alternate" href="https://localhost:9002/elements-secure-api/users/1306?detail=ref"/>
+	<title>SHAFFER, Katy A</title>
+	<content type="xhtml">
+	  <div xmlns="http://www.w3.org/1999/xhtml">
+		<p>User</p>
+		<a href="https://localhost:9002/elements-secure-api/users/1306/photo">Photo</a>
+		<p>
+		  <a href="https://localhost:9002/elements-secure-api/users/1306/relationships">Relationships</a> with other data
+		</p>
+	  </div>
+	</content>
+	<api:object category="user" id="1306" proprietary-id="F002CN6" authenticating-authority="Dartmouth-WebAuth" username="F002CN6" last-modified-when="2016-06-15T19:49:36.663-04:00" href="https://localhost:9002/elements-secure-api/users/1306?detail=ref" created-when="2015-10-30T17:01:30.973-04:00" type-id="1" type="person">
+	  <api:relationships href="https://localhost:9002/elements-secure-api/users/1306/relationships"/>
+	</api:object>
+  </entry>
+  <entry>
+	<id>tag:elements@organisation,5.1:/elements-secure-api//users/133?detail=ref</id>
+	<category scheme="http://www.symplectic.co.uk/publications/atom/entries/" term="item" label="Item"/>
+	<updated>2016-06-15T19:26:13.137-04:00</updated>
+	<link type="application/atom+xml" rel="alternate" href="https://localhost:9002/elements-secure-api/users/133?detail=ref"/>
+	<title>SCHOOLWERTH, Anton C</title>
+	<content type="xhtml">
+	  <div xmlns="http://www.w3.org/1999/xhtml">
+		<p>User</p>
+		<a href="https://localhost:9002/elements-secure-api/users/133/photo">Photo</a>
+		<p>
+		  <a href="https://localhost:9002/elements-secure-api/users/133/relationships">Relationships</a> with other data
+		</p>
+	  </div>
+	</content>
+	<api:object category="user" id="133" proprietary-id="D11359M" authenticating-authority="Dartmouth-WebAuth" username="D11359M" last-modified-when="2016-06-15T19:26:13.137-04:00" href="https://localhost:9002/elements-secure-api/users/133?detail=ref" created-when="2015-10-30T17:01:10.607-04:00" type-id="1" type="person">
+	  <api:relationships href="https://localhost:9002/elements-secure-api/users/133/relationships"/>
+	</api:object>
+  </entry>
+  <entry>
+	<id>tag:elements@organisation,5.1:/elements-secure-api//users/1546?detail=ref</id>
+	<category scheme="http://www.symplectic.co.uk/publications/atom/entries/" term="item" label="Item"/>
+	<updated>2016-06-15T18:54:03.51-04:00</updated>
+	<link type="application/atom+xml" rel="alternate" href="https://localhost:9002/elements-secure-api/users/1546?detail=ref"/>
+	<title>KATZ, Michael</title>
+	<content type="xhtml">
+	  <div xmlns="http://www.w3.org/1999/xhtml">
+		<p>User</p>
+		<a href="https://localhost:9002/elements-secure-api/users/1546/photo">Photo</a>
+		<p>
+		  <a href="https://localhost:9002/elements-secure-api/users/1546/relationships">Relationships</a> with other data
+		</p>
+	  </div>
+	</content>
+	<api:object category="user" id="1546" proprietary-id="F000R0G" authenticating-authority="Dartmouth-WebAuth" username="F000R0G" last-modified-when="2016-06-15T18:54:03.51-04:00" href="https://localhost:9002/elements-secure-api/users/1546?detail=ref" created-when="2015-10-30T17:01:34.223-04:00" type-id="1" type="person">
+	  <api:relationships href="https://localhost:9002/elements-secure-api/users/1546/relationships"/>
+	</api:object>
+  </entry>
+  <entry>
+	<id>tag:elements@organisation,5.1:/elements-secure-api//users/1516?detail=ref</id>
+	<category scheme="http://www.symplectic.co.uk/publications/atom/entries/" term="item" label="Item"/>
+	<updated>2016-06-15T18:04:38.217-04:00</updated>
+	<link type="application/atom+xml" rel="alternate" href="https://localhost:9002/elements-secure-api/users/1516?detail=ref"/>
+	<title>DURAND, Marie-Anne</title>
+	<content type="xhtml">
+	  <div xmlns="http://www.w3.org/1999/xhtml">
+		<p>User</p>
+		<a href="https://localhost:9002/elements-secure-api/users/1516/photo">Photo</a>
+		<p>
+		  <a href="https://localhost:9002/elements-secure-api/users/1516/relationships">Relationships</a> with other data
+		</p>
+	  </div>
+	</content>
+	<api:object category="user" id="1516" proprietary-id="F002661" authenticating-authority="Dartmouth-WebAuth" username="F002661" last-modified-when="2016-06-15T18:04:38.217-04:00" href="https://localhost:9002/elements-secure-api/users/1516?detail=ref" created-when="2015-10-30T17:01:33.803-04:00" type-id="1" type="person">
+	  <api:relationships href="https://localhost:9002/elements-secure-api/users/1516/relationships"/>
+	</api:object>
+  </entry>
+  <entry>
+	<id>tag:elements@organisation,5.1:/elements-secure-api//users/1515?detail=ref</id>
+	<category scheme="http://www.symplectic.co.uk/publications/atom/entries/" term="item" label="Item"/>
+	<updated>2016-06-15T17:47:52.22-04:00</updated>
+	<link type="application/atom+xml" rel="alternate" href="https://localhost:9002/elements-secure-api/users/1515?detail=ref"/>
+	<title>MARSH, Marianne</title>
+	<content type="xhtml">
+	  <div xmlns="http://www.w3.org/1999/xhtml">
+		<p>User</p>
+		<a href="https://localhost:9002/elements-secure-api/users/1515/photo">Photo</a>
+		<p>
+		  <a href="https://localhost:9002/elements-secure-api/users/1515/relationships">Relationships</a> with other data
+		</p>
+	  </div>
+	</content>
+	<api:object category="user" id="1515" proprietary-id="F000M6S" authenticating-authority="Dartmouth-WebAuth" username="F000M6S" last-modified-when="2016-06-15T17:47:52.22-04:00" href="https://localhost:9002/elements-secure-api/users/1515?detail=ref" created-when="2015-10-30T17:01:33.79-04:00" type-id="1" type="person">
+	  <api:relationships href="https://localhost:9002/elements-secure-api/users/1515/relationships"/>
+	</api:object>
+  </entry>
+  <entry>
+	<id>tag:elements@organisation,5.1:/elements-secure-api//users/2121?detail=ref</id>
+	<category scheme="http://www.symplectic.co.uk/publications/atom/entries/" term="item" label="Item"/>
+	<updated>2016-06-15T16:45:33.807-04:00</updated>
+	<link type="application/atom+xml" rel="alternate" href="https://localhost:9002/elements-secure-api/users/2121?detail=ref"/>
+	<title>JI, Songbai</title>
+	<content type="xhtml">
+	  <div xmlns="http://www.w3.org/1999/xhtml">
+		<p>User</p>
+		<a href="https://localhost:9002/elements-secure-api/users/2121/photo">Photo</a>
+		<p>
+		  <a href="https://localhost:9002/elements-secure-api/users/2121/relationships">Relationships</a> with other data
+		</p>
+	  </div>
+	</content>
+	<api:object category="user" id="2121" proprietary-id="D20558R" authenticating-authority="Dartmouth-WebAuth" username="D20558R" last-modified-when="2016-06-15T16:45:33.807-04:00" href="https://localhost:9002/elements-secure-api/users/2121?detail=ref" created-when="2015-10-30T17:01:42.073-04:00" type-id="1" type="person">
+	  <api:relationships href="https://localhost:9002/elements-secure-api/users/2121/relationships"/>
+	</api:object>
+  </entry>
+  <entry>
+	<id>tag:elements@organisation,5.1:/elements-secure-api//users/74?detail=ref</id>
+	<category scheme="http://www.symplectic.co.uk/publications/atom/entries/" term="item" label="Item"/>
+	<updated>2016-06-15T16:43:37.587-04:00</updated>
+	<link type="application/atom+xml" rel="alternate" href="https://localhost:9002/elements-secure-api/users/74?detail=ref"/>
+	<title>SIEGEL, Alan</title>
+	<content type="xhtml">
+	  <div xmlns="http://www.w3.org/1999/xhtml">
+		<p>User</p>
+		<a href="https://localhost:9002/elements-secure-api/users/74/photo">Photo</a>
+		<p>
+		  <a href="https://localhost:9002/elements-secure-api/users/74/relationships">Relationships</a> with other data
+		</p>
+	  </div>
+	</content>
+	<api:object category="user" id="74" proprietary-id="D39468E" authenticating-authority="Dartmouth-WebAuth" username="D39468E" last-modified-when="2016-06-15T16:43:37.587-04:00" href="https://localhost:9002/elements-secure-api/users/74?detail=ref" created-when="2015-10-30T17:01:09.227-04:00" type-id="1" type="person">
+	  <api:relationships href="https://localhost:9002/elements-secure-api/users/74/relationships"/>
+	</api:object>
+  </entry>
+  <entry>
+	<id>tag:elements@organisation,5.1:/elements-secure-api//users/273?detail=ref</id>
+	<category scheme="http://www.symplectic.co.uk/publications/atom/entries/" term="item" label="Item"/>
+	<updated>2016-06-15T16:43:27.407-04:00</updated>
+	<link type="application/atom+xml" rel="alternate" href="https://localhost:9002/elements-secure-api/users/273?detail=ref"/>
+	<title>JOBST, Barbara</title>
+	<content type="xhtml">
+	  <div xmlns="http://www.w3.org/1999/xhtml">
+		<p>User</p>
+		<a href="https://localhost:9002/elements-secure-api/users/273/photo">Photo</a>
+		<p>
+		  <a href="https://localhost:9002/elements-secure-api/users/273/relationships">Relationships</a> with other data
+		</p>
+	  </div>
+	</content>
+	<api:object category="user" id="273" proprietary-id="D3841W3" authenticating-authority="Dartmouth-WebAuth" username="D3841W3" last-modified-when="2016-06-15T16:43:27.407-04:00" href="https://localhost:9002/elements-secure-api/users/273?detail=ref" created-when="2015-10-30T17:01:12.52-04:00" type-id="1" type="person">
+	  <api:relationships href="https://localhost:9002/elements-secure-api/users/273/relationships"/>
+	</api:object>
+  </entry>
+  <entry>
+	<id>tag:elements@organisation,5.1:/elements-secure-api//users/2298?detail=ref</id>
+	<category scheme="http://www.symplectic.co.uk/publications/atom/entries/" term="item" label="Item"/>
+	<updated>2016-06-15T16:42:36.863-04:00</updated>
+	<link type="application/atom+xml" rel="alternate" href="https://localhost:9002/elements-secure-api/users/2298?detail=ref"/>
+	<title>TOSTESON, Tor Devin</title>
+	<content type="xhtml">
+	  <div xmlns="http://www.w3.org/1999/xhtml">
+		<p>User</p>
+		<a href="https://localhost:9002/elements-secure-api/users/2298/photo">Photo</a>
+		<p>
+		  <a href="https://localhost:9002/elements-secure-api/users/2298/relationships">Relationships</a> with other data
+		</p>
+	  </div>
+	</content>
+	<api:object category="user" id="2298" proprietary-id="D31991Q" authenticating-authority="Dartmouth-WebAuth" username="D31991Q" last-modified-when="2016-06-15T16:42:36.863-04:00" href="https://localhost:9002/elements-secure-api/users/2298?detail=ref" created-when="2015-10-30T17:01:44.67-04:00" type-id="1" type="person">
+	  <api:relationships href="https://localhost:9002/elements-secure-api/users/2298/relationships"/>
+	</api:object>
+  </entry>
+  <entry>
+	<id>tag:elements@organisation,5.1:/elements-secure-api//users/1508?detail=ref</id>
+	<category scheme="http://www.symplectic.co.uk/publications/atom/entries/" term="item" label="Item"/>
+	<updated>2016-06-15T16:35:19.673-04:00</updated>
+	<link type="application/atom+xml" rel="alternate" href="https://localhost:9002/elements-secure-api/users/1508?detail=ref"/>
+	<title>ELIASSEN, M Scott</title>
+	<content type="xhtml">
+	  <div xmlns="http://www.w3.org/1999/xhtml">
+		<p>User</p>
+		<a href="https://localhost:9002/elements-secure-api/users/1508/photo">Photo</a>
+		<p>
+		  <a href="https://localhost:9002/elements-secure-api/users/1508/relationships">Relationships</a> with other data
+		</p>
+	  </div>
+	</content>
+	<api:object category="user" id="1508" proprietary-id="D34462D" authenticating-authority="Dartmouth-WebAuth" username="D34462D" last-modified-when="2016-06-15T16:35:19.673-04:00" href="https://localhost:9002/elements-secure-api/users/1508?detail=ref" created-when="2015-10-30T17:01:33.7-04:00" type-id="1" type="person">
+	  <api:relationships href="https://localhost:9002/elements-secure-api/users/1508/relationships"/>
+	</api:object>
+  </entry>
+  <entry>
+	<id>tag:elements@organisation,5.1:/elements-secure-api//users/1282?detail=ref</id>
+	<category scheme="http://www.symplectic.co.uk/publications/atom/entries/" term="item" label="Item"/>
+	<updated>2016-06-15T15:36:49.68-04:00</updated>
+	<link type="application/atom+xml" rel="alternate" href="https://localhost:9002/elements-secure-api/users/1282?detail=ref"/>
+	<title>FULLER, Kevin</title>
+	<content type="xhtml">
+	  <div xmlns="http://www.w3.org/1999/xhtml">
+		<p>User</p>
+		<a href="https://localhost:9002/elements-secure-api/users/1282/photo">Photo</a>
+		<p>
+		  <a href="https://localhost:9002/elements-secure-api/users/1282/relationships">Relationships</a> with other data
+		</p>
+	  </div>
+	</content>
+	<api:object category="user" id="1282" proprietary-id="D35697E" authenticating-authority="Dartmouth-WebAuth" username="D35697E" last-modified-when="2016-06-15T15:36:49.68-04:00" href="https://localhost:9002/elements-secure-api/users/1282?detail=ref" created-when="2015-10-30T17:01:30.663-04:00" type-id="1" type="person">
+	  <api:relationships href="https://localhost:9002/elements-secure-api/users/1282/relationships"/>
+	</api:object>
+  </entry>
+  <entry>
+	<id>tag:elements@organisation,5.1:/elements-secure-api//users/2410?detail=ref</id>
+	<category scheme="http://www.symplectic.co.uk/publications/atom/entries/" term="item" label="Item"/>
+	<updated>2016-06-15T15:06:04.94-04:00</updated>
+	<link type="application/atom+xml" rel="alternate" href="https://localhost:9002/elements-secure-api/users/2410?detail=ref"/>
+	<title>ZHOU, Weiping</title>
+	<content type="xhtml">
+	  <div xmlns="http://www.w3.org/1999/xhtml">
+		<p>User</p>
+		<a href="https://localhost:9002/elements-secure-api/users/2410/photo">Photo</a>
+		<p>
+		  <a href="https://localhost:9002/elements-secure-api/users/2410/relationships">Relationships</a> with other data
+		</p>
+	  </div>
+	</content>
+	<api:object category="user" id="2410" proprietary-id="D10991M" authenticating-authority="Dartmouth-WebAuth" username="D10991M" last-modified-when="2016-06-15T15:06:04.94-04:00" href="https://localhost:9002/elements-secure-api/users/2410?detail=ref" created-when="2015-10-30T17:01:46.303-04:00" type-id="1" type="person">
+	  <api:relationships href="https://localhost:9002/elements-secure-api/users/2410/relationships"/>
+	</api:object>
+  </entry>
+  <entry>
+	<id>tag:elements@organisation,5.1:/elements-secure-api//users/1275?detail=ref</id>
+	<category scheme="http://www.symplectic.co.uk/publications/atom/entries/" term="item" label="Item"/>
+	<updated>2016-06-15T14:28:54.907-04:00</updated>
+	<link type="application/atom+xml" rel="alternate" href="https://localhost:9002/elements-secure-api/users/1275?detail=ref"/>
+	<title>SHIRAI, Keisuke</title>
+	<content type="xhtml">
+	  <div xmlns="http://www.w3.org/1999/xhtml">
+		<p>User</p>
+		<a href="https://localhost:9002/elements-secure-api/users/1275/photo">Photo</a>
+		<p>
+		  <a href="https://localhost:9002/elements-secure-api/users/1275/relationships">Relationships</a> with other data
+		</p>
+	  </div>
+	</content>
+	<api:object category="user" id="1275" proprietary-id="F002D9K" authenticating-authority="Dartmouth-WebAuth" username="F002D9K" last-modified-when="2016-06-15T14:28:54.907-04:00" href="https://localhost:9002/elements-secure-api/users/1275?detail=ref" created-when="2015-10-30T17:01:30.577-04:00" type-id="1" type="person">
+	  <api:relationships href="https://localhost:9002/elements-secure-api/users/1275/relationships"/>
+	</api:object>
+  </entry>
+  <entry>
+	<id>tag:elements@organisation,5.1:/elements-secure-api//users/409?detail=ref</id>
+	<category scheme="http://www.symplectic.co.uk/publications/atom/entries/" term="item" label="Item"/>
+	<updated>2016-06-15T14:25:08.627-04:00</updated>
+	<link type="application/atom+xml" rel="alternate" href="https://localhost:9002/elements-secure-api/users/409?detail=ref"/>
+	<title>BLACK, Candice C</title>
+	<content type="xhtml">
+	  <div xmlns="http://www.w3.org/1999/xhtml">
+		<p>User</p>
+		<a href="https://localhost:9002/elements-secure-api/users/409/photo">Photo</a>
+		<p>
+		  <a href="https://localhost:9002/elements-secure-api/users/409/relationships">Relationships</a> with other data
+		</p>
+	  </div>
+	</content>
+	<api:object category="user" id="409" proprietary-id="D10473T" authenticating-authority="Dartmouth-WebAuth" username="D10473T" last-modified-when="2016-06-15T14:25:08.627-04:00" href="https://localhost:9002/elements-secure-api/users/409?detail=ref" created-when="2015-10-30T17:01:14.203-04:00" type-id="1" type="person">
+	  <api:relationships href="https://localhost:9002/elements-secure-api/users/409/relationships"/>
+	</api:object>
+  </entry>
+  <entry>
+	<id>tag:elements@organisation,5.1:/elements-secure-api//users/2003?detail=ref</id>
+	<category scheme="http://www.symplectic.co.uk/publications/atom/entries/" term="item" label="Item"/>
+	<updated>2016-06-15T14:11:59.397-04:00</updated>
+	<link type="application/atom+xml" rel="alternate" href="https://localhost:9002/elements-secure-api/users/2003?detail=ref"/>
+	<title>DRAKE, Robert E</title>
+	<content type="xhtml">
+	  <div xmlns="http://www.w3.org/1999/xhtml">
+		<p>User</p>
+		<a href="https://localhost:9002/elements-secure-api/users/2003/photo">Photo</a>
+		<p>
+		  <a href="https://localhost:9002/elements-secure-api/users/2003/relationships">Relationships</a> with other data
+		</p>
+	  </div>
+	</content>
+	<api:object category="user" id="2003" proprietary-id="D24738Y" authenticating-authority="Dartmouth-WebAuth" username="D24738Y" last-modified-when="2016-06-15T14:11:59.397-04:00" href="https://localhost:9002/elements-secure-api/users/2003?detail=ref" created-when="2015-10-30T17:01:40.457-04:00" type-id="1" type="person">
+	  <api:relationships href="https://localhost:9002/elements-secure-api/users/2003/relationships"/>
+	</api:object>
+  </entry>
+  <entry>
+	<id>tag:elements@organisation,5.1:/elements-secure-api//users/925?detail=ref</id>
+	<category scheme="http://www.symplectic.co.uk/publications/atom/entries/" term="item" label="Item"/>
+	<updated>2016-06-15T14:09:48.693-04:00</updated>
+	<link type="application/atom+xml" rel="alternate" href="https://localhost:9002/elements-secure-api/users/925?detail=ref"/>
+	<title>GOLDMAN, Howard H</title>
+	<content type="xhtml">
+	  <div xmlns="http://www.w3.org/1999/xhtml">
+		<p>User</p>
+		<a href="https://localhost:9002/elements-secure-api/users/925/photo">Photo</a>
+		<p>
+		  <a href="https://localhost:9002/elements-secure-api/users/925/relationships">Relationships</a> with other data
+		</p>
+	  </div>
+	</content>
+	<api:object category="user" id="925" proprietary-id="F001XC7" authenticating-authority="Dartmouth-WebAuth" username="F001XC7" last-modified-when="2016-06-15T14:09:48.693-04:00" href="https://localhost:9002/elements-secure-api/users/925?detail=ref" created-when="2015-10-30T17:01:23.36-04:00" type-id="1" type="person">
+	  <api:relationships href="https://localhost:9002/elements-secure-api/users/925/relationships"/>
+	</api:object>
+  </entry>
+  <entry>
+	<id>tag:elements@organisation,5.1:/elements-secure-api//users/1268?detail=ref</id>
+	<category scheme="http://www.symplectic.co.uk/publications/atom/entries/" term="item" label="Item"/>
+	<updated>2016-06-15T14:03:56.777-04:00</updated>
+	<link type="application/atom+xml" rel="alternate" href="https://localhost:9002/elements-secure-api/users/1268?detail=ref"/>
+	<title>REED, Karin</title>
+	<content type="xhtml">
+	  <div xmlns="http://www.w3.org/1999/xhtml">
+		<p>User</p>
+		<a href="https://localhost:9002/elements-secure-api/users/1268/photo">Photo</a>
+		<p>
+		  <a href="https://localhost:9002/elements-secure-api/users/1268/relationships">Relationships</a> with other data
+		</p>
+	  </div>
+	</content>
+	<api:object category="user" id="1268" proprietary-id="F002D7S" authenticating-authority="Dartmouth-WebAuth" username="F002D7S" last-modified-when="2016-06-15T14:03:56.777-04:00" href="https://localhost:9002/elements-secure-api/users/1268?detail=ref" created-when="2015-10-30T17:01:30.49-04:00" type-id="1" type="person">
+	  <api:relationships href="https://localhost:9002/elements-secure-api/users/1268/relationships"/>
+	</api:object>
+  </entry>
+  <entry>
+	<id>tag:elements@organisation,5.1:/elements-secure-api//users/564?detail=ref</id>
+	<category scheme="http://www.symplectic.co.uk/publications/atom/entries/" term="item" label="Item"/>
+	<updated>2016-06-15T13:40:03.457-04:00</updated>
+	<link type="application/atom+xml" rel="alternate" href="https://localhost:9002/elements-secure-api/users/564?detail=ref"/>
+	<title>LEE, Dustin C</title>
+	<content type="xhtml">
+	  <div xmlns="http://www.w3.org/1999/xhtml">
+		<p>User</p>
+		<a href="https://localhost:9002/elements-secure-api/users/564/photo">Photo</a>
+		<p>
+		  <a href="https://localhost:9002/elements-secure-api/users/564/relationships">Relationships</a> with other data
+		</p>
+	  </div>
+	</content>
+	<api:object category="user" id="564" proprietary-id="F001R3B" authenticating-authority="Dartmouth-WebAuth" username="F001R3B" last-modified-when="2016-06-15T13:40:03.457-04:00" href="https://localhost:9002/elements-secure-api/users/564?detail=ref" created-when="2015-10-30T17:01:18.65-04:00" type-id="1" type="person">
+	  <api:relationships href="https://localhost:9002/elements-secure-api/users/564/relationships"/>
+	</api:object>
+  </entry>
+</feed>

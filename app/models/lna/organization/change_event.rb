@@ -91,7 +91,7 @@ module Lna
           # it is moved to one of the orgs for which it still has an active membership.
           old.people.each do |person|
             active_mems_orgs = person.memberships
-                               .select { |m| m.active_on? date }
+                               .select { |m| m.active_on? change_event.at_time }
                                .map(&:organization)
 
             next if active_mems_orgs.count.zero?
