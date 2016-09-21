@@ -109,7 +109,17 @@ module Lna
         super.tap do |solr_doc|
           # Needed for sorting by author list.
           Solrizer.set_field(solr_doc, 'author_list', author_list, :stored_sortable)
-          Solrizer.set_field(solr_doc, 'creator_id', collection.person.id, :stored_sortable) if collection
+####	  Inconsistent data in Fedora...
+          if collection
+            if collection.person
+              Solrizer.set_field(solr_doc, 'creator_id', collection.person.id, :stored_sortable)
+            else
+              Rails.logger.tagged('Lna::Collection::Document') {
+                Rails.logger.debug("collection = #{collection.id} lacks person")
+              }
+            end
+          end
+####          Solrizer.set_field(solr_doc, 'creator_id', collection.person.id, :stored_sortable) if collection
         end
       end
       
