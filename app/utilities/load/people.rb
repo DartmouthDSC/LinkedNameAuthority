@@ -172,6 +172,10 @@ module Load
           log_warning(NEW_MEM, "'#{mem.title}' for #{person.full_name} (#{netid})")
         end
       else   # Create new person.
+###     Debug logging...
+        Rails.logger.tagged('Load::People/Lna::Person') {####
+          Rails.logger.debug("hash = #{hash}")####
+        }####
         # Checking arguments.
         if !hash[:membership] || !hash[:membership][:primary]
           raise ArgumentError, 'Primary membership required to create new person.'

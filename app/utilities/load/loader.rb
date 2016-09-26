@@ -148,13 +148,23 @@ module Load
       rescue RSolr::Error::Http => e
        raise ArgumentError, "Organization look up failed. Invalid key in #{search_hash}"
       end
-        
+
+###   Debug logging...
+      Rails.logger.tagged('Lna::Organization/orgs') {####
+        Rails.logger.debug("orgs = #{orgs}")####
+      }####
+
       # Try to find an exact match, because self.where uses solr to search and solr will return
       # a document if any part of the field matches. Alt_labels are treated a bit differently,
       # all the alt labels given by the hash should be included in the object's alt_label array,
       # but the arrays may not be exact. Super organization ids are only compared if the
       # organization is active.
       orgs = orgs.select do |org|
+###     Debug logging...
+        Rails.logger.tagged('Lna::Organization/org') {####
+          Rails.logger.debug("hash = #{hash}")####
+          Rails.logger.debug("org  = #{org}")####
+        }####
         hash.all? do |k, v|
           if k == :alt_label
             v.all? { |i| org.alt_label.include? i }
