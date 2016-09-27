@@ -151,7 +151,7 @@ module Load
 
 ###   Debug logging...
       Rails.logger.tagged('Lna::Organization/orgs') {####
-        Rails.logger.debug("orgs = #{orgs}")####
+        Rails.logger.debug("orgs = #{orgs.where_values_hash}")####
       }####
 
       # Try to find an exact match, because self.where uses solr to search and solr will return
