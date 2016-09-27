@@ -151,7 +151,7 @@ module Load
 
 ###   Debug logging...
       Rails.logger.tagged('Lna::Organization/orgs') {####
-        Rails.logger.debug("orgs = #{orgs.where_values_hash}")####
+        Rails.logger.debug("orgs = #{orgs.values}")####
       }####
 
       # Try to find an exact match, because self.where uses solr to search and solr will return
@@ -163,7 +163,7 @@ module Load
 ###     Debug logging...
         Rails.logger.tagged('Lna::Organization/org') {####
           Rails.logger.debug("hash = #{hash}")####
-          Rails.logger.debug("org  = #{org}")####
+          Rails.logger.debug("org  = #{org.values}")####
         }####
         hash.all? do |k, v|
           if k == :alt_label
