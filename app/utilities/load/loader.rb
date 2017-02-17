@@ -154,16 +154,18 @@ module Load
         Rails.logger.debug("orgs = #{orgs.values}")####
       }####
 
-      # Try to find an exact match, because self.where uses solr to search and solr will return
-      # a document if any part of the field matches. Alt_labels are treated a bit differently,
-      # all the alt labels given by the hash should be included in the object's alt_label array,
-      # but the arrays may not be exact. Super organization ids are only compared if the
-      # organization is active.
+#     Try to find an exact match, because self.where uses solr to
+#     search and solr will return a document if any part of the field
+#     matches. Alt_labels are treated a bit differently, all the alt
+#     labels given by the hash should be included in the object's
+#     alt_label array, but the arrays may not be exact. Super
+#     organization ids are only compared if the organization is
+#     active.
       orgs = orgs.select do |org|
 ###     Debug logging...
         Rails.logger.tagged('Lna::Organization/org') {####
-          Rails.logger.debug("hash = #{hash}")####
-          Rails.logger.debug("org  = #{org.values}")####
+          Rails.logger.debug("hash = #{hash.to_s}")####
+          Rails.logger.debug("id   = #{org.id}")####
         }####
         hash.all? do |k, v|
           if k == :alt_label
@@ -181,14 +183,19 @@ module Load
         end
       end
 
-      case orgs.count
-      when 1
-        orgs.first
-      when 0
-        nil
-      else
-        raise ArgumentError, "more than one organization with the values #{hash.to_s} was found"
+#     Grab the first organization that matched, if there is one.
+      org = orgs.shift
+      if orgs.count > 0
+        Rails.logger.debug("more than one organization with the values #{hash.to_s} was found; deleting extras")
+        orgs.each do |org|
+          Rails.logger.debug("org to be deleted: #{org.attributes}")
+          org.destroy(eradicate: true)
+        end
+####    raise ArgumentError, "more than one organization with the values #{hash.to_s} was found"
       end
+#     The first organization that matched, or nil.
+      return org
+
     end
 
     # Finds organization based on hash given. Will throw an error if exactly one organization
@@ -232,18 +239,38 @@ module Load
       hash = dart_account_hash(netid)
       accounts = Lna::Account.where(hash)
 
-      case accounts.count
-      when 0
-        nil
-      when 1
-        accounts.first
-      else
-        raise ArgumentError, "More than one account for #{netid}."
+###   Debug logging...
+      Rails.logger.tagged('Lna::Account') {####
+        Rails.logger.debug("accounts = #{accounts.values}")####
+      }####
+
+      accounts = accounts.select do |account|
+###     Debug logging...
+        Rails.logger.tagged('Lna::Account') {####
+          Rails.logger.debug("hash = #{hash.to_s}")####
+          Rails.logger.debug("id   = #{account.id}")####
+        }####
+        true
       end
+
+#     Grab the first account that matched, if there is one.
+      account = accounts.shift
+      if (accounts.count > 0)
+        Rails.logger.debug("More than one account for #{netid}; deleting extras")
+        accounts.each do |account|
+          Rails.logger.debug("Account to be deleted: #{account.attributes}")
+          account.destroy(eradicate: true)
+        end
+####        accounts.destroy_all(:id != account.id)
+####    raise ArgumentError, "More than one account for #{netid}."
+      end
+      return account
+
     end
 
     def dart_account_hash(netid)
       { account_name: netid }.merge(Lna::Account::DART_PROPERTIES)
     end
+
   end
 end
