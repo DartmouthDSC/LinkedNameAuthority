@@ -115,21 +115,24 @@ module Load
       end
       
       hash = hash.clone
-      
+
       # Find super organization.
       super_org = nil
       if super_hash = hash.delete(:super_organization)
+####        binding.pry####
         super_org = find_organization!(super_hash)
         hash[:super_organization_id] = super_org.id
       end
 
       # Return if organization found.
+####      binding.pry####
       if org = find_organization(hash)
         return org
       end
 
       # Try to find the organization by searching by :hr_id. If found update record
       # as described above.
+####      binding.pry####
       if org = find_organization(hash.slice(:hr_id))        
         # Calculate difference between hash and org returned.
         diff = diff(org, hash)
@@ -179,30 +182,30 @@ module Load
       end
 
       # Create a new organization.
-      # If end date is set a historic organization needs to be created, otherwise an
-      # active organization should be created.
+      # If end date is set a historic organization needs to be
+      # created, otherwise an active organization should be created.
       hash.delete(:super_organization_id)
       hash.compact! # Remove any nil valued keys.
       if hash[:end_date]
         org = Lna::Organization::Historic.create!(hash)
       else
         org = Lna::Organization.create!(hash)
-        # If super organization was found, set it. 
-        if super_org
-          if super_org.historic?
-            raise ArgumentError, "Historic org #{super_org.label} cannot be a super organization"
-          end
-          
-          org.super_organizations << super_org
-          org.save!
+      end
+      # If super organization was found, set it. 
+      if super_org
+        if super_org.historic?
+          raise ArgumentError, "Historic org #{super_org.label} cannot be a super organization"
         end
+
+        org.super_organizations << super_org
+
+        org.save!
       end
 
       value = hash[:hr_code] ? "#{hash[:label]}(#{hash[:hr_id]})" : hash[:label]
       log_warning(NEW_ORG, value)
-      org
+      return org
     end
-
 
     # Return hash with differences between org given and hash.
     def diff(org, hash)
