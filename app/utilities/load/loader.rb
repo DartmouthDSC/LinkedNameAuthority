@@ -146,7 +146,7 @@ module Load
         orgs = Lna::Organization.where(search_hash)
         orgs = Lna::Organization::Historic.where(search_hash) if orgs.count.zero?
       rescue RSolr::Error::Http => e
-       raise ArgumentError, "Organization look up failed. Invalid key in #{search_hash}"
+        raise ArgumentError, "Organization look up failed. Invalid key in #{search_hash}"
       end
 
 ###   Debug logging...
@@ -161,26 +161,31 @@ module Load
 #     alt_label array, but the arrays may not be exact. Super
 #     organization ids are only compared if the organization is
 #     active.
-      orgs = orgs.select do |org|
-###     Debug logging...
-        Rails.logger.tagged('Lna::Organization/org') {####
-          Rails.logger.debug("hash = #{hash.to_s}")####
-          Rails.logger.debug("id   = #{org.id}")####
-        }####
-        hash.all? do |k, v|
-          if k == :alt_label
-            v.all? { |i| org.alt_label.include? i }
-          elsif k == :super_organization_id
-            if org.active?
-              org.super_organization_ids.include? v
+      begin
+        orgs = orgs.select do |org|
+###	  Debug logging...
+          Rails.logger.tagged('Lna::Organization/org') {####
+            Rails.logger.debug("hash = #{hash.to_s}")####
+            Rails.logger.debug("id   = #{org.id}")####
+          }####
+          hash.all? do |k, v|
+            if k == :alt_label
+              v.all? { |i| org.alt_label.include? i }
+            elsif k == :super_organization_id
+              if org.active?
+                org.super_organization_ids.include? v
+              else
+                true
+              end
             else
-              true
+              v = Date.parse(v) if [:begin_date, :end_date].include? k
+              org.send(k) == v
             end
-          else
-            v = Date.parse(v) if [:begin_date, :end_date].include? k
-            org.send(k) == v
           end
         end
+      rescue ActiveFedora::ObjectNotFoundError
+#	Let our caller deal with the organizaion not being found.
+        return nil
       end
 
 #     Grab the first organization that matched, if there is one.
