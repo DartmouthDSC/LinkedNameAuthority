@@ -1,4 +1,7 @@
+require 'pry'
+
 namespace :load do
+
   desc "Load from all feeds."
   task all: :environment do
     Load::Organizations.from_hr
